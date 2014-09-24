@@ -482,7 +482,7 @@ public class Stream extends org.drip.service.stream.Serializer {
 				} else if (period.contains (dblValueDate)) {
 					dblAccrued01 = 0.;
 					dblResetRate = dblPeriodBaseRate;
-					java.util.List<org.drip.analytics.cashflow.ResetPeriod> lsRP = null;
+					java.util.List<org.drip.analytics.cashflow.ComposablePeriod> lsRP = null;
 
 					org.drip.analytics.cashflow.ResetPeriodContainer rpc = period.rpc();
 

@@ -161,7 +161,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	private double resetPeriodRate (
-		final org.drip.analytics.cashflow.ResetPeriod rp,
+		final org.drip.analytics.cashflow.ComposablePeriod rp,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
@@ -260,7 +260,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 	}
 
 	private org.drip.analytics.output.ResetPeriodMetrics resetPeriodMetrics (
-		final org.drip.analytics.cashflow.ResetPeriod rp,
+		final org.drip.analytics.cashflow.ComposablePeriod rp,
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -896,7 +896,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 							_forwardLabel, fundingLabel, fxLabel);
 			}
 
-			for (org.drip.analytics.cashflow.ResetPeriod rp : _rpc.resetPeriods()) {
+			for (org.drip.analytics.cashflow.ComposablePeriod rp : _rpc.resetPeriods()) {
 				org.drip.analytics.output.ResetPeriodMetrics rpm = resetPeriodMetrics (rp, dblValueDate,
 					csqs);
 
@@ -955,12 +955,12 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 					dblFX, notional (dblValueDate), iAccrualCompoundingRule, lsRPM);
 			}
 
-			for (org.drip.analytics.cashflow.ResetPeriod rp : _rpc.resetPeriods()) {
+			for (org.drip.analytics.cashflow.ComposablePeriod rp : _rpc.resetPeriods()) {
 				double dblResetPeriodStartDate = rp.start();
 
 				int iNodeLocationIndicator = rp.nodeLocation (dblValueDate);
 
-				if (org.drip.analytics.cashflow.ResetPeriod.NODE_LEFT_OF_SEGMENT == iNodeLocationIndicator ||
+				if (org.drip.analytics.cashflow.ComposablePeriod.NODE_LEFT_OF_SEGMENT == iNodeLocationIndicator ||
 					dblValueDate == dblResetPeriodStartDate)
 					break;
 
@@ -969,7 +969,7 @@ public class CouponPeriod extends org.drip.service.stream.Serializer implements
 
 				if (null == rpm) return null;
 
-				if (org.drip.analytics.cashflow.ResetPeriod.NODE_INSIDE_SEGMENT == iNodeLocationIndicator)
+				if (org.drip.analytics.cashflow.ComposablePeriod.NODE_INSIDE_SEGMENT == iNodeLocationIndicator)
 					lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (dblResetPeriodStartDate,
 						dblValueDate, dblResetPeriodStartDate, rpm.nominalRate(),
 							org.drip.analytics.daycount.Convention.YearFraction (dblResetPeriodStartDate,

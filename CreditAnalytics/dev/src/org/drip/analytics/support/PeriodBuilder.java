@@ -291,8 +291,8 @@ public class PeriodBuilder {
 
 				if (null != forwardLabel&& !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 					(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
-					(new org.drip.analytics.cashflow.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
-						DAPAdjust (dblPeriodStartDate, dapFixing))))
+					(new org.drip.analytics.cashflow.ComposablePeriod (dblAdjustedStartDate,
+						dblAdjustedEndDate, DAPAdjust (dblPeriodStartDate, dapFixing), forwardLabel)))
 					return null;
 
 				if (dblAdjustedStartDate < dblAdjustedEndDate && dblAccrualStartDate < dblAccrualEndDate)
@@ -442,8 +442,8 @@ public class PeriodBuilder {
 
 					if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 						(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
-						(new org.drip.analytics.cashflow.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
-							DAPAdjust (dblPeriodStartDate, dapFixing))))
+						(new org.drip.analytics.cashflow.ComposablePeriod (dblAdjustedStartDate,
+							dblAdjustedEndDate, DAPAdjust (dblPeriodStartDate, dapFixing), forwardLabel)))
 						return null;
 
 					lsCashflowPeriod.add (periodPenultimate = new org.drip.analytics.cashflow.CouponPeriod
@@ -465,8 +465,8 @@ public class PeriodBuilder {
 
 					if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 						(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
-						(new org.drip.analytics.cashflow.ResetPeriod (dblAdjustedStartDate, dblPeriodEndDate,
-							DAPAdjust (dblPeriodStartDate, dapFixing))))
+						(new org.drip.analytics.cashflow.ComposablePeriod (dblAdjustedStartDate,
+							dblPeriodEndDate, DAPAdjust (dblPeriodStartDate, dapFixing), forwardLabel)))
 						return null;
 
 					lsCashflowPeriod.add (periodFinal = new org.drip.analytics.cashflow.CouponPeriod
@@ -618,8 +618,8 @@ public class PeriodBuilder {
 
 				if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 					(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
-					(new org.drip.analytics.cashflow.ResetPeriod (dblAdjustedStartDate, dblAdjustedEndDate,
-						DAPAdjust (dblPeriodStartDate, dapFixing))))
+					(new org.drip.analytics.cashflow.ComposablePeriod (dblAdjustedStartDate,
+						dblAdjustedEndDate, DAPAdjust (dblPeriodStartDate, dapFixing), forwardLabel)))
 					return null;
 
 				double dblDCF = bCouponDCFOffOfFreq ? 1. / iFreq :
@@ -767,11 +767,11 @@ public class PeriodBuilder {
 				lsCashflowPeriod.add (new org.drip.analytics.cashflow.CouponPeriod (dblAdjustedStartDate,
 					dblAdjustedEndDate, dblAccrualStart, dblAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay),
 						null != forwardLabel ? org.drip.analytics.support.ResetUtil.DailyResetPeriod
-							(dblAdjustedStartDate, dblAdjustedEndDate, iAccrualCompoundingRule, strCalendar)
-								: null, dblFXFixingDate, iFreq, dblDCF, strCouponDC, strAccrualDC,
-									bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar, dblBaseNotional,
-										notlSchedule, dblFixedCouponFloatSpread, strPayCurrency,
-											strCouponCurrency, forwardLabel, creditLabel));
+							(dblAdjustedStartDate, dblAdjustedEndDate, forwardLabel, iAccrualCompoundingRule,
+								strCalendar) : null, dblFXFixingDate, iFreq, dblDCF, strCouponDC,
+									strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar,
+										dblBaseNotional, notlSchedule, dblFixedCouponFloatSpread,
+											strPayCurrency, strCouponCurrency, forwardLabel, creditLabel));
 
 				dtPeriodStart = dtPeriodEnd;
 
@@ -834,7 +834,8 @@ public class PeriodBuilder {
 
 			if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 				(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
-					(new org.drip.analytics.cashflow.ResetPeriod (dblEffective, dblMaturity, dblEffective)))
+					(new org.drip.analytics.cashflow.ComposablePeriod (dblEffective, dblMaturity,
+						dblEffective, forwardLabel)))
 				return null;
 
 			lsCashflowPeriod.add (0, new org.drip.analytics.cashflow.CouponPeriod (dblEffective, dblMaturity,
@@ -922,8 +923,9 @@ public class PeriodBuilder {
 				org.drip.analytics.cashflow.ResetPeriodContainer rpc = null;
 
 				if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
-					(iAccrualCompoundingRule)).appendResetPeriod (new org.drip.analytics.cashflow.ResetPeriod
-						(dblAdjustedStartDate, dblAdjustedEndDate, dblAdjustedStartDate)))
+					(iAccrualCompoundingRule)).appendResetPeriod (new
+						org.drip.analytics.cashflow.ComposablePeriod (dblAdjustedStartDate,
+							dblAdjustedEndDate, dblAdjustedStartDate, forwardLabel)))
 					return null;
 
 				if (dblAdjustedStartDate < dblAdjustedEndDate)

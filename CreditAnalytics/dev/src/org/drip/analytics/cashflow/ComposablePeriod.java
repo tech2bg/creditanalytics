@@ -29,13 +29,13 @@ package org.drip.analytics.cashflow;
  */
 
 /**
- * ResetPeriod contains the cash flow periods' reset sub period details. Currently it holds the start, the
- * 	end, and the fixing dates.
+ * ComposablePeriod contains the cash flow periods' composable sub period details. Currently it holds the
+ *  start date, the end date, the fixing date, and the reference floating index if any.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ResetPeriod extends org.drip.service.stream.Serializer {
+public class ComposablePeriod extends org.drip.service.stream.Serializer {
 
 	/**
 	 * Node is to the Left of the Period
@@ -58,82 +58,86 @@ public class ResetPeriod extends org.drip.service.stream.Serializer {
 	private double _dblEnd = java.lang.Double.NaN;
 	private double _dblStart = java.lang.Double.NaN;
 	private double _dblFixing = java.lang.Double.NaN;
+	private org.drip.state.identifier.ForwardLabel _forwardLabel = null;
 
 	/**
-	 * The ResetPeriod constructor
+	 * The ComposablePeriod constructor
 	 * 
-	 * @param dblStart Reset Period Start Date
-	 * @param dblEnd Reset Period End Date
-	 * @param dblFixing Reset Period Fixing Date
+	 * @param dblStart Period Start Date
+	 * @param dblEnd Period End Date
+	 * @param dblFixing Period Fixing Date
+	 * @param forwardLabel The Period Forward Label
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ResetPeriod (
+	public ComposablePeriod (
 		final double dblStart,
 		final double dblEnd,
-		final double dblFixing)
+		final double dblFixing,
+		final org.drip.state.identifier.ForwardLabel forwardLabel)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStart = dblStart) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEnd = dblEnd) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblFixing = dblFixing))
-			throw new java.lang.Exception ("ResetPeriod ctr: Invalid Inputs");
+				!org.drip.quant.common.NumberUtil.IsValid (_dblFixing = dblFixing) || null == (_forwardLabel
+					= forwardLabel))
+			throw new java.lang.Exception ("ComposablePeriod ctr: Invalid Inputs");
 	}
 
 	/**
-	 * De-serialization of ResetPeriod from byte stream
+	 * De-serialization of ComposablePeriod from byte stream
 	 * 
 	 * @param ab Byte stream
 	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize ResetPeriod
+	 * @throws java.lang.Exception Thrown if cannot properly de-serialize ComposablePeriod
 	 */
 
-	public ResetPeriod (
+	public ComposablePeriod (
 		final byte[] ab)
 		throws java.lang.Exception
 	{
 		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ResetPeriod de-serialize: Invalid byte stream input");
+			throw new java.lang.Exception ("ComposablePeriod de-serialize: Invalid byte stream input");
 
 		java.lang.String strRawString = new java.lang.String (ab);
 
 		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ResetPeriod de-serializer: Empty state");
+			throw new java.lang.Exception ("ComposablePeriod de-serializer: Empty state");
 
 		java.lang.String strCP = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
 
 		if (null == strCP || strCP.isEmpty())
-			throw new java.lang.Exception ("ResetPeriod de-serializer: Cannot locate state");
+			throw new java.lang.Exception ("ComposablePeriod de-serializer: Cannot locate state");
 
 		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, fieldDelimiter());
 
 		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("ResetPeriod de-serialize: Invalid number of fields");
+			throw new java.lang.Exception ("ComposablePeriod de-serialize: Invalid number of fields");
 
 		if (null == astrField[1] || astrField[1].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("ResetPeriod de-serializer: Cannot locate Start Date");
+			throw new java.lang.Exception ("ComposablePeriod de-serializer: Cannot locate Start Date");
 
 		_dblStart = new java.lang.Double (astrField[1]);
 
 		if (null == astrField[2] || astrField[2].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("ResetPeriod de-serializer: Cannot locate End Date");
+			throw new java.lang.Exception ("ComposablePeriod de-serializer: Cannot locate End Date");
 
 		_dblEnd = new java.lang.Double (astrField[2]);
 
 		if (null == astrField[3] || astrField[3].isEmpty() ||
 			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("ResetPeriod de-serializer: Cannot locate Fixing Date");
+			throw new java.lang.Exception ("ComposablePeriod de-serializer: Cannot locate Fixing Date");
 
 		_dblFixing = new java.lang.Double (astrField[3]);
 	}
 
 	/**
-	 * Reset Start Date
+	 * Period Start Date
 	 * 
-	 * @return The Reset Start Date
+	 * @return The Period Start Date
 	 */
 
 	public double start()
@@ -142,9 +146,9 @@ public class ResetPeriod extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Reset End Date
+	 * Period End Date
 	 * 
-	 * @return The Reset End Date
+	 * @return The Period End Date
 	 */
 
 	public double end()
@@ -153,9 +157,9 @@ public class ResetPeriod extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Reset Fixing Date
+	 * Period Fixing Date
 	 * 
-	 * @return The Reset Fixing Date
+	 * @return The Period Fixing Date
 	 */
 
 	public double fixing()
@@ -164,7 +168,18 @@ public class ResetPeriod extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * Places the Node Location in relation to the segment Location
+	 * Retrieve the Forward Label
+	 * 
+	 * @return The Forward Label
+	 */
+
+	public org.drip.state.identifier.ForwardLabel forwardLabel()
+	{
+		return _forwardLabel;
+	}
+
+	/**
+	 * Place the Node Location in relation to the segment Location
 	 * 
 	 * @param dblNode The Node Ordinate
 	 * 
@@ -178,7 +193,7 @@ public class ResetPeriod extends org.drip.service.stream.Serializer {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblNode))
-			throw new java.lang.Exception ("ResetPeriod::nodeLocation => Invalid Node");
+			throw new java.lang.Exception ("ComposablePeriod::nodeLocation => Invalid Node");
 
 		if (dblNode < _dblStart) return NODE_LEFT_OF_SEGMENT;
 
@@ -211,7 +226,7 @@ public class ResetPeriod extends org.drip.service.stream.Serializer {
 		final byte[] ab)
 	{
 		try {
-			return new ResetPeriod (ab);
+			return new ComposablePeriod (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

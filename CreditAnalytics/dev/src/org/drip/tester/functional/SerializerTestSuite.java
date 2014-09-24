@@ -294,8 +294,8 @@ public class SerializerTestSuite {
 			org.drip.analytics.cashflow.ResetPeriodContainer
 				(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
-		rpc.appendResetPeriod (new org.drip.analytics.cashflow.ResetPeriod (dblStart, dblStart + 180,
-			dblStart));
+		rpc.appendResetPeriod (new org.drip.analytics.cashflow.ComposablePeriod (dblStart, dblStart +
+			180, dblStart, null));
 
 		byte[] abPeriod = new org.drip.analytics.cashflow.CouponPeriod (dblStart, dblStart + 180, dblStart,
 			dblStart + 180, dblStart + 180, rpc, java.lang.Double.NaN, 2, 0.5, "Act/360", "Act/360", false,
@@ -847,8 +847,8 @@ public class SerializerTestSuite {
 			rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
 				(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
-			rpc.appendResetPeriod (new org.drip.analytics.cashflow.ResetPeriod (dblStart, dblStart + 180,
-				dblStart));
+			rpc.appendResetPeriod (new org.drip.analytics.cashflow.ComposablePeriod (dblStart,
+				dblStart + 180, dblStart, null));
 
 			lsCouponPeriod.add (new org.drip.analytics.cashflow.CouponPeriod (dblStart, dblStart + 180,
 				dblStart, dblStart + 180, dblStart + 180, rpc, java.lang.Double.NaN, 2, 0.5, "30/360",

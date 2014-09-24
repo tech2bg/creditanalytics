@@ -68,6 +68,7 @@ public class ResetUtil {
 	 * 
 	 * @param dblLeft The Left Date
 	 * @param dblRight The Right Date
+	 * @param forwardLabel The Forward Label
 	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
 	 * @param strCalendar The Calendar
 	 * 
@@ -78,6 +79,7 @@ public class ResetUtil {
 	public static final org.drip.analytics.cashflow.ResetPeriodContainer DailyResetPeriod (
 		final double dblLeft,
 		final double dblRight,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final int iAccrualCompoundingRule,
 		final java.lang.String strCalendar)
 	{
@@ -101,8 +103,8 @@ public class ResetUtil {
 
 		while (dblEnd <= dblRight) {
 			try {
-				if (!rpc.appendResetPeriod (new org.drip.analytics.cashflow.ResetPeriod (dblStart, dblEnd,
-					dblStart)))
+				if (!rpc.appendResetPeriod (new org.drip.analytics.cashflow.ComposablePeriod
+					(dblStart, dblEnd, dblStart, forwardLabel)))
 					return null;
 
 				dblStart = dblEnd;
@@ -138,9 +140,9 @@ public class ResetUtil {
 
 		if (iAccrualCompoundingRule != rpcRight.accrualCompoundingRule()) return null;
 
-		java.util.List<org.drip.analytics.cashflow.ResetPeriod> lsResetPeriodsLeft = rpcLeft.resetPeriods();
+		java.util.List<org.drip.analytics.cashflow.ComposablePeriod> lsResetPeriodsLeft = rpcLeft.resetPeriods();
 
-		java.util.List<org.drip.analytics.cashflow.ResetPeriod> lsResetPeriodsRight = rpcRight.resetPeriods();
+		java.util.List<org.drip.analytics.cashflow.ComposablePeriod> lsResetPeriodsRight = rpcRight.resetPeriods();
 
 		if (null == lsResetPeriodsLeft || null == lsResetPeriodsRight) return null;
 
@@ -162,11 +164,11 @@ public class ResetUtil {
 			return null;
 		}
 
-		for (org.drip.analytics.cashflow.ResetPeriod rp : lsResetPeriodsLeft) {
+		for (org.drip.analytics.cashflow.ComposablePeriod rp : lsResetPeriodsLeft) {
 			if (!rpc.appendResetPeriod (rp)) return null;
 		}
 
-		for (org.drip.analytics.cashflow.ResetPeriod rp : lsResetPeriodsRight) {
+		for (org.drip.analytics.cashflow.ComposablePeriod rp : lsResetPeriodsRight) {
 			if (!rpc.appendResetPeriod (rp)) return null;
 		}
 
