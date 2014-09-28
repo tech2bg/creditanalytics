@@ -96,15 +96,4 @@ public class BasisSplineBasisCurve extends org.drip.analytics.rates.BasisCurve {
 	{
 		return _span.jackDResponseDManifestMeasure (strManifestMeasure, dblDate, 1);
 	}
-
-	@Override public byte[] serialize()
-	{
-		return null;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		return null;
-	}
 }

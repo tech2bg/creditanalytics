@@ -435,20 +435,7 @@ public class BondBasketAPI {
 				MakeFSPrincipal(),		// Principal Schedule
 				MakeFSCoupon());		// Coupon Schedule
 
-		BasketProduct bb = new BondBasket ("TurtlePower", new Bond[] {bond1, bond2, bond3, bond4},
-			new double[] {0.1, 0.2, 0.3, 0.4}, JulianDate.Today(), 1.);
-
-		/*
-		 * Verify - Simple Bond Basket Serializer
-		 */
-
-		byte[] abBB = bb.serialize();
-
-		System.out.println ("Before: " + new String (abBB));
-
-		BasketProduct bbAfter = new BondBasket (abBB);
-
-		System.out.println ("After: " + new String (bbAfter.serialize()));
+		BasketProduct bb = new BondBasket ("TurtlePower", new Bond[] {bond1, bond2, bond3, bond4}, new double[] {0.1, 0.2, 0.3, 0.4});
 
 		/*
 		 * Create the basket market parameters and add the named discount curve and the treasury curves to it.

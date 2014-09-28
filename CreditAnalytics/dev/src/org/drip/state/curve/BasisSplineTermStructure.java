@@ -70,17 +70,6 @@ public class BasisSplineTermStructure extends org.drip.analytics.definition.Term
 		return _collatParams;
 	}
 
-	@Override public byte[] serialize()
-	{
-		return null;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		return null;
-	}
-
 	@Override public double node (
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception

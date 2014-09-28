@@ -231,28 +231,6 @@ public class CreditCurveBuilder {
 	}
 
 	/**
-	 * Create the credit curve from the given byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return The credit curve instance
-	 */
-
-	public static final org.drip.analytics.definition.ExplicitBootCreditCurve FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.state.curve.ForwardHazardCreditCurve (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
 	 * Create a credit curve from hazard rate and recovery rate term structures
 	 * 
 	 * @param dblStart Curve Epoch date

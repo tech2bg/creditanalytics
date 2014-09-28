@@ -133,26 +133,4 @@ public class DepositBuilder {
 	{
 		return CreateDeposit (dtEffective, strTenor, strIR, "CD");
 	}
-
-	/**
-	 * Create a Deposit Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return Deposit Instance
-	 */
-
-	public static final org.drip.product.definition.CalibratableFixedIncomeComponent FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.product.rates.DepositComponent (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

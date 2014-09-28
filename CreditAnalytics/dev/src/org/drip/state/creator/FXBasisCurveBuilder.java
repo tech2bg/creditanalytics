@@ -72,26 +72,4 @@ public class FXBasisCurveBuilder {
 
 		return null;
 	}
-
-	/**
-	 * Create the FXBasisCurve from the given byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return FXBasisCurve instance
-	 */
-
-	public static final org.drip.analytics.definition.FXBasisCurve FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.state.curve.DerivedFXBasis (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

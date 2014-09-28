@@ -62,26 +62,4 @@ public class FXSpotBuilder {
 
 		return null;
 	}
-
-	/**
-	 * Create a FXSpot Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return FXSpot Instance
-	 */
-
-	public static final org.drip.product.definition.FXSpot FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.product.fx.FXSpotContract (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

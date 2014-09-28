@@ -75,66 +75,6 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 		_dblEffective = dtEffective.julian();
 	}
 
-	/**
-	 * FXForwardContract de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if FXForwardContract cannot be properly de-serialized
-	 */
-
-	public FXForwardContract (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FXForwardContract de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("FXForwardContract de-serializer: Empty state");
-
-		java.lang.String strSerializedFXForward = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedFXForward || strSerializedFXForward.isEmpty())
-			throw new java.lang.Exception ("FXForwardContract de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFXForward,
-			fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception ("FXForwardContract de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception
-				("FXForwardContract CurrencyPair de-serializer: Cannot locate FXForward Code");
-
-		_strCode = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("FXForwardContract de-serializer: Cannot locate Effective Date");
-
-		_dblEffective = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("FXForwardContract de-serializer: Cannot locate Maturity Date");
-
-		_dblMaturity = new java.lang.Double (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("FXForwardContract de-serializer: Cannot locate Currency Pair");
-
-		_ccyPair = new org.drip.product.params.CurrencyPair (astrField[4].getBytes());
-	}
-
 	@Override public java.lang.String getPrimaryCode()
 	{
 		return _strCode;
@@ -398,47 +338,5 @@ public class FXForwardContract extends org.drip.product.definition.FXForward {
 
 			return dblBasis;
 		}
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strCode +
-			fieldDelimiter() + _dblEffective + fieldDelimiter() + _dblMaturity + fieldDelimiter() + new
-				java.lang.String (_ccyPair.serialize()));
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new FXForwardContract (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		org.drip.product.definition.FXForward fxFwd = new FXForwardContract (new
-			org.drip.product.params.CurrencyPair ("USD", "INR", "INR", 1.),
-				org.drip.analytics.date.JulianDate.Today(),
-					org.drip.analytics.date.JulianDate.Today().addTenor ("18M"));
-
-		byte[] abFXFwd = fxFwd.serialize();
-
-		System.out.println (new java.lang.String (abFXFwd));
-
-		org.drip.product.definition.FXForward fxFwdDeser = (org.drip.product.definition.FXForward)
-			fxFwd.deserialize (abFXFwd);
-
-		System.out.println (new java.lang.String (fxFwdDeser.serialize()));
 	}
 }

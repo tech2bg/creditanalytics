@@ -42,6 +42,18 @@ package org.drip.quant.common;
 public class StringUtil {
 
 	/**
+	 * Null serialized string
+	 */
+
+	public static final java.lang.String NULL_SER_STRING = "<<null>>";
+
+	/**
+	 * Serialization Version - ALWAYS prepend this on all derived classes
+	 */
+
+	public static final double VERSION = 2.4;
+
+	/**
 	 * Look for a match of the field in the input array
 	 * 
 	 * @param strFieldToMatch Field To Match

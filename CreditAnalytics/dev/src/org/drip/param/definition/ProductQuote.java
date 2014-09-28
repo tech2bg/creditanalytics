@@ -39,7 +39,7 @@ package org.drip.param.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class ProductQuote extends org.drip.service.stream.Serializer {
+public abstract class ProductQuote {
 
 	/**
 	 * Add a regular or a market quote for the component

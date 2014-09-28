@@ -61,26 +61,4 @@ public class QuoteBuilder {
 
 		return null;
 	}
-
-	/**
-	 * Create a Quote Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return Quote Instance
-	 */
-
-	public static final org.drip.param.definition.Quote FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.param.market.MultiSidedQuote (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

@@ -39,7 +39,7 @@ package org.drip.param.valuation;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ValuationParams extends org.drip.service.stream.Serializer {
+public class ValuationParams {
 	private java.lang.String _strCalendar = "";
 	private double _dblValue = java.lang.Double.NaN;
 	private double _dblCashPay = java.lang.Double.NaN;
@@ -113,61 +113,6 @@ public class ValuationParams extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * ValuationParams de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if ValuationParams cannot be properly de-serialized
-	 */
-
-	public ValuationParams (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ValuationParams de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ValuationParams de-serializer: Empty state");
-
-		java.lang.String strSerializedValuationParams = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedValuationParams || strSerializedValuationParams.isEmpty())
-			throw new java.lang.Exception ("ValuationParams de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedValuationParams,
-			fieldDelimiter());
-
-		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("ValuationParams de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("ValuationParams de-serializer: Cannot locate valuation date");
-
-		_dblValue = new java.lang.Double (astrField[1]).doubleValue();
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("ValuationParams de-serializer: Cannot locate cash pay date");
-
-		_dblCashPay = new java.lang.Double (astrField[2]).doubleValue();
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("ValuationParams de-serializer: Cannot locate Calendar");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			_strCalendar = "";
-		else
-			_strCalendar = astrField[3];
-	}
-
-	/**
 	 * Construct ValuationParams from the Valuation Date and the Cash Pay Date parameters
 	 * 
 	 * @param dtValue Valuation Date
@@ -224,47 +169,5 @@ public class ValuationParams extends org.drip.service.stream.Serializer {
 	public java.lang.String calendar()
 	{
 		return _strCalendar;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (VERSION + fieldDelimiter() + _dblValue + fieldDelimiter() + _dblCashPay + fieldDelimiter()
-			+ _strCalendar);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new ValuationParams (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		org.drip.analytics.support.Logger.Init ("c:\\Lakshmi\\BondAnal\\Config.xml");
-
-		org.drip.analytics.daycount.Convention.Init ("c:\\Lakshmi\\BondAnal\\Config.xml");
-
-		ValuationParams vp = ValuationParams.CreateValParams (org.drip.analytics.date.JulianDate.Today(), 2,
-			"DKK", 3);
-
-		byte[] abVP = vp.serialize();
-
-		System.out.println (new java.lang.String (abVP));
-
-		ValuationParams vpDeser = new ValuationParams (abVP);
-
-		System.out.println (new java.lang.String (vpDeser.serialize()));
 	}
 }

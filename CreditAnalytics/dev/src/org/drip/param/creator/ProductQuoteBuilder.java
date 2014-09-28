@@ -55,26 +55,4 @@ public class ProductQuoteBuilder {
 
 		return null;
 	}
-
-	/**
-	 * Create a Component Quote Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return ComponentQuote Instance
-	 */
-
-	public static final org.drip.param.definition.ProductQuote FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.param.market.ProductMultiMeasureQuote (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

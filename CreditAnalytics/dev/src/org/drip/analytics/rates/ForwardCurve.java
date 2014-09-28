@@ -44,8 +44,8 @@ package org.drip.analytics.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class ForwardCurve extends org.drip.service.stream.Serializer implements
-	org.drip.analytics.rates.ForwardRateEstimator, org.drip.analytics.definition.Curve {
+public abstract class ForwardCurve implements org.drip.analytics.rates.ForwardRateEstimator,
+	org.drip.analytics.definition.Curve {
 
 	private double _dblEpochDate = java.lang.Double.NaN;
 	private org.drip.state.identifier.ForwardLabel _fri = null;

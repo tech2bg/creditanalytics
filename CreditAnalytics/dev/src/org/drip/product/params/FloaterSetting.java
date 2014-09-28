@@ -39,8 +39,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FloaterSetting extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable {
+public class FloaterSetting implements org.drip.product.params.Validatable {
 
 	/**
 	 * Floating Rate Index
@@ -88,115 +87,9 @@ public class FloaterSetting extends org.drip.service.stream.Serializer implement
 		_fri = org.drip.state.identifier.ForwardLabel.Standard (strRateIndex);
 	}
 
-	/**
-	 * FloaterSetting de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if FloaterSetting cannot be properly de-serialized
-	 */
-
-	public FloaterSetting (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FloaterSetting de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("FloaterSetting de-serializer: Empty state");
-
-		java.lang.String strSerializedFloaterSetting = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedFloaterSetting || strSerializedFloaterSetting.isEmpty())
-			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFloaterSetting,
-			fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception ("FloaterSetting de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate rate index");
-
-		_fri = new org.drip.state.identifier.ForwardLabel (astrField[1].getBytes());
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate float spread");
-
-		_dblFloatSpread = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate current coupon");
-
-		_dblCurrentCoupon = new java.lang.Double (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty())
-			throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot locate float day count");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			_strFloatDayCount = "";
-		else
-			_strFloatDayCount = astrField[4];
-
-		if (!validate()) throw new java.lang.Exception ("FloaterSetting de-serializer: Cannot validate!");
-	}
-
 	@Override public boolean validate()
 	{
 		return (org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread) ||
 			org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon)) && null != _fri;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + new java.lang.String
-			(_fri.serialize()) + fieldDelimiter() + _dblFloatSpread + fieldDelimiter() + _dblCurrentCoupon +
-				fieldDelimiter());
-
-		if (null == _strFloatDayCount || _strFloatDayCount.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strFloatDayCount + fieldDelimiter());
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new FloaterSetting (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		FloaterSetting bfp = new FloaterSetting ("USD-LIBOR-6M", "HAHA", 1., 0.);
-
-		byte[] abBFP = bfp.serialize();
-
-		System.out.println (new java.lang.String (abBFP));
-
-		FloaterSetting bfpDeser = new FloaterSetting (abBFP);
-
-		System.out.println (new java.lang.String (bfpDeser.serialize()));
 	}
 }

@@ -2384,8 +2384,7 @@ public class ProductTestSuite {
 
 		org.drip.product.definition.BasketProduct bb =
 			org.drip.product.creator.BondBasketBuilder.CreateBondBasket ("BASKETBOND", new
-				org.drip.product.credit.BondComponent[] {bond, bond}, new double[] {0.7, 1.3},
-					org.drip.analytics.date.JulianDate.Today(), 1.);
+				org.drip.product.credit.BondComponent[] {bond, bond}, new double[] {0.7, 1.3});
 
 		org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
 			(dt, dt, "USD");

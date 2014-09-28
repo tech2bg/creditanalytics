@@ -38,7 +38,7 @@ package org.drip.product.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class FXSpot extends org.drip.service.stream.Serializer {
+public abstract class FXSpot {
 
 	/**
 	 * Get the spot date

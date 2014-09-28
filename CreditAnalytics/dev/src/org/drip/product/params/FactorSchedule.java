@@ -39,7 +39,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FactorSchedule extends org.drip.service.stream.Serializer {
+public class FactorSchedule {
 	private double _adblDate[] = null;
 	private double _adblFactor[] = null;
 
@@ -168,66 +168,6 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		for (int i = 0; i < _adblDate.length; ++i) {
 			_adblDate[i] = adblDate[i];
 			_adblFactor[i] = adblFactor[i];
-		}
-	}
-
-	/**
-	 * FactorSchedule de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if FactorSchedule cannot be properly de-serialized
-	 */
-
-	public FactorSchedule (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FactorSchedule de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("FactorSchedule de-serializer: Empty state");
-
-		java.lang.String strSerializedFactorSchedule = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedFactorSchedule || strSerializedFactorSchedule.isEmpty())
-			throw new java.lang.Exception ("FactorSchedule de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFactorSchedule,
-			fieldDelimiter());
-
-		if (null == astrField || 2 > astrField.length)
-			throw new java.lang.Exception ("FactorSchedule de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("FactorSchedule de-serializer: Cannot decode state");
-
-		java.util.List<java.lang.Double> lsdblDate = new java.util.ArrayList<java.lang.Double>();
-
-		java.util.List<java.lang.Double> lsdblFactor = new java.util.ArrayList<java.lang.Double>();
-
-		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblFactor,
-			astrField[1], collectionRecordDelimiter(), collectionKeyValueDelimiter()))
-			throw new java.lang.Exception ("FactorSchedule de-serializer: Cannot decode hazard state");
-
-		if (0 == lsdblDate.size() || 0 == lsdblFactor.size() || lsdblDate.size() != lsdblFactor.size())
-			throw new java.lang.Exception ("FactorSchedule de-serializer: Cannot decode hazard state");
-
-		_adblDate = new double[lsdblDate.size()];
-
-		_adblFactor = new double[lsdblFactor.size()];
-
-		for (int i = 0; i < _adblFactor.length; ++i) {
-			_adblDate[i] = lsdblDate.get (i);
-
-			_adblFactor[i] = lsdblFactor.get (i);
 		}
 	}
 
@@ -369,71 +309,5 @@ public class FactorSchedule extends org.drip.service.stream.Serializer {
 		}
 
 		return true;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "`";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "~";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		if (null == _adblDate || 0 == _adblDate.length || null == _adblFactor || 0 == _adblFactor.length)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-		else {
-			for (int i = 0; i < _adblDate.length; ++i) {
-				if (0 != i) sb.append (collectionRecordDelimiter());
-
-				sb.append (_adblDate[i] + collectionKeyValueDelimiter() + _adblFactor[i]);
-			}
-		}
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new FactorSchedule (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
-
-		double[] adblDate = new double[3];
-		double[] adblFactor = new double[3];
-
-		for (int i = 0; i < 3; ++i) {
-			adblDate[i] = dblStart + 365. * (i + 1);
-			adblFactor[i] = 1 - 0.1 * i;
-		}
-
-		FactorSchedule fs = CreateFromDateFactorArray (adblDate, adblFactor);
-
-		byte[] abFS = fs.serialize();
-
-		System.out.println (new java.lang.String (abFS));
-
-		FactorSchedule fsDeser = new FactorSchedule (abFS);
-
-		System.out.println (new java.lang.String (fsDeser.serialize()));
 	}
 }

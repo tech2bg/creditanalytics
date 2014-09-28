@@ -40,7 +40,7 @@ package org.drip.product.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class FXForward extends org.drip.service.stream.Serializer {
+public abstract class FXForward {
 
 	/**
 	 * Get the primary code

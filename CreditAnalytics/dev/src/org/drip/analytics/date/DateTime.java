@@ -41,7 +41,7 @@ package org.drip.analytics.date;
  * @author Lakshmi Krishnamurthy
  */
 
-public class DateTime extends org.drip.service.stream.Serializer {
+public class DateTime {
 	private long _lTime = 0L;
 	private double _dblDate = java.lang.Double.NaN;
 
@@ -82,53 +82,6 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * DateTime de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if DateTime cannot be properly de-serialized
-	 */
-
-	public DateTime (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("DateTime de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("DateTime de-serializer: Empty state");
-
-		java.lang.String strSerializedDateTime = strRawString.substring (0, strRawString.indexOf
-			(super.objectTrailer()));
-
-		if (null == strSerializedDateTime || strSerializedDateTime.isEmpty())
-			throw new java.lang.Exception ("DateTime de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedDateTime,
-			super.fieldDelimiter());
-
-		if (null == astrField || 3 > astrField.length)
-			throw new java.lang.Exception ("DateTime de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("DateTime de-serializer: Cannot locate long time");
-
-		_lTime = new java.lang.Long (astrField[1]).longValue();
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("DateTime de-serializer: Cannot locate date");
-
-		_dblDate = new java.lang.Double (astrField[2]).doubleValue();
-	}
-
-	/**
 	 * Retrieve the Date
 	 * 
 	 * @return date
@@ -148,27 +101,5 @@ public class DateTime extends org.drip.service.stream.Serializer {
 	public long time()
 	{
 		return _lTime;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + super.fieldDelimiter() + _lTime +
-			super.fieldDelimiter() + _dblDate);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new DateTime (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

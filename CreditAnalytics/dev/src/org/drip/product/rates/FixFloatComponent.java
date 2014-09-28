@@ -83,60 +83,6 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		_csp = csp;
 	}
 
-	/**
-	 * De-serialize the FixFloatComponent from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if the FixFloatComponent cannot be de-serialized
-	 */
-
-	public FixFloatComponent (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FixFloatComponent de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("FixFloatComponent de-serializer: Empty state");
-
-		java.lang.String strSerializedFixedFloatComponent = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedFixedFloatComponent || strSerializedFixedFloatComponent.isEmpty())
-			throw new java.lang.Exception ("FixFloatComponent de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedFixedFloatComponent, fieldDelimiter());
-
-		if (null == astrField || 3 > astrField.length)
-			throw new java.lang.Exception ("FixFloatComponent de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]).doubleValue();
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception
-				("FixFloatComponent de-serializer: Cannot locate visible floating stream");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_fixReference = null;
-		else {
-			_fixReference = new org.drip.product.rates.Stream (astrField[1].getBytes());
-		}
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception
-				("FixFloatComponent de-serializer: Cannot locate work-out floating stream");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_floatDerived = null;
-		else
-			_floatDerived = new org.drip.product.rates.Stream (astrField[2].getBytes());
-	}
-
 	@Override public void setPrimaryCode (
 		final java.lang.String strCode)
 	{
@@ -970,46 +916,5 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		if (!prwc.absorb (prwcReference)) return null;
 
 		return !prwc.updateValue (dblPV) ? null : prwc;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "{";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "^";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		if (null == _fixReference)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (new java.lang.String (_fixReference.serialize()) + fieldDelimiter());
-
-		if (null == _floatDerived)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (new java.lang.String (_floatDerived.serialize()));
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new FixFloatComponent (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

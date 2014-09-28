@@ -39,7 +39,7 @@ package org.drip.analytics.daycount;
  * @author Lakshmi Krishnamurthy
  */
 
-public class DateAdjustParams extends org.drip.service.stream.Serializer {
+public class DateAdjustParams {
 	private int _iRollMode = 0;
 	private java.lang.String _strCalendar = "";
 
@@ -56,51 +56,6 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 	{
 		_iRollMode = iRollMode;
 		_strCalendar = strCalendar;
-	}
-
-	/**
-	 * De-serialization of DateAdjustParams from byte stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize DateAdjustParams
-	 */
-
-	public DateAdjustParams (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("DateAdjustParams de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("DateAdjustParams de-serializer: Empty state");
-
-		java.lang.String strDAP = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strDAP || strDAP.isEmpty())
-			throw new java.lang.Exception ("DateAdjustParams de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strDAP, fieldDelimiter());
-
-		if (null == astrField || 3 > astrField.length)
-			throw new java.lang.Exception ("DateAdjustParams de-serialize: Invalid number of fields");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("DateAdjustParams de-serializer: Cannot locate roll mode");
-
-		_iRollMode = new java.lang.Integer (astrField[1]).intValue();
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("DateAdjustParams de-serializer: Cannot locate calendar");
-
-		_strCalendar = astrField[2];
 	}
 
 	/**
@@ -140,52 +95,5 @@ public class DateAdjustParams extends org.drip.service.stream.Serializer {
 		throws java.lang.Exception
 	{
 		return org.drip.analytics.daycount.Convention.RollDate (dblDate, _iRollMode, _strCalendar);
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "!";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "@";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iRollMode +
-			fieldDelimiter() + _strCalendar);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new DateAdjustParams (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		DateAdjustParams dap = new DateAdjustParams (0, "CZK");
-
-		byte[] abDAP = dap.serialize();
-
-		System.out.println ("Input: " + new java.lang.String (abDAP));
-
-		DateAdjustParams dapDeser = new DateAdjustParams (abDAP);
-
-		System.out.println ("Output: " + new java.lang.String (dapDeser.serialize()));
 	}
 }

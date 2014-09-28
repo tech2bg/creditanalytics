@@ -149,27 +149,6 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		updateMapEntries (dblCashPayDate, iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
 	}
 
-	/**
-	 * DerivedZeroRate de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if DerivedZeroRate cannot be properly de-serialized
-	 */
-
-	public DerivedZeroRate (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		super (org.drip.analytics.date.JulianDate.Today().julian(), "DEFINIT", null);
-
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("DerivedZeroRate de-serializer: Invalid input Byte array");
-
-		_dc = org.drip.state.creator.DiscountCurveBuilder.FromByteArray (ab,
-			org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD);
-	}
-
 	@Override public double df (
 		final double dblDate)
 		throws java.lang.Exception
@@ -360,16 +339,5 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		throws java.lang.Exception
 	{
 		return _dc.zero (strTenor);
-	}
-
-	@Override public byte[] serialize()
-	{
-		return _dc.serialize();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		return _dc.deserialize (ab);
 	}
 }

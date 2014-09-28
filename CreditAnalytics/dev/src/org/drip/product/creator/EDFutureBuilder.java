@@ -213,26 +213,4 @@ public class EDFutureBuilder {
 
 		return null;
 	}
-
-	/**
-	 * Create a EDFuture Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return EDFuture Instance
-	 */
-
-	public static final org.drip.product.definition.CalibratableFixedIncomeComponent FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.product.rates.EDFComponent (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

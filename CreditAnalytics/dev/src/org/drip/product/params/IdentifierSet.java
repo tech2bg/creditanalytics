@@ -38,8 +38,8 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class IdentifierSet extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable {
+public class IdentifierSet implements org.drip.product.params.Validatable {
+
 	/**
 	 * ISIN
 	 */
@@ -85,68 +85,6 @@ public class IdentifierSet extends org.drip.service.stream.Serializer implements
 		_strTicker = strTicker;
 	}
 
-	/**
-	 * IdentifierSet de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if IdentifierSet cannot be properly de-serialized
-	 */
-
-	public IdentifierSet (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("IdentifierSet de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("IdentifierSet de-serializer: Empty state");
-
-		java.lang.String strSerializedIdentifierSet = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedIdentifierSet || strSerializedIdentifierSet.isEmpty())
-			throw new java.lang.Exception ("IdentifierSet de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedIdentifierSet,
-			fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception ("IdentifierSet de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("IdentifierSet de-serializer: Cannot locate ISIN");
-
-		_strISIN = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("IdentifierSet de-serializer: Cannot locate CUSIP");
-
-		_strCUSIP = astrField[2];
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("IdentifierSet de-serializer: Cannot locate component ID");
-
-		_strID = astrField[3];
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("IdentifierSet de-serializer: Cannot locate ticker");
-
-		_strTicker = astrField[4];
-
-		if (!validate())
-			throw new java.lang.Exception ("IdentifierSet de-serializer: Cannot validate!");
-	}
-
 	@Override public boolean validate()
 	{
 		if ((null == _strISIN || _strISIN.isEmpty()) && (null == _strCUSIP || _strCUSIP.isEmpty()))
@@ -157,42 +95,5 @@ public class IdentifierSet extends org.drip.service.stream.Serializer implements
 		}
 
 		return true;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strISIN +
-			fieldDelimiter() + _strCUSIP + fieldDelimiter() + _strID + fieldDelimiter() + _strTicker);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new IdentifierSet (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		IdentifierSet bip = new IdentifierSet ("ABC", "DEF", "GHI", "JKL");
-
-		byte[] abBIP = bip.serialize();
-
-		System.out.println (new java.lang.String (abBIP));
-
-		IdentifierSet bipDeser = new IdentifierSet (abBIP);
-
-		System.out.println (new java.lang.String (bipDeser.serialize()));
 	}
 }

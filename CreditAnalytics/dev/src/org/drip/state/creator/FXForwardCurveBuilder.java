@@ -72,26 +72,4 @@ public class FXForwardCurveBuilder {
 
 		return null;
 	}
-
-	/**
-	 * Create the FXForwardCurve from the given byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return FXForwardCurve instance
-	 */
-
-	public static final org.drip.analytics.definition.FXForwardCurve FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.state.curve.DerivedFXForward (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

@@ -39,61 +39,10 @@ package org.drip.analytics.daycount;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ActActDCParams extends org.drip.service.stream.Serializer {
+public class ActActDCParams {
 	private int _iFreq = 0;
 	private double _dblEnd = java.lang.Double.NaN;
 	private double _dblStart = java.lang.Double.NaN;
-
-	/**
-	 * De-serialization of ActActDCParams from byte stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize
-	 */
-
-	public ActActDCParams (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ActActDCParams de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ActActDCParams de-serializer: Empty state");
-
-		java.lang.String strAAP = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strAAP || strAAP.isEmpty())
-			throw new java.lang.Exception ("ActActDCParams de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strAAP, fieldDelimiter());
-
-		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("ActActDCParams de-serialize: Invalid number of fields");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("ActActDCParams de-serializer: Cannot locate frequency");
-
-		_iFreq = new java.lang.Integer (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("ActActDCParams de-serializer: Cannot locate start date");
-
-		_dblStart = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("ActActDCParams de-serializer: Cannot locate end date");
-
-		_dblEnd = new java.lang.Double (astrField[3]);
-	}
 
 	/**
 	 * Constructs an ActActDCParams instance from the corresponding parameters
@@ -149,43 +98,5 @@ public class ActActDCParams extends org.drip.service.stream.Serializer {
 	public double end()
 	{
 		return _dblEnd;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iFreq + fieldDelimiter()
-			+ _dblStart + fieldDelimiter() + _dblEnd);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab) {
-		try {
-			return new ActActDCParams (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
-
-		ActActDCParams aap = new ActActDCParams (2, dblStart, dblStart + 180);
-
-		byte[] abAAP = aap.serialize();
-
-		System.out.println ("Input: " + new java.lang.String (abAAP));
-
-		ActActDCParams aapDeser = new ActActDCParams (abAAP);
-
-		System.out.println ("Output: " + new java.lang.String (aapDeser.serialize()));
 	}
 }

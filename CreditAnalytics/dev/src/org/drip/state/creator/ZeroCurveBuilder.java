@@ -84,28 +84,6 @@ public class ZeroCurveBuilder {
 			e.printStackTrace();
 		}
 
-	return null;
-	}
-
-	/**
-	 * Create a Zero curve instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return Zero Curve Instance
-	 */
-
-	public static final org.drip.analytics.rates.ZeroCurve FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.state.curve.DerivedZeroRate (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
 		return null;
 	}
 }

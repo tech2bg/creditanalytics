@@ -165,90 +165,6 @@ public class NonlinearDiscountFactorDiscountCurve extends
 					org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
 	}
 
-	/**
-	 * NonlinearDiscountFactorDiscountCurve de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if NonlinearDiscountFactorDiscountCurve cannot be properly
-	 * 	de-serialized
-	 */
-
-	public NonlinearDiscountFactorDiscountCurve (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		super (org.drip.analytics.date.JulianDate.Today().julian(), "DEF_INIT", null);
-
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception
-				("NonlinearDiscountFactorDiscountCurve de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception
-				("NonlinearDiscountFactorDiscountCurve de-serializer: Empty state");
-
-		java.lang.String strSerializedPolynomialSplineDF = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedPolynomialSplineDF || strSerializedPolynomialSplineDF.isEmpty())
-			throw new java.lang.Exception
-				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedPolynomialSplineDF, fieldDelimiter());
-
-		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception
-				("NonlinearDiscountFactorDiscountCurve de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception
-				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot locate start state");
-
-		_dblEpochDate = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception
-				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot locate currency");
-
-		_strCurrency = astrField[2];
-
-		java.util.List<java.lang.Double> lsdblDate = new java.util.ArrayList<java.lang.Double>();
-
-		java.util.List<java.lang.Double> lsdblRate = new java.util.ArrayList<java.lang.Double>();
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception
-				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot decode state");
-
-		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblRate,
-			astrField[3], collectionRecordDelimiter(), collectionKeyValueDelimiter()))
-			throw new java.lang.Exception
-				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot decode state");
-
-		if (0 == lsdblDate.size() || 0 == lsdblRate.size() || lsdblDate.size() != lsdblRate.size())
-			throw new java.lang.Exception
-				("NonlinearDiscountFactorDiscountCurve de-serializer: Cannot decode state");
-
-		_adblDate = new double[lsdblDate.size()];
-
-		// _adblEndRate = new double[lsdblRate.size()];
-
-		for (int i = 0; i < _adblDate.length; ++i) {
-			_adblDate[i] = lsdblDate.get (i);
-
-			// _adblEndRate[i] = lsdblRate.get (i);
-		}
-	}
-
 	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
 	{
 		return null;
@@ -527,24 +443,5 @@ public class NonlinearDiscountFactorDiscountCurve extends
 		throws java.lang.Exception
 	{
 		return _msr.calcRightEdgeDerivative (2);
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new FlatForwardDiscountCurve (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

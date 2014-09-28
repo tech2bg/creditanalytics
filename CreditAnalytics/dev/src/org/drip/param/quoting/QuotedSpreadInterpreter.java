@@ -82,67 +82,6 @@ public class QuotedSpreadInterpreter extends org.drip.param.quoting.MeasureInter
 	}
 
 	/**
-	 * QuotedSpreadInterpreter de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if QuotedSpreadInterpreter cannot be properly de-serialized
-	 */
-
-	public QuotedSpreadInterpreter (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception
-				("QuotedSpreadInterpreter de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("QuotedSpreadInterpreter de-serializer: Empty state");
-
-		java.lang.String strSerializedQuotedSpreadInterpreter = strRawString.substring (0,
-			strRawString.indexOf (objectTrailer()));
-
-		if (null == strSerializedQuotedSpreadInterpreter || strSerializedQuotedSpreadInterpreter.isEmpty())
-			throw new java.lang.Exception ("QuotedSpreadInterpreter de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedQuotedSpreadInterpreter, fieldDelimiter());
-
-		if (null == astrField || 3 > astrField.length)
-			throw new java.lang.Exception ("QuotedSpreadInterpreter de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("QuotedSpreadInterpreter de-serializer: Cannot locate yield DC");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_strCDSContractType = "";
-		else
-			_strCDSContractType = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception
-				("QuotedSpreadInterpreter de-serializer: Cannot locate Yield Frequency");
-
-		_dblCouponStrike = new java.lang.Double (astrField[2]);
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "~";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "`";
-	}
-
-	/**
 	 * Retrieve the CDS Contract Type
 	 * 
 	 * @return The CDS Contract Type
@@ -162,45 +101,5 @@ public class QuotedSpreadInterpreter extends org.drip.param.quoting.MeasureInter
 	public double getCouponStrike()
 	{
 		return _dblCouponStrike;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		sb.append (_strCDSContractType + fieldDelimiter());
-
-		sb.append (_dblCouponStrike + fieldDelimiter());
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new QuotedSpreadInterpreter (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		QuotedSpreadInterpreter qsi = new QuotedSpreadInterpreter (SNAC_CDS, 100.);
-
-		byte[] abQSI = qsi.serialize();
-
-		System.out.println (new java.lang.String (abQSI));
-
-		QuotedSpreadInterpreter qsiDeser = new QuotedSpreadInterpreter (abQSI);
-
-		System.out.println (new java.lang.String (qsiDeser.serialize()));
 	}
 }

@@ -6010,7 +6010,6 @@ public class CreditAnalytics {
 	 * @param astrBondId Array of bondIdentifiers (CUSIP/ISIN/etc) for the basket components
 	 * @param adblWeights Basket component weights
 	 * @param dtEffective Basket Effective Date
-	 * @param dblNotional Basket Notional
 	 * 
 	 * @return The bond basket object
 	 */
@@ -6019,8 +6018,7 @@ public class CreditAnalytics {
 		final java.lang.String strName,
 		final java.lang.String[] astrBondId,
 		final double[] adblWeights,
-		final org.drip.analytics.date.JulianDate dtEffective,
-		final double dblNotional)
+		final org.drip.analytics.date.JulianDate dtEffective)
 	{
 		if (null == strName || strName.isEmpty() || null == astrBondId || 0 == astrBondId.length || null ==
 			adblWeights || 0 == adblWeights.length || astrBondId.length != adblWeights.length || null ==
@@ -6039,8 +6037,7 @@ public class CreditAnalytics {
 		}
 
 		try {
-			return org.drip.product.creator.BondBasketBuilder.CreateBondBasket (strName, aBond, adblWeights,
-				dtEffective, dblNotional);
+			return org.drip.product.creator.BondBasketBuilder.CreateBondBasket (strName, aBond, adblWeights);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

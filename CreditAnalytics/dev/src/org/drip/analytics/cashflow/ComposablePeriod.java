@@ -35,7 +35,7 @@ package org.drip.analytics.cashflow;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposablePeriod extends org.drip.service.stream.Serializer {
+public class ComposablePeriod {
 
 	/**
 	 * Node is to the Left of the Period
@@ -80,58 +80,8 @@ public class ComposablePeriod extends org.drip.service.stream.Serializer {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStart = dblStart) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEnd = dblEnd) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblFixing = dblFixing) || null == (_forwardLabel
-					= forwardLabel))
+				!org.drip.quant.common.NumberUtil.IsValid (_dblFixing = dblFixing))
 			throw new java.lang.Exception ("ComposablePeriod ctr: Invalid Inputs");
-	}
-
-	/**
-	 * De-serialization of ComposablePeriod from byte stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize ComposablePeriod
-	 */
-
-	public ComposablePeriod (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ComposablePeriod de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ComposablePeriod de-serializer: Empty state");
-
-		java.lang.String strCP = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strCP || strCP.isEmpty())
-			throw new java.lang.Exception ("ComposablePeriod de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, fieldDelimiter());
-
-		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("ComposablePeriod de-serialize: Invalid number of fields");
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("ComposablePeriod de-serializer: Cannot locate Start Date");
-
-		_dblStart = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("ComposablePeriod de-serializer: Cannot locate End Date");
-
-		_dblEnd = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("ComposablePeriod de-serializer: Cannot locate Fixing Date");
-
-		_dblFixing = new java.lang.Double (astrField[3]);
 	}
 
 	/**
@@ -200,37 +150,5 @@ public class ComposablePeriod extends org.drip.service.stream.Serializer {
 		if (dblNode > _dblEnd) return NODE_RIGHT_OF_SEGMENT;
 
 		return NODE_INSIDE_SEGMENT;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "'";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "_";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblStart +
-			fieldDelimiter() + _dblEnd + fieldDelimiter() + _dblFixing);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new ComposablePeriod (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

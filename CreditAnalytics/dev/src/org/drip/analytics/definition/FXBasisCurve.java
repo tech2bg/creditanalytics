@@ -41,8 +41,7 @@ package org.drip.analytics.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class FXBasisCurve extends org.drip.service.stream.Serializer implements
-	org.drip.analytics.definition.Curve {
+public abstract class FXBasisCurve implements org.drip.analytics.definition.Curve {
 
 	/**
 	 * Returns the Spot Date

@@ -242,15 +242,4 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 		return mapOutput;
 	}
-
-	@Override public byte[] serialize()
-	{
-		return null;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		return null;
-	}
 }

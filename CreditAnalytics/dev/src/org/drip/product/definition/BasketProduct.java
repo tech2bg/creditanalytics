@@ -38,8 +38,7 @@ package org.drip.product.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class BasketProduct extends org.drip.service.stream.Serializer implements
-	org.drip.product.definition.MarketParamRef {
+public abstract class BasketProduct implements org.drip.product.definition.MarketParamRef {
 	protected static final int MEASURE_AGGREGATION_TYPE_CUMULATIVE = 1;
 	protected static final int MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE = 2;
 	protected static final int MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE = 4;

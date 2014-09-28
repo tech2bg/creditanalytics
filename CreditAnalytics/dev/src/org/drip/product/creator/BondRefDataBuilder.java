@@ -51,8 +51,7 @@ package org.drip.product.creator;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BondRefDataBuilder extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable {
+public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 	private static final boolean m_bBlog = false;
 	private static final boolean m_bDisplayWarnings = true;
 
@@ -938,647 +937,6 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 
 		_dtMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
 			("maturitydate"), "-");
-	}
-
-	/**
-	 * BondRefDataBuilder de-serialization from input JSON Map
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if BondRefDataBuilder cannot be properly de-serialized
-	 */
-
-	public BondRefDataBuilder (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Empty state");
-
-		java.lang.String strSerializedBondRefDataBuilder = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedBondRefDataBuilder || strSerializedBondRefDataBuilder.isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedBondRefDataBuilder, fieldDelimiter());
-
-		if (null == astrField || 76 > astrField.length)
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate ISIN");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[1]))
-			_strISIN = "";
-		else
-			_strISIN = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate CUSIP");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[2]))
-			_strCUSIP = "";
-		else
-			_strCUSIP = astrField[2];
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate BBG ID");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[3]))
-			_strBBGID = "";
-		else
-			_strBBGID = astrField[3];
-
-		if (null == astrField[4] || astrField[4].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate issuer category");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[4]))
-			_strIssuerCategory = "";
-		else
-			_strIssuerCategory = astrField[4];
-
-		if (null == astrField[5] || astrField[5].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate ticker");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[5]))
-			_strTicker = "";
-		else
-			_strTicker = astrField[5];
-
-		if (null == astrField[6] || astrField[6].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Series");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[6]))
-			_strSeries = "";
-		else
-			_strSeries = astrField[6];
-
-		if (null == astrField[7] || astrField[7].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issue name");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[7]))
-			_strName = "";
-		else
-			_strName = astrField[7];
-
-		if (null == astrField[8] || astrField[8].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate short name");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[8]))
-			_strShortName = "";
-		else
-			_strShortName = astrField[8];
-
-		if (null == astrField[9] || astrField[9].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate issuer industry");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[9]))
-			_strIssuerIndustry = "";
-		else
-			_strIssuerIndustry = astrField[9];
-
-		if (null == astrField[10] || astrField[10].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate coupon type");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[10]))
-			_strCouponType = "";
-		else
-			_strCouponType = astrField[10];
-
-		if (null == astrField[11] || astrField[11].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate maturity type");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[11]))
-			_strMaturityType = "";
-		else
-			_strMaturityType = astrField[11];
-
-		if (null == astrField[12] || astrField[12].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate calculation type");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[12]))
-			_strCalculationType = "";
-		else
-			_strCalculationType = astrField[12];
-
-		if (null == astrField[13] || astrField[13].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate DayCount Code");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[13]))
-			_strDayCountCode = "";
-		else
-			_strDayCountCode = astrField[13];
-
-		if (null == astrField[14] || astrField[14].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate market issue type");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[14]))
-			_strMarketIssueType = "";
-		else
-			_strMarketIssueType = astrField[14];
-
-		if (null == astrField[15] || astrField[15].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate issue country code");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[15]))
-			_strIssueCountryCode = "";
-		else
-			_strIssueCountryCode = astrField[15];
-
-		if (null == astrField[16] || astrField[16].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issue country");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[16]))
-			_strIssueCountry = "";
-		else
-			_strIssueCountry = astrField[16];
-
-		if (null == astrField[17] || astrField[17].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate issue collateral type");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[17]))
-			_strCollateralType = "";
-		else
-			_strCollateralType = astrField[17];
-
-		if (null == astrField[18] || astrField[18].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[18]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issue amount");
-
-		_dblIssueAmount = new java.lang.Double (astrField[18]);
-
-		if (null == astrField[19] || astrField[19].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[19]))
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate outstanding amount");
-
-		_dblOutstandingAmount = new java.lang.Double (astrField[19]);
-
-		if (null == astrField[20] || astrField[20].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[20]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate minimum piece");
-
-		_dblMinimumPiece = new java.lang.Double (astrField[20]);
-
-		if (null == astrField[21] || astrField[21].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[21]))
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate minimum increment");
-
-		_dblMinimumIncrement = new java.lang.Double (astrField[21]);
-
-		if (null == astrField[22] || astrField[22].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase(astrField[22]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate par amount");
-
-		_dblParAmount = new java.lang.Double (astrField[22]);
-
-		if (null == astrField[23] || astrField[23].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate issue lead manager");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[23]))
-			_strLeadManager = "";
-		else
-			_strLeadManager = astrField[23];
-
-		if (null == astrField[24] || astrField[24].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate issue Exchange Code");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[24]))
-			_strExchangeCode = "";
-		else
-			_strExchangeCode = astrField[24];
-
-		if (null == astrField[25] || astrField[25].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[25]))
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate redemption value");
-
-		_dblRedemptionValue = new java.lang.Double (astrField[25]);
-
-		if (null == astrField[26] || astrField[26].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate announce date");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[26]))
-			_dtAnnounce = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[26]));
-		else
-			_dtAnnounce = null;
-
-		if (null == astrField[27] || astrField[27].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate first settle date");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[27]))
-			_dtFirstSettle = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[27]));
-		else
-			_dtFirstSettle = null;
-
-		if (null == astrField[28] || astrField[28].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate first coupon date");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[28]))
-			_dtFirstCoupon = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[28]));
-		else
-			_dtFirstCoupon = null;
-
-		if (null == astrField[29] || astrField[29].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate interest accrual start date");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[29]))
-			_dtInterestAccrualStart = new org.drip.analytics.date.JulianDate (new java.lang.Double
-				(astrField[29]));
-		else
-			_dtInterestAccrualStart = null;
-
-		if (null == astrField[30] || astrField[30].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issue date");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[30]))
-			_dtIssue = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[30]));
-		else
-			_dtIssue = null;
-
-		if (null == astrField[31] || astrField[31].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate next coupon date");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[31]))
-			_dtNextCouponDate = new org.drip.analytics.date.JulianDate (new java.lang.Double
-				(astrField[31]));
-		else
-			_dtNextCouponDate = null;
-
-		if (null == astrField[32] || astrField[32].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[32]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate callable flag");
-
-		_bIsCallable = new java.lang.Boolean (astrField[32]);
-
-		if (null == astrField[33] || astrField[33].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[33]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate putable flag");
-
-		_bIsPutable = new java.lang.Boolean (astrField[33]);
-
-		if (null == astrField[34] || astrField[34].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[34]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate sinkable flag");
-
-		_bIsSinkable = new java.lang.Boolean (astrField[34]);
-
-		if (null == astrField[35] || astrField[35].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate BBG Parent");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[35]))
-			_strBBGParent = "";
-		else
-			_strBBGParent = astrField[35];
-
-		if (null == astrField[36] || astrField[36].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate Country Of Incorporation");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[36]))
-			_strCountryOfIncorporation = "";
-		else
-			_strCountryOfIncorporation = astrField[36];
-
-		if (null == astrField[37] || astrField[37].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate industry sector");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[37]))
-			_strIndustrySector = "";
-		else
-			_strIndustrySector = astrField[37];
-
-		if (null == astrField[38] || astrField[38].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Industry Group");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[38]))
-			_strIndustryGroup = "";
-		else
-			_strIndustryGroup = astrField[38];
-
-		if (null == astrField[39] || astrField[39].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate Industry Subgroup");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[39]))
-			_strIndustrySubgroup = "";
-		else
-			_strIndustrySubgroup = astrField[39];
-
-		if (null == astrField[40] || astrField[40].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate Country Of Guarantor");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[40]))
-			_strCountryOfGuarantor = "";
-		else
-			_strCountryOfGuarantor = astrField[40];
-
-		if (null == astrField[41] || astrField[41].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate Country Of Domicile");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[41]))
-			_strCountryOfDomicile = "";
-		else
-			_strCountryOfDomicile = astrField[41];
-
-		if (null == astrField[42] || astrField[42].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Description");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[42]))
-			_strDescription = "";
-		else
-			_strDescription = astrField[42];
-
-		if (null == astrField[43] || astrField[43].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Security Type");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[43]))
-			_strSecurityType = "";
-		else
-			_strSecurityType = astrField[43];
-
-		if (null == astrField[44] || astrField[44].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate prev coupon date");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[44]))
-			_dtPrevCouponDate = new org.drip.analytics.date.JulianDate (new java.lang.Double
-				(astrField[44]).doubleValue());
-		else
-			_dtPrevCouponDate = null;
-
-		if (null == astrField[45] || astrField[45].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate BBG Unique ID");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[45]))
-			_strBBGUniqueID = "";
-		else
-			_strBBGUniqueID = astrField[45];
-
-		if (null == astrField[46] || astrField[46].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate Long Company Name");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[46]))
-			_strLongCompanyName = "";
-		else
-			_strLongCompanyName = astrField[46];
-
-		if (null == astrField[47] || astrField[47].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[47]))
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate structured note flag");
-
-		_bIsStructuredNote = new java.lang.Boolean (astrField[47]);
-
-		if (null == astrField[48] || astrField[48].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[48]))
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate unit traded flag");
-
-		_bIsUnitTraded = new java.lang.Boolean (astrField[48]);
-
-		if (null == astrField[49] || astrField[49].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[49]))
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate Reversible Convertible flag");
-
-		_bIsReversibleConvertible = new java.lang.Boolean (astrField[49]);
-
-		if (null == astrField[50] || astrField[50].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate redemption ccy");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[50]))
-			_strRedemptionCurrency = "";
-		else
-			_strRedemptionCurrency = astrField[50];
-
-		if (null == astrField[51] || astrField[51].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate coupon ccy");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[51]))
-			_strCouponCurrency = "";
-		else
-			_strCouponCurrency = astrField[51];
-
-		if (null == astrField[52] || astrField[52].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate trade ccy");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[52]))
-			_strTradeCurrency = "";
-		else
-			_strTradeCurrency = astrField[52];
-
-		if (null == astrField[53] || astrField[53].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[53]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate bearer flag");
-
-		_bIsBearer = new java.lang.Boolean (astrField[53]);
-
-		if (null == astrField[54] || astrField[54].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[54]))
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate registered flag");
-
-		_bIsRegistered = new java.lang.Boolean (astrField[54]);
-
-		if (null == astrField[55] || astrField[55].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[55]))
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate Has Been Called flag");
-
-		_bHasBeenCalled = new java.lang.Boolean (astrField[55]);
-
-		if (null == astrField[56] || astrField[56].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issuer");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[56]))
-			_strIssuer = "";
-		else
-			_strIssuer = astrField[56];
-
-		if (null == astrField[57] || astrField[57].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate penultimate coupon date");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[57]))
-			_dtPenultimateCouponDate = new org.drip.analytics.date.JulianDate (new java.lang.Double
-				(astrField[57]));
-		else
-			_dtPenultimateCouponDate = null;
-
-		if (null == astrField[58] || astrField[58].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate float coupon convention");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[58]))
-			_strFloatCouponConvention = "";
-		else
-			_strFloatCouponConvention = astrField[58];
-
-		if (null == astrField[59] || astrField[59].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[59]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate current coupon");
-
-		_dblCurrentCoupon = new java.lang.Double (astrField[59]);
-
-		if (null == astrField[60] || astrField[60].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[60]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate floater flag");
-
-		_bIsFloater = new java.lang.Boolean (astrField[60]);
-
-		if (null == astrField[61] || astrField[61].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[61]))
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate trade status flag");
-
-		_bTradeStatus = new java.lang.Boolean (astrField[61]);
-
-		if (null == astrField[62] || astrField[62].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate CDR Country Code");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[62]))
-			_strCDRCountryCode = "";
-		else
-			_strCDRCountryCode = astrField[62];
-
-		if (null == astrField[63] || astrField[63].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate CDR Settle Code");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[63]))
-			_strCDRSettleCode = "";
-		else
-			_strCDRSettleCode = astrField[63];
-
-		if (null == astrField[64] || astrField[64].isEmpty())
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate final maturity date");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[64]))
-			_dtFinalMaturity = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[64]));
-		else
-			_dtFinalMaturity = null;
-
-		if (null == astrField[65] || astrField[65].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[65]))
-			throw new java.lang.Exception
-				("BondRefDataBuilder de-serializer: Cannot locate Private Placement Flag");
-
-		_bIsPrivatePlacement = new java.lang.Boolean (astrField[65]);
-
-		if (null == astrField[66] || astrField[66].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[66]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Perpetual Flag");
-
-		_bIsPerpetual = new java.lang.Boolean (astrField[66]);
-
-		if (null == astrField[67] || astrField[67].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[67]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Defaulted Flag");
-
-		_bIsDefaulted = new java.lang.Boolean (astrField[67]);
-
-		if (null == astrField[68] || astrField[68].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[68]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate float spread");
-
-		_dblFloatSpread = new java.lang.Double (astrField[68]);
-
-		if (null == astrField[69] || astrField[69].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Rate Index");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[69]))
-			_strRateIndex = "";
-		else
-			_strRateIndex = astrField[69];
-
-		if (null == astrField[70] || astrField[70].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Moody's");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[70]))
-			_strMoody = "";
-		else
-			_strMoody = astrField[70];
-
-		if (null == astrField[71] || astrField[71].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate SnP");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[71]))
-			_strSnP = "";
-		else
-			_strSnP = astrField[71];
-
-		if (null == astrField[72] || astrField[72].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Fitch");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[72]))
-			_strFitch = "";
-		else
-			_strFitch = astrField[72];
-
-		if (null == astrField[73] || astrField[73].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate Snr/Sub");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[73]))
-			_strSnrSub = "";
-		else
-			_strSnrSub = astrField[73];
-
-		if (null == astrField[74] || astrField[74].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issuer SPN");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[74]))
-			_strIssuerSPN = "";
-		else
-			_strIssuerSPN = astrField[74];
-
-		if (null == astrField[75] || astrField[75].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[75]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate issue price");
-
-		_dblIssuePrice = new java.lang.Double (astrField[75]);
-
-		if (null == astrField[76] || astrField[76].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[76]))
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate coupon");
-
-		_dblCoupon = new java.lang.Double (astrField[76]);
-
-		if (null == astrField[77] || astrField[77].isEmpty())
-			throw new java.lang.Exception ("BondRefDataBuilder de-serializer: Cannot locate maturity date");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[77]))
-			_dtMaturity = new org.drip.analytics.date.JulianDate (new java.lang.Double (astrField[77]));
-		else
-			_dtMaturity = null;
 	}
 
 	/**
@@ -3306,411 +2664,95 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		return sb.toString();
 	}
 
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		if (null == _strISIN || _strISIN.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strISIN + fieldDelimiter());
-
-		if (null == _strCUSIP || _strCUSIP.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCUSIP + fieldDelimiter());
-
-		if (null == _strBBGID || _strBBGID.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strBBGID + fieldDelimiter());
-
-		if (null == _strIssuerCategory || _strIssuerCategory.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strIssuerCategory + fieldDelimiter());
-
-		if (null == _strTicker || _strTicker.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strTicker + fieldDelimiter());
-
-		if (null == _strSeries || _strSeries.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strSeries + fieldDelimiter());
-
-		if (null == _strName || _strName.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strName + fieldDelimiter());
-
-		if (null == _strShortName || _strShortName.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strShortName + fieldDelimiter());
-
-		if (null == _strIssuerIndustry || _strIssuerIndustry.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strIssuerIndustry + fieldDelimiter());
-
-		if (null == _strCouponType || _strCouponType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCouponType + fieldDelimiter());
-
-		if (null == _strMaturityType || _strMaturityType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strMaturityType + fieldDelimiter());
-
-		if (null == _strCalculationType || _strCalculationType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCalculationType + fieldDelimiter());
-
-		if (null == _strDayCountCode || _strDayCountCode.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strDayCountCode + fieldDelimiter());
-
-		if (null == _strMarketIssueType || _strMarketIssueType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strMarketIssueType + fieldDelimiter());
-
-		if (null == _strIssueCountryCode || _strIssueCountryCode.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strIssueCountryCode + fieldDelimiter());
-
-		if (null == _strIssueCountry || _strIssueCountry.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strIssueCountry + fieldDelimiter());
-
-		if (null == _strCollateralType || _strCollateralType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCollateralType + fieldDelimiter());
-
-		sb.append (_dblIssueAmount + fieldDelimiter() + _dblOutstandingAmount + fieldDelimiter() +
-			_dblMinimumPiece + fieldDelimiter() + _dblMinimumIncrement + fieldDelimiter() + _dblParAmount +
-				fieldDelimiter());
-
-		if (null == _strLeadManager || _strLeadManager.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strLeadManager + fieldDelimiter());
-
-		if (null == _strExchangeCode || _strExchangeCode.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strExchangeCode + fieldDelimiter());
-
-		sb.append (_dblRedemptionValue + fieldDelimiter());
-
-		if (null == _dtAnnounce)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_dtAnnounce.julian() + fieldDelimiter());
-
-		if (null == _dtFirstSettle)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_dtFirstSettle.julian() + fieldDelimiter());
-
-		if (null == _dtFirstCoupon)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_dtFirstCoupon.julian() + fieldDelimiter());
-
-		if (null == _dtInterestAccrualStart)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_dtInterestAccrualStart.julian() + fieldDelimiter());
-
-		if (null == _dtIssue)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_dtIssue.julian() + fieldDelimiter());
-
-		if (null == _dtNextCouponDate)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_dtNextCouponDate.julian() + fieldDelimiter());
-
-		sb.append (_bIsCallable + fieldDelimiter());
-
-		sb.append (_bIsPutable + fieldDelimiter());
-
-		sb.append (_bIsSinkable + fieldDelimiter());
-
-		if (null == _strBBGParent || _strBBGParent.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strBBGParent + fieldDelimiter());
-
-		if (null == _strCountryOfIncorporation || _strCountryOfIncorporation.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCountryOfIncorporation + fieldDelimiter());
-
-		if (null == _strIndustrySector || _strIndustrySector.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strIndustrySector + fieldDelimiter());
-
-		if (null == _strIndustryGroup || _strIndustryGroup.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strIndustryGroup + fieldDelimiter());
-
-		if (null == _strIndustrySubgroup || _strIndustrySubgroup.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strIndustrySubgroup + fieldDelimiter());
-
-		if (null == _strCountryOfGuarantor || _strCountryOfGuarantor.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCountryOfGuarantor + fieldDelimiter());
-
-		if (null == _strCountryOfDomicile || _strCountryOfDomicile.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCountryOfDomicile + fieldDelimiter());
-
-		if (null == _strDescription || _strDescription.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strDescription + fieldDelimiter());
-
-		if (null == _strSecurityType || _strSecurityType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strSecurityType + fieldDelimiter());
-
-		if (null == _dtPrevCouponDate)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_dtPrevCouponDate.julian() + fieldDelimiter());
-
-		if (null == _strBBGUniqueID || _strBBGUniqueID.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strBBGUniqueID + fieldDelimiter());
-
-		if (null == _strLongCompanyName || _strLongCompanyName.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strLongCompanyName + fieldDelimiter());
-
-		sb.append (_bIsStructuredNote + fieldDelimiter());
-
-		sb.append (_bIsUnitTraded + fieldDelimiter());
-
-		sb.append (_bIsReversibleConvertible + fieldDelimiter());
-
-		if (null == _strRedemptionCurrency || _strRedemptionCurrency.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strRedemptionCurrency + fieldDelimiter());
-
-		if (null == _strCouponCurrency || _strCouponCurrency.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCouponCurrency + fieldDelimiter());
-
-		if (null == _strTradeCurrency || _strTradeCurrency.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strTradeCurrency + fieldDelimiter());
-
-		sb.append (_bIsBearer + fieldDelimiter());
-
-		sb.append (_bIsRegistered + fieldDelimiter());
-
-		sb.append (_bHasBeenCalled + fieldDelimiter());
-
-		if (null == _strIssuer || _strIssuer.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strIssuer + fieldDelimiter());
-
-		if (null == _dtPenultimateCouponDate)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_dtPenultimateCouponDate.julian() + fieldDelimiter());
-
-		if (null == _strFloatCouponConvention || _strFloatCouponConvention.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strFloatCouponConvention + fieldDelimiter());
-
-		sb.append (_dblCurrentCoupon + fieldDelimiter());
-
-		sb.append (_bIsFloater + fieldDelimiter());
-
-		sb.append (_bTradeStatus + fieldDelimiter());
-
-		if (null == _strCDRCountryCode || _strCDRCountryCode.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCDRCountryCode + fieldDelimiter());
-
-		if (null == _strCDRSettleCode || _strCDRSettleCode.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCDRSettleCode + fieldDelimiter());
-
-		if (null == _dtFinalMaturity)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_dtFinalMaturity.julian() + fieldDelimiter());
-
-		sb.append (_bIsPrivatePlacement + fieldDelimiter());
-
-		sb.append (_bIsPerpetual + fieldDelimiter());
-
-		sb.append (_bIsDefaulted + fieldDelimiter());
-
-		sb.append (_dblFloatSpread + fieldDelimiter());
-
-		if (null == _strRateIndex || _strRateIndex.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strRateIndex + fieldDelimiter());
-
-		if (null == _strMoody || _strMoody.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strMoody + fieldDelimiter());
-
-		if (null == _strSnP || _strSnP.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strSnP + fieldDelimiter());
-
-		if (null == _strFitch || _strFitch.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strFitch + fieldDelimiter());
-
-		if (null == _strSnrSub || _strSnrSub.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strSnrSub + fieldDelimiter());
-
-		if (null == _strIssuerSPN || _strIssuerSPN.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strIssuerSPN + fieldDelimiter());
-
-		sb.append (_dblIssuePrice + fieldDelimiter());
-
-		sb.append (_dblCoupon + fieldDelimiter());
-
-		if (null == _dtMaturity)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-		else
-			sb.append (_dtMaturity.julian());
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
 	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> toJSON()
 	{
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapJSON = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
-		mapJSON.put ("version", "" + org.drip.service.stream.Serializer.VERSION);
+		mapJSON.put ("version", "" + org.drip.quant.common.StringUtil.VERSION);
 
 		if (null == _strISIN || _strISIN.isEmpty())
-			mapJSON.put ("isin", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("isin", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("isin", _strISIN);
 
 		if (null == _strCUSIP || _strCUSIP.isEmpty())
-			mapJSON.put ("cusip", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("cusip", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("cusip", _strCUSIP);
 
 		if (null == _strBBGID || _strBBGID.isEmpty())
-			mapJSON.put ("bbgid", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("bbgid", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("bbgid", _strBBGID);
 
 		if (null == _strIssuerCategory || _strIssuerCategory.isEmpty())
-			mapJSON.put ("issuercategory", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("issuercategory", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("issuercategory", _strIssuerCategory);
 
 		if (null == _strTicker || _strTicker.isEmpty())
-			mapJSON.put ("ticker", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("ticker", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("ticker", _strTicker);
 
 		if (null == _strSeries || _strSeries.isEmpty())
-			mapJSON.put ("series", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("series", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("series", _strSeries);
 
 		if (null == _strName || _strName.isEmpty())
-			mapJSON.put ("name", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("name", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("name", _strName);
 
 		if (null == _strShortName || _strShortName.isEmpty())
-			mapJSON.put ("shortname", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("shortname", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("shortname", _strShortName);
 
 		if (null == _strIssuerIndustry || _strIssuerIndustry.isEmpty())
-			mapJSON.put ("issuerindustry", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("issuerindustry", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("issuerindustry", _strIssuerIndustry);
 
 		if (null == _strCouponType || _strCouponType.isEmpty())
-			mapJSON.put ("coupontype", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("coupontype", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("coupontype", _strCouponType);
 
 		if (null == _strMaturityType || _strMaturityType.isEmpty())
-			mapJSON.put ("maturitytype", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("maturitytype", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("maturitytype", _strMaturityType);
 
 		if (null == _strCalculationType || _strCalculationType.isEmpty())
-			mapJSON.put ("calculationtype", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("calculationtype", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("calculationtype", _strCalculationType);
 
 		if (null == _strDayCountCode || _strDayCountCode.isEmpty())
-			mapJSON.put ("daycountcode", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("daycountcode", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("daycountcode", _strDayCountCode);
 
 		if (null == _strMarketIssueType || _strMarketIssueType.isEmpty())
-			mapJSON.put ("marketissuetype", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("marketissuetype", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("marketissuetype", _strMarketIssueType);
 
 		if (null == _strIssueCountryCode || _strIssueCountryCode.isEmpty())
-			mapJSON.put ("issuecountrycode", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("issuecountrycode", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("issuecountrycode", _strIssueCountryCode);
 
 		if (null == _strIssueCountry || _strIssueCountry.isEmpty())
-			mapJSON.put ("issuecountry", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("issuecountry", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("issuecountry", _strIssueCountry);
 
 		if (null == _strCollateralType || _strCollateralType.isEmpty())
-			mapJSON.put ("collateraltype", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("collateraltype", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("collateraltype", _strCollateralType);
 
@@ -3725,44 +2767,44 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		mapJSON.put ("paramount", "" + _dblParAmount);
 
 		if (null == _strLeadManager || _strLeadManager.isEmpty())
-			mapJSON.put ("leadmanager", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("leadmanager", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("leadmanager", _strLeadManager);
 
 		if (null == _strExchangeCode || _strExchangeCode.isEmpty())
-			mapJSON.put ("exchangecode", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("exchangecode", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("exchangecode", _strExchangeCode);
 
 		mapJSON.put ("redemptionvalue", "" + _dblRedemptionValue);
 
 		if (null == _dtAnnounce)
-			mapJSON.put ("announcedate", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("announcedate", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("announcedate", _dtAnnounce.toYYYYMMDD ("-"));
 
 		if (null == _dtFirstSettle)
-			mapJSON.put ("firstsettledate", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("firstsettledate", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("firstsettledate", _dtFirstSettle.toYYYYMMDD ("-"));
 
 		if (null == _dtFirstCoupon)
-			mapJSON.put ("firstcoupondate", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("firstcoupondate", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("firstcoupondate", _dtFirstCoupon.toYYYYMMDD ("-"));
 
 		if (null == _dtInterestAccrualStart)
-			mapJSON.put ("interestaccrualstartdate", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("interestaccrualstartdate", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("interestaccrualstartdate", _dtInterestAccrualStart.toYYYYMMDD ("-"));
 
 		if (null == _dtIssue)
-			mapJSON.put ("issuedate", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("issuedate", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("issuedate", _dtIssue.toYYYYMMDD ("-"));
 
 		if (null == _dtNextCouponDate)
-			mapJSON.put ("nextcoupondate", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("nextcoupondate", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("nextcoupondate", _dtNextCouponDate.toYYYYMMDD ("-"));
 
@@ -3773,62 +2815,62 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		mapJSON.put ("issinkable", "" + _bIsSinkable);
 
 		if (null == _strBBGParent || _strBBGParent.isEmpty())
-			mapJSON.put ("bbgparent", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("bbgparent", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("bbgparent", _strBBGParent);
 
 		if (null == _strCountryOfIncorporation || _strCountryOfIncorporation.isEmpty())
-			mapJSON.put ("countryofincorporation", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("countryofincorporation", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("countryofincorporation", _strCountryOfIncorporation);
 
 		if (null == _strIndustrySector || _strIndustrySector.isEmpty())
-			mapJSON.put ("industrysector", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("industrysector", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("industrysector", _strIndustrySector);
 
 		if (null == _strIndustryGroup || _strIndustryGroup.isEmpty())
-			mapJSON.put ("industrygroup", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("industrygroup", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("industrygroup", _strIndustryGroup);
 
 		if (null == _strIndustrySubgroup || _strIndustrySubgroup.isEmpty())
-			mapJSON.put ("industrysubgroup", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("industrysubgroup", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("industrysubgroup", _strIndustrySubgroup);
 
 		if (null == _strCountryOfGuarantor || _strCountryOfGuarantor.isEmpty())
-			mapJSON.put ("countryofguarantor", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("countryofguarantor", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("countryofguarantor", _strCountryOfGuarantor);
 
 		if (null == _strCountryOfDomicile || _strCountryOfDomicile.isEmpty())
-			mapJSON.put ("countryofdomicile", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("countryofdomicile", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("countryofdomicile", _strCountryOfDomicile);
 
 		if (null == _strDescription || _strDescription.isEmpty())
-			mapJSON.put ("description", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("description", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("description", _strDescription);
 
 		if (null == _strSecurityType || _strSecurityType.isEmpty())
-			mapJSON.put ("securitytype", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("securitytype", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("securitytype", _strSecurityType);
 
 		if (null == _dtPrevCouponDate)
-			mapJSON.put ("prevcoupondate", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("prevcoupondate", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("prevcoupondate", _dtPrevCouponDate.toYYYYMMDD ("-"));
 
 		if (null == _strBBGUniqueID || _strBBGUniqueID.isEmpty())
-			mapJSON.put ("bbguniqueid", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("bbguniqueid", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("bbguniqueid", _strBBGUniqueID);
 
 		if (null == _strLongCompanyName || _strLongCompanyName.isEmpty())
-			mapJSON.put ("longcompanyname", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("longcompanyname", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("longcompanyname", _strLongCompanyName);
 
@@ -3839,17 +2881,17 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		mapJSON.put ("isreversibleconvertible", "" + _bIsReversibleConvertible);
 
 		if (null == _strRedemptionCurrency || _strRedemptionCurrency.isEmpty())
-			mapJSON.put ("redemptioncurrency", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("redemptioncurrency", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("redemptioncurrency", _strRedemptionCurrency);
 
 		if (null == _strCouponCurrency || _strCouponCurrency.isEmpty())
-			mapJSON.put ("couponcurrency", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("couponcurrency", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("couponcurrency", _strCouponCurrency);
 
 		if (null == _strTradeCurrency || _strTradeCurrency.isEmpty())
-			mapJSON.put ("tradecurrency", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("tradecurrency", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("tradecurrency", _strTradeCurrency);
 
@@ -3860,17 +2902,17 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		mapJSON.put ("hasbeencalled", "" + _bHasBeenCalled);
 
 		if (null == _strIssuer || _strIssuer.isEmpty())
-			mapJSON.put ("issuer", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("issuer", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("issuer", _strIssuer);
 
 		if (null == _dtPenultimateCouponDate)
-			mapJSON.put ("penultimatecoupondate", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("penultimatecoupondate", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("penultimatecoupondate", _dtPenultimateCouponDate.toYYYYMMDD ("-"));
 
 		if (null == _strFloatCouponConvention || _strFloatCouponConvention.isEmpty())
-			mapJSON.put ("floatcouponconvention", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("floatcouponconvention", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("floatcouponconvention", _strFloatCouponConvention);
 
@@ -3881,17 +2923,17 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		mapJSON.put ("tradestatus", "" + _bTradeStatus);
 
 		if (null == _strCDRCountryCode || _strCDRCountryCode.isEmpty())
-			mapJSON.put ("cdrcountrycode", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("cdrcountrycode", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("cdrcountrycode", _strCDRCountryCode);
 
 		if (null == _strCDRSettleCode || _strCDRSettleCode.isEmpty())
-			mapJSON.put ("cdrsettlecode", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("cdrsettlecode", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("cdrsettlecode", _strCDRSettleCode);
 
 		if (null == _dtFinalMaturity)
-			mapJSON.put ("finalmaturitydate", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("finalmaturitydate", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("finalmaturitydate", _dtFinalMaturity.toYYYYMMDD ("-"));
 
@@ -3904,32 +2946,32 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		mapJSON.put ("floatspread", "" + _dblFloatSpread);
 
 		if (null == _strRateIndex || _strRateIndex.isEmpty())
-			mapJSON.put ("rateindex", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("rateindex", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("rateindex", _strRateIndex);
 
 		if (null == _strMoody || _strMoody.isEmpty())
-			mapJSON.put ("moody", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("moody", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("moody", _strMoody);
 
 		if (null == _strSnP || _strSnP.isEmpty())
-			mapJSON.put ("snp", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("snp", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("snp", _strSnP);
 
 		if (null == _strFitch || _strFitch.isEmpty())
-			mapJSON.put ("fitch", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("fitch", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("fitch", _strFitch);
 
 		if (null == _strSnrSub || _strSnrSub.isEmpty())
-			mapJSON.put ("snrsub", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("snrsub", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("snrsub", _strSnrSub);
 
 		if (null == _strIssuerSPN || _strIssuerSPN.isEmpty())
-			mapJSON.put ("issuerspn", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("issuerspn", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("issuerspn", _strIssuerSPN);
 
@@ -3938,132 +2980,10 @@ public class BondRefDataBuilder extends org.drip.service.stream.Serializer imple
 		mapJSON.put ("coupon", "" + _dblCoupon);
 
 		if (null == _dtMaturity)
-			mapJSON.put ("maturitydate", org.drip.service.stream.Serializer.NULL_SER_STRING);
+			mapJSON.put ("maturitydate", org.drip.quant.common.StringUtil.NULL_SER_STRING);
 		else
 			mapJSON.put ("maturitydate", _dtMaturity.toYYYYMMDD ("-"));
 
 		return mapJSON;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new BondRefDataBuilder (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		BondRefDataBuilder brdb = new BondRefDataBuilder();
-
-		brdb._dtAnnounce = org.drip.analytics.date.JulianDate.Today();
-
-		brdb._strISIN = "US3451683DF";
-		brdb._strCUSIP = "3451683D";
-		brdb._strBBGID = "1286BB45";
-		brdb._strIssuerCategory = "Construction";
-		brdb._strTicker = "BSI";
-		brdb._strSeries = "RegS";
-		brdb._strName = "Broken Systems International";
-		brdb._strShortName = "Broken Systems";
-		brdb._strIssuerIndustry = "Architecture & Engineering";
-		brdb._strCouponType = "REGULAR";
-		brdb._strMaturityType = "BULLET";
-		brdb._strCalculationType = "NORMAL";
-		brdb._strDayCountCode = "30/360";
-		brdb._strMarketIssueType = "Primary Annual Series A";
-		brdb._strIssueCountryCode = "USA";
-		brdb._strIssueCountry = "United States of America";
-		brdb._strCollateralType = "Equipment";
-		brdb._dblIssueAmount = 1000000000.;
-		brdb._dblOutstandingAmount = 800000000.;
-		brdb._dblMinimumPiece = 1000.;
-		brdb._dblMinimumIncrement = 1000.;
-		brdb._dblParAmount = 100.;
-		brdb._strLeadManager = "LEHMANN";
-		brdb._strExchangeCode = "NYSE";
-		brdb._dblRedemptionValue = 1.;
-		brdb._dtFirstSettle = null;
-		brdb._dtFirstCoupon = brdb._dtAnnounce;
-		brdb._dtInterestAccrualStart = brdb._dtAnnounce;
-		brdb._dtIssue = brdb._dtAnnounce;
-		brdb._dtNextCouponDate = brdb._dtAnnounce;
-		brdb._bIsCallable = false;
-		brdb._bIsPutable = false;
-		brdb._bIsSinkable = false;
-		brdb._strBBGParent = "ADI";
-		brdb._strCountryOfIncorporation = "United States of America";
-		brdb._strIndustrySector = "ArchConstr";
-		brdb._strIndustryGroup = "Software";
-		brdb._strIndustrySubgroup = "CAD";
-		brdb._strCountryOfGuarantor = "USA";
-		brdb._strCountryOfDomicile = "USA";
-		brdb._strDescription = "BSI Senior Series 6 pc coupon annual issue";
-		brdb._strSecurityType = "BULLET";
-		brdb._dtPrevCouponDate = brdb._dtAnnounce;
-		brdb._strBBGUniqueID = "BSI374562IID";
-		brdb._strLongCompanyName = "Broken System International Inc.";
-		brdb._bIsStructuredNote = false;
-		brdb._bIsUnitTraded = false;
-		brdb._bIsReversibleConvertible = false;
-		brdb._strRedemptionCurrency = "USD";
-		brdb._strCouponCurrency = "USD";
-		brdb._strTradeCurrency = "USD";
-		brdb._bIsBearer = false;
-		brdb._bIsRegistered = true;
-		brdb._bHasBeenCalled = false;
-		brdb._strIssuer = "Bentley Systems";
-		brdb._dtPenultimateCouponDate = brdb._dtAnnounce;
-		brdb._strFloatCouponConvention = "30/360";
-		brdb._dblCurrentCoupon = 0.06;
-		brdb._bIsFloater = true;
-		brdb._bTradeStatus = true;
-		brdb._strCDRCountryCode = "US";
-		brdb._strCDRSettleCode = "US";
-		brdb._bIsPrivatePlacement = false;
-		brdb._bIsPerpetual = false;
-		brdb._bIsDefaulted = false;
-		brdb._dblFloatSpread = 0.01;
-		brdb._strRateIndex = "USD-LIBOR-6M";
-		brdb._strMoody = "A";
-		brdb._strSnP = "A";
-		brdb._strFitch = "A";
-		brdb._strSnrSub = "Senior";
-		brdb._strIssuerSPN = "374528";
-		brdb._dblIssuePrice = 93.75;
-		brdb._dblCoupon = 0.01;
-
-		brdb._dtMaturity = brdb._dtAnnounce.addYears (10);
-
-		brdb._dtFinalMaturity = brdb._dtMaturity;
-
-		byte[] abBRDB = brdb.serialize();
-
-		System.out.println (new java.lang.String (abBRDB));
-
-		BondRefDataBuilder brdbDeser = new BondRefDataBuilder (abBRDB);
-
-		System.out.println (new java.lang.String (brdbDeser.serialize()));
-
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapJSON = brdb.toJSON();
-
-		System.out.println ("\n");
-
-		System.out.println (mapJSON);
-
-		BondRefDataBuilder brdbjson = new BondRefDataBuilder (mapJSON);
-
-		System.out.println ("\n");
-
-		System.out.println (brdbjson.toJSON());
-
-		System.out.println (new java.lang.String (brdbjson.serialize()));
 	}
 }

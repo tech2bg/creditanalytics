@@ -39,7 +39,7 @@ package org.drip.analytics.output;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BondCouponMeasures extends org.drip.service.stream.Serializer {
+public class BondCouponMeasures {
 
 	/**
 	 * Coupon DV01
@@ -89,62 +89,6 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("BondCouponMeasures ctr: Invalid Inputs!");
 
 		_dblIndexCouponPV = dblIndexCouponPV;
-	}
-
-	/**
-	 * BondCouponMeasures de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if BondCouponMeasures cannot be properly de-serialized
-	 */
-
-	public BondCouponMeasures (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Empty state");
-
-		java.lang.String strSerializedBondCouponMeasures = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedBondCouponMeasures || strSerializedBondCouponMeasures.isEmpty())
-			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split
-			(strSerializedBondCouponMeasures, fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Cannot locate DV01");
-
-		_dblDV01 = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception
-				("BondCouponMeasures de-serializer: Cannot locate Index Coupon PV");
-
-		_dblIndexCouponPV = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Cannot locate Coupon PV");
-
-		_dblCouponPV = new java.lang.Double (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty())
-			throw new java.lang.Exception ("BondCouponMeasures de-serializer: Cannot locate PV");
-
-		_dblPV = new java.lang.Double (astrField[4]);
 	}
 
 	/**
@@ -211,16 +155,6 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 		return true;
 	}
 
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (VERSION + fieldDelimiter() + _dblDV01 + fieldDelimiter() + _dblIndexCouponPV +
-			fieldDelimiter() + _dblCouponPV + fieldDelimiter() + _dblPV);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
 	/**
 	 * Return the state as a named measure map
 	 * 
@@ -244,17 +178,5 @@ public class BondCouponMeasures extends org.drip.service.stream.Serializer {
 		mapMeasures.put (strPrefix + "PV", _dblPV);
 
 		return mapMeasures;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new BondCouponMeasures (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

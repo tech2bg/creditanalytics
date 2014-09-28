@@ -38,7 +38,7 @@ package org.drip.param.pricer;
  * @author Lakshmi Krishnamurthy
  */
 
-public class PricerParams extends org.drip.service.stream.Serializer {
+public class PricerParams {
 
 	/*
 	 * Loss period Grid discretization scheme
@@ -111,69 +111,6 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * PricerParams de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if PricerParams cannot be properly de-serialized
-	 */
-
-	public PricerParams (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("PricerParams de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("PricerParams de-serializer: Empty state");
-
-		java.lang.String strSerializedCreditCurve = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedCreditCurve || strSerializedCreditCurve.isEmpty())
-			throw new java.lang.Exception ("PricerParams de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCreditCurve,
-			fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception ("PricerParams de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("PricerParams de-serializer: Cannot locate unit size");
-
-		_iUnitSize = new java.lang.Integer (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("PricerParams de-serializer: Cannot locate calib params");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_calibParams = null;
-		else
-			_calibParams = new org.drip.param.definition.CalibrationParams (astrField[2].getBytes());
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception
-				("PricerParams de-serializer: Cannot locate survival to pay date flag");
-
-		_bSurvToPayDate = new java.lang.Boolean (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception
-				("PricerParams de-serializer: Cannot locate discretization scheme");
-
-		_iDiscretizationScheme = new java.lang.Integer (astrField[4]);
-	}
-
-	/**
 	 * Retrieve the Discretized Loss Unit Size
 	 * 
 	 * @return The Discretized Loss Unit Size
@@ -226,44 +163,5 @@ public class PricerParams extends org.drip.service.stream.Serializer {
 	public boolean ametranoBianchettiMode()
 	{
 		return _bAmetranoBianchettiForwardQuanto;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "!";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "&";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iUnitSize +
-			fieldDelimiter());
-
-		if (null == _calibParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (new java.lang.String (_calibParams.serialize()) + fieldDelimiter());
-
-		sb.append (_bSurvToPayDate + fieldDelimiter() + _iDiscretizationScheme + fieldDelimiter());
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new PricerParams (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

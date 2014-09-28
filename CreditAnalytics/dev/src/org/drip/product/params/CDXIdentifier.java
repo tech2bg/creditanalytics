@@ -38,7 +38,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CDXIdentifier extends org.drip.service.stream.Serializer {
+public class CDXIdentifier {
 	public int _iSeries = 0;
 	public int _iVersion = 0;
 	public java.lang.String _strIndex = "";
@@ -99,65 +99,6 @@ public class CDXIdentifier extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * CDXIdentifier de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if CDXIdentifier cannot be properly de-serialized
-	 */
-
-	public CDXIdentifier (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CDXIdentifier de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CDXIdentifier de-serializer: Empty state");
-
-		java.lang.String strSerializedCDXIdentifier = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedCDXIdentifier || strSerializedCDXIdentifier.isEmpty())
-			throw new java.lang.Exception ("CDXIdentifier de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCDXIdentifier,
-			fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception ("CDXIdentifier de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("CDXIdentifier de-serializer: Cannot locate Series");
-
-		_iSeries = new java.lang.Integer (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("CDXIdentifier de-serializer: Cannot locate Version");
-
-		_iVersion = new java.lang.Integer (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("CDXIdentifier de-serializer: Cannot locate Index");
-
-		_strIndex = astrField[3];
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("CDXIdentifier de-serializer: Cannot locate Tenor");
-
-		_strTenor = astrField[4];
-	}
-
-	/**
 	 * Return the CDX code string composed off of the index, tenor, series, and the version
 	 * 
 	 * @return The CDX Code string
@@ -166,42 +107,5 @@ public class CDXIdentifier extends org.drip.service.stream.Serializer {
 	public java.lang.String getCode()
 	{
 		return _strIndex + "." + _strTenor + "." + _iSeries + "." + _iVersion;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iSeries +
-			fieldDelimiter() + _iVersion + fieldDelimiter() + _strIndex + fieldDelimiter() + _strTenor);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new CDXIdentifier (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		CDXIdentifier cdxID = new CDXIdentifier (17, 1, "CDX.NA.IG", "5Y");
-
-		byte[] abCDXID = cdxID.serialize();
-
-		System.out.println (new java.lang.String (abCDXID));
-
-		CDXIdentifier abCDXIDDeser = new CDXIdentifier (abCDXID);
-
-		System.out.println (new java.lang.String (abCDXIDDeser.serialize()));
 	}
 }

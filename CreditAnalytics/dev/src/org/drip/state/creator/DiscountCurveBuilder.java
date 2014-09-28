@@ -182,34 +182,4 @@ public class DiscountCurveBuilder {
 
 		return null;
 	}
-
-	/**
-	 * Create a discount curve instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * @param strBootstrapMode Mode of the bootstrapping to be done: "ConstantForward", "LinearForward",
-	 * 	"QuadraticForward", or "CubicForward". Defaults to "ConstantForward".
-	 * 
-	 * @return Discount Curve Instance
-	 */
-
-	public static final org.drip.analytics.rates.ExplicitBootDiscountCurve FromByteArray (
-		final byte[] ab,
-		final java.lang.String strBootstrapMode)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			if (null == strBootstrapMode) return new org.drip.state.curve.FlatForwardDiscountCurve (ab);
-
-			if (BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF.equalsIgnoreCase (strBootstrapMode))
-				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (ab);
-
-			return new org.drip.state.curve.FlatForwardDiscountCurve (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

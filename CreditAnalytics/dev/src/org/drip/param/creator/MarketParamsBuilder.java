@@ -196,26 +196,4 @@ public class MarketParamsBuilder {
 
 		return null;
 	}
-
-	/**
-	 * Create a Market Parameter Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return Market Parameter Instance
-	 */
-
-	public static final org.drip.param.market.CurveSurfaceQuoteSet FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.param.market.CurveSurfaceQuoteSet (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

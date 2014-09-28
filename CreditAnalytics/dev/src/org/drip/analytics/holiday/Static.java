@@ -88,95 +88,10 @@ public class Static extends Base {
 		_dblDate = dt.julian();
 	}
 
-	/**
-	 * De-serialization of StaticHoliday from byte stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize StaticHoliday
-	 */
-
-	public Static (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		super (ab);
-
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("Static de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("Static de-serializer: Empty state");
-
-		java.lang.String strFH = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strFH || strFH.isEmpty())
-			throw new java.lang.Exception ("Static de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, fieldDelimiter());
-
-		if (null == astrField || 2 > astrField.length)
-			throw new java.lang.Exception ("Static de-serialize: Invalid number of fields");
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("Static de-serializer: Cannot locate static holiday date");
-
-		_dblDate = new java.lang.Double (astrField[1]);
-	}
-
 	@Override public double dateInYear (
 		final int iYear,
 		final boolean bAdjusted)
 	{
 		return _dblDate;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "#";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "^";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (new java.lang.String (super.serialize()) + fieldDelimiter() + _dblDate);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new Static (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		Static sh = Static.CreateFromDateDescription ("12-JUN-2020", "Are you kidding me?");
-
-		byte[] abSH = sh.serialize();
-
-		System.out.println ("Input: " + new java.lang.String (abSH));
-
-		Static shDeser = new Static (abSH);
-
-		System.out.println ("Output: " + new java.lang.String (shDeser.serialize()));
 	}
 }

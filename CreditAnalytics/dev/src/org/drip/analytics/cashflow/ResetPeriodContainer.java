@@ -35,7 +35,7 @@ package org.drip.analytics.cashflow;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
+public class ResetPeriodContainer {
 	private int _iAccrualCompoundingRule = -1;
 	private java.util.List<org.drip.analytics.cashflow.ComposablePeriod> _lsResetPeriod = null;
 
@@ -54,73 +54,6 @@ public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
 		if (!org.drip.analytics.support.ResetUtil.ValidateCompoundingRule (_iAccrualCompoundingRule =
 			iAccrualCompoundingRule))
 			throw new java.lang.Exception ("ResetPeriodContainer ctr: Invalid Accrual Compounding Rule");
-	}
-
-	/**
-	 * De-serialize the ResetPeriodContainer Instance from the Stream Byte Array
-	 * 
-	 * @param ab The Stream Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if ResetPeriodContainer cannot be de-serialized
-	 */
-
-	public ResetPeriodContainer (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ResetPeriodContainer de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ResetPeriodContainer de-serializer: Empty state");
-
-		java.lang.String strResetPeriodContainer = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strResetPeriodContainer || strResetPeriodContainer.isEmpty())
-			throw new java.lang.Exception ("ResetPeriodContainer de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strResetPeriodContainer,
-			fieldDelimiter());
-
-		if (null == astrField || 3 > astrField.length)
-			throw new java.lang.Exception ("ResetPeriodContainer de-serialize: Invalid number of fields");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception
-				("ResetPeriodContainer de-serializer: Cannot locate the Accrual Compounding Rule");
-
-		_iAccrualCompoundingRule = new java.lang.Integer (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception
-				("ResetPeriodContainer de-serializer: Cannot locate Reset Period List");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_lsResetPeriod = new java.util.ArrayList<org.drip.analytics.cashflow.ComposablePeriod>();
-		else {
-			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[2],
-				collectionRecordDelimiter());
-
-			if (null != astrRecord && 0 != astrRecord.length) {
-				for (int i = 0; i < astrRecord.length; ++i) {
-					if (null == astrRecord[i] || astrRecord[i].isEmpty() ||
-						org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrRecord[i]))
-						continue;
-
-					if (null == _lsResetPeriod)
-						_lsResetPeriod = new java.util.ArrayList<org.drip.analytics.cashflow.ComposablePeriod>();
-
-					_lsResetPeriod.add (new org.drip.analytics.cashflow.ComposablePeriod
-						(astrRecord[i].getBytes()));
-				}
-			}
-		}
 	}
 
 	/**
@@ -164,64 +97,5 @@ public class ResetPeriodContainer extends org.drip.service.stream.Serializer {
 	public java.util.List<org.drip.analytics.cashflow.ComposablePeriod> resetPeriods()
 	{
 		return _lsResetPeriod;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "]";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "}";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		sb.append (_iAccrualCompoundingRule + fieldDelimiter());
-
-		if (null == _lsResetPeriod || 0 == _lsResetPeriod.size())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-		else {
-			boolean bFirstEntry = true;
-
-			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
-
-			for (org.drip.analytics.cashflow.ComposablePeriod rp : _lsResetPeriod) {
-				if (null == rp) continue;
-
-				if (bFirstEntry)
-					bFirstEntry = false;
-				else
-					sbPeriods.append (collectionRecordDelimiter());
-
-				sbPeriods.append (new java.lang.String (rp.serialize()));
-			}
-
-			if (sbPeriods.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-			else
-				sb.append (sbPeriods.toString());
-		}
-
-		sb.append (fieldDelimiter());
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new ResetPeriodContainer (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

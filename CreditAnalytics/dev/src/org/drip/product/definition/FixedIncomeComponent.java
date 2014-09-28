@@ -44,8 +44,7 @@ package org.drip.product.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class FixedIncomeComponent extends org.drip.service.stream.Serializer implements
-	org.drip.product.definition.MarketParamRef {
+public abstract class FixedIncomeComponent implements org.drip.product.definition.MarketParamRef {
 	protected double measure (
 		final java.lang.String strMeasure,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc)

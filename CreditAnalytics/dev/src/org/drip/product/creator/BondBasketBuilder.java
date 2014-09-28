@@ -46,8 +46,6 @@ public class BondBasketBuilder {
 	 * @param strName BondBasket Name
 	 * @param aBond Component bonds
 	 * @param adblWeights Component Bond weights
-	 * @param dtEffective Effective date
-	 * @param dblNotional Basket Notional
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
@@ -55,35 +53,10 @@ public class BondBasketBuilder {
 	public static final org.drip.product.definition.BasketProduct CreateBondBasket (
 		final java.lang.String strName,
 		final org.drip.product.definition.Bond[] aBond,
-		final double[] adblWeights,
-		final org.drip.analytics.date.JulianDate dtEffective,
-		final double dblNotional)
+		final double[] adblWeights)
 	{
 		try {
-			return new org.drip.product.credit.BondBasket (strName, aBond, adblWeights, dtEffective,
-				dblNotional);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Create a BondBasket Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return BondBasket Instance
-	 */
-
-	public static final org.drip.product.definition.BasketProduct FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.product.credit.BondBasket (ab);
+			return new org.drip.product.credit.BondBasket (strName, aBond, adblWeights);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

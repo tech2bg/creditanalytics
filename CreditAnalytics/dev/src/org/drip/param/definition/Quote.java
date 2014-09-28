@@ -38,7 +38,7 @@ package org.drip.param.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class Quote extends org.drip.service.stream.Serializer {
+public abstract class Quote {
 
 	/**
 	 * Get the quote value for the given side

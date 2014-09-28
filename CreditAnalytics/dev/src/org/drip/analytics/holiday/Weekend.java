@@ -38,7 +38,7 @@ package org.drip.analytics.holiday;
  * @author Lakshmi Krishnamurthy
  */
 
-public class Weekend extends org.drip.service.stream.Serializer {
+public class Weekend {
 	private int[] _aiDay = null;
 
 	/**
@@ -57,52 +57,6 @@ public class Weekend extends org.drip.service.stream.Serializer {
 		}
 
 		return null;
-	}
-
-	/**
-	 * De-serialization of Weekend from byte stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize Weekend
-	 */
-
-	public Weekend (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("Weekend de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("Weekend de-serializer: Empty state");
-
-		java.lang.String strWH = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strWH || strWH.isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (strWH))
-			throw new java.lang.Exception ("Weekend de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strWH, fieldDelimiter());
-
-		if (null == astrField || 2 > astrField.length)
-			throw new java.lang.Exception ("Weekend de-serialize: Invalid number of fields");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		java.util.List<java.lang.Integer> lsi = new java.util.ArrayList<java.lang.Integer>();
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]) ||
-			!org.drip.quant.common.StringUtil.IntegerListFromString (lsi, astrField[1],
-				collectionRecordDelimiter()))
-			throw new java.lang.Exception ("Weekend de-serializer: Cannot decode state");
-
-		_aiDay = new int[lsi.size()];
-
-		for (int i = 0; i < _aiDay.length; ++i)
-			_aiDay[i] = lsi.get (i);
 	}
 
 	/**
@@ -188,47 +142,5 @@ public class Weekend extends org.drip.service.stream.Serializer {
 		final double dblDate)
 	{
 		return isLeftWeekend (dblDate) || isRightWeekend (dblDate);
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		for (int i = 0; i < _aiDay.length; ++i) {
-			if (0 != i) sb.append (collectionRecordDelimiter());
-
-			sb.append (_aiDay[i]);
-		}
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new Weekend (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		Weekend wh = Weekend.StandardWeekend();
-
-		byte[] abWH = wh.serialize();
-
-		System.out.println ("Input: " + new java.lang.String (abWH));
-
-		Weekend whDeser = new Weekend (abWH);
-
-		System.out.println ("Output: " + new java.lang.String (whDeser.serialize()));
 	}
 }

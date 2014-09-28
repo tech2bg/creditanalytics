@@ -101,26 +101,4 @@ public class FXForwardBuilder {
 
 		return null;
 	}
-
-	/**
-	 * Create a FXForward Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return FXForward Instance
-	 */
-
-	public static final org.drip.product.definition.FXForward FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.product.fx.FXForwardContract (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

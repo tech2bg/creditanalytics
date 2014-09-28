@@ -69,17 +69,6 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 		return _collatParams;
 	}
 
-	@Override public byte[] serialize()
-	{
-		return null;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		return null;
-	}
-
 	@Override public double node (
 		final double dblStrike,
 		final double dblDate)

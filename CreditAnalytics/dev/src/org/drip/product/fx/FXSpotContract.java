@@ -64,53 +64,6 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 		_dblSpotDate = dtSpot.julian();
 	}
 
-	/**
-	 * FXSpotContract de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if FXSpotContract cannot be properly de-serialized
-	 */
-
-	public FXSpotContract (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FXSpotContract de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("FXSpotContract de-serializer: Empty state");
-
-		java.lang.String strSerializedFXSpot = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedFXSpot || strSerializedFXSpot.isEmpty())
-			throw new java.lang.Exception ("FXSpotContract de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFXSpot,
-			fieldDelimiter());
-
-		if (null == astrField || 3 > astrField.length)
-			throw new java.lang.Exception ("FXSpotContract de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("FXSpotContract de-serializer: Cannot locate Spot Date");
-
-		_dblSpotDate = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("FXSpotContract de-serializer: Cannot locate Currency Pair");
-
-		_ccyPair = new org.drip.product.params.CurrencyPair (astrField[2].getBytes());
-	}
-
 	@Override public double getSpotDate()
 	{
 		return _dblSpotDate;
@@ -119,43 +72,5 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 	@Override public org.drip.product.params.CurrencyPair getCcyPair()
 	{
 		return _ccyPair;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblSpotDate +
-			fieldDelimiter() + new java.lang.String (_ccyPair.serialize()));
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new FXSpotContract (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		FXSpotContract fxSpot = new FXSpotContract (org.drip.analytics.date.JulianDate.Today(), new
-			org.drip.product.params.CurrencyPair ("USD", "INR", "INR", 1.));
-
-		byte[] abFXSpot = fxSpot.serialize();
-
-		System.out.println (new java.lang.String (abFXSpot));
-
-		FXSpotContract fxSpotDeser = new FXSpotContract (abFXSpot);
-
-		System.out.println (new java.lang.String (fxSpotDeser.serialize()));
 	}
 }

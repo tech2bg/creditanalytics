@@ -38,7 +38,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CurrencyPair extends org.drip.service.stream.Serializer {
+public class CurrencyPair {
 	private java.lang.String _strNumCcy = "";
 	private java.lang.String _strDenomCcy = "";
 	private java.lang.String _strQuoteCcy = "";
@@ -101,65 +101,6 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 		_strDenomCcy = strDenomCcy;
 		_strQuoteCcy = strQuoteCcy;
 		_dblPIPFactor = dblPIPFactor;
-	}
-
-	/**
-	 * CurrencyPair de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if CurrencyPair cannot be properly de-serialized
-	 */
-
-	public CurrencyPair (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CurrencyPair de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CurrencyPair de-serializer: Empty state");
-
-		java.lang.String strSerializedCurrencyPair = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedCurrencyPair || strSerializedCurrencyPair.isEmpty())
-			throw new java.lang.Exception ("CurrencyPair de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCurrencyPair,
-			fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception ("CurrencyPair de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("CurrencyPair de-serializer: Cannot locate Num ccy");
-
-		_strNumCcy = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("CurrencyPair de-serializer: Cannot locate Denom ccy");
-
-		_strDenomCcy = astrField[2];
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("CurrencyPair de-serializer: Cannot locate Quote ccy");
-
-		_strQuoteCcy = astrField[3];
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("CurrencyPair de-serializer: Cannot locate PIP factor");
-
-		_dblPIPFactor = new java.lang.Double (astrField[4]);
 	}
 
 	/**
@@ -226,61 +167,5 @@ public class CurrencyPair extends org.drip.service.stream.Serializer {
 	public double pipFactor()
 	{
 		return _dblPIPFactor;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return ":";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "{";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strNumCcy);
-
-		sb.append (fieldDelimiter() + _strDenomCcy + fieldDelimiter() + _strQuoteCcy);
-
-		sb.append (fieldDelimiter() + _dblPIPFactor);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new CurrencyPair (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		// CurrencyPair cp = new CurrencyPair ("USD", "INR", "INR", 1.);
-
-		CurrencyPair cp = FromCode ("USD/INR");
-
-		byte[] abCP = cp.serialize();
-
-		System.out.println ("Input: " + new java.lang.String (abCP));
-
-		System.out.println ("QuoteCcy: " + cp.quoteCcy());
-
-		CurrencyPair cpDeser = new CurrencyPair (abCP);
-
-		System.out.println ("Output: " + new java.lang.String (cpDeser.serialize()));
-
-		System.out.println ("QuoteCcy: " + cpDeser.quoteCcy());
 	}
 }

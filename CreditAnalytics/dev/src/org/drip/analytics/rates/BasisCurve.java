@@ -34,8 +34,8 @@ package org.drip.analytics.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class BasisCurve extends org.drip.service.stream.Serializer implements
-	org.drip.analytics.rates.BasisEstimator, org.drip.analytics.definition.Curve {
+public abstract class BasisCurve implements org.drip.analytics.rates.BasisEstimator,
+	org.drip.analytics.definition.Curve {
 
 	/**
 	 * Basis Latent State

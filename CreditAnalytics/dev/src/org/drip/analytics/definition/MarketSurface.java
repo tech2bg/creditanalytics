@@ -35,8 +35,7 @@ package org.drip.analytics.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class MarketSurface extends org.drip.service.stream.Serializer implements
-	org.drip.analytics.definition.Curve {
+public abstract class MarketSurface implements org.drip.analytics.definition.Curve {
 	protected java.lang.String _strCurrency = "";
 	protected double _dblEpochDate = java.lang.Double.NaN;
 	protected org.drip.state.identifier.CustomMetricLabel _label = null;

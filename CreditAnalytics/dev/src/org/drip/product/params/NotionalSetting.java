@@ -40,8 +40,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class NotionalSetting extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable {
+public class NotionalSetting implements org.drip.product.params.Validatable {
 
 	/**
 	 * Period amortization proxies to the period start factor
@@ -106,90 +105,6 @@ public class NotionalSetting extends org.drip.service.stream.Serializer implemen
 		_bPriceOffOriginalNotional = bPriceOffOriginalNotional;
 	}
 
-	/**
-	 * NotionalSetting de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if NotionalSetting cannot be properly de-serialized
-	 */
-
-	public NotionalSetting (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("NotionalSetting de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("NotionalSetting de-serializer: Empty state");
-
-		java.lang.String strSerializedNotionalSetting = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedNotionalSetting || strSerializedNotionalSetting.isEmpty())
-			throw new java.lang.Exception ("NotionalSetting de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedNotionalSetting,
-			fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception ("NotionalSetting de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception
-				("NotionalSetting de-serializer: Cannot locate principal schedule");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_fsPrincipalOutstanding = FactorSchedule.CreateBulletSchedule();
-		else
-			_fsPrincipalOutstanding = new FactorSchedule (astrField[1].getBytes());
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception
-				("NotionalSetting de-serializer: Cannot locate principal notional");
-
-		_dblNotional = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception
-				("NotionalSetting de-serializer: Cannot locate Price Off Original Notional flag");
-
-		_bPriceOffOriginalNotional = new java.lang.Boolean (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception
-				("NotionalSetting de-serializer: Cannot locate Period amortization proxy mode");
-
-		_iPeriodAmortizationMode = new java.lang.Integer (astrField[4]);
-
-		if (!validate()) throw new java.lang.Exception ("NotionalSetting de-serializer: Cannot validate!");
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		if (null == _fsPrincipalOutstanding)
-			sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() +
-				org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter() + _dblNotional +
-					fieldDelimiter() + _bPriceOffOriginalNotional + fieldDelimiter() +
-						_iPeriodAmortizationMode);
-		else
-			sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + new java.lang.String
-				(_fsPrincipalOutstanding.serialize()) + fieldDelimiter() + _dblNotional + fieldDelimiter() +
-					_bPriceOffOriginalNotional + fieldDelimiter() + _iPeriodAmortizationMode);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
 	@Override public boolean validate()
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotional)) return false;
@@ -197,32 +112,5 @@ public class NotionalSetting extends org.drip.service.stream.Serializer implemen
 		if (null == _fsPrincipalOutstanding) _fsPrincipalOutstanding = FactorSchedule.CreateBulletSchedule();
 
 		return true;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new NotionalSetting (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		NotionalSetting bnp = new NotionalSetting (null, 1., PERIOD_AMORT_AT_START, false);
-
-		byte[] abBNP = bnp.serialize();
-
-		System.out.println (new java.lang.String (abBNP));
-
-		NotionalSetting bnpDeser = new NotionalSetting (abBNP);
-
-		System.out.println (new java.lang.String (bnpDeser.serialize()));
 	}
 }

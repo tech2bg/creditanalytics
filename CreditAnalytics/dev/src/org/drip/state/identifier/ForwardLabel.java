@@ -39,8 +39,8 @@ package org.drip.state.identifier;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ForwardLabel extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable, org.drip.state.identifier.LatentStateLabel {
+public class ForwardLabel implements org.drip.product.params.Validatable,
+	org.drip.state.identifier.LatentStateLabel {
 	private java.lang.String _strIndex = "";
 	private java.lang.String _strTenor = "";
 	private java.lang.String _strCurrency = "";
@@ -122,67 +122,6 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * ForwardLabel de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if ForwardLabel cannot be properly de-serialized
-	 */
-
-	public ForwardLabel (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ForwardLabel de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ForwardLabel de-serializer: Empty state");
-
-		java.lang.String strSerializedFloatingRateIndex = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedFloatingRateIndex || strSerializedFloatingRateIndex.isEmpty())
-			throw new java.lang.Exception ("ForwardLabel de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFloatingRateIndex,
-			fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception ("ForwardLabel de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("ForwardLabel de-serializer: Cannot locate Currency");
-
-		_strCurrency = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("ForwardLabel de-serializer: Cannot locate Index");
-
-		_strIndex = astrField[2];
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("ForwardLabel de-serializer: Cannot locate Tenor");
-
-		_strTenor = astrField[3];
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("ForwardLabel de-serializer: Cannot locate Fully Qualified Name");
-
-		_strFullyQualifiedName = astrField[4];
-
-		if (!validate()) throw new java.lang.Exception ("ForwardLabel de-serializer: Cannot validate!");
-	}
-
-	/**
 	 * Retrieve the Currency
 	 * 
 	 * @return The Currency
@@ -243,53 +182,5 @@ public class ForwardLabel extends org.drip.service.stream.Serializer implements
 		return null != _strCurrency && !_strCurrency.isEmpty() && null != _strIndex && !_strIndex.isEmpty()
 			&& null != _strTenor && !_strTenor.isEmpty() && null != _strFullyQualifiedName &&
 				!_strFullyQualifiedName.isEmpty();
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return ",";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "'";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strCurrency +
-			fieldDelimiter() + _strIndex + fieldDelimiter() + _strTenor + fieldDelimiter() +
-				_strFullyQualifiedName);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new ForwardLabel (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		ForwardLabel fl = Standard ("USD-LIBOR-6M");
-
-		byte[] abFL = fl.serialize();
-
-		System.out.println (new java.lang.String (abFL));
-
-		ForwardLabel flDeser = new ForwardLabel (abFL);
-
-		System.out.println (new java.lang.String (flDeser.serialize()));
 	}
 }

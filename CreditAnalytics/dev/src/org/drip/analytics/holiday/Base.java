@@ -38,7 +38,7 @@ package org.drip.analytics.holiday;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class Base extends org.drip.service.stream.Serializer {
+public abstract class Base {
 	private java.lang.String _strDescription = "";
 
 	/**
@@ -51,47 +51,6 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 		final java.lang.String strDescription)
 	{
 		_strDescription = strDescription;
-	}
-
-	/**
-	 * De-serialization of Base from Byte Stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize Base
-	 */
-
-	public Base (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("Base de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("Base de-serializer: Empty state");
-
-		java.lang.String strHoliday = strRawString.substring (0, strRawString.indexOf
-			(super.objectTrailer()));
-
-		if (null == strHoliday || strHoliday.isEmpty())
-			throw new java.lang.Exception ("Base de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strHoliday,
-			super.fieldDelimiter());
-
-		if (null == astrField || 2 > astrField.length)
-			throw new java.lang.Exception ("Base de-serialize: Invalid number of fields");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("Base de-serializer: Cannot locate description");
-
-		_strDescription = astrField[1];
 	}
 
 	/**
@@ -151,13 +110,4 @@ public abstract class Base extends org.drip.service.stream.Serializer {
 	public abstract double dateInYear (
 		final int iYear,
 		final boolean bAdjusted);
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + super.fieldDelimiter() + _strDescription);
-
-		return sb.append (super.objectTrailer()).toString().getBytes();
-	}
 }

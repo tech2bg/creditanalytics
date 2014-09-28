@@ -40,7 +40,7 @@ package org.drip.param.valuation;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ValuationCustomizationParams extends org.drip.service.stream.Serializer {
+public class ValuationCustomizationParams {
 	private int _iYieldFrequency = 0;
 	private boolean _bSpreadQuoted = false;
 	private java.lang.String _strYieldDC = "";
@@ -50,92 +50,6 @@ public class ValuationCustomizationParams extends org.drip.service.stream.Serial
 	private org.drip.param.valuation.CollateralizationParams _collatParamsCore = null;
 	private java.util.Set<org.drip.param.valuation.CollateralizationParams> _setSwitchableCollateralBasket =
 		null;
-
-	/**
-	 * ValuationCustomizationParams de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if ValuationCustomizationParams cannot be properly de-serialized
-	 */
-
-	public ValuationCustomizationParams (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception
-				("ValuationCustomizationParams de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ValuationCustomizationParams de-serializer: Empty state");
-
-		java.lang.String strSerializedQuotingParams = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedQuotingParams || strSerializedQuotingParams.isEmpty())
-			throw new java.lang.Exception
-				("ValuationCustomizationParams de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedQuotingParams,
-			fieldDelimiter());
-
-		if (null == astrField || 7 > astrField.length)
-			throw new java.lang.Exception
-				("ValuationCustomizationParams de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception
-				("ValuationCustomizationParams de-serializer: Cannot locate yield DC");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_strYieldDC = "";
-		else
-			_strYieldDC = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception
-				("ValuationCustomizationParams de-serializer: Cannot locate Yield Frequency");
-
-		_iYieldFrequency = new java.lang.Integer (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception
-				("ValuationCustomizationParams de-serializer: Cannot locate spread quote flag");
-
-		_bSpreadQuoted = new java.lang.Boolean (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty())
-			throw new java.lang.Exception
-				("ValuationCustomizationParams de-serializer: Cannot locate yield DC");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			_strYieldCalendar = "";
-		else
-			_strYieldCalendar = astrField[4];
-
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception
-				("ValuationCustomizationParams de-serializer: Cannot locate apply EOM flag");
-
-		_bYieldApplyEOMAdj = new java.lang.Boolean (astrField[5]).booleanValue();
-
-		if (null == astrField[6] || astrField[6].isEmpty())
-			throw new java.lang.Exception
-				("ValuationCustomizationParams de-serializer: Cannot locate optional yield ActAct Params");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
-			_aapYield = null;
-		else
-			_aapYield = new org.drip.analytics.daycount.ActActDCParams (astrField[6].getBytes());
-	}
 
 	/**
 	 * Construct ValuationCustomizationParams from the Day Count and the Frequency parameters
@@ -262,71 +176,5 @@ public class ValuationCustomizationParams extends org.drip.service.stream.Serial
 	public java.util.Set<org.drip.param.valuation.CollateralizationParams> switchableCollateralBasket()
 	{
 		return _setSwitchableCollateralBasket;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "~";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "`";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		if (null == _strYieldDC || _strYieldDC.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strYieldDC + fieldDelimiter());
-
-		sb.append (_iYieldFrequency + fieldDelimiter() + _bSpreadQuoted + fieldDelimiter());
-
-		if (null == _strYieldCalendar || _strYieldCalendar.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strYieldCalendar + fieldDelimiter());
-
-		sb.append (_bYieldApplyEOMAdj + fieldDelimiter());
-
-		if (null == _aapYield)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (new java.lang.String (_aapYield.serialize()) + fieldDelimiter());
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new ValuationCustomizationParams (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		ValuationCustomizationParams vcp = new ValuationCustomizationParams ("30/360", 2, true, null, "DKK",
-			false, null, null);
-
-		byte[] abVCP = vcp.serialize();
-
-		System.out.println (new java.lang.String (abVCP));
-
-		ValuationCustomizationParams vcpDeser = new ValuationCustomizationParams (abVCP);
-
-		System.out.println (new java.lang.String (vcpDeser.serialize()));
 	}
 }

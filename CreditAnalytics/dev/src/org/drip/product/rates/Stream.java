@@ -34,7 +34,7 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class Stream extends org.drip.service.stream.Serializer {
+public class Stream {
 	protected java.util.List<org.drip.analytics.cashflow.CouponPeriod> _lsCouponPeriod = null;
 
 	protected double notional (
@@ -1692,120 +1692,6 @@ public class Stream extends org.drip.service.stream.Serializer {
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Stream de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if Stream cannot be properly de-serialized
-	 */
-
-	public Stream (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("Stream de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("Stream de-serializer: Empty state");
-
-		java.lang.String strSerializedStream = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedStream || strSerializedStream.isEmpty())
-			throw new java.lang.Exception ("Stream de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedStream,
-			fieldDelimiter());
-
-		if (null == astrField || 2 > astrField.length)
-			throw new java.lang.Exception ("Stream de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("Stream de-serializer: Cannot locate the periods");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_lsCouponPeriod = null;
-		else {
-			java.lang.String[] astrRecord = org.drip.quant.common.StringUtil.Split (astrField[1],
-				collectionRecordDelimiter());
-
-			if (null != astrRecord && 0 != astrRecord.length) {
-				for (int i = 0; i < astrRecord.length; ++i) {
-					if (null == astrRecord[i] || astrRecord[i].isEmpty() ||
-						org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrRecord[i]))
-						continue;
-
-					if (null == _lsCouponPeriod)
-						_lsCouponPeriod = new java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
-
-					_lsCouponPeriod.add (new org.drip.analytics.cashflow.CouponPeriod
-						(astrRecord[i].getBytes()));
-				}
-			}
-		}
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "!";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "&";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		if (null == _lsCouponPeriod)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-		else {
-			boolean bFirstEntry = true;
-
-			java.lang.StringBuffer sbPeriods = new java.lang.StringBuffer();
-
-			for (org.drip.analytics.cashflow.CouponPeriod p : _lsCouponPeriod) {
-				if (null == p) continue;
-
-				if (bFirstEntry)
-					bFirstEntry = false;
-				else
-					sbPeriods.append (collectionRecordDelimiter());
-
-				sbPeriods.append (new java.lang.String (p.serialize()));
-			}
-
-			if (sbPeriods.toString().isEmpty())
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-			else
-				sb.append (sbPeriods.toString());
-		}
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new Stream (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
 		}
 
 		return null;

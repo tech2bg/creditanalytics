@@ -39,7 +39,7 @@ package org.drip.analytics.output;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ExerciseInfo extends org.drip.service.stream.Serializer {
+public class ExerciseInfo {
 	private double _dblDate = java.lang.Double.NaN;
 	private double _dblExerciseFactor = java.lang.Double.NaN;
 	private int _iWOType = org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY;
@@ -65,59 +65,6 @@ public class ExerciseInfo extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("ExerciseInfo ctr: Invalid Inputs!");
 
 		_iWOType = iWOType;
-	}
-
-	/**
-	 * ExerciseInfo de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if ExerciseInfo cannot be properly de-serialized
-	 */
-
-	public ExerciseInfo (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ExerciseInfo de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ExerciseInfo de-serializer: Empty state");
-
-		java.lang.String strSerializedNextExerciseInfo = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedNextExerciseInfo || strSerializedNextExerciseInfo.isEmpty())
-			throw new java.lang.Exception ("ExerciseInfo de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedNextExerciseInfo,
-			fieldDelimiter());
-
-		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("ExerciseInfo de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("ExerciseInfo de-serializer: Cannot locate workout date");
-
-		_dblDate = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("ExerciseInfo de-serializer: Cannot locate exercise factor");
-
-		_dblExerciseFactor = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("ExerciseInfo de-serializer: Cannot locate work out type");
-
-		_iWOType = new java.lang.Integer (astrField[3]);
 	}
 
 	/**
@@ -151,27 +98,5 @@ public class ExerciseInfo extends org.drip.service.stream.Serializer {
 	public int workoutType()
 	{
 		return _iWOType;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (VERSION + fieldDelimiter() + _dblDate + fieldDelimiter() + _dblExerciseFactor +
-			fieldDelimiter() + _iWOType);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new ExerciseInfo (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

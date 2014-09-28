@@ -37,8 +37,7 @@ package org.drip.param.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CalibrationParams extends org.drip.service.stream.Serializer {
-
+public class CalibrationParams {
 	private int _iType = 0;
 	private java.lang.String _strMeasure = "";
 	private org.drip.param.valuation.WorkoutInfo _wi = null;
@@ -83,61 +82,6 @@ public class CalibrationParams extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * CalibrationParams de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if CalibrationParams cannot be properly de-serialized
-	 */
-
-	public CalibrationParams (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CalibrationParams de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CalibrationParams de-serializer: Empty state");
-
-		java.lang.String strSerializedCalibrationParams = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedCalibrationParams || strSerializedCalibrationParams.isEmpty())
-			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCalibrationParams,
-			fieldDelimiter());
-
-		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("CalibrationParams de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]).doubleValue();
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate calib measure");
-
-		_strMeasure = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate calib type");
-
-		_iType = new java.lang.Integer (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("CalibrationParams de-serializer: Cannot locate work-out info");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			_wi = null;
-		else
-			_wi = new org.drip.param.valuation.WorkoutInfo (astrField[3].getBytes());
-	}
-
-	/**
 	 * Retrieve the Calibration Type
 	 * 
 	 * @return The Calibration Type
@@ -168,59 +112,5 @@ public class CalibrationParams extends org.drip.service.stream.Serializer {
 	public org.drip.param.valuation.WorkoutInfo workout()
 	{
 		return _wi;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "[";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "]";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strMeasure +
-			fieldDelimiter() + _iType + fieldDelimiter());
-
-		if (null == _wi)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (new java.lang.String (_wi.serialize()) + fieldDelimiter());
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new CalibrationParams (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		CalibrationParams cp = new CalibrationParams ("Price", 1, new org.drip.param.valuation.WorkoutInfo
-			(org.drip.analytics.date.JulianDate.Today().julian(), 0.06, 1.,
-				org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY));
-
-		byte[] abCP = cp.serialize();
-
-		System.out.println (new java.lang.String (abCP));
-
-		CalibrationParams cpDeser = new CalibrationParams (abCP);
-
-		System.out.println (new java.lang.String (cpDeser.serialize()));
 	}
 }

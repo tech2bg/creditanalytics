@@ -2732,7 +2732,7 @@ public class CreditAnalyticsTestSuite {
 
 		org.drip.product.definition.BasketProduct bb = org.drip.service.api.CreditAnalytics.MakeBondBasket
 			("SLMA_ETF", new java.lang.String[] {"US78490FVJ55", "US78490FWD76", "US78490FVL02",
-				"US78442FAZ18", "US78490FTL30"}, new double[] {1., 2., 3., 4., 5.}, dtToday, 100.);
+				"US78442FAZ18", "US78490FTL30"}, new double[] {1., 2., 3., 4., 5.}, dtToday);
 
 		org.drip.param.market.CurveSurfaceQuoteSet csqs = new org.drip.param.market.CurveSurfaceQuoteSet();
 

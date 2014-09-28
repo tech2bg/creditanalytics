@@ -35,15 +35,15 @@ package org.drip.analytics.output;
  */
 
 public class FixedCouponPeriodMetrics {
-	private double _dblDCF = 0.;
 	private double _dblDF = java.lang.Double.NaN;
 	private double _dblFX = java.lang.Double.NaN;
-	private double _dblDV01 = java.lang.Double.NaN;
+	private double _dblDCF = java.lang.Double.NaN;
+	private double _dblRate = java.lang.Double.NaN;
+	private double _dblAmount = java.lang.Double.NaN;
 	private double _dblEndDate = java.lang.Double.NaN;
 	private double _dblNotional = java.lang.Double.NaN;
 	private double _dblSurvival = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
-	private double _dblCouponAmount = java.lang.Double.NaN;
 	private org.drip.analytics.output.ConvexityAdjustment _convAdj = null;
 
 	/**
@@ -51,10 +51,10 @@ public class FixedCouponPeriodMetrics {
 	 * 
 	 * @param dblStartDate Fixed Coupon Period Start Date
 	 * @param dblEndDate Fixed Coupon Period End Date
-	 * @param dblNotional Fixed Coupon Period Pay Notional
 	 * @param dblDCF Fixed Coupon Period Coupon DCF
-	 * @param dblCouponAmount Fixed Coupon Period Full Coupon Amount
-	 * @param dblDV01 Fixed Coupon Period DV01
+	 * @param dblRate Fixed Coupon Period Coupon Rate
+	 * @param dblNotional Fixed Coupon Period Notional
+	 * @param dblAmount Fixed Coupon Period Full Coupon Amount
 	 * @param dblSurvival Fixed Coupon Period End Survival Probability
 	 * @param dblDF Fixed Coupon Period End Discount Factor
 	 * @param dblFX Fixed Coupon Period End FX Rate
@@ -66,10 +66,10 @@ public class FixedCouponPeriodMetrics {
 	public FixedCouponPeriodMetrics (
 		final double dblStartDate,
 		final double dblEndDate,
-		final double dblNotional,
 		final double dblDCF,
-		final double dblCouponAmount,
-		final double dblDV01,
+		final double dblRate,
+		final double dblNotional,
+		final double dblAmount,
 		final double dblSurvival,
 		final double dblDF,
 		final double dblFX,
@@ -78,17 +78,15 @@ public class FixedCouponPeriodMetrics {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) ||
-						!org.drip.quant.common.NumberUtil.IsValid (_dblCouponAmount = dblCouponAmount) ||
-							!org.drip.quant.common.NumberUtil.IsValid (_dblDV01 = dblDV01) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) ||
+					!org.drip.quant.common.NumberUtil.IsValid (_dblRate = dblRate) ||
+						!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) ||
+							!org.drip.quant.common.NumberUtil.IsValid (_dblAmount = dblAmount) ||
 								!org.drip.quant.common.NumberUtil.IsValid (_dblSurvival = dblSurvival) ||
 									!org.drip.quant.common.NumberUtil.IsValid (_dblDF = dblDF) ||
 										!org.drip.quant.common.NumberUtil.IsValid (_dblFX = dblFX) || null ==
 											(_convAdj = convAdj))
 			throw new java.lang.Exception ("FixedCouponPeriodMetrics ctr: Invalid Inputs");
-
-		_dblDV01 = dblDV01;
 	}
 
 	/**
@@ -114,17 +112,6 @@ public class FixedCouponPeriodMetrics {
 	}
 
 	/**
-	 * Retrieve the Pay Notional
-	 * 
-	 * @return The Pay Notional
-	 */
-
-	public double notional()
-	{
-		return _dblNotional;
-	}
-
-	/**
 	 * Retrieve the Day Count Fraction
 	 * 
 	 * @return The DCF
@@ -136,6 +123,28 @@ public class FixedCouponPeriodMetrics {
 	}
 
 	/**
+	 * Retrieve the Coupon Rate
+	 * 
+	 * @return The Coupon Rate
+	 */
+
+	public double rate()
+	{
+		return _dblRate;
+	}
+
+	/**
+	 * Retrieve the Coupon Notional
+	 * 
+	 * @return The Coupon Notional
+	 */
+
+	public double notional()
+	{
+		return _dblNotional;
+	}
+
+	/**
 	 * Retrieve the Coupon Pay Amount
 	 * 
 	 * @return The Coupon Pay Amount
@@ -143,18 +152,7 @@ public class FixedCouponPeriodMetrics {
 
 	public double couponAmount()
 	{
-		return _dblCouponAmount;
-	}
-
-	/**
-	 * Retrieve the DV01
-	 * 
-	 * @return The DV01
-	 */
-
-	public double dv01()
-	{
-		return _dblDV01;
+		return _dblAmount;
 	}
 
 	/**

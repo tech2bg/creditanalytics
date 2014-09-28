@@ -39,8 +39,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CreditSetting extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable {
+public class CreditSetting implements org.drip.product.params.Validatable {
 
 	/**
 	 * Default Pay Lag
@@ -97,76 +96,6 @@ public class CreditSetting extends org.drip.service.stream.Serializer implements
 		_bAccrOnDefault = bAccrOnDefault;
 	}
 
-	/**
-	 * CreditSetting de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if CreditSetting cannot be properly de-serialized
-	 */
-
-	public CreditSetting (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CreditSetting de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CreditSetting de-serializer: Empty state");
-
-		java.lang.String strSerializedCreditSetting = strRawString.substring (0,
-			strRawString.indexOf (objectTrailer()));
-
-		if (null == strSerializedCreditSetting ||
-			strSerializedCreditSetting.isEmpty())
-			throw new java.lang.Exception ("CreditSetting de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCreditSetting,
-			fieldDelimiter());
-
-		if (null == astrField || 6 > astrField.length)
-			throw new java.lang.Exception ("CreditSetting de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_strCC = "";
-		else
-			_strCC = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("CreditSetting de-serializer: Cannot locate Default Pay Lag");
-
-		_iDefPayLag = new java.lang.Integer (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("CreditSetting de-serializer: Cannot locate comp recovery");
-
-		_dblRecovery = new java.lang.Double (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception
-				("CreditSetting de-serializer: Cannot locate Use curve recpvery flag");
-
-		_bUseCurveRec = new java.lang.Boolean (astrField[4]);
-
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception
-				("CreditSetting de-serializer: Cannot locate accr on default flag");
-
-		_bAccrOnDefault = new java.lang.Boolean (astrField[5]);
-
-		if (!validate()) throw new java.lang.Exception ("CreditSetting de-serializer: Cannot validate!");
-	}
-
 	@Override public boolean validate()
 	{
 		if (null == _strCC || _strCC.isEmpty()) return true;
@@ -174,49 +103,5 @@ public class CreditSetting extends org.drip.service.stream.Serializer implements
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblRecovery) && !_bUseCurveRec) return false;
 
 		return true;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		if (null == _strCC || _strCC.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() +
-				org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strCC +
-				fieldDelimiter());
-
-		sb.append (_iDefPayLag + fieldDelimiter() + _dblRecovery + fieldDelimiter() + _bUseCurveRec +
-			fieldDelimiter() + _bAccrOnDefault);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new CreditSetting (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		CreditSetting ccvp = new CreditSetting (2, 0.40, true, "JKL", true);
-
-		byte[] abCCVP = ccvp.serialize();
-
-		System.out.println (new java.lang.String (abCCVP));
-
-		CreditSetting ccvpDeser = new CreditSetting (abCCVP);
-
-		System.out.println (new java.lang.String (ccvpDeser.serialize()));
 	}
 }

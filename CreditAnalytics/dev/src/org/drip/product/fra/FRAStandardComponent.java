@@ -139,102 +139,6 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		_dtMaturity = new org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor());
 	}
 
-	/**
-	 * FRAStandardComponent de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if FRAStandardComponent cannot be properly de-serialized
-	 */
-
-	public FRAStandardComponent (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Invalid input Byte array");
-
-		java.lang.String strFRAComponent = new java.lang.String (ab);
-
-		if (null == strFRAComponent || strFRAComponent.isEmpty())
-			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Empty state");
-
-		java.lang.String strSerializedFRAComponent = strFRAComponent.substring (0, strFRAComponent.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedFRAComponent || strSerializedFRAComponent.isEmpty())
-			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedFRAComponent,
-			fieldDelimiter());
-
-		if (null == astrField || 9 > astrField.length)
-			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate notional");
-
-		_dblNotional = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception
-				("FRAStandardComponent de-serializer: Cannot locate IR curve name");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_strCurrency = astrField[2];
-		else
-			_strCurrency = "";
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate code");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			_strCode = astrField[3];
-		else
-			_strCode = "";
-
-		if (null == astrField[4] || astrField[4].isEmpty())
-			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate calendar");
-
-		if (!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			_strCalendar = astrField[4];
-		else
-			_strCalendar = "";
-
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception
-				("FRAStandardComponent de-serializer: Cannot locate Effective Date");
-
-		_dblEffectiveDate = new java.lang.Double (astrField[5]);
-
-		if (null == astrField[6] || astrField[6].isEmpty())
-			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate rate index");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
-			_fri = null;
-		else
-			_fri = new org.drip.state.identifier.ForwardLabel (astrField[6].getBytes());
-
-		if (null == astrField[7] || astrField[7].isEmpty())
-			throw new java.lang.Exception
-				("FRAStandardComponent de-serializer: Cannot locate cash settle params");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
-			_settleParams = null;
-		else
-			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[7].getBytes());
-
-		if (null == astrField[8] || astrField[8].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
-			throw new java.lang.Exception ("FRAStandardComponent de-serializer: Cannot locate Strike");
-
-		_dblStrike = new java.lang.Double (astrField[8]);
-	}
-
 	@Override public java.lang.String primaryCode()
 	{
 		return _strCode;
@@ -633,47 +537,6 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return null != prwc && prwc.addMergeLabel (_fri) ? prwc : null;
 	}
 
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		sb.append (_dblNotional + fieldDelimiter());
-
-		sb.append (_strCurrency + fieldDelimiter());
-
-		sb.append (_strCode + fieldDelimiter());
-
-		sb.append (_strCalendar + fieldDelimiter());
-
-		sb.append (_dblEffectiveDate + fieldDelimiter());
-
-		if (null == _fri)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (new java.lang.String (_fri.serialize()) + fieldDelimiter());
-
-		if (null == _settleParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (new java.lang.String (_settleParams.serialize()) + fieldDelimiter());
-
-		return sb.append (_dblStrike + objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new FRAStandardComponent (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	/**
 	 * Retrieve the Floating Rate Index
 	 * 
@@ -716,22 +579,5 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 	public java.lang.String calendar()
 	{
 		return _strCalendar;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		FRAStandardComponent fra = new FRAStandardComponent (1., "JPY", "JPY-FRA-3M", "JPY",
-			org.drip.analytics.date.JulianDate.Today().julian(),
-				org.drip.state.identifier.ForwardLabel.Standard ("JPY-LIBOR-6M"), 0.01, "Act/360");
-
-		byte[] abFRA = fra.serialize();
-
-		System.out.println (new java.lang.String (abFRA));
-
-		FRAStandardComponent fraDeser = new FRAStandardComponent (abFRA);
-
-		System.out.println (new java.lang.String (fraDeser.serialize()));
 	}
 }

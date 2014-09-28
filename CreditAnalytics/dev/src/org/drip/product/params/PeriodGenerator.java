@@ -154,21 +154,6 @@ public class PeriodGenerator extends PeriodSet {
 			_strAccrualDC = strAccrualDC;
 	}
 
-	/**
-	 * PeriodGenerator de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if PeriodGenerator cannot be properly de-serialized
-	 */
-
-	public PeriodGenerator (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		super (ab);
-	}
-
 	@Override public boolean validate()
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblEffective) ||
@@ -267,33 +252,5 @@ public class PeriodGenerator extends PeriodSet {
 	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> getPeriods()
 	{
 		return _lsCouponPeriod;
-	}
-
-	public static void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		org.drip.service.api.CreditAnalytics.Init ("");
-
-		double dblEffective = org.drip.analytics.date.JulianDate.Today().julian();
-
-		PeriodGenerator bpp = new PeriodGenerator (dblEffective + 3653., dblEffective, dblEffective + 3653.,
-			dblEffective + 182., dblEffective, 2, "30/360", "30/360", null, null, null, null, null, null,
-				null, null, "IGNORE", false, "USD", "USD", org.drip.state.identifier.ForwardLabel.Standard
-					("USD-LIBOR-6M"), org.drip.state.identifier.CreditLabel.Standard ("IBM"));
-
-		if (!bpp.validate()) {
-			System.out.println ("Cannot validate BPP!");
-
-			System.exit (47);
-		}
-
-		byte[] abBPP = bpp.serialize();
-
-		System.out.println (new java.lang.String (abBPP));
-
-		PeriodGenerator bppDeser = new PeriodGenerator (abBPP);
-
-		System.out.println (new java.lang.String (bppDeser.serialize()));
 	}
 }

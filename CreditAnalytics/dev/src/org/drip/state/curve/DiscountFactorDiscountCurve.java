@@ -244,15 +244,4 @@ public class DiscountFactorDiscountCurve extends org.drip.analytics.rates.Discou
 
 		return mapQuote.get (strInstrumentCode);
 	}
-
-	@Override public byte[] serialize()
-	{
-		return null;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		return null;
-	}
 }

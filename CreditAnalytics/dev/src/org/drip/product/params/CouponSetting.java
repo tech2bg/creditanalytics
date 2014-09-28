@@ -39,8 +39,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CouponSetting extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable {
+public class CouponSetting implements org.drip.product.params.Validatable {
 
 	/**
 	 * Coupon schedule
@@ -97,74 +96,6 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 	}
 
 	/**
-	 * CouponSetting de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if CouponSetting cannot be properly de-serialized
-	 */
-
-	public CouponSetting (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CouponSetting de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CouponSetting de-serializer: Empty state");
-
-		java.lang.String strSerializedCouponSetting = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedCouponSetting || strSerializedCouponSetting.isEmpty())
-			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCouponSetting,
-			fieldDelimiter());
-
-		if (null == astrField || 6 > astrField.length)
-			throw new java.lang.Exception ("CouponSetting de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate Coupon Schedule");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_fsCoupon = null;
-		else
-			_fsCoupon = new FactorSchedule (astrField[1].getBytes());
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon");
-
-		_dblCoupon = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon type");
-
-		_strCouponType = astrField[3];
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon ceiling");
-
-		_dblCouponCeiling = new java.lang.Double (astrField[4]);
-
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("CouponSetting de-serializer: Cannot locate coupon floor");
-
-		_dblCouponFloor = new java.lang.Double (astrField[5]);
-
-		if (!validate()) throw new java.lang.Exception ("CouponSetting de-serializer: Cannot validate!");
-	}
-
-	/**
 	 * Trim the component coupon if it falls outside the (optionally) specified coupon window. Note that
 	 * 	trimming the coupon ceiling takes precedence over hiking the coupon floor.
 	 * 
@@ -198,41 +129,6 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 		return dblCoupon;
 	}
 
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		if (null == _fsCoupon)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (new java.lang.String (_fsCoupon.serialize()) + fieldDelimiter());
-
-		sb.append (_dblCoupon + fieldDelimiter());
-
-		if (null == _strCouponType || _strCouponType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCouponType + fieldDelimiter());
-
-		sb.append (_dblCouponCeiling + fieldDelimiter() + _dblCouponFloor);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new CouponSetting (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	@Override public boolean validate()
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon)) return false;
@@ -244,32 +140,5 @@ public class CouponSetting extends org.drip.service.stream.Serializer implements
 			return false;
 
 		return true;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		double dblStart = org.drip.analytics.date.JulianDate.Today().julian();
-
-		double[] adblDate = new double[3];
-		double[] adblFactor = new double[3];
-
-		for (int i = 0; i < 3; ++i) {
-			adblDate[i] = dblStart + 365. * (i + 1);
-			adblFactor[i] = 1 - 0.1 * i;
-		}
-
-		FactorSchedule fs = FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
-
-		CouponSetting bcp = new CouponSetting (fs, "FULL", 0.05, java.lang.Double.NaN, java.lang.Double.NaN);
-
-		byte[] abBCP = bcp.serialize();
-
-		System.out.println (new java.lang.String (abBCP));
-
-		CouponSetting bcpDeser = new CouponSetting (abBCP);
-
-		System.out.println (new java.lang.String (bcpDeser.serialize()));
 	}
 }

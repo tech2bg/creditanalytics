@@ -38,8 +38,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CurrencySet extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable {
+public class CurrencySet implements org.drip.product.params.Validatable {
 	private java.lang.String[] _astrCouponCurrency = null;
 	private java.lang.String[] _astrPrincipalCurrency = null;
 
@@ -76,59 +75,6 @@ public class CurrencySet extends org.drip.service.stream.Serializer implements
 	{
 		_astrCouponCurrency = astrCouponCurrency;
 		_astrPrincipalCurrency = astrPrincipalCurrency;
-	}
-
-	/**
-	 * CurrencySet de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if CurrencySet cannot be properly de-serialized
-	 */
-
-	public CurrencySet (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CurrencySet de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CurrencySet de-serializer: Empty state");
-
-		java.lang.String strSerializedCurrencySet = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedCurrencySet || strSerializedCurrencySet.isEmpty())
-			throw new java.lang.Exception ("CurrencySet de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCurrencySet,
-			fieldDelimiter());
-
-		if (null == astrField || 3 > astrField.length)
-			throw new java.lang.Exception ("CurrencySet de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		java.lang.String strCollectionRecordDelimiter = collectionRecordDelimiter();
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("CurrencySet de-serializer: Cannot locate Coupon Currency Array");
-
-		_astrCouponCurrency = org.drip.quant.common.StringUtil.Split (astrField[1],
-			strCollectionRecordDelimiter);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("CurrencySet de-serializer: Cannot locate Principal Currency");
-
-		_astrPrincipalCurrency = org.drip.quant.common.StringUtil.Split (astrField[2],
-			strCollectionRecordDelimiter);
-
-		if (!validate()) throw new java.lang.Exception ("CurrencySet de-serializer: Cannot validate!");
 	}
 
 	@Override public boolean validate()
@@ -169,58 +115,5 @@ public class CurrencySet extends org.drip.service.stream.Serializer implements
 	public java.lang.String[] principalCurrency()
 	{
 		return _astrPrincipalCurrency;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		java.lang.String strCollectionRecordDelimiter = collectionRecordDelimiter();
-
-		java.lang.String strCouponCurrencyArray = org.drip.quant.common.StringUtil.StringArrayToString
-			(_astrCouponCurrency, strCollectionRecordDelimiter,
-				org.drip.service.stream.Serializer.NULL_SER_STRING);
-
-		strCouponCurrencyArray = null == strCouponCurrencyArray || strCouponCurrencyArray.isEmpty() ?
-			org.drip.service.stream.Serializer.NULL_SER_STRING : strCouponCurrencyArray;
-
-		java.lang.String strPrincipalCurrencyArray = org.drip.quant.common.StringUtil.StringArrayToString
-			(_astrPrincipalCurrency, strCollectionRecordDelimiter,
-				org.drip.service.stream.Serializer.NULL_SER_STRING);
-
-		strPrincipalCurrencyArray = null == strPrincipalCurrencyArray || strPrincipalCurrencyArray.isEmpty()
-			? org.drip.service.stream.Serializer.NULL_SER_STRING : strPrincipalCurrencyArray;
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + strCouponCurrencyArray +
-			fieldDelimiter() + strPrincipalCurrencyArray);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new CurrencySet (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		CurrencySet bcp = new CurrencySet (new java.lang.String[] {"ABC"}, new java.lang.String[] {"GHI"});
-
-		byte[] abBCP = bcp.serialize();
-
-		System.out.println (new java.lang.String (abBCP));
-
-		CurrencySet bcpDeser = new CurrencySet (abBCP);
-
-		System.out.println (new java.lang.String (bcpDeser.serialize()));
 	}
 }

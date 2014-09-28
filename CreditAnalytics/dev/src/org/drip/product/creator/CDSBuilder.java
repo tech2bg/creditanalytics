@@ -373,26 +373,4 @@ public class CDSBuilder {
 
 		return CreateCDS (dtEffective, strTenor, dblCoupon, strIR, crValParams, strCalendar);
 	}
-
-	/**
-	 * Create a CDS Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return CDS Instance
-	 */
-
-	public static final org.drip.product.definition.CreditDefaultSwap FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.product.credit.CDSComponent (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

@@ -221,15 +221,4 @@ public class DeterministicCollateralChoiceDiscountCurve extends org.drip.analyti
 	{
 		return null;
 	}
-
-	@Override public byte[] serialize()
-	{
-		return null;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		return null;
-	}
 }

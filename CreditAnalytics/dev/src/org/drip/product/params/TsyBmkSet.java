@@ -38,7 +38,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class TsyBmkSet extends org.drip.service.stream.Serializer {
+public class TsyBmkSet {
 	private java.lang.String _strBmkPrimary = "";
 	private java.lang.String[] _astrSecBmk = null;
 
@@ -56,66 +56,6 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 	{
 		_astrSecBmk = astrSecBmk;
 		_strBmkPrimary = strBmkPrimary;
-	}
-
-	/**
-	 * TsyBmkSet de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if TsyBmkSet cannot be properly de-serialized
-	 */
-
-	public TsyBmkSet (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("TsyBmkSet de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("TsyBmkSet de-serializer: Empty state");
-
-		java.lang.String strSerializedTsyBmkSet = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedTsyBmkSet || strSerializedTsyBmkSet.isEmpty())
-			throw new java.lang.Exception ("TsyBmkSet de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedTsyBmkSet,
-			fieldDelimiter());
-
-		if (null == astrField || 3 > astrField.length)
-			throw new java.lang.Exception ("TsyBmkSet de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("TsyBmkSet de-serializer: Cannot locate Primary Tsy Bmk");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_strBmkPrimary = "";
-		else
-			_strBmkPrimary = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("TsyBmkSet de-serializer: Cannot locate CUSIP");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			_astrSecBmk = null;
-		else {
-			_astrSecBmk = org.drip.quant.common.StringUtil.Split (astrField[2],
-				collectionRecordDelimiter());
-
-			if (null == _astrSecBmk || 0 == _astrSecBmk.length) {
-				for (int i = 0; i < _astrSecBmk.length; ++i) {
-					if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (_astrSecBmk[i]))
-						_astrSecBmk[i] = null;
-				}
-			}
-		}
 	}
 
 	/**
@@ -138,82 +78,5 @@ public class TsyBmkSet extends org.drip.service.stream.Serializer {
 	public java.lang.String[] getSecBmk()
 	{
 		return _astrSecBmk;
-	}
-
-	@Override public java.lang.String collectionRecordDelimiter()
-	{
-		return "!";
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "~";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "`";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strBmkPrimary +
-			fieldDelimiter());
-
-		if (null == _astrSecBmk || 0 == _astrSecBmk.length)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-		else {
-			boolean bFirstEntry = true;
-
-			java.lang.StringBuffer sbSB = new java.lang.StringBuffer();
-
-			for (int i = 0; i < _astrSecBmk.length; ++i) {
-				if (bFirstEntry)
-					bFirstEntry = false;
-				else
-					sbSB.append (collectionRecordDelimiter());
-
-				if (null != _astrSecBmk[i] && !_astrSecBmk[i].isEmpty())
-					sbSB.append (_astrSecBmk[i]);
-				else
-					sbSB.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-			}
-
-			if (!sbSB.toString().isEmpty())
-				sb.append (sbSB.toString());
-			else
-				sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-		}
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new TsyBmkSet (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		TsyBmkSet tss = new TsyBmkSet ("ABC", new java.lang.String[] {"DEF", "GHI", "JKL"});
-
-		byte[] abTSS = tss.serialize();
-
-		System.out.println (new java.lang.String (abTSS));
-
-		TsyBmkSet tssDeser = new TsyBmkSet (abTSS);
-
-		System.out.println (new java.lang.String (tssDeser.serialize()));
 	}
 }

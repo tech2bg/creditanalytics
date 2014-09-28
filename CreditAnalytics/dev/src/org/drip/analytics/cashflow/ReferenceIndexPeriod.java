@@ -35,7 +35,7 @@ package org.drip.analytics.cashflow;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ReferenceIndexPeriod extends org.drip.service.stream.Serializer {
+public class ReferenceIndexPeriod {
 	private double _dblEndDate = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
 	private double _dblFixingDate = java.lang.Double.NaN;
@@ -108,94 +108,5 @@ public class ReferenceIndexPeriod extends org.drip.service.stream.Serializer {
 	public org.drip.state.identifier.ForwardLabel forwardLabel()
 	{
 		return _forwardLabel;
-	}
-
-	/**
-	 * De-serialization of ReferenceIndexPeriod from byte stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize ReferenceIndexPeriod
-	 */
-
-	public ReferenceIndexPeriod (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("ReferenceIndexPeriod de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("ReferenceIndexPeriod de-serializer: Empty state");
-
-		java.lang.String strCP = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strCP || strCP.isEmpty())
-			throw new java.lang.Exception ("ReferenceIndexPeriod de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception ("ReferenceIndexPeriod de-serialize: Invalid number of fields");
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("ReferenceIndexPeriod de-serializer: Cannot locate Start Date");
-
-		_dblStartDate = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("ReferenceIndexPeriod de-serializer: Cannot locate End Date");
-
-		_dblEndDate = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("ReferenceIndexPeriod de-serializer: Cannot locate Fixing Date");
-
-		_dblFixingDate = new java.lang.Double (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception
-				("ReferenceIndexPeriod de-serializer: Cannot locate Forward Label");
-
-		_forwardLabel = org.drip.state.identifier.ForwardLabel.Standard (astrField[4]);
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "'";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "_";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblStartDate +
-			fieldDelimiter() + _dblEndDate + fieldDelimiter() + _dblFixingDate + fieldDelimiter() +
-				_forwardLabel.fullyQualifiedName());
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new ComposablePeriod (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

@@ -73,17 +73,6 @@ public class BasisSplineDeterministicVolatility extends org.drip.analytics.defin
 		return _collatParams;
 	}
 
-	@Override public byte[] serialize()
-	{
-		return null;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		return null;
-	}
-
 	@Override public double impliedVol (
 		final double dblDate)
 		throws java.lang.Exception

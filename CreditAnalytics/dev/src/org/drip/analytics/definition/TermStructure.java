@@ -35,8 +35,7 @@ package org.drip.analytics.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class TermStructure extends org.drip.service.stream.Serializer implements
-	org.drip.analytics.definition.Curve {
+public abstract class TermStructure implements org.drip.analytics.definition.Curve {
 	protected java.lang.String _strName = "";
 	protected java.lang.String _strCurrency = "";
 	protected double _dblEpochDate = java.lang.Double.NaN;

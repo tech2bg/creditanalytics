@@ -35,6 +35,17 @@ package org.drip.analytics.cashflow;
  */
 
 public class FixedCouponPeriod {
+
+	class CalibInput {
+		double _dblFixedCoupon = java.lang.Double.NaN;
+		double _dblFixedCouponBasis = java.lang.Double.NaN;
+
+		double fullCoupon()
+		{
+			return _dblFixedCoupon + _dblFixedCouponBasis;
+		}
+	}
+
 	private int _iFreq = 2;
 	private int _iAccrualCompoundingRule = -1;
 	private java.lang.String _strPayCurrency = "";
@@ -46,6 +57,45 @@ public class FixedCouponPeriod {
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private java.util.List<org.drip.analytics.cashflow.ComposableFixedPeriod> _lsComposableFixedPeriod =
 		null;
+
+	private CalibInput calibInput (
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		CalibInput ci = new CalibInput();
+
+		org.drip.analytics.cashflow.ComposableFixedPeriod cfpFirst = _lsComposableFixedPeriod.get (0);
+
+		ci._dblFixedCoupon = cfpFirst.fixedCoupon();
+
+		ci._dblFixedCouponBasis = cfpFirst.basis();
+
+		if (null != pqs && pqs instanceof org.drip.product.calib.FixedStreamQuoteSet) {
+			org.drip.product.calib.FixedStreamQuoteSet fsqs = (org.drip.product.calib.FixedStreamQuoteSet)
+				pqs;
+
+			try {
+				if (fsqs.containsCoupon()) ci._dblFixedCoupon = fsqs.coupon();
+
+				if (fsqs.containsCouponBasis()) ci._dblFixedCouponBasis = fsqs.couponBasis();
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return ci;
+	}
+
+	private double calibAccrued (
+		final CalibInput ci,
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+	{
+		org.drip.analytics.output.FixedCouponAccrualMetrics fcam = accrualMetrics (dblValueDate, csqs);
+
+		return null == fcam ? 0. : fcam.notional() * fcam.dcf() * ci.fullCoupon() * fcam.fx();
+	}
 
 	/**
 	 * FixedCouponPeriod Constructor
@@ -228,110 +278,6 @@ public class FixedCouponPeriod {
 	}
 
 	/**
-	 * Get the period Accrual Day Count Fraction to an accrual end date
-	 * 
-	 * @param dblAccrualEnd Accrual End Date
-	 * 
-	 * @exception Thrown if inputs are invalid, or if the date does not lie within the period
-	 */
-
-	public double accrualDCF (
-		final double dblAccrualEnd)
-		throws java.lang.Exception
-	{
-		if (!contains (dblAccrualEnd)) return 0.;
-
-		double dblAccruedDCF = 0.;
-
-		for (org.drip.analytics.cashflow.ComposableFixedPeriod cfp : _lsComposableFixedPeriod) {
-			if (org.drip.analytics.cashflow.ComposableFixedPeriod.NODE_INSIDE_SEGMENT == cfp.dateLocation
-				(dblAccrualEnd))
-				return dblAccruedDCF + cfp.accrualDCF (dblAccrualEnd);
-
-			if (org.drip.analytics.cashflow.ComposableFixedPeriod.NODE_RIGHT_OF_SEGMENT == cfp.dateLocation
-				(dblAccrualEnd))
-				return dblAccruedDCF;
-
-			dblAccruedDCF += cfp.fullCouponDCF();
-		}
-
-		return dblAccruedDCF;
-	}
-
-	/**
-	 * Get the period Accrual01 to an accrual end date
-	 * 
-	 * @param dblAccrualEnd Accrual End Date
-	 * 
-	 * @exception Thrown if the accrual01 cannot be calculated
-	 */
-
-	public double accrued01 (
-		final double dblAccrualEnd)
-		throws java.lang.Exception
-	{
-		if (!contains (dblAccrualEnd)) return 0.;
-
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
-			_iAccrualCompoundingRule || 1 == _lsComposableFixedPeriod.size())
-			return 0.0001 * _dblBaseNotional * _notlSchedule.getFactor (_dblPayDate) * accrualDCF
-				(dblAccrualEnd);
-
-		throw new java.lang.Exception ("FixedCouponPeriod::accrued01 => Invalid Compounding Rule");
-	}
-
-	/**
-	 * Get the period Accrued to an accrual end date
-	 * 
-	 * @param dblAccrualEnd Accrual End Date
-	 * 
-	 * @exception Thrown if the accrued cannot be calculated
-	 */
-
-	public double accrued (
-		final double dblAccrualEnd)
-		throws java.lang.Exception
-	{
-		if (!contains (dblAccrualEnd)) return 0.;
-
-		double dblAccrued = java.lang.Double.NaN;
-
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
-			_iAccrualCompoundingRule)
-			dblAccrued = 0.;
-		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-			_iAccrualCompoundingRule)
-			dblAccrued = 1.;
-
-		for (org.drip.analytics.cashflow.ComposableFixedPeriod cfp : _lsComposableFixedPeriod) {
-			double dblPeriodAccruedDCF = java.lang.Double.NaN;
-
-			int iDateLocation = cfp.dateLocation (dblAccrualEnd);
-
-			if (org.drip.analytics.cashflow.ComposableFixedPeriod.NODE_RIGHT_OF_SEGMENT == iDateLocation)
-				break;
-
-			if (org.drip.analytics.cashflow.ComposableFixedPeriod.NODE_INSIDE_SEGMENT == iDateLocation)
-				dblPeriodAccruedDCF = cfp.accrualDCF (dblAccrualEnd);
-			else if (org.drip.analytics.cashflow.ComposableFixedPeriod.NODE_LEFT_OF_SEGMENT == iDateLocation)
-				dblPeriodAccruedDCF = cfp.fullCouponDCF();
-
-			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
-				_iAccrualCompoundingRule)
-				dblAccrued += (cfp.fixedCoupon() + cfp.basis()) * dblPeriodAccruedDCF;
-			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-				_iAccrualCompoundingRule)
-				dblAccrued *= (1. + (cfp.fixedCoupon() + cfp.basis()) * dblPeriodAccruedDCF);
-		}
-
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-			_iAccrualCompoundingRule)
-			dblAccrued -= 1.;
-
-		return _dblBaseNotional * _notlSchedule.getFactor (_dblPayDate) * dblAccrued;
-	}
-
-	/**
 	 * Retrieve the Coupon Frequency
 	 * 
 	 * @return The Coupon Frequency
@@ -438,7 +384,7 @@ public class FixedCouponPeriod {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate2) || !contains (dblDate1) || !contains (dblDate2))
-			throw new java.lang.Exception ("FixedCoupon::notional => Invalid Dates");
+			throw new java.lang.Exception ("FixedCouponPeriod::notional => Invalid Dates");
 
 		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate1,
 			dblDate2));
@@ -553,19 +499,13 @@ public class FixedCouponPeriod {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate)) return null;
 
-		double dblDF = 1.;
 		double dblDCF = 0.;
-		double dblSurvival = 1.;
 		double dblCouponAmount = java.lang.Double.NaN;
 
-		org.drip.state.identifier.CreditLabel creditLabel = creditLabel();
-
-		org.drip.state.identifier.FundingLabel fundingLabel = fundingLabel();
-
-		org.drip.analytics.definition.CreditCurve cc = null == csqs ? null : csqs.creditCurve (creditLabel);
+		org.drip.analytics.definition.CreditCurve cc = null == csqs ? null : csqs.creditCurve (_creditLabel);
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = null == csqs ? null : csqs.fundingCurve
-			(fundingLabel);
+			(fundingLabel());
 
 		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 			_iAccrualCompoundingRule)
@@ -578,36 +518,33 @@ public class FixedCouponPeriod {
 
 		double dblFullCouponRate = cfpFirst.fixedCoupon() + cfpFirst.basis();
 
-		try {
-			if (null != cc) dblSurvival = cc.survival (_dblPayDate);
+		for (org.drip.analytics.cashflow.ComposableFixedPeriod cfp : _lsComposableFixedPeriod) {
+			double dblPeriodDCF = cfp.fullCouponDCF();
 
-			if (null != dcFunding) dblDF = dcFunding.df (_dblPayDate);
+			dblDCF += dblPeriodDCF;
 
-			for (org.drip.analytics.cashflow.ComposableFixedPeriod cfp : _lsComposableFixedPeriod) {
-				double dblPeriodDCF = cfp.fullCouponDCF();
-
-				dblDCF += dblPeriodDCF;
-
-				if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
-					_iAccrualCompoundingRule)
-					dblCouponAmount += dblFullCouponRate * dblPeriodDCF;
-				else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-					_iAccrualCompoundingRule)
-					dblCouponAmount *= (1. + dblFullCouponRate * dblPeriodDCF);
-			}
-
-			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_iAccrualCompoundingRule)
-				dblCouponAmount -= 1.;
+				dblCouponAmount += dblFullCouponRate * dblPeriodDCF;
+			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+				_iAccrualCompoundingRule)
+				dblCouponAmount *= (1. + dblFullCouponRate * dblPeriodDCF);
+		}
 
+		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			_iAccrualCompoundingRule)
+			dblCouponAmount -= 1.;
+
+		try {
 			double dblFX = fx (csqs);
 
+			double dblNotional = _dblBaseNotional * _notlSchedule.getFactor (_dblPayDate);
+
 			return new org.drip.analytics.output.FixedCouponPeriodMetrics (cfpFirst.accrualStartDate(),
-				_lsComposableFixedPeriod.get (_lsComposableFixedPeriod.size() - 1).accrualEndDate(),
-					_dblBaseNotional * _notlSchedule.getFactor (_dblPayDate), dblDCF, dblCouponAmount, 0. ==
-						dblFullCouponRate ? 0. : dblCouponAmount * dblSurvival * dblDF * dblFX /
-							dblFullCouponRate, dblSurvival, dblDF, dblFX, convexityAdjustment (dblValueDate,
-								csqs));
+				_lsComposableFixedPeriod.get (_lsComposableFixedPeriod.size() - 1).accrualEndDate(), dblDCF,
+					dblFullCouponRate, dblNotional, dblCouponAmount * dblNotional * dblFX, null == cc ? 1. :
+						cc.survival (_dblPayDate), null == dcFunding ? 1. : dcFunding.df (_dblPayDate),
+							dblFX, convexityAdjustment (dblValueDate, csqs));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -629,17 +566,21 @@ public class FixedCouponPeriod {
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		double dblAccrualDCF = 0.;
-		double dblAccrued = java.lang.Double.NaN;
+		double dblAccruedAmount = java.lang.Double.NaN;
 
 		try {
 			if (!contains (dblValueDate)) return null;
 
 			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_iAccrualCompoundingRule)
-				dblAccrued = 0.;
+				dblAccruedAmount = 0.;
 			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 				_iAccrualCompoundingRule)
-				dblAccrued = 1.;
+				dblAccruedAmount = 1.;
+
+			org.drip.analytics.cashflow.ComposableFixedPeriod cfpFirst = _lsComposableFixedPeriod.get (0);
+
+			double dblFullFixedCoupon = cfpFirst.fixedCoupon() + cfpFirst.basis();
 
 			for (org.drip.analytics.cashflow.ComposableFixedPeriod cfp : _lsComposableFixedPeriod) {
 				double dblPeriodAccruedDCF = java.lang.Double.NaN;
@@ -659,29 +600,131 @@ public class FixedCouponPeriod {
 
 				if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 					_iAccrualCompoundingRule)
-					dblAccrued += (cfp.fixedCoupon() + cfp.basis()) * dblPeriodAccruedDCF;
+					dblAccruedAmount += dblFullFixedCoupon * dblPeriodAccruedDCF;
 				else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 					_iAccrualCompoundingRule)
-					dblAccrued *= (1. + (cfp.fixedCoupon() + cfp.basis()) * dblPeriodAccruedDCF);
+					dblAccruedAmount *= (1. + dblFullFixedCoupon * dblPeriodAccruedDCF);
 			}
 
 			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 				_iAccrualCompoundingRule)
-				dblAccrued -= 1.;
+				dblAccruedAmount -= 1.;
 
-			org.drip.analytics.cashflow.ComposableFixedPeriod cfpFirst = _lsComposableFixedPeriod.get (0);
+			double dblFX = fx (csqs);
 
-			double dblFullFixedCoupon = cfpFirst.fixedCoupon() + cfpFirst.basis();
+			double dblNotional = _dblBaseNotional * _notlSchedule.getFactor (_dblPayDate);
 
 			return new org.drip.analytics.output.FixedCouponAccrualMetrics (cfpFirst.accrualStartDate(),
-				_lsComposableFixedPeriod.get (_lsComposableFixedPeriod.size() - 1).accrualEndDate(),
-					_dblBaseNotional * _notlSchedule.getFactor (_dblPayDate), fx (csqs), dblAccrualDCF,
-						dblAccrued, 0. == dblFullFixedCoupon ? 0. : dblAccrued / dblFullFixedCoupon,
-							dblFullFixedCoupon);
+				dblValueDate, dblAccrualDCF, dblFullFixedCoupon, dblNotional, dblAccruedAmount * dblNotional
+					* dblFX, dblFX);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
+	}
+
+	/**
+	 * Generate the Forward Predictor/Response Constraint
+	 * 
+	 * @param dblValueDate The Valuation Date
+	 * @param csqs The Market Curve Surface/Quote Set
+	 * @param pqs Product Quote Set
+	 * 
+	 * @return The Forward Predictor/Response Constraint
+	 */
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == pqs) return null;
+
+		CalibInput ci = calibInput (pqs);
+
+		if (null == ci) return null;
+
+		org.drip.analytics.output.FixedCouponPeriodMetrics fcpm = couponMetrics (dblValueDate, csqs);
+
+		if (null == fcpm) return null;
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		if (!prwc.updateValue (calibAccrued (ci, dblValueDate, csqs) - fcpm.notional() * fcpm.dcf() *
+			ci.fullCoupon() * fcpm.fx() * fcpm.survival() * fcpm.df() * fcpm.convAdj().cumulative()))
+			return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
+	}
+
+	/**
+	 * Generate the Funding Predictor/Response Constraint
+	 * 
+	 * @param dblValueDate The Valuation Date
+	 * @param csqs The Market Curve Surface/Quote Set
+	 * @param pqs Product Quote Set
+	 * 
+	 * @return The Funding Predictor/Response Constraint
+	 */
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		if (null == pqs) return null;
+
+		CalibInput ci = calibInput (pqs);
+
+		if (null == ci) return null;
+
+		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
+			org.drip.state.estimator.PredictorResponseWeightConstraint();
+
+		org.drip.analytics.output.FixedCouponPeriodMetrics fcpm = couponMetrics (dblValueDate, csqs);
+
+		if (null == fcpm) return null;
+
+		if (fundingLabel().match (pqs.fundingLabel())) {
+			double dblDiscountFactorLoading = fcpm.notional() * fcpm.dcf() * ci.fullCoupon() * fcpm.fx() *
+				fcpm.survival() * fcpm.convAdj().cumulative();
+
+			if (!prwc.addPredictorResponseWeight (_dblPayDate, dblDiscountFactorLoading)) return null;
+
+			if (!prwc.addDResponseWeightDManifestMeasure ("PV", _dblPayDate, dblDiscountFactorLoading))
+				return null;
+		} else {
+			if (!prwc.updateValue (-1. * fcpm.notional() * fcpm.dcf() * ci.fullCoupon() * fcpm.fx() *
+				fcpm.survival() * fcpm.df() * fcpm.convAdj().cumulative()))
+				return null;
+		}
+
+		if (!prwc.updateValue (calibAccrued (ci, dblValueDate, csqs))) return null;
+
+		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		return prwc;
+	}
+
+	/**
+	 * Generate the Merged Forward/Funding Predictor/Response Constraint
+	 * 
+	 * @param dblValueDate The Valuation Date
+	 * @param csqs The Market Curve Surface/Quote Set
+	 * @param pqs Product Quote Set
+	 * 
+	 * @return The Merged Forward/Funding Predictor/Response Constraint
+	 */
+
+	public org.drip.state.estimator.PredictorResponseWeightConstraint forwardFundingPRWC (
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		return fundingPRWC (dblValueDate, csqs, pqs);
 	}
 }

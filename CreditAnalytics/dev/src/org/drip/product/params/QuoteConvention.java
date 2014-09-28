@@ -39,8 +39,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class QuoteConvention extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable {
+public class QuoteConvention implements org.drip.product.params.Validatable {
 
 	/**
 	 * Calculation Type
@@ -103,82 +102,6 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 			iSettleAdjustMode);
 	}
 
-	/**
-	 * Market Convention de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if Market Convention cannot be properly de-serialized
-	 */
-
-	public QuoteConvention (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("QuoteConvention de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty()) 
-			throw new java.lang.Exception ("QuoteConvention de-serializer: Empty state");
-
-		java.lang.String strSerializedMarketConvention = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedMarketConvention || strSerializedMarketConvention.isEmpty())
-			throw new java.lang.Exception ("QuoteConvention de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedMarketConvention,
-			fieldDelimiter());
-
-		if (null == astrField || 6 > astrField.length)
-			throw new java.lang.Exception ("QuoteConvention de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("QuoteConvention de-serializer: Cannot locate first settle date");
-
-		_dblFirstSettle = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("MarketConvention de-serializer: Cannot locate Calculation Type");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_strCalculationType = "";
-		else
-			_strCalculationType = astrField[2];
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception
-				("QuoteConvention de-serializer: Cannot locate first redemption value");
-
-		_dblRedemptionValue = new java.lang.Double (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty())
-			throw new java.lang.Exception
-				("QuoteConvention de-serializer: Cannot locate Quoting Convention");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			_quotingParams = null;
-		else
-			_quotingParams = new org.drip.param.valuation.ValuationCustomizationParams (astrField[4].getBytes());
-
-		if (null == astrField[5] || astrField[5].isEmpty())
-			throw new java.lang.Exception
-				("QuoteConvention de-serializer: Cannot locate settle params value");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			_settleParams = null;
-		else
-			_settleParams = new org.drip.param.valuation.CashSettleParams (astrField[5].getBytes());
-
-		if (!validate()) throw new java.lang.Exception ("QuoteConvention de-serializer: Cannot validate!");
-	}
-
 	public double getSettleDate (
 		final org.drip.param.valuation.ValuationParams valParams)
 		throws java.lang.Exception
@@ -193,61 +116,5 @@ public class QuoteConvention extends org.drip.service.stream.Serializer implemen
 	{
 		return org.drip.quant.common.NumberUtil.IsValid (_dblFirstSettle) &&
 			org.drip.quant.common.NumberUtil.IsValid (_dblRedemptionValue);
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		sb.append (_dblFirstSettle + fieldDelimiter());
-
-		if (null == _strCalculationType || _strCalculationType.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCalculationType + fieldDelimiter());
-
-		sb.append (_dblRedemptionValue + fieldDelimiter());
-
-		if (null == _quotingParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (new java.lang.String (_quotingParams.serialize()) + fieldDelimiter());
-
-		if (null == _settleParams)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-		else
-			sb.append (new java.lang.String (_settleParams.serialize()));
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new QuoteConvention (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		QuoteConvention bivp = new QuoteConvention (new org.drip.param.valuation.ValuationCustomizationParams
-			("30/360", 2, true, null, "DKK", false, null, null), "GHI", 1., 2., 3, "JKL", 4);
-
-		byte[] abBIVP = bivp.serialize();
-
-		System.out.println (new java.lang.String (abBIVP));
-
-		QuoteConvention bivpDeser = new QuoteConvention (abBIVP);
-
-		System.out.println (new java.lang.String (bivpDeser.serialize()));
 	}
 }

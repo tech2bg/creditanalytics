@@ -396,7 +396,8 @@ public class TemplatedDiscountCurveBuilder {
 				FormatUtil.FormatDouble (ComponentMetric (aDepositComp[i], valParams, dcCubicPolySmoother, "Rate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aDepositComp[i], valParams, dcDENSE, "Rate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aDepositComp[i], valParams, dcDualDENSE, "Rate"), 1, 6, 1.) + "    |    " +
-				FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
+				FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.)
+			);
 
 		/*
 		 * Cross-Comparison of the Swap Calibration Instrument "Rate" metric across the different curve
@@ -421,7 +422,8 @@ public class TemplatedDiscountCurveBuilder {
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcCubicPolySmoother, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcDENSE, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcDualDENSE, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
-				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
+				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.)
+			);
 
 		/*
 		 * Cross-Comparison of the generated Discount Factor across the different curve construction
@@ -447,7 +449,8 @@ public class TemplatedDiscountCurveBuilder {
 				FormatUtil.FormatDouble (dcCubicPolyShapePreserver.df (dblDate), 1, 8, 1.) + "    |    " +
 				FormatUtil.FormatDouble (dcCubicPolySmoother.df (dblDate), 1, 8, 1.) + "    |    " +
 				FormatUtil.FormatDouble (dcDENSE.df (dblDate), 1, 8, 1.) + "    |    " +
-				FormatUtil.FormatDouble (dcDualDENSE.df (dblDate), 1, 8, 1.));
+				FormatUtil.FormatDouble (dcDualDENSE.df (dblDate), 1, 8, 1.)
+			);
 		}
 	}
 

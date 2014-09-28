@@ -228,17 +228,6 @@ public class ZeroRateDiscountCurve extends org.drip.analytics.rates.DiscountCurv
 		return null == _ccis ? null : _ccis.components();
 	}
 
-	@Override public byte[] serialize()
-	{
-		return null;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		return null;
-	}
-
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> manifestMeasure (
 		final java.lang.String strInstrumentCode)
 	{

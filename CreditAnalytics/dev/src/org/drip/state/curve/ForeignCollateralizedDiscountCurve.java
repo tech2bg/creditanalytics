@@ -209,15 +209,4 @@ public class ForeignCollateralizedDiscountCurve extends org.drip.analytics.rates
 	{
 		return true;
 	}
-
-	@Override public byte[] serialize()
-	{
-		return null;
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		return null;
-	}
 }

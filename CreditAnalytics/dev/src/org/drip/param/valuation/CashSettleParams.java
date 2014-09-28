@@ -38,7 +38,7 @@ package org.drip.param.valuation;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CashSettleParams extends org.drip.service.stream.Serializer {
+public class CashSettleParams {
 	private int _iLag = 3;
 	private java.lang.String _strCalendar = "";
 	private int _iAdjustMode = org.drip.analytics.daycount.Convention.DR_FOLL;
@@ -59,61 +59,6 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 		_iLag = iLag;
 		_iAdjustMode = iAdjustMode;
 		_strCalendar = strCalendar;
-	}
-
-	/**
-	 * CashSettleParams de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if CashSettleParams cannot be properly de-serialized
-	 */
-
-	public CashSettleParams (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("CashSettleParams de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("CashSettleParams de-serializer: Empty state");
-
-		java.lang.String strSerializedCashSettleParams = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedCashSettleParams || strSerializedCashSettleParams.isEmpty())
-			throw new java.lang.Exception ("CashSettleParams de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedCashSettleParams,
-			fieldDelimiter());
-
-		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("CashSettleParams de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("CashSettleParams de-serializer: Cannot locate Lag");
-
-		_iLag = new java.lang.Integer (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("CashSettleParams de-serializer: Cannot locate Calendar");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			_strCalendar = "";
-		else
-			_strCalendar = astrField[2];
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("CashSettleParams de-serializer: Cannot locate Adj mode");
-
-		_iAdjustMode = new java.lang.Integer (astrField[3]);
 	}
 
 	/**
@@ -165,56 +110,5 @@ public class CashSettleParams extends org.drip.service.stream.Serializer {
 			throw new java.lang.Exception ("CashSettleParams ctr: Invalid input valuation date");
 
 		return org.drip.analytics.daycount.Convention.Adjust (dblValue + _iLag, _strCalendar, _iAdjustMode);
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "~";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "`";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _iLag + fieldDelimiter());
-
-		if (null == _strCalendar || _strCalendar.isEmpty())
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_strCalendar + fieldDelimiter());
-
-		return sb.append (_iAdjustMode + objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new CashSettleParams (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		CashSettleParams csp = new CashSettleParams (2, "DKK", 3);
-
-		byte[] abCSP = csp.serialize();
-
-		System.out.println (new java.lang.String (abCSP));
-
-		CashSettleParams cspDeser = new CashSettleParams (abCSP);
-
-		System.out.println (new java.lang.String (cspDeser.serialize()));
 	}
 }

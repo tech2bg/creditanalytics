@@ -85,8 +85,7 @@ public class CDSBasketBuilder {
 		}
 
 		try {
-			return new org.drip.product.credit.CDSBasket (dtEffective, dtMaturity, dblCoupon, aCDS,
-				adblWeight, strName);
+			return new org.drip.product.credit.CDSBasket (aCDS, adblWeight, strName);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -140,8 +139,7 @@ public class CDSBasketBuilder {
 			for (int i = 0; i < aCDS.length; ++i)
 				adblWeight[i] = 1.;
 
-			return new org.drip.product.credit.CDSBasket (dtEffective, dtMaturity, dblCoupon, aCDS,
-				adblWeight, strName);
+			return new org.drip.product.credit.CDSBasket (aCDS, adblWeight, strName);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -150,18 +148,14 @@ public class CDSBasketBuilder {
 	}
 
 	/**
-	 * Create the basket default swap from effective, maturity, and an array of the credit components.
+	 * Create the basket default swap from an array of the credit components.
 	 * 
-	 * @param dtEffective JulianDate Effective
-	 * @param dtMaturity JulianDate Maturity
 	 * @param aComp Array of the credit components
 	 * 
 	 * @return BasketDefaultSwap object
 	 */
 
 	public static final org.drip.product.definition.BasketProduct MakeBasketDefaultSwap (
-		final org.drip.analytics.date.JulianDate dtEffective,
-		final org.drip.analytics.date.JulianDate dtMaturity,
 		final org.drip.product.definition.FixedIncomeComponent aComp[])
 	{
 		try {
@@ -170,29 +164,7 @@ public class CDSBasketBuilder {
 			for (int i = 0; i < aComp.length; ++i)
 				adblWeight[i] = 1.;
 
-			return new org.drip.product.credit.CDSBasket (dtEffective, dtMaturity, 0.0001, aComp, adblWeight, "");
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Create a CDSBasket Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return CDSBasket Instance
-	 */
-
-	public static final org.drip.product.definition.BasketProduct FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.product.credit.CDSBasket (ab);
+			return new org.drip.product.credit.CDSBasket (aComp, adblWeight, "");
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -98,86 +98,6 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		}
 	}
 
-	/**
-	 * DerivedFXBasis de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if DerivedFXBasis cannot be properly de-serialized
-	 */
-
-	public DerivedFXBasis (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Empty state");
-
-		java.lang.String strFXBasis = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strFXBasis || strFXBasis.isEmpty())
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFXBasis,
-			fieldDelimiter());
-
-		if (null == astrField || 6 > astrField.length)
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate spot date");
-
-		_dblSpotDate = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate spot FX");
-
-		_dblFXSpot = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate boot strap flag");
-
-		_bIsFXBasisBootstrapped = new java.lang.Boolean (astrField[3]).booleanValue();
-
-		java.util.List<java.lang.Double> lsdblDate = new java.util.ArrayList<java.lang.Double>();
-
-		java.util.List<java.lang.Double> lsdblBasis = new java.util.ArrayList<java.lang.Double>();
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot decode state");
-
-		if (!org.drip.quant.common.StringUtil.KeyValueListFromStringArray (lsdblDate, lsdblBasis,
-			astrField[4], collectionRecordDelimiter(), collectionKeyValueDelimiter()))
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot decode state");
-
-		if (0 == lsdblDate.size() || 0 == lsdblBasis.size() || lsdblDate.size() != lsdblBasis.size())
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot decode state");
-
-		_adblDate = new double[lsdblDate.size()];
-
-		_adblFXBasis = new double[lsdblBasis.size()];
-
-		for (int i = 0; i < _adblDate.length; ++i) {
-			_adblDate[i] = lsdblDate.get (i);
-
-			_adblFXBasis[i] = lsdblBasis.get (i);
-		}
-
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("DerivedFXBasis de-serializer: Cannot locate currency pair");
-
-		_cp = new org.drip.product.params.CurrencyPair (astrField[5].getBytes());
-	}
-
 	@Override public org.drip.product.params.CurrencyPair currencyPair()
 	{
 		return _cp;
@@ -410,36 +330,6 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_dblSpotDate);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblSpotDate +
-			fieldDelimiter() + _dblFXSpot + fieldDelimiter() + _bIsFXBasisBootstrapped + fieldDelimiter());
-
-		for (int i = 0; i < _adblDate.length; ++i) {
-			if (0 != i) sb.append (collectionRecordDelimiter());
-
-			sb.append (_adblDate[i] + collectionKeyValueDelimiter() + _adblFXBasis[i]);
-		}
-
-		sb.append (fieldDelimiter() + new java.lang.String (_cp.serialize()));
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new DerivedFXBasis (ab);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

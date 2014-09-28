@@ -42,8 +42,7 @@ package org.drip.analytics.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class FXForwardCurve extends org.drip.service.stream.Serializer implements
-	org.drip.analytics.definition.Curve {
+public abstract class FXForwardCurve implements org.drip.analytics.definition.Curve {
 
 	/**
 	 * 

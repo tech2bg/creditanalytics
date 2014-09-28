@@ -42,7 +42,7 @@ package org.drip.analytics.output;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BondRVMeasures extends org.drip.service.stream.Serializer {
+public class BondRVMeasures {
 
 	/**
 	 * Price
@@ -139,125 +139,6 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 	 */
 
 	public org.drip.param.valuation.WorkoutInfo _wi = null;
-
-	/**
-	 * BondRVMeasures de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if BondRVMeasures cannot be properly de-serialized
-	 */
-
-	public BondRVMeasures (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Empty state");
-
-		java.lang.String strSerializedBondRVMeasures = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedBondRVMeasures || strSerializedBondRVMeasures.isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedBondRVMeasures,
-			fieldDelimiter());
-
-		if (null == astrField || 17 > astrField.length)
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Price");
-
-		_dblPrice = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Z Spread");
-
-		_dblZSpread = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate G Spread");
-
-		_dblGSpread = new java.lang.Double (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate I Spread");
-
-		_dblISpread = new java.lang.Double (astrField[4]);
-
-		if (null == astrField[5] || astrField[5].isEmpty())
-			throw new java.lang.Exception
-				("BondRVMeasures de-serializer: Cannot locate Option Adjusted Spread");
-
-		_dblOASpread = new java.lang.Double (astrField[5]);
-
-		if (null == astrField[6] || astrField[6].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate TSY Spread");
-
-		_dblTSYSpread = new java.lang.Double (astrField[6]);
-
-		if (null == astrField[7] || astrField[7].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Discount Margin");
-
-		_dblDiscountMargin = new java.lang.Double (astrField[7]);
-
-		if (null == astrField[8] || astrField[8].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Asset Swap Spread");
-
-		_dblAssetSwapSpread = new java.lang.Double (astrField[8]);
-
-		if (null == astrField[9] || astrField[9].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Credit Basis");
-
-		_dblCreditBasis = new java.lang.Double (astrField[9]);
-
-		if (null == astrField[10] || astrField[10].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate PECS");
-
-		_dblPECS = new java.lang.Double (astrField[10]);
-
-		if (null == astrField[11] || astrField[11].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Yield01");
-
-		_dblYield01 = new java.lang.Double (astrField[11]);
-
-		if (null == astrField[12] || astrField[12].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Mac Dur");
-
-		_dblMacaulayDuration = new java.lang.Double (astrField[12]);
-
-		if (null == astrField[13] || astrField[13].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Mod Dur");
-
-		_dblModifiedDuration = new java.lang.Double (astrField[13]);
-
-		if (null == astrField[14] || astrField[14].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Convexity");
-
-		_dblConvexity = new java.lang.Double (astrField[14]);
-
-		if (null == astrField[15] || astrField[15].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Bond Basis");
-
-		_dblBondBasis = new java.lang.Double (astrField[15]);
-
-		if (null == astrField[16] || astrField[16].isEmpty())
-			throw new java.lang.Exception ("BondRVMeasures de-serializer: Cannot locate Work-out info");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[16]))
-			_wi = null;
-		else
-			_wi = new org.drip.param.valuation.WorkoutInfo (astrField[16].getBytes());
-	}
 
 	/**
 	 * BondRVMeasures ctr
@@ -387,48 +268,5 @@ public class BondRVMeasures extends org.drip.service.stream.Serializer {
 		mapRVMeasures.put (strPrefix + "ZSpread", _dblZSpread);
 
 		return mapRVMeasures;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "@";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "!";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblPrice +
-			fieldDelimiter() + _dblZSpread + fieldDelimiter() + _dblGSpread + fieldDelimiter() + _dblISpread
-				+ fieldDelimiter() + _dblOASpread + fieldDelimiter() + _dblTSYSpread + fieldDelimiter() +
-					_dblDiscountMargin + fieldDelimiter() + _dblAssetSwapSpread + fieldDelimiter() +
-						_dblCreditBasis + fieldDelimiter() + _dblPECS + fieldDelimiter() + _dblYield01 +
-							fieldDelimiter() + _dblMacaulayDuration + fieldDelimiter() + _dblModifiedDuration
-								+ fieldDelimiter() + _dblConvexity + fieldDelimiter() + _dblBondBasis +
-									fieldDelimiter());
-
-		if (null == _wi)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING);
-		else
-			sb.append (new java.lang.String (_wi.serialize()));
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new BondRVMeasures (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

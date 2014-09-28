@@ -46,8 +46,8 @@ package org.drip.analytics.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class DiscountCurve extends org.drip.service.stream.Serializer implements
-	org.drip.analytics.rates.DiscountFactorEstimator, org.drip.analytics.definition.Curve {
+public abstract class DiscountCurve implements org.drip.analytics.rates.DiscountFactorEstimator,
+	org.drip.analytics.definition.Curve {
 	private static final int NUM_DF_QUADRATURES = 5;
 
 	protected java.lang.String _strCurrency = "";

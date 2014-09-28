@@ -36,5 +36,5 @@ package org.drip.param.quoting;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class MeasureInterpreter extends org.drip.service.stream.Serializer {
+public abstract class MeasureInterpreter {
 }

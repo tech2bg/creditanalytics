@@ -66,59 +66,6 @@ public class Fixed extends Base {
 		_iMonth = iMonth;
 	}
 
-	/**
-	 * De-serialization of FixedHoliday from byte stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize FixedHoliday
-	 */
-
-	public Fixed (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		super (ab);
-
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("Fixed de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("Fixed de-serializer: Empty state");
-
-		java.lang.String strFH = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strFH || strFH.isEmpty())
-			throw new java.lang.Exception ("Fixed de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strFH, fieldDelimiter());
-
-		if (null == astrField || 4 > astrField.length)
-			throw new java.lang.Exception ("Fixed de-serialize: Invalid number of fields");
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("Fixed de-serializer: Cannot locate day");
-
-		_iDay = new java.lang.Integer (astrField[1]).intValue();
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("Fixed de-serializer: Cannot locate month");
-
-		_iMonth = new java.lang.Integer (astrField[2]).intValue();
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("Fixed de-serializer: Cannot locate wkend");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			_wkend = null;
-		else
-			_wkend = new Weekend (astrField[3].getBytes());
-	}
-
 	@Override public double dateInYear (
 		final int iYear,
 		final boolean bAdjust)
@@ -134,56 +81,5 @@ public class Fixed extends Base {
 		}
 
 		return dblDate;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "#";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "^";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		if (null != _wkend)
-			sb.append (new java.lang.String (super.serialize()) + fieldDelimiter() + _iDay + fieldDelimiter()
-				+ _iMonth + fieldDelimiter() + _wkend.serialize());
-		else
-			sb.append (new java.lang.String (super.serialize()) + fieldDelimiter() + _iDay + fieldDelimiter()
-				+ _iMonth + fieldDelimiter() + org.drip.service.stream.Serializer.NULL_SER_STRING);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new Fixed (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		Fixed fh = new Fixed (1, 3, null, "MLK Holiday");
-
-		byte[] abFH = fh.serialize();
-
-		System.out.println ("Input: " + new java.lang.String (abFH));
-
-		Fixed fhDeser = new Fixed (abFH);
-
-		System.out.println ("Output: " + new java.lang.String (fhDeser.serialize()));
 	}
 }

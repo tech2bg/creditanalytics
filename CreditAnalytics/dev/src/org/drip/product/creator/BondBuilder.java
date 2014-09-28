@@ -373,26 +373,4 @@ public class BondBuilder {
 			(adblDate, adblNormalizedPrincipal), 100.,
 				org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false));
 	}
-
-	/**
-	 * Create a Bond Instance from the byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @return Bond Instance
-	 */
-
-	public static final org.drip.product.definition.Bond FromByteArray (
-		final byte[] ab)
-	{
-		if (null == ab || 0 == ab.length) return null;
-
-		try {
-			return new org.drip.product.credit.BondComponent (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 }

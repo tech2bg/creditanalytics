@@ -41,7 +41,7 @@ package org.drip.analytics.cashflow;
  * @author Lakshmi Krishnamurthy
  */
 
-public class LossQuadratureMetrics extends org.drip.service.stream.Serializer {
+public class LossQuadratureMetrics {
 	private double _dblEndDate = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
 	private double _dblAccrualDCF = java.lang.Double.NaN;
@@ -168,93 +168,6 @@ public class LossQuadratureMetrics extends org.drip.service.stream.Serializer {
 	}
 
 	/**
-	 * De-serialization of LossPeriodCurveFactors from byte stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize LossPeriodCurveFactors
-	 */
-
-	public LossQuadratureMetrics (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("LossPeriodCurveFactors de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("LossPeriodCurveFactors de-serializer: Empty state");
-
-		java.lang.String strCP = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strCP || strCP.isEmpty())
-			throw new java.lang.Exception ("LossPeriodCurveFactors de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strCP, fieldDelimiter());
-
-		if (null == astrField || 9 > astrField.length)
-			throw new java.lang.Exception ("LossPeriodCurveFactors de-serialize: Invalid number of fields");
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate Start Date");
-
-		_dblStartDate = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate End Date");
-
-		_dblEndDate = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate start survival");
-
-		_dblStartSurvival = new java.lang.Double (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate end survival");
-
-		_dblEndSurvival = new java.lang.Double (astrField[4]);
-
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate effective notional");
-
-		_dblEffectiveNotional = new java.lang.Double (astrField[5]);
-
-		if (null == astrField[6] || astrField[6].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
-			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate effective recovery");
-
-		_dblEffectiveRecovery = new java.lang.Double (astrField[6]);
-
-		if (null == astrField[7] || astrField[7].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
-			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate effective DF");
-
-		_dblEffectiveDF = new java.lang.Double (astrField[7]);
-
-		if (null == astrField[8] || astrField[8].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
-			throw new java.lang.Exception
-				("LossPeriodCurveFactors de-serializer: Cannot locate Accrual DCF");
-
-		_dblAccrualDCF = new java.lang.Double (astrField[8]);
-	}
-
-	/**
 	 * Period Start Date
 	 * 
 	 * @return Period Start Date
@@ -340,40 +253,5 @@ public class LossQuadratureMetrics extends org.drip.service.stream.Serializer {
 	public double accrualDCF()
 	{
 		return _dblAccrualDCF;
-	}
-
-	@Override public java.lang.String fieldDelimiter()
-	{
-		return "#";
-	}
-
-	@Override public java.lang.String objectTrailer()
-	{
-		return "^";
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _dblStartDate +
-			fieldDelimiter() + _dblEndDate + fieldDelimiter() + _dblStartSurvival + fieldDelimiter() +
-				_dblEndSurvival + fieldDelimiter() + _dblEffectiveNotional + fieldDelimiter() +
-					_dblEffectiveRecovery + fieldDelimiter() + _dblEffectiveDF + fieldDelimiter() +
-						_dblAccrualDCF);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new LossQuadratureMetrics (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

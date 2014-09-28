@@ -35,7 +35,7 @@ package org.drip.analytics.cashflow;
  * @author Lakshmi Krishnamurthy
  */
 
-public class Bullet extends org.drip.service.stream.Serializer {
+public class Bullet {
 
 	/*
 	 * Date Fields
@@ -443,129 +443,5 @@ public class Bullet extends org.drip.service.stream.Serializer {
 		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
 
 		return prwc;
-	}
-
-	/**
-	 * De-serialization of Bullet from byte stream
-	 * 
-	 * @param ab Byte stream
-	 * 
-	 * @throws java.lang.Exception Thrown if cannot properly de-serialize
-	 */
-
-	public Bullet (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("Bullet de-serialize: Invalid byte stream input");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("Bullet de-serializer: Empty state");
-
-		java.lang.String strPeriod = strRawString.substring (0, strRawString.indexOf (objectTrailer()));
-
-		if (null == strPeriod || strPeriod.isEmpty())
-			throw new java.lang.Exception ("Bullet de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strPeriod, fieldDelimiter());
-
-		if (null == astrField || 9 > astrField.length)
-			throw new java.lang.Exception ("Bullet de-serialize: Invalid number of fields");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("Bullet de-serializer: Cannot locate Terminal date");
-
-		_dblTerminalDate = new java.lang.Double (astrField[1]);
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("Bullet de-serializer: Cannot locate pay date");
-
-		_dblPayDate = new java.lang.Double (astrField[2]);
-
-		if (null == astrField[3] || astrField[3].isEmpty())
-			throw new java.lang.Exception ("Bullet de-serializer: Cannot locate FX Fixing Date");
-
-		_dblFXFixingDate = org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3])
-			? java.lang.Double.NaN : new java.lang.Double (astrField[3]);
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("Bullet de-serializer: Cannot locate Coupon Currency");
-
-		_strCouponCurrency = new java.lang.String (astrField[4]);
-
-		if (null == astrField[5] || astrField[5].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[5]))
-			throw new java.lang.Exception ("Bullet de-serializer: Cannot locate Pay Currency");
-
-		_strPayCurrency = new java.lang.String (astrField[5]);
-
-		if (null != astrField[6] && !astrField[6].isEmpty() &&
-			!org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[6]))
-			_creditLabel = org.drip.state.identifier.CreditLabel.Standard (astrField[6]);
-
-		if (null == astrField[7] || astrField[7].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[7]))
-			throw new java.lang.Exception ("Bullet de-serializer: Cannot locate Period Base Notional");
-
-		_dblBaseNotional = new java.lang.Double (astrField[7]);
-
-		if (null == astrField[8] || astrField[8].isEmpty())
-			throw new java.lang.Exception ("Bullet de-serializer: Cannot locate Period Notional Schedule");
-
-		if (org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[8]))
-			_notlSchedule = null;
-		else
-			_notlSchedule = new org.drip.product.params.FactorSchedule (astrField[8].getBytes());
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter());
-
-		sb.append (_dblTerminalDate + fieldDelimiter());
-
-		sb.append (_dblPayDate + fieldDelimiter());
-
-		sb.append (_dblFXFixingDate + fieldDelimiter());
-
-		sb.append (_strCouponCurrency + fieldDelimiter());
-
-		sb.append (_strPayCurrency + fieldDelimiter());
-
-		if (null == _creditLabel)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (_creditLabel.fullyQualifiedName() + fieldDelimiter());
-
-		sb.append (_dblBaseNotional + fieldDelimiter());
-
-		if (null == _notlSchedule)
-			sb.append (org.drip.service.stream.Serializer.NULL_SER_STRING + fieldDelimiter());
-		else
-			sb.append (new java.lang.String (_notlSchedule.serialize()) + fieldDelimiter());
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new Bullet (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

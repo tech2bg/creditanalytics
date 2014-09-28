@@ -39,8 +39,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class RatesSetting extends org.drip.service.stream.Serializer implements
-	org.drip.product.params.Validatable {
+public class RatesSetting implements org.drip.product.params.Validatable {
 
 	/**
 	 * Trade Currency Discount Curve Name
@@ -87,70 +86,6 @@ public class RatesSetting extends org.drip.service.stream.Serializer implements
 		_strRedemptionDiscountCurve = strRedemptionDiscountCurve;
 	}
 
-	/**
-	 * RatesSetting de-serialization from input byte array
-	 * 
-	 * @param ab Byte Array
-	 * 
-	 * @throws java.lang.Exception Thrown if RatesSetting cannot be properly de-serialized
-	 */
-
-	public RatesSetting (
-		final byte[] ab)
-		throws java.lang.Exception
-	{
-		if (null == ab || 0 == ab.length)
-			throw new java.lang.Exception ("RatesSetting de-serializer: Invalid input Byte array");
-
-		java.lang.String strRawString = new java.lang.String (ab);
-
-		if (null == strRawString || strRawString.isEmpty())
-			throw new java.lang.Exception ("RatesSetting de-serializer: Empty state");
-
-		java.lang.String strSerializedRatesSetting = strRawString.substring (0, strRawString.indexOf
-			(objectTrailer()));
-
-		if (null == strSerializedRatesSetting ||
-			strSerializedRatesSetting.isEmpty())
-			throw new java.lang.Exception
-				("RatesSetting de-serializer: Cannot locate state");
-
-		java.lang.String[] astrField = org.drip.quant.common.StringUtil.Split (strSerializedRatesSetting,
-			fieldDelimiter());
-
-		if (null == astrField || 5 > astrField.length)
-			throw new java.lang.Exception
-				("RatesSetting de-serializer: Invalid reqd field set");
-
-		// double dblVersion = new java.lang.Double (astrField[0]);
-
-		if (null == astrField[1] || astrField[1].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[1]))
-			throw new java.lang.Exception ("RatesSetting de-serializer: Cannot locate Trade Currency");
-
-		_strTradeDiscountCurve = astrField[1];
-
-		if (null == astrField[2] || astrField[2].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[2]))
-			throw new java.lang.Exception ("RatesSetting de-serializer: Cannot locate Coupon Currency");
-
-		_strCouponDiscountCurve = astrField[2];
-
-		if (null == astrField[3] || astrField[3].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[3]))
-			throw new java.lang.Exception ("RatesSetting de-serializer: Cannot locate Principal Currency");
-
-		_strPrincipalDiscountCurve = astrField[3];
-
-		if (null == astrField[4] || astrField[4].isEmpty() ||
-			org.drip.service.stream.Serializer.NULL_SER_STRING.equalsIgnoreCase (astrField[4]))
-			throw new java.lang.Exception ("RatesSetting de-serializer: Cannot locate Redemption Currency");
-
-		_strRedemptionDiscountCurve = astrField[4];
-
-		if (!validate()) throw new java.lang.Exception ("RatesSetting de-serializer: Cannot validate!");
-	}
-
 	@Override public boolean validate()
 	{
 		if (null == _strTradeDiscountCurve || _strTradeDiscountCurve.isEmpty() || null ==
@@ -160,43 +95,5 @@ public class RatesSetting extends org.drip.service.stream.Serializer implements
 			return false;
 
 		return true;
-	}
-
-	@Override public byte[] serialize()
-	{
-		java.lang.StringBuffer sb = new java.lang.StringBuffer();
-
-		sb.append (org.drip.service.stream.Serializer.VERSION + fieldDelimiter() + _strTradeDiscountCurve +
-			fieldDelimiter() + _strCouponDiscountCurve + fieldDelimiter() + _strPrincipalDiscountCurve +
-				fieldDelimiter() + _strRedemptionDiscountCurve);
-
-		return sb.append (objectTrailer()).toString().getBytes();
-	}
-
-	@Override public org.drip.service.stream.Serializer deserialize (
-		final byte[] ab)
-	{
-		try {
-			return new RatesSetting (ab);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		RatesSetting crvp = new RatesSetting ("USD", "USD", "USD", "USD");
-
-		byte[] abCRVP = crvp.serialize();
-
-		System.out.println (new java.lang.String (abCRVP));
-
-		RatesSetting crvpDeser = new RatesSetting (abCRVP);
-
-		System.out.println (new java.lang.String (crvpDeser.serialize()));
 	}
 }

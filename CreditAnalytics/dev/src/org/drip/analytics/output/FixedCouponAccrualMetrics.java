@@ -35,35 +35,45 @@ package org.drip.analytics.output;
  */
 
 public class FixedCouponAccrualMetrics {
-	private double _dblFX = 1.;
-	private double _dblAccrued = java.lang.Double.NaN;
+	private double _dblFX = java.lang.Double.NaN;
+	private double _dblDCF = java.lang.Double.NaN;
+	private double _dblRate = java.lang.Double.NaN;
+	private double _dblAmount = java.lang.Double.NaN;
 	private double _dblEndDate = java.lang.Double.NaN;
 	private double _dblNotional = java.lang.Double.NaN;
-	private double _dblAccrued01 = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
-	private double _dblAccrualDCF = java.lang.Double.NaN;
-	private double _dblCompoundedAccrualRate = java.lang.Double.NaN;
+
+	/**
+	 * FixedCouponAccrualMetrics constructor
+	 * 
+	 * @param dblStartDate The Accrual Period start Date
+	 * @param dblEndDate The Accrual Period End Date
+	 * @param dblDCF The Accrual Period DCF
+	 * @param dblRate The Accrual Period Compounded Accrual Rate
+	 * @param dblNotional The Accrual Notional
+	 * @param dblAmount The Accrual Period Accrued Amount
+	 * @param dblFX The Accrual Period FX Rate
+	 * 
+	 * @throws java.lang.Exception Thrown if the inputs are invalid
+	 */
 
 	public FixedCouponAccrualMetrics (
 		final double dblStartDate,
 		final double dblEndDate,
+		final double dblDCF,
+		final double dblRate,
 		final double dblNotional,
-		final double dblFX,
-		final double dblAccrualDCF,
-		final double dblAccrued,
-		final double dblAccrued01,
-		final double dblCompoundedAccrualRate)
+		final double dblAmount,
+		final double dblFX)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblFX = dblFX) ||
-						!org.drip.quant.common.NumberUtil.IsValid (_dblAccrualDCF = dblAccrualDCF) ||
-							!org.drip.quant.common.NumberUtil.IsValid (_dblAccrued = dblAccrued) ||
-								!org.drip.quant.common.NumberUtil.IsValid (_dblAccrued01 = dblAccrued01) ||
-									!org.drip.quant.common.NumberUtil.IsValid (_dblCompoundedAccrualRate =
-										dblCompoundedAccrualRate))
+				!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) ||
+					!org.drip.quant.common.NumberUtil.IsValid (_dblRate = dblRate) ||
+						!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) ||
+							!org.drip.quant.common.NumberUtil.IsValid (_dblAmount = dblAmount) ||
+								!org.drip.quant.common.NumberUtil.IsValid (_dblFX = dblFX))
 			throw new java.lang.Exception ("FixedCouponAccrualMetrics ctr: Invalid Inputs");
 
 	}
@@ -91,58 +101,14 @@ public class FixedCouponAccrualMetrics {
 	}
 
 	/**
-	 * Retrieve the Period Notional
-	 * 
-	 * @return The Period Notional
-	 */
-
-	public double notional()
-	{
-		return _dblNotional;
-	}
-
-	/**
-	 * Retrieve the FX Rate applied
-	 * 
-	 * @return The FX Rate applied
-	 */
-
-	public double fx()
-	{
-		return _dblFX;
-	}
-
-	/**
 	 * Retrieve the Accrual DCF
 	 * 
 	 * @return The Accrual DCF
 	 */
 
-	public double accrualDCF()
+	public double dcf()
 	{
-		return _dblAccrualDCF;
-	}
-
-	/**
-	 * Retrieve the Accrued Amount
-	 * 
-	 * @return The Accrued Amount
-	 */
-
-	public double accrued()
-	{
-		return _dblAccrued;
-	}
-
-	/**
-	 * Retrieve the Accrued01
-	 * 
-	 * @return The Accrued01
-	 */
-
-	public double accrued01()
-	{
-		return _dblAccrued01;
+		return _dblDCF;
 	}
 
 	/**
@@ -151,8 +117,41 @@ public class FixedCouponAccrualMetrics {
 	 * @return The Compounded Accrual Rate
 	 */
 
-	public double compoundedAccrualRate()
+	public double rate()
 	{
-		return _dblCompoundedAccrualRate;
+		return _dblRate;
+	}
+
+	/**
+	 * Retrieve the Accrual Notional
+	 * 
+	 * @return The Accrual Notional
+	 */
+
+	public double notional()
+	{
+		return _dblNotional;
+	}
+
+	/**
+	 * Retrieve the Accrued Amount
+	 * 
+	 * @return The Accrued Amount
+	 */
+
+	public double amount()
+	{
+		return _dblAmount;
+	}
+
+	/**
+	 * Retrieve the FX Rate
+	 * 
+	 * @return The FX Rate
+	 */
+
+	public double fx()
+	{
+		return _dblFX;
 	}
 }
