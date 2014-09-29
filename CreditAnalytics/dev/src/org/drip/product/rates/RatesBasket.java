@@ -388,7 +388,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return 0;
 	}
 
-	@Override public org.drip.analytics.output.CouponPeriodMetrics coupon (
+	@Override public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)

@@ -147,7 +147,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 	 * @return The Product's coupon Nominal/Adjusted Coupon Measures
 	 */
 
-	public abstract org.drip.analytics.output.CouponPeriodMetrics coupon (
+	public abstract org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs);

@@ -363,7 +363,7 @@ public class Stream {
 	 * @return The Coupon Metrics for the period corresponding to the specified accrual end date
 	 */
 
-	public org.drip.analytics.output.CouponPeriodMetrics coupon (
+	public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -460,7 +460,7 @@ public class Stream {
 
 			double dblPeriodDCF = period.couponDCF();
 
-			org.drip.analytics.output.CouponPeriodMetrics pcm = period.baseMetrics (dblValueDate, csqs);
+			org.drip.analytics.output.GenericCouponPeriodMetrics pcm = period.baseMetrics (dblValueDate, csqs);
 
 			if (null == pcm) return null;
 
@@ -470,7 +470,7 @@ public class Stream {
 
 			double dblPeriodBaseRate = pcm.compoundedAccrualRate();
 
-			org.drip.analytics.output.CouponAccrualMetrics cam = period.accrualMetrics (dblValueDate, csqs);
+			org.drip.analytics.output.GenericCouponAccrualMetrics cam = period.accrualMetrics (dblValueDate, csqs);
 
 			try {
 				if (null != cam) {

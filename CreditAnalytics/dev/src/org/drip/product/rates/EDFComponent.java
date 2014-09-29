@@ -276,7 +276,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 		return _notlSchedule.getFactor (dblDate);
 	}
 
-	@Override public org.drip.analytics.output.CouponPeriodMetrics coupon (
+	@Override public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -289,7 +289,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 				_dblEffective, 0., org.drip.analytics.daycount.Convention.YearFraction (_dblEffective,
 					_dblMaturity, _strDC, false, null, _strCalendar)));
 
-			return org.drip.analytics.output.CouponPeriodMetrics.Create (_dblEffective, _dblMaturity,
+			return org.drip.analytics.output.GenericCouponPeriodMetrics.Create (_dblEffective, _dblMaturity,
 				_dblMaturity, notional (_dblMaturity),
 					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC, lsRPM, 1., 1.,
 						1., null, null, _fri, org.drip.state.identifier.FundingLabel.Standard (_strCurrency),

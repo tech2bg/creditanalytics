@@ -548,7 +548,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return _crValParams;
 	}
 
-	@Override public org.drip.analytics.output.CouponPeriodMetrics coupon (
+	@Override public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -566,7 +566,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (dblPeriodStartDate,
 				dblPeriodEndDate, dblPeriodStartDate, _dblCoupon, 1.));
 
-			return org.drip.analytics.output.CouponPeriodMetrics.Create (dblPeriodStartDate,
+			return org.drip.analytics.output.GenericCouponPeriodMetrics.Create (dblPeriodStartDate,
 				dblPeriodEndDate, period.payDate(), notional (dblPeriodEndDate),
 					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
 						1., null, creditLabel()[0], null, fundingLabel()[0], null);
@@ -941,7 +941,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 						if (null != aComp[i] && aComp[i] instanceof
 							org.drip.product.definition.CreditDefaultSwap) {
 							try {
-								org.drip.analytics.output.CouponPeriodMetrics pcm = coupon
+								org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon
 									(valParams.valueDate(), valParams, csqs);
 
 								if (null == pcm) return null;

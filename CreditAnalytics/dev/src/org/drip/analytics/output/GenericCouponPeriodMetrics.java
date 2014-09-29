@@ -29,12 +29,12 @@ package org.drip.analytics.output;
  */
 
 /**
- * CouponPeriodMetrics holds the results of the period coupon metrics estimate output.
+ * GenericCouponPeriodMetrics holds the results of the period coupon metrics estimate output.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CouponPeriodMetrics {
+public class GenericCouponPeriodMetrics {
 
 	/*
 	 * Period Latent State Identification Support Fields
@@ -78,7 +78,7 @@ public class CouponPeriodMetrics {
 	private double _dblCumulativeAccrual = java.lang.Double.NaN;
 
 	/**
-	 * Create an Instance of CouponPeriodMetrics from the parameters
+	 * Create an Instance of GenericCouponPeriodMetrics from the parameters
 	 * 
 	 * @param dblStartDate Coupon Period Start Date
 	 * @param dblEndDate Coupon Period End Date
@@ -98,7 +98,7 @@ public class CouponPeriodMetrics {
 	 * @return Instance of CouponPeriodMetrics
 	 */
 
-	public static final CouponPeriodMetrics Create (
+	public static final GenericCouponPeriodMetrics Create (
 		final double dblStartDate,
 		final double dblEndDate,
 		final double dblPayDate,
@@ -115,7 +115,7 @@ public class CouponPeriodMetrics {
 		final org.drip.state.identifier.FXLabel fxLabel)
 	{
 		try {
-			CouponPeriodMetrics cpm = new CouponPeriodMetrics (dblStartDate, dblEndDate, dblPayDate,
+			GenericCouponPeriodMetrics cpm = new GenericCouponPeriodMetrics (dblStartDate, dblEndDate, dblPayDate,
 				dblNotional, iAccrualCompoundingRule, lsRPM, dblSurvival, dblDF, dblFX, convAdj, creditLabel,
 					forwardLabel, fundingLabel, fxLabel);
 
@@ -127,7 +127,7 @@ public class CouponPeriodMetrics {
 		return null;
 	}
 
-	private CouponPeriodMetrics (
+	private GenericCouponPeriodMetrics (
 		final double dblStartDate,
 		final double dblEndDate,
 		final double dblPayDate,
@@ -154,7 +154,7 @@ public class CouponPeriodMetrics {
 									(_dblSurvival = dblSurvival) || !org.drip.quant.common.NumberUtil.IsValid
 										(_dblDF = dblDF) || !org.drip.quant.common.NumberUtil.IsValid (_dblFX
 											= dblFX) || null == (_fundingLabel = fundingLabel))
-			throw new java.lang.Exception ("CouponPeriodMetrics ctr: Invalid Inputs");
+			throw new java.lang.Exception ("GenericCouponPeriodMetrics ctr: Invalid Inputs");
 
 		_convAdj = convAdj;
 		_fxLabel = fxLabel;
@@ -557,7 +557,7 @@ public class CouponPeriodMetrics {
 
 			if (null == convAdjResetPeriod)
 				throw new java.lang.Exception
-					("CouponPeriodMetrics::compoundingConvexityFactor => No Convexity Adjustment for one/more reset periods");
+					("GenericCouponPeriodMetrics::compoundingConvexityFactor => No Convexity Adjustment for one/more reset periods");
 
 			double dblPeriodAccrual = rpm.nominalRate() * rpm.dcf();
 

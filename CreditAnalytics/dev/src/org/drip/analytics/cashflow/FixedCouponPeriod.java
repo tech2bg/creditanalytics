@@ -64,7 +64,13 @@ public class FixedCouponPeriod {
 
 		org.drip.analytics.cashflow.ComposableFixedPeriod cfpFirst = _lsComposableFixedPeriod.get (0);
 
-		ci._dblFixedCoupon = cfpFirst.fixedCoupon();
+		try {
+			ci._dblFixedCoupon = cfpFirst.baseRate (null);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
 
 		ci._dblFixedCouponBasis = cfpFirst.basis();
 
@@ -500,6 +506,7 @@ public class FixedCouponPeriod {
 
 		double dblDCF = 0.;
 		double dblCouponAmount = java.lang.Double.NaN;
+		double dblFullCouponRate = java.lang.Double.NaN;
 
 		org.drip.analytics.definition.CreditCurve cc = null == csqs ? null : csqs.creditCurve (_creditLabel);
 
@@ -515,7 +522,13 @@ public class FixedCouponPeriod {
 
 		org.drip.analytics.cashflow.ComposableFixedPeriod cfpFirst = _lsComposableFixedPeriod.get (0);
 
-		double dblFullCouponRate = cfpFirst.fixedCoupon() + cfpFirst.basis();
+		try {
+			dblFullCouponRate = cfpFirst.fullCouponRate (csqs);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
 
 		for (org.drip.analytics.cashflow.ComposableFixedPeriod cfp : _lsComposableFixedPeriod) {
 			double dblPeriodDCF = cfp.fullCouponDCF();
@@ -566,6 +579,7 @@ public class FixedCouponPeriod {
 	{
 		double dblAccrualDCF = 0.;
 		double dblAccruedAmount = java.lang.Double.NaN;
+		double dblFullCouponRate = java.lang.Double.NaN;
 
 		try {
 			if (!contains (dblValueDate)) return null;
@@ -579,7 +593,13 @@ public class FixedCouponPeriod {
 
 			org.drip.analytics.cashflow.ComposableFixedPeriod cfpFirst = _lsComposableFixedPeriod.get (0);
 
-			double dblFullFixedCoupon = cfpFirst.fixedCoupon() + cfpFirst.basis();
+			try {
+				dblFullCouponRate = cfpFirst.fullCouponRate (csqs);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
 
 			for (org.drip.analytics.cashflow.ComposableFixedPeriod cfp : _lsComposableFixedPeriod) {
 				double dblPeriodAccruedDCF = java.lang.Double.NaN;
@@ -599,10 +619,10 @@ public class FixedCouponPeriod {
 
 				if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 					_iAccrualCompoundingRule)
-					dblAccruedAmount += dblFullFixedCoupon * dblPeriodAccruedDCF;
+					dblAccruedAmount += dblFullCouponRate * dblPeriodAccruedDCF;
 				else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 					_iAccrualCompoundingRule)
-					dblAccruedAmount *= (1. + dblFullFixedCoupon * dblPeriodAccruedDCF);
+					dblAccruedAmount *= (1. + dblFullCouponRate * dblPeriodAccruedDCF);
 			}
 
 			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
@@ -614,8 +634,8 @@ public class FixedCouponPeriod {
 			double dblNotional = _dblBaseNotional * _notlSchedule.getFactor (_dblPayDate);
 
 			return new org.drip.analytics.output.FixedCouponAccrualMetrics (cfpFirst.accrualStartDate(),
-				dblValueDate, dblAccrualDCF, dblFullFixedCoupon, dblNotional, dblAccruedAmount * dblNotional
-					* dblFX, dblFX);
+				dblValueDate, dblAccrualDCF, dblFullCouponRate, dblNotional, dblAccruedAmount * dblNotional *
+					dblFX, dblFX);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

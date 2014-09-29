@@ -29,12 +29,12 @@ package org.drip.analytics.output;
  */
 
 /**
- * CouponAccrualMetrics holds the results of the period coupon accrual metrics estimate output.
+ * GenericCouponAccrualMetrics holds the results of the period coupon accrual metrics estimate output.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CouponAccrualMetrics {
+public class GenericCouponAccrualMetrics {
 	private double _dblFX = 1.;
 	private int _iAccrualCompoundingRule = -1;
 	private double _dblEndDate = java.lang.Double.NaN;
@@ -43,7 +43,7 @@ public class CouponAccrualMetrics {
 	private java.util.List<org.drip.analytics.output.ResetPeriodMetrics> _lsRPM = null;
 
 	/**
-	 * CouponAccrualMetrics constructor
+	 * GenericCouponAccrualMetrics constructor
 	 * 
 	 * @param dblStartDate Coupon Period Start Date
 	 * @param dblEndDate Coupon Period End Date
@@ -55,7 +55,7 @@ public class CouponAccrualMetrics {
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
-	public CouponAccrualMetrics (
+	public GenericCouponAccrualMetrics (
 		final double dblStartDate,
 		final double dblEndDate,
 		final double dblFX,
@@ -71,7 +71,7 @@ public class CouponAccrualMetrics {
 						!org.drip.analytics.support.ResetUtil.ValidateCompoundingRule
 							(_iAccrualCompoundingRule = iAccrualCompoundingRule) || null == (_lsRPM = lsRPM)
 								|| 0 == _lsRPM.size())
-			throw new java.lang.Exception ("CouponPeriodMetrics ctr: Invalid Inputs");
+			throw new java.lang.Exception ("GenericCouponAccrualMetrics ctr: Invalid Inputs");
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class CouponAccrualMetrics {
 	{
 		if (null == _lsRPM || 0 == _lsRPM.size())
 			throw new java.lang.Exception
-				("CouponPeriodMetrics::compoundedAccrualRate => No Reset Period Metrics available!");
+				("GenericCouponAccrualMetrics::compoundedAccrualRate => No Reset Period Metrics available!");
 
 		double dblCumulativeDCF = 0.;
 		double dblCumulativeNominalRate = java.lang.Double.NaN;
@@ -186,7 +186,8 @@ public class CouponAccrualMetrics {
 		throws java.lang.Exception
 	{
 		if (null == _lsRPM || 0 == _lsRPM.size())
-			throw new java.lang.Exception ("CouponPeriodMetrics::dcf => No Reset Period Metrics available!");
+			throw new java.lang.Exception
+				("GenericCouponAccrualMetrics::dcf => No Reset Period Metrics available!");
 
 		double dblDCF = 0.;
 
@@ -256,7 +257,7 @@ public class CouponAccrualMetrics {
 	{
 		if (null == _lsRPM || 0 == _lsRPM.size())
 			throw new java.lang.Exception
-				("CouponPeriodMetrics::accrued => No Reset Period Metrics available!");
+				("GenericCouponAccrualMetrics::accrued => No Reset Period Metrics available!");
 
 		double dblCumulativeNominalRate = java.lang.Double.NaN;
 

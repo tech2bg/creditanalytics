@@ -43,14 +43,13 @@ package org.drip.analytics.cashflow;
  */
 
 public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPeriod> {
-
 	class CalibInput {
 		double _dblFloatSpread = java.lang.Double.NaN;
 		double _dblFixedCoupon = java.lang.Double.NaN;
 		double _dblFixedCouponBasis = java.lang.Double.NaN;
 
 		double fullCoupon (
-			final org.drip.analytics.output.CouponPeriodMetrics cpm)
+			final org.drip.analytics.output.GenericCouponPeriodMetrics cpm)
 		{
 			return null == _forwardLabel ? _dblFixedCoupon + _dblFixedCouponBasis :
 				cpm.compoundedAccrualRate() + _dblFloatSpread;
@@ -151,7 +150,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 	{
 		if (!contains (dblValueDate)) return 0.;
 
-		org.drip.analytics.output.CouponAccrualMetrics cam = accrualMetrics (dblValueDate, csqs);
+		org.drip.analytics.output.GenericCouponAccrualMetrics cam = accrualMetrics (dblValueDate, csqs);
 
 		if (null == cam) return 0.;
 
@@ -851,7 +850,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 	 * @return The Coupon Measures at the specified Accrual End Date
 	 */
 
-	public org.drip.analytics.output.CouponPeriodMetrics baseMetrics (
+	public org.drip.analytics.output.GenericCouponPeriodMetrics baseMetrics (
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -889,7 +888,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 				lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (_dblStartDate, _dblEndDate,
 					java.lang.Double.NaN, _dblFixedCoupon, _dblDCF));
 
-				return org.drip.analytics.output.CouponPeriodMetrics.Create (_dblStartDate, _dblEndDate,
+				return org.drip.analytics.output.GenericCouponPeriodMetrics.Create (_dblStartDate, _dblEndDate,
 					_dblPayDate, notional (_dblEndDate), iAccrualCompoundingRule, lsRPM, dblSurvival, dblDF,
 						dblFX, calcConvexityAdjustment (dblValueDate, _dblStartDate, csqs), creditLabel,
 							_forwardLabel, fundingLabel, fxLabel);
@@ -904,7 +903,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 				lsRPM.add (rpm);
 			}
 
-			return org.drip.analytics.output.CouponPeriodMetrics.Create (_dblStartDate, _dblEndDate,
+			return org.drip.analytics.output.GenericCouponPeriodMetrics.Create (_dblStartDate, _dblEndDate,
 				_dblPayDate, notional (_dblEndDate), iAccrualCompoundingRule, lsRPM, dblSurvival, dblDF,
 					dblFX, org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 						iAccrualCompoundingRule ? calcConvexityAdjustment (dblValueDate, _dblStartDate, csqs)
@@ -925,7 +924,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 	 * @return The Accrual Measures to the specified Accrual End Date
 	 */
 
-	public org.drip.analytics.output.CouponAccrualMetrics accrualMetrics (
+	public org.drip.analytics.output.GenericCouponAccrualMetrics accrualMetrics (
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -950,7 +949,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 						org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate, dblValueDate,
 							_strAccrualDC, _bApplyAccEOMAdj, null, _strCalendar)));
 
-				return new org.drip.analytics.output.CouponAccrualMetrics (_dblStartDate, dblValueDate,
+				return new org.drip.analytics.output.GenericCouponAccrualMetrics (_dblStartDate, dblValueDate,
 					dblFX, notional (dblValueDate), iAccrualCompoundingRule, lsRPM);
 			}
 
@@ -977,7 +976,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 					lsRPM.add (rpm);
 			}
 
-			return new org.drip.analytics.output.CouponAccrualMetrics (_dblStartDate, dblValueDate, dblFX,
+			return new org.drip.analytics.output.GenericCouponAccrualMetrics (_dblStartDate, dblValueDate, dblFX,
 				notional (dblValueDate), iAccrualCompoundingRule, lsRPM);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -1019,7 +1018,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		org.drip.analytics.output.CouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
+		org.drip.analytics.output.GenericCouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
 
 		if (null == cpm) return null;
 
@@ -1083,7 +1082,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		org.drip.analytics.output.CouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
+		org.drip.analytics.output.GenericCouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
 
 		if (null == cpm) return null;
 
@@ -1150,7 +1149,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		org.drip.analytics.output.CouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
+		org.drip.analytics.output.GenericCouponPeriodMetrics cpm = baseMetrics (dblValueDate, csqs);
 
 		if (null == cpm) return null;
 

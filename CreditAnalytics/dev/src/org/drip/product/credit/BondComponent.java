@@ -412,7 +412,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				double dblPeriodDF = dcFunding.df (period.payDate());
 
-				org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (valParams.valueDate(),
+				org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (valParams.valueDate(),
 					valParams, csqs);
 
 				if (null == pcm) return null;
@@ -1179,7 +1179,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return _crValParams;
 	}
 
-	@Override public org.drip.analytics.output.CouponPeriodMetrics coupon (
+	@Override public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -1200,7 +1200,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (dblPeriodStartDate,
 				dblPeriodEndDate, dblPeriodStartDate, dblCoupon, 1.));
 
-			return org.drip.analytics.output.CouponPeriodMetrics.Create (dblPeriodStartDate,
+			return org.drip.analytics.output.GenericCouponPeriodMetrics.Create (dblPeriodStartDate,
 				dblPeriodEndDate, period.payDate(), notional (dblPeriodEndDate),
 					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
 						1., null, null, null, fundingLabel()[0], null);
@@ -1631,7 +1631,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception
 				("BondComponent::calcPreviousCouponRate => Cannot find previous period!");
 
-		org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (period.endDate(), new
+		org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (period.endDate(), new
 			org.drip.param.valuation.ValuationParams (dt, dt, ""), csqs);
 
 		if (null == pcm)
@@ -1751,7 +1751,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (!java.lang.Double.isNaN (_fltParams._dblCurrentCoupon)) return _fltParams._dblCurrentCoupon;
 
-		org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (dt.julian(), new
+		org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (dt.julian(), new
 			org.drip.param.valuation.ValuationParams (dt, dt, ""), csqs);
 
 		if (null == pcm) throw new java.lang.Exception ("BondComponent::calcCurrentCouponRate => Null PCM!");
@@ -1768,7 +1768,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcNextCouponRate => Null val/mkt params!");
 
 		if (null == _fltParams) {
-			org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (dt.julian(), new
+			org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (dt.julian(), new
 				org.drip.param.valuation.ValuationParams (dt, dt, ""), csqs);
 
 			if (null == pcm)
@@ -1784,7 +1784,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == period)
 			throw new java.lang.Exception ("BondComponent::calcNextCouponRate => Cannot find next period!");
 
-		org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (period.endDate(), new
+		org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (period.endDate(), new
 			org.drip.param.valuation.ValuationParams (dt, dt, ""), csqs);
 
 		if (null == pcm) throw new java.lang.Exception ("BondComponent::calcNextCouponRate => Null PCM!");
@@ -1810,7 +1810,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods()) {
 			if (period.payDate() < dblDate) continue;
 
-			org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (period.endDate(), new
+			org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (period.endDate(), new
 				org.drip.param.valuation.ValuationParams (dt, dt, ""), csqs);
 
 			if (null == pcm) throw new java.lang.Exception ("BondComponent::calcAccrued => No PCM");
@@ -1906,7 +1906,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				dblNotionalEndDate = dblWorkoutDate;
 			}
 
-			org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (valParams.valueDate(), valParams,
+			org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (valParams.valueDate(), valParams,
 				csqs);
 
 			if (null == pcm) throw new java.lang.Exception ("BondComponent::calcPriceFromZC => No PCM");
@@ -1987,7 +1987,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				dblNotionalEndDate = dblWorkoutDate;
 			}
 
-			org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (period.endDate(), valParams, csqs);
+			org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (period.endDate(), valParams, csqs);
 
 			if (null == pcm)
 				throw new java.lang.Exception ("BondComponent::calcPriceFromBumpedDC => No PCM");
@@ -2096,7 +2096,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			if (dblPeriodStart < valParams.valueDate()) dblPeriodStart = valParams.valueDate();
 
-			org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (period.endDate(), valParams, csqs);
+			org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (period.endDate(), valParams, csqs);
 
 			if (null == pcm)
 				throw new java.lang.Exception ("BondComponent::calcPriceFromBumpedCC => No PCM");
@@ -2474,7 +2474,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dcFunding)
 			throw new java.lang.Exception ("BondComponent::calcASWFromPrice => Invalid Inputs");
 
-		org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (valParams.valueDate(), valParams,
+		org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (valParams.valueDate(), valParams,
 			csqs);
 
 		if (null == pcm) throw new java.lang.Exception ("BondComponent::calcASWFromPrice => No PCM");
@@ -6622,7 +6622,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				dblNotionalEndDate = dblWorkoutDate;
 			}
 
-			org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (valParams.valueDate(), valParams,
+			org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (valParams.valueDate(), valParams,
 				csqs);
 
 			if (null == pcm)
@@ -8370,7 +8370,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dcFunding)
 			throw new java.lang.Exception ("BondComponent::calcPriceFromASW => Invalid Inputs");
 
-		org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (valParams.valueDate(), valParams,
+		org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (valParams.valueDate(), valParams,
 			csqs);
 
 		if (null == pcm) throw new java.lang.Exception ("BondComponent::calcPriceFromASW => No PCM");
@@ -8776,7 +8776,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			if (java.lang.Double.isNaN (dblScalingNotional))
 				dblScalingNotional = notional (period.startDate());
 
-			org.drip.analytics.output.CouponPeriodMetrics pcm = coupon (valParams.valueDate(), valParams,
+			org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon (valParams.valueDate(), valParams,
 				csqs);
 
 			if (null == pcm) throw new java.lang.Exception ("BondComponent::calcPriceFromYield => No PCM");

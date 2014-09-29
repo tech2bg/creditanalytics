@@ -7,7 +7,7 @@ import org.drip.analytics.cashflow.GenericCouponPeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.LatentStateStatic;
-import org.drip.analytics.output.CouponPeriodMetrics;
+import org.drip.analytics.output.GenericCouponPeriodMetrics;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
@@ -752,7 +752,7 @@ public class FedFundOvernightCompounding {
 
 		GenericCouponPeriod period = lsArithmeticFloatPeriods.get (0);
 
-		CouponPeriodMetrics pcmArithmetic = floatStreamArithmetic.coupon (
+		GenericCouponPeriodMetrics pcmArithmetic = floatStreamArithmetic.coupon (
 			period.endDate(),
 			valParams,
 			mktParams

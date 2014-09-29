@@ -80,56 +80,15 @@ public class ComposableFixedPeriod extends org.drip.analytics.cashflow.Composabl
 			throw new java.lang.Exception ("ComposableFixedPeriod ctr: Invalid Inputs");
 	}
 
-	/**
-	 * Retrieve the Fixed Coupon
-	 * 
-	 * @return The Fixed Coupon
-	 */
-
-	public double fixedCoupon()
+	@Override public double baseRate (
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception
 	{
 		return _dblFixedCoupon;
 	}
 
-	/**
-	 * Retrieve the Basis
-	 * 
-	 * @return The Basis
-	 */
-
-	public double basis()
+	@Override public double basis()
 	{
 		return _dblBasis;
-	}
-
-	/**
-	 * Get the Accrued01 to an accrual end date
-	 * 
-	 * @param dblAccrualEnd Accrual End Date
-	 * 
-	 * @return The Accrued01
-	 * 
-	 * @exception Thrown if inputs are invalid, or if the date does not lie within the period
-	 */
-
-	public double accrued01 (
-		final double dblAccrualEnd)
-		throws java.lang.Exception
-	{
-		return 0.0001 * notional() * accrualDCF (dblAccrualEnd);
-	}
-
-	@Override public double accrued (
-		final double dblAccrualEnd,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
-	{
-		return notional() * (_dblFixedCoupon + _dblBasis) * accrualDCF (dblAccrualEnd);
-	}
-
-	@Override public double fullCouponAccrued (
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-	{
-		return notional() * (_dblFixedCoupon + _dblBasis) * fullCouponDCF();
 	}
 }

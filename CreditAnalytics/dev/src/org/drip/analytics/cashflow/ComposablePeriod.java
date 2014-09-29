@@ -285,6 +285,23 @@ public abstract class ComposablePeriod {
 	}
 
 	/**
+	 * Get the Period Full Coupon Rate
+	 * 
+	 * @param csqs The Market Curve and Surface
+	 * 
+	 * @return The Period Full Coupon Rate
+	 * 
+	 * @exception Thrown if the full Coupon Rate cannot be calculated
+	 */
+
+	public double fullCouponRate (
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception
+	{
+		return baseRate (csqs) + basis();
+	}
+
+	/**
 	 * Get the Accrued to an accrual end date
 	 * 
 	 * @param dblAccrualEnd Accrual End Date
@@ -295,10 +312,13 @@ public abstract class ComposablePeriod {
 	 * @exception Thrown if inputs are invalid, or if the date does not lie within the period
 	 */
 
-	public abstract double accrued (
+	public double accrued (
 		final double dblAccrualEnd,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception;
+		throws java.lang.Exception
+	{
+		return notional() * fullCouponRate (csqs) * accrualDCF (dblAccrualEnd);
+	}
 
 	/**
 	 * Get the Period Full Coupon Accrued
@@ -310,7 +330,32 @@ public abstract class ComposablePeriod {
 	 * @exception Thrown if inputs are invalid, or if the date does not lie within the period
 	 */
 
-	public abstract double fullCouponAccrued (
+	public double fullCouponAccrued (
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception
+	{
+		return notional() * fullCouponRate (csqs) * fullCouponDCF();
+	}
+
+	/**
+	 * Get the Period Base Coupon Rate
+	 * 
+	 * @param csqs The Market Curve and Surface
+	 * 
+	 * @return The Period Base Coupon Rate
+	 * 
+	 * @exception Thrown if the base Coupon Rate cannot be calculated
+	 */
+
+	public abstract double baseRate (
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception;
+
+	/**
+	 * Get the Period Coupon Basis
+	 * 
+	 * @return The Period Coupon Basis
+	 */
+
+	public abstract double basis();
 }

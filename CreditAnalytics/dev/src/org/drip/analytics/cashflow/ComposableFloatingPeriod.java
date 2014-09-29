@@ -81,28 +81,6 @@ public class ComposableFloatingPeriod extends org.drip.analytics.cashflow.Compos
 	}
 
 	/**
-	 * Retrieve the Reference Index Period
-	 * 
-	 * @return The Reference Index Period
-	 */
-
-	public org.drip.analytics.cashflow.ReferenceIndexPeriod referenceIndexPeriod()
-	{
-		return _refIndexPeriod;
-	}
-
-	/**
-	 * Retrieve the Spread
-	 * 
-	 * @return The Spread
-	 */
-
-	public double spread()
-	{
-		return _dblSpread;
-	}
-
-	/**
 	 * Retrieve the Reference Rate for the Floating Period
 	 * 
 	 * @param csqs The Market Curve and Surface
@@ -112,7 +90,7 @@ public class ComposableFloatingPeriod extends org.drip.analytics.cashflow.Compos
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public double referenceRate (
+	@Override public double baseRate (
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
@@ -149,18 +127,19 @@ public class ComposableFloatingPeriod extends org.drip.analytics.cashflow.Compos
 		return dcFunding.libor (dblReferencePeriodStartDate, dblReferencePeriodEndDate, fullCouponDCF());
 	}
 
-	@Override public double accrued (
-		final double dblAccrualEnd,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
+	@Override public double basis()
 	{
-		return notional() * (referenceRate (csqs) + _dblSpread) * accrualDCF (dblAccrualEnd);
+		return _dblSpread;
 	}
 
-	@Override public double fullCouponAccrued (
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
+	/**
+	 * Retrieve the Reference Index Period
+	 * 
+	 * @return The Reference Index Period
+	 */
+
+	public org.drip.analytics.cashflow.ReferenceIndexPeriod referenceIndexPeriod()
 	{
-		return notional() * (referenceRate (csqs) + _dblSpread) * fullCouponDCF();
+		return _refIndexPeriod;
 	}
 }
