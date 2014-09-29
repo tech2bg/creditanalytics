@@ -103,7 +103,7 @@ public class ResetUtil {
 
 		while (dblEnd <= dblRight) {
 			try {
-				if (!rpc.appendResetPeriod (new org.drip.analytics.cashflow.ComposablePeriod
+				if (!rpc.appendResetPeriod (new org.drip.analytics.cashflow.GenericComposablePeriod
 					(dblStart, dblEnd, dblStart, forwardLabel)))
 					return null;
 
@@ -140,9 +140,9 @@ public class ResetUtil {
 
 		if (iAccrualCompoundingRule != rpcRight.accrualCompoundingRule()) return null;
 
-		java.util.List<org.drip.analytics.cashflow.ComposablePeriod> lsResetPeriodsLeft = rpcLeft.resetPeriods();
+		java.util.List<org.drip.analytics.cashflow.GenericComposablePeriod> lsResetPeriodsLeft = rpcLeft.resetPeriods();
 
-		java.util.List<org.drip.analytics.cashflow.ComposablePeriod> lsResetPeriodsRight = rpcRight.resetPeriods();
+		java.util.List<org.drip.analytics.cashflow.GenericComposablePeriod> lsResetPeriodsRight = rpcRight.resetPeriods();
 
 		if (null == lsResetPeriodsLeft || null == lsResetPeriodsRight) return null;
 
@@ -164,11 +164,11 @@ public class ResetUtil {
 			return null;
 		}
 
-		for (org.drip.analytics.cashflow.ComposablePeriod rp : lsResetPeriodsLeft) {
+		for (org.drip.analytics.cashflow.GenericComposablePeriod rp : lsResetPeriodsLeft) {
 			if (!rpc.appendResetPeriod (rp)) return null;
 		}
 
-		for (org.drip.analytics.cashflow.ComposablePeriod rp : lsResetPeriodsRight) {
+		for (org.drip.analytics.cashflow.GenericComposablePeriod rp : lsResetPeriodsRight) {
 			if (!rpc.appendResetPeriod (rp)) return null;
 		}
 

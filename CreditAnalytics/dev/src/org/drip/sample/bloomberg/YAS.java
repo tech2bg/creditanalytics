@@ -5,7 +5,7 @@ package org.drip.sample.bloomberg;
  * Credit Product imports
  */
 
-import org.drip.analytics.cashflow.CouponPeriod;
+import org.drip.analytics.cashflow.GenericCouponPeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.rates.DiscountCurve;
@@ -453,7 +453,7 @@ public class YAS {
 
 		System.out.println ("\nCashflow\n--------");
 
-		for (CouponPeriod p : bond.cashFlowPeriod())
+		for (GenericCouponPeriod p : bond.cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.accrualStartDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.accrualEndDate()) + FIELD_SEPARATOR +

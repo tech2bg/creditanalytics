@@ -35,7 +35,6 @@ package org.drip.analytics.cashflow;
  */
 
 public class FixedCouponPeriod {
-
 	class CalibInput {
 		double _dblFixedCoupon = java.lang.Double.NaN;
 		double _dblFixedCouponBasis = java.lang.Double.NaN;

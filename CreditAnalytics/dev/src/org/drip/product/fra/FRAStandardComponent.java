@@ -262,7 +262,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return maturity();
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
 	{
 		try {
 			return org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (_dblEffectiveDate, new

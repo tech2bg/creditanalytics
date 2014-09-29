@@ -241,7 +241,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 			dtFloatReferenceFirstCoupon : dtFloatDerivedFirstCoupon;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
 	{
 		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists (_fixReference.cashFlowPeriod(),
 			_floatDerived.cashFlowPeriod());
@@ -683,7 +683,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 				if (null == dcFunding) return null;
 
-				for (org.drip.analytics.cashflow.CouponPeriod p : cashFlowPeriod()) {
+				for (org.drip.analytics.cashflow.GenericCouponPeriod p : cashFlowPeriod()) {
 					double dblPeriodPayDate = p.payDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;

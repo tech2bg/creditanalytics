@@ -35,22 +35,22 @@ package org.drip.product.rates;
  */
 
 public class Stream {
-	protected java.util.List<org.drip.analytics.cashflow.CouponPeriod> _lsCouponPeriod = null;
+	protected java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> _lsCouponPeriod = null;
 
 	protected double notional (
 		final double dblDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		org.drip.analytics.cashflow.CouponPeriod cpLeft = _lsCouponPeriod.get (0);
+		org.drip.analytics.cashflow.GenericCouponPeriod cpLeft = _lsCouponPeriod.get (0);
 
 		if (dblDate <= cpLeft.startDate()) return cpLeft.notional (cpLeft.startDate()) * cpLeft.fx (csqs);
 
-		for (org.drip.analytics.cashflow.CouponPeriod cp : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.GenericCouponPeriod cp : _lsCouponPeriod) {
 			if (cp.contains (dblDate)) return cp.notional (dblDate) * cp.fx (csqs);
 		}
 
-		org.drip.analytics.cashflow.CouponPeriod cp = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
+		org.drip.analytics.cashflow.GenericCouponPeriod cp = _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
 
 		return cp.notional (cp.endDate()) * cp.fx (csqs);
 	}
@@ -64,7 +64,7 @@ public class Stream {
 	 */
 
 	public Stream (
-		final java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCouponPeriod)
+		final java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsCouponPeriod)
 		throws java.lang.Exception
 	{
 		if (null == (_lsCouponPeriod = lsCouponPeriod) || 0 == _lsCouponPeriod.size())
@@ -150,7 +150,7 @@ public class Stream {
 	 * @return The Coupon Period List
 	 */
 
-	public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
+	public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
 	{
 		return _lsCouponPeriod;
 	}
@@ -163,11 +163,11 @@ public class Stream {
 	 * @return The Period Instance enveloping the specified Date
 	 */
 
-	public org.drip.analytics.cashflow.CouponPeriod containingPeriod (
+	public org.drip.analytics.cashflow.GenericCouponPeriod containingPeriod (
 		final double dblDate)
 	{
 		try {
-			for (org.drip.analytics.cashflow.CouponPeriod cp : _lsCouponPeriod) {
+			for (org.drip.analytics.cashflow.GenericCouponPeriod cp : _lsCouponPeriod) {
 				if (cp.contains (dblDate)) return cp;
 			}
 		} catch (java.lang.Exception e) {
@@ -205,11 +205,11 @@ public class Stream {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
 
-		org.drip.analytics.cashflow.CouponPeriod cpLeft = _lsCouponPeriod.get (0);
+		org.drip.analytics.cashflow.GenericCouponPeriod cpLeft = _lsCouponPeriod.get (0);
 
 		if (dblDate <= cpLeft.startDate()) return cpLeft.notional (cpLeft.startDate());
 
-		org.drip.analytics.cashflow.CouponPeriod cp = containingPeriod (dblDate);
+		org.drip.analytics.cashflow.GenericCouponPeriod cp = containingPeriod (dblDate);
 
 		if (null == cp)
 			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
@@ -239,7 +239,7 @@ public class Stream {
 			(dblDate2))
 			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
 
-		org.drip.analytics.cashflow.CouponPeriod cp = containingPeriod (dblDate1);
+		org.drip.analytics.cashflow.GenericCouponPeriod cp = containingPeriod (dblDate1);
 
 		if (null == cp || !cp.contains (dblDate2))
 			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
@@ -311,7 +311,7 @@ public class Stream {
 	{
 		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
 
-		org.drip.analytics.cashflow.CouponPeriod cpFirst = _lsCouponPeriod.get (0);
+		org.drip.analytics.cashflow.GenericCouponPeriod cpFirst = _lsCouponPeriod.get (0);
 
 		setCcy.add (cpFirst.payCurrency());
 
@@ -370,14 +370,14 @@ public class Stream {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrualEndDate) || null == csqs) return null;
 
-		org.drip.analytics.cashflow.CouponPeriod currentPeriod = null;
+		org.drip.analytics.cashflow.GenericCouponPeriod currentPeriod = null;
 
-		org.drip.analytics.cashflow.CouponPeriod cpLeft = _lsCouponPeriod.get (0);
+		org.drip.analytics.cashflow.GenericCouponPeriod cpLeft = _lsCouponPeriod.get (0);
 
 		if (dblAccrualEndDate <= cpLeft.startDate())
 			currentPeriod = cpLeft;
 		else {
-			for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
+			for (org.drip.analytics.cashflow.GenericCouponPeriod period : _lsCouponPeriod) {
 				if (null == period) continue;
 
 				if (dblAccrualEndDate >= period.startDate() && dblAccrualEndDate <= period.endDate()) {
@@ -450,7 +450,7 @@ public class Stream {
 
 		double dblSpread = null != forwardLabel ? _lsCouponPeriod.get (0).floatSpread() : 0.;
 
-		for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _lsCouponPeriod) {
 			double dblUnadjustedDirtyPeriodDV01 = java.lang.Double.NaN;
 			double dblCompoundingAdjustedDirtyPeriodDV01 = java.lang.Double.NaN;
 
@@ -482,7 +482,7 @@ public class Stream {
 				} else if (period.contains (dblValueDate)) {
 					dblAccrued01 = 0.;
 					dblResetRate = dblPeriodBaseRate;
-					java.util.List<org.drip.analytics.cashflow.ComposablePeriod> lsRP = null;
+					java.util.List<org.drip.analytics.cashflow.GenericComposablePeriod> lsRP = null;
 
 					org.drip.analytics.cashflow.ResetPeriodContainer rpc = period.rpc();
 
@@ -1381,7 +1381,7 @@ public class Stream {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _lsCouponPeriod) {
 			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
@@ -1453,7 +1453,7 @@ public class Stream {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _lsCouponPeriod) {
 			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
@@ -1525,7 +1525,7 @@ public class Stream {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _lsCouponPeriod) {
 			double dblPeriodEndDate = period.endDate();
 
 			if (dblPeriodEndDate < dblValueDate) continue;
@@ -1572,7 +1572,7 @@ public class Stream {
 		try {
 			org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure = null;
 
-			for (org.drip.analytics.cashflow.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.cashflow.GenericCouponPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.payDate();
 
 				if (p.startDate() < valParams.valueDate()) continue;
@@ -1651,7 +1651,7 @@ public class Stream {
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				for (org.drip.analytics.cashflow.CouponPeriod p : _lsCouponPeriod) {
+				for (org.drip.analytics.cashflow.GenericCouponPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.payDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;

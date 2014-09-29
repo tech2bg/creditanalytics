@@ -3,7 +3,7 @@ package org.drip.sample.ois;
 
 import java.util.*;
 
-import org.drip.analytics.cashflow.CouponPeriod;
+import org.drip.analytics.cashflow.GenericCouponPeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.LatentStateStatic;
@@ -637,7 +637,7 @@ public class FedFundOvernightCompounding {
 			)
 		);
 
-		List<CouponPeriod> lsArithmeticFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
+		List<GenericCouponPeriod> lsArithmeticFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			Double.NaN,
@@ -750,7 +750,7 @@ public class FedFundOvernightCompounding {
 		System.out.println ("\tMachine Calc Float Accrued DCF (Arithmetic Compounding): " +
 			Math.abs (mapOISGeometricOutput.get ("FloatAccrued") / mapOISGeometricOutput.get ("ResetRate")));
 
-		CouponPeriod period = lsArithmeticFloatPeriods.get (0);
+		GenericCouponPeriod period = lsArithmeticFloatPeriods.get (0);
 
 		CouponPeriodMetrics pcmArithmetic = floatStreamArithmetic.coupon (
 			period.endDate(),

@@ -190,7 +190,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 	 * @return List of the Product's Cash Flow Periods
 	 */
 
-	public abstract java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod();
+	public abstract java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod();
 
 	/**
 	 * Get the Product's cash settlement parameters

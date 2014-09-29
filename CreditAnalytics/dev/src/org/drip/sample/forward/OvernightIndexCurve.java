@@ -3,7 +3,7 @@ package org.drip.sample.forward;
 
 import java.util.List;
 
-import org.drip.analytics.cashflow.CouponPeriod;
+import org.drip.analytics.cashflow.GenericCouponPeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
@@ -254,7 +254,7 @@ public class OvernightIndexCurve {
 				)
 			);
 
-			List<CouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
+			List<GenericCouponPeriod> lsFixedPeriods = PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				astrMaturityTenor[i],
 				Double.NaN,

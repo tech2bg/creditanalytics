@@ -366,7 +366,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
 	{
 		return org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (_dblEffective, _dblMaturity,
 			java.lang.Double.NaN, _strDC, _strCalendar, _dblNotional, null, 0., _strCurrency, _strCurrency,

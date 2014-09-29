@@ -58,7 +58,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	private org.drip.product.params.CreditSetting _crValParams = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
-	private java.util.List<org.drip.analytics.cashflow.CouponPeriod> _lsCouponPeriod = null;
+	private java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> _lsCouponPeriod = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -100,7 +100,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		double dblAccrualDays = java.lang.Double.NaN;
 
 		try {
-			for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
+			for (org.drip.analytics.cashflow.GenericCouponPeriod period : _lsCouponPeriod) {
 				if (period.payDate() < valParams.valueDate()) continue;
 
 				if (bFirstPeriod) {
@@ -234,7 +234,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 	private org.drip.quant.calculus.WengertJacobian calcPeriodOnDefaultPVDFMicroJack (
 		final double dblFairPremium,
-		final org.drip.analytics.cashflow.CouponPeriod period,
+		final org.drip.analytics.cashflow.GenericCouponPeriod period,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -274,7 +274,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	}
 
 	private PeriodLossMicroJack calcPeriodLossMicroJack (
-		final org.drip.analytics.cashflow.CouponPeriod period,
+		final org.drip.analytics.cashflow.GenericCouponPeriod period,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -330,16 +330,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return plmj;
 	}
 
-	private org.drip.analytics.cashflow.CouponPeriod calcCurrentPeriod (
+	private org.drip.analytics.cashflow.GenericCouponPeriod calcCurrentPeriod (
 		final double dblDate)
 	{
 		if (java.lang.Double.isNaN (dblDate)) return null;
 
-		org.drip.analytics.cashflow.CouponPeriod cpFirst = _lsCouponPeriod.get (0);
+		org.drip.analytics.cashflow.GenericCouponPeriod cpFirst = _lsCouponPeriod.get (0);
 
 		if (dblDate <= cpFirst.startDate()) return cpFirst;
 
-		for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _lsCouponPeriod) {
 			try {
 				if (period.contains (dblDate)) return period;
 			} catch (java.lang.Exception e) {
@@ -554,7 +554,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		try {
-			org.drip.analytics.cashflow.CouponPeriod period = calcCurrentPeriod (dblAccrualEndDate);
+			org.drip.analytics.cashflow.GenericCouponPeriod period = calcCurrentPeriod (dblAccrualEndDate);
 
 			double dblPeriodEndDate = period.endDate();
 
@@ -662,7 +662,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
 	{
 		return _lsCouponPeriod;
 	}
@@ -682,7 +682,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLP = new
 			java.util.ArrayList<org.drip.analytics.cashflow.LossQuadratureMetrics>();
 
-		for (org.drip.analytics.cashflow.CouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _lsCouponPeriod) {
 			if (null == period || period.endDate() < valParams.valueDate()) continue;
 
 			java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLPSub = period.lossMetrics
@@ -1032,7 +1032,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		try {
 			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = null;
 
-			for (org.drip.analytics.cashflow.CouponPeriod p : _lsCouponPeriod) {
+			for (org.drip.analytics.cashflow.GenericCouponPeriod p : _lsCouponPeriod) {
 				double dblPeriodPayDate = p.payDate();
 
 				if (dblPeriodPayDate < valParams.valueDate()) continue;
@@ -1102,7 +1102,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				double dblDV01 = 0.;
 				org.drip.quant.calculus.WengertJacobian wjFairPremiumDFMicroJack = null;
 
-				for (org.drip.analytics.cashflow.CouponPeriod p : _lsCouponPeriod) {
+				for (org.drip.analytics.cashflow.GenericCouponPeriod p : _lsCouponPeriod) {
 					double dblPeriodPayDate = p.payDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;

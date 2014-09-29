@@ -357,7 +357,7 @@ public class RatesClosesLoader {
 				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
 					strCurrency);
 
-			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedCouponPeriod =
+			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap,
 						_mapFixedFrequency.get (strCurrency), strFixedDC, bApplyEOMAdjustmentFixed,
@@ -367,7 +367,7 @@ public class RatesClosesLoader {
 			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
 				(lsFixedCouponPeriod);
 
-			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatingCouponPeriod =
+			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap,
 						_mapFloatingFrequency.get (strCurrency), strFloatingDC, bApplyEOMAdjustmentFloating,
@@ -418,7 +418,7 @@ public class RatesClosesLoader {
 				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
 					strCurrency);
 
-			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFixedCouponPeriod =
+			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsFixedCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
 					strMaturityTenor, java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap,
 						_mapFixedFrequency.get (strCurrency), strFixedDC, false, strFixedDC, false, false,
@@ -427,7 +427,7 @@ public class RatesClosesLoader {
 			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
 				(lsFixedCouponPeriod);
 
-			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsFloatingCouponPeriod =
+			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsFloatingCouponPeriod =
 				org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (dtEffective.julian(),
 					dtMaturity.julian(), java.lang.Double.NaN, strFloatingDC, strCurrency, -1., null, 0.,
 						strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency,

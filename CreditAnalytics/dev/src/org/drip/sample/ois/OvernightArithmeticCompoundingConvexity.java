@@ -3,7 +3,7 @@ package org.drip.sample.ois;
 
 import java.util.*;
 
-import org.drip.analytics.cashflow.CouponPeriod;
+import org.drip.analytics.cashflow.GenericCouponPeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
@@ -634,7 +634,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		List<CouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
+		List<GenericCouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
 			dtCustomOISStart.julian(),
 			"6M",
 			Double.NaN,
@@ -684,7 +684,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		CouponPeriod period = lsFloatPeriods.get (1);
+		GenericCouponPeriod period = lsFloatPeriods.get (1);
 
 		double[] adblOISVol = new double [] {0.1, 0.3, 0.5};
 		double[] adblUSDFundingVol = new double [] {0.1, 0.3, 0.5};

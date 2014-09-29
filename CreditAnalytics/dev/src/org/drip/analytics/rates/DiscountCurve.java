@@ -734,11 +734,11 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		for (org.drip.product.definition.CalibratableFixedIncomeComponent cc : aCC) {
 			if (null == cc) continue;
 
-			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCouponPeriod = cc.cashFlowPeriod();
+			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsCouponPeriod = cc.cashFlowPeriod();
 
 			if (null == lsCouponPeriod || 0 == lsCouponPeriod.size()) continue;
 
-			for (org.drip.analytics.cashflow.CouponPeriod cpnPeriod : cc.cashFlowPeriod()) {
+			for (org.drip.analytics.cashflow.GenericCouponPeriod cpnPeriod : cc.cashFlowPeriod()) {
 				if (null == cpnPeriod) continue;
 
 				double dblPay = cpnPeriod.payDate();

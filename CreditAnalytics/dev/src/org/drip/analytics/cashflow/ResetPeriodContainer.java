@@ -37,7 +37,7 @@ package org.drip.analytics.cashflow;
 
 public class ResetPeriodContainer {
 	private int _iAccrualCompoundingRule = -1;
-	private java.util.List<org.drip.analytics.cashflow.ComposablePeriod> _lsResetPeriod = null;
+	private java.util.List<org.drip.analytics.cashflow.GenericComposablePeriod> _lsResetPeriod = null;
 
 	/**
 	 * ResetPeriodContainer Constructor
@@ -76,12 +76,12 @@ public class ResetPeriodContainer {
 	 */
 
 	public boolean appendResetPeriod (
-		final org.drip.analytics.cashflow.ComposablePeriod rp)
+		final org.drip.analytics.cashflow.GenericComposablePeriod rp)
 	{
 		if (null == rp) return false;
 
 		if (null == _lsResetPeriod)
-			_lsResetPeriod = new java.util.ArrayList<org.drip.analytics.cashflow.ComposablePeriod>();
+			_lsResetPeriod = new java.util.ArrayList<org.drip.analytics.cashflow.GenericComposablePeriod>();
 
 		_lsResetPeriod.add (rp);
 
@@ -94,7 +94,7 @@ public class ResetPeriodContainer {
 	 * @return The Reset Periods
 	 */
 
-	public java.util.List<org.drip.analytics.cashflow.ComposablePeriod> resetPeriods()
+	public java.util.List<org.drip.analytics.cashflow.GenericComposablePeriod> resetPeriods()
 	{
 		return _lsResetPeriod;
 	}

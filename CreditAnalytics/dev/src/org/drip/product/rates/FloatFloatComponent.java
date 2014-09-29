@@ -243,7 +243,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 			dtFloatReferenceFirstCoupon : dtFloatDerivedFirstCoupon;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
 	{
 		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists
 			(_floatReference.cashFlowPeriod(), _floatDerived.cashFlowPeriod());

@@ -29,13 +29,14 @@ package org.drip.analytics.cashflow;
  */
 
 /**
- * ComposablePeriod contains the cash flow periods' composable sub period details. Currently it holds the
- *  start date, the end date, the fixing date, and the reference floating index if any.
+ * ComposablePeriod contains the cash flow periods' composable sub period details. Currently it
+ *  holds the accrual start date, the accrual end date, the fixed coupon, the basis spread, coupon and
+ *  accrual day counts, and the EOM adjustment flags.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposablePeriod {
+public abstract class ComposablePeriod {
 
 	/**
 	 * Node is to the Left of the Period
@@ -55,100 +56,261 @@ public class ComposablePeriod {
 
 	public static final int NODE_RIGHT_OF_SEGMENT = 4;
 
-	private double _dblEnd = java.lang.Double.NaN;
-	private double _dblStart = java.lang.Double.NaN;
-	private double _dblFixing = java.lang.Double.NaN;
-	private org.drip.state.identifier.ForwardLabel _forwardLabel = null;
+	private java.lang.String _strCalendar = "";
+	private java.lang.String _strCouponDC = "";
+	private java.lang.String _strAccrualDC = "";
+	private boolean _bCouponEOMAdjustment = false;
+	private boolean _bAccrualEOMAdjustment = false;
+	private double _dblNotional = java.lang.Double.NaN;
+	private double _dblFullCouponDCF = java.lang.Double.NaN;
+	private double _dblAccrualEndDate = java.lang.Double.NaN;
+	private double _dblAccrualStartDate = java.lang.Double.NaN;
 
 	/**
 	 * The ComposablePeriod constructor
 	 * 
-	 * @param dblStart Period Start Date
-	 * @param dblEnd Period End Date
-	 * @param dblFixing Period Fixing Date
-	 * @param forwardLabel The Period Forward Label
+	 * @param dblAccrualStartDate Accrual Start Date
+	 * @param dblAccrualEndDate Accrual End Date
+	 * @param strCouponDC Coupon Day Count
+	 * @param bCouponEOMAdjustment Coupon EOM Adjustment Flag
+	 * @param strAccrualDC Accrual Day Count
+	 * @param bAccrualEOMAdjustment Accrual EOM Adjustment Flag
+	 * @param strCalendar Calendar
+	 * @param dblFullCouponDCF The Period's Full Coupon DCF
+	 * @param dblNotional The Period Notional
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
 	public ComposablePeriod (
-		final double dblStart,
-		final double dblEnd,
-		final double dblFixing,
-		final org.drip.state.identifier.ForwardLabel forwardLabel)
+		final double dblAccrualStartDate,
+		final double dblAccrualEndDate,
+		final java.lang.String strCouponDC,
+		final boolean bCouponEOMAdjustment,
+		final java.lang.String strAccrualDC,
+		final boolean bAccrualEOMAdjustment,
+		final java.lang.String strCalendar,
+		final double dblFullCouponDCF,
+		final double dblNotional)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStart = dblStart) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblEnd = dblEnd) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblFixing = dblFixing))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblAccrualStartDate = dblAccrualStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblAccrualEndDate = dblAccrualEndDate) ||
+				_dblAccrualStartDate >= _dblAccrualEndDate || null == (_strCouponDC = strCouponDC) ||
+					_strCouponDC.isEmpty() || null == (_strAccrualDC = strAccrualDC) ||
+						_strAccrualDC.isEmpty() || null == (_strCalendar = strCalendar) ||
+							_strCalendar.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
+								(_dblFullCouponDCF = dblFullCouponDCF) ||
+									!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional))
 			throw new java.lang.Exception ("ComposablePeriod ctr: Invalid Inputs");
+
+		_bCouponEOMAdjustment = bCouponEOMAdjustment;
+		_bAccrualEOMAdjustment = bAccrualEOMAdjustment;
 	}
 
 	/**
-	 * Period Start Date
+	 * Retrieve the Accrual Start Date
 	 * 
-	 * @return The Period Start Date
+	 * @return The Accrual Start Date
 	 */
 
-	public double start()
+	public double accrualStartDate()
 	{
-		return _dblStart;
+		return _dblAccrualStartDate;
 	}
 
 	/**
-	 * Period End Date
+	 * Retrieve the Accrual End Date
 	 * 
-	 * @return The Period End Date
+	 * @return The Accrual End Date
 	 */
 
-	public double end()
+	public double accrualEndDate()
 	{
-		return _dblEnd;
+		return _dblAccrualEndDate;
 	}
 
 	/**
-	 * Period Fixing Date
+	 * Retrieve the Coupon Day Count
 	 * 
-	 * @return The Period Fixing Date
+	 * @return The Coupon Day Count
 	 */
 
-	public double fixing()
+	public java.lang.String couponDC()
 	{
-		return _dblFixing;
+		return _strCouponDC;
 	}
 
 	/**
-	 * Retrieve the Forward Label
+	 * Retrieve the Coupon EOM Adjustment Flag
 	 * 
-	 * @return The Forward Label
+	 * @return The Coupon EOM Adjustment Flag
 	 */
 
-	public org.drip.state.identifier.ForwardLabel forwardLabel()
+	public boolean couponEOMAdjustment()
 	{
-		return _forwardLabel;
+		return _bCouponEOMAdjustment;
 	}
 
 	/**
-	 * Place the Node Location in relation to the segment Location
+	 * Retrieve the Accrual Day Count
 	 * 
-	 * @param dblNode The Node Ordinate
+	 * @return The Accrual Day Count
+	 */
+
+	public java.lang.String accrualDC()
+	{
+		return _strAccrualDC;
+	}
+
+	/**
+	 * Retrieve the Accrual EOM Adjustment Flag
+	 * 
+	 * @return The Accrual EOM Adjustment Flag
+	 */
+
+	public boolean accrualEOMAdjustment()
+	{
+		return _bAccrualEOMAdjustment;
+	}
+
+	/**
+	 * Retrieve the Calendar
+	 * 
+	 * @return The Calendar
+	 */
+
+	public java.lang.String calendar()
+	{
+		return _strCalendar;
+	}
+
+	/**
+	 * Retrieve the Period Full Coupon DCF
+	 * 
+	 * @return The Period Full Coupon DCF
+	 */
+
+	public double fullCouponDCF()
+	{
+		return _dblFullCouponDCF;
+	}
+
+	/**
+	 * Retrieve the Period Notional
+	 * 
+	 * @return The Period Notional
+	 */
+
+	public double notional()
+	{
+		return _dblNotional;
+	}
+
+	/**
+	 * Place the Date Node Location in relation to the segment Location
+	 * 
+	 * @param dblDateNode The Node Ordinate
 	 * 
 	 * @return One of NODE_LEFT_OF_SEGMENT, NODE_RIGHT_OF_SEGMENT, or NODE_INSIDE_SEGMENT
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
 
-	public int nodeLocation (
-		final double dblNode)
+	public int dateLocation (
+		final double dblDateNode)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblNode))
-			throw new java.lang.Exception ("ComposablePeriod::nodeLocation => Invalid Node");
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDateNode))
+			throw new java.lang.Exception ("ComposableFixedPeriod::dateLocation => Invalid Date Node");
 
-		if (dblNode < _dblStart) return NODE_LEFT_OF_SEGMENT;
+		if (dblDateNode < _dblAccrualStartDate) return NODE_LEFT_OF_SEGMENT;
 
-		if (dblNode > _dblEnd) return NODE_RIGHT_OF_SEGMENT;
+		if (dblDateNode > _dblAccrualEndDate) return NODE_RIGHT_OF_SEGMENT;
 
 		return NODE_INSIDE_SEGMENT;
 	}
+
+	/**
+	 * Get the period Accrual Day Count Fraction to an accrual end date
+	 * 
+	 * @param dblAccrualEnd Accrual End Date
+	 * 
+	 * @return The Accrual DCF
+	 * 
+	 * @exception Thrown if inputs are invalid, or if the date does not lie within the period
+	 */
+
+	public double accrualDCF (
+		final double dblAccrualEnd)
+		throws java.lang.Exception
+	{
+		if (NODE_INSIDE_SEGMENT != dateLocation (dblAccrualEnd))
+			throw new java.lang.Exception
+				("ComposableFixedPeriod::accrualDCF => Invalid in-period accrual date!");
+
+		return org.drip.analytics.daycount.Convention.YearFraction (_dblAccrualStartDate, dblAccrualEnd,
+			_strAccrualDC, _bAccrualEOMAdjustment, null, _strCalendar) /
+				org.drip.analytics.daycount.Convention.YearFraction (_dblAccrualStartDate,
+					_dblAccrualEndDate, _strAccrualDC, _bAccrualEOMAdjustment, null, _strCalendar) *
+						_dblFullCouponDCF;
+	}
+
+	/**
+	 * Get the Accrued01 to an accrual end date
+	 * 
+	 * @param dblAccrualEnd Accrual End Date
+	 * 
+	 * @return The Accrued01
+	 * 
+	 * @exception Thrown if inputs are invalid, or if the date does not lie within the period
+	 */
+
+	public double accrued01 (
+		final double dblAccrualEnd)
+		throws java.lang.Exception
+	{
+		return 0.0001 * _dblNotional * accrualDCF (dblAccrualEnd);
+	}
+
+	/**
+	 * Get the Period Full Coupon 01
+	 * 
+	 * @return The Period Full Coupon 01
+	 */
+
+	public double fullCoupon01()
+	{
+		return 0.0001 * _dblNotional * _dblFullCouponDCF;
+	}
+
+	/**
+	 * Get the Accrued to an accrual end date
+	 * 
+	 * @param dblAccrualEnd Accrual End Date
+	 * @param csqs The Market Curve and Surface
+	 * 
+	 * @return The Accrued
+	 * 
+	 * @exception Thrown if inputs are invalid, or if the date does not lie within the period
+	 */
+
+	public abstract double accrued (
+		final double dblAccrualEnd,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception;
+
+	/**
+	 * Get the Period Full Coupon Accrued
+	 * 
+	 * @param csqs The Market Curve and Surface
+	 * 
+	 * @return The Period Full Coupon Accrued
+	 * 
+	 * @exception Thrown if inputs are invalid, or if the date does not lie within the period
+	 */
+
+	public abstract double fullCouponAccrued (
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		throws java.lang.Exception;
 }

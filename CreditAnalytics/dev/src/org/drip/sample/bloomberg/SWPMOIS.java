@@ -1,7 +1,7 @@
 
 package org.drip.sample.bloomberg;
 
-import org.drip.analytics.cashflow.CouponPeriod;
+import org.drip.analytics.cashflow.GenericCouponPeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
@@ -394,7 +394,7 @@ public class SWPMOIS {
 
 		System.out.println ("\n---- Fixed Cashflow ----\n");
 
-		for (CouponPeriod p : swap.referenceStream().cashFlowPeriod())
+		for (GenericCouponPeriod p : swap.referenceStream().cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.accrualStartDate()) + FIELD_SEPARATOR +
@@ -410,7 +410,7 @@ public class SWPMOIS {
 
 		System.out.println ("\n---- Floating Cashflow ----\n");
 
-		for (CouponPeriod p : swap.derivedStream().cashFlowPeriod())
+		for (GenericCouponPeriod p : swap.derivedStream().cashFlowPeriod())
 			System.out.println (
 				JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.accrualStartDate()) + FIELD_SEPARATOR +

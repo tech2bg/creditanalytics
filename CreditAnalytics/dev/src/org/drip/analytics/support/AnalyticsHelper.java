@@ -822,18 +822,18 @@ public class AnalyticsHelper {
 	 * @return The Merged Period List
 	 */
 
-	public static final java.util.List<org.drip.analytics.cashflow.CouponPeriod> MergePeriodLists (
-		final java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsPeriod1,
-		final java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsPeriod2)
+	public static final java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> MergePeriodLists (
+		final java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsPeriod1,
+		final java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsPeriod2)
 	{
 		if ((null == lsPeriod1 || 0 == lsPeriod1.size()) && (null == lsPeriod2 || 0 == lsPeriod2.size()))
 			return null;
 
-		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsPeriodMerged = new
-			java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
+		java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsPeriodMerged = new
+			java.util.ArrayList<org.drip.analytics.cashflow.GenericCouponPeriod>();
 
 		if (null == lsPeriod1 || 0 == lsPeriod1.size()) {
-			for (org.drip.analytics.cashflow.CouponPeriod p : lsPeriod2) {
+			for (org.drip.analytics.cashflow.GenericCouponPeriod p : lsPeriod2) {
 				if (null != p) lsPeriodMerged.add (p);
 			}
 
@@ -841,7 +841,7 @@ public class AnalyticsHelper {
 		}
 
 		if (null == lsPeriod2 || 0 == lsPeriod2.size()) {
-			for (org.drip.analytics.cashflow.CouponPeriod p : lsPeriod1) {
+			for (org.drip.analytics.cashflow.GenericCouponPeriod p : lsPeriod1) {
 				if (null != p) lsPeriodMerged.add (p);
 			}
 
@@ -852,9 +852,9 @@ public class AnalyticsHelper {
 		int iPeriod2Index = 0;
 
 		while (iPeriod1Index < lsPeriod1.size() && iPeriod2Index < lsPeriod2.size()) {
-			org.drip.analytics.cashflow.CouponPeriod p1 = lsPeriod1.get (iPeriod1Index);
+			org.drip.analytics.cashflow.GenericCouponPeriod p1 = lsPeriod1.get (iPeriod1Index);
 
-			org.drip.analytics.cashflow.CouponPeriod p2 = lsPeriod2.get (iPeriod2Index);
+			org.drip.analytics.cashflow.GenericCouponPeriod p2 = lsPeriod2.get (iPeriod2Index);
 
 			if (p1.payDate() < p2.payDate()) {
 				lsPeriodMerged.add (p1);
@@ -886,7 +886,7 @@ public class AnalyticsHelper {
 	 * @return The Aggregated Period Set
 	 */
 
-	public static final java.util.Set<org.drip.analytics.cashflow.CouponPeriod> AggregateComponentPeriods (
+	public static final java.util.Set<org.drip.analytics.cashflow.GenericCouponPeriod> AggregateComponentPeriods (
 		final org.drip.product.definition.FixedIncomeComponent[] aComp)
 	{
 		if (null == aComp) return null;
@@ -903,18 +903,18 @@ public class AnalyticsHelper {
 			}
 		}
 
-		java.util.Set<org.drip.analytics.cashflow.CouponPeriod> setAggregatedPeriod = new
-			java.util.TreeSet<org.drip.analytics.cashflow.CouponPeriod>();
+		java.util.Set<org.drip.analytics.cashflow.GenericCouponPeriod> setAggregatedPeriod = new
+			java.util.TreeSet<org.drip.analytics.cashflow.GenericCouponPeriod>();
 
 		for (int i = iStartIndex; i < iNumComp; ++i) {
 			if (null == aComp[i]) continue;
 
-			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCompPeriod =
+			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsCompPeriod =
 				aComp[i].cashFlowPeriod();
 
 			if (null == lsCompPeriod || 0 == lsCompPeriod.size()) continue;
 
-			for (org.drip.analytics.cashflow.CouponPeriod p : lsCompPeriod) {
+			for (org.drip.analytics.cashflow.GenericCouponPeriod p : lsCompPeriod) {
 				if (null != p) setAggregatedPeriod.add (p);
 			}
 		}

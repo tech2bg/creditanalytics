@@ -1448,7 +1448,7 @@ public class CreditAnalyticsTestSuite {
 				System.out.println
 					("---------    ---------    ---------    ---------    ---------    --------");
 
-				for (org.drip.analytics.cashflow.CouponPeriod p : aBond[i].cashFlowPeriod()) {
+				for (org.drip.analytics.cashflow.GenericCouponPeriod p : aBond[i].cashFlowPeriod()) {
 					try {
 						System.out.println (org.drip.analytics.date.JulianDate.fromJulian
 							(p.accrualStartDate()) + "    " + org.drip.analytics.date.JulianDate.fromJulian

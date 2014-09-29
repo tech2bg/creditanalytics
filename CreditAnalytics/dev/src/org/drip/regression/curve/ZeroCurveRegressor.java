@@ -76,8 +76,8 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				private org.drip.analytics.rates.ExplicitBootDiscountCurve _dc = null;
 				private org.drip.analytics.date.JulianDate _dtPeriodStart = null;
 
-				private java.util.List<org.drip.analytics.cashflow.CouponPeriod> _lsCouponPeriod = new
-					java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>();
+				private java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> _lsCouponPeriod = new
+					java.util.ArrayList<org.drip.analytics.cashflow.GenericCouponPeriod>();
 
 				@Override public boolean preRegression()
 				{
@@ -113,7 +113,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 						double dblEnd = dtEnd.julian();
 
 						try {
-							_lsCouponPeriod.add (new org.drip.analytics.cashflow.CouponPeriod (dblStart,
+							_lsCouponPeriod.add (new org.drip.analytics.cashflow.GenericCouponPeriod (dblStart,
 								dblEnd, dblStart, dblEnd, dblEnd, null, java.lang.Double.NaN, 2, 0.5,
 									"30/360", "30/360", false, false, "ZAR", 1., null, s_dblZSpread, "ZAR",
 										"ZAR", null, null));

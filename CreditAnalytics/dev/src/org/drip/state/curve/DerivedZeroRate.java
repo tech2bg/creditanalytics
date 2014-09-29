@@ -108,7 +108,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		final java.lang.String strDCZC,
 		final java.lang.String strCalendarZC,
 		final boolean bApplyEOMAdjZC,
-		final java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCouponPeriod,
+		final java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsCouponPeriod,
 		final double dblWorkoutDate,
 		final double dblCashPayDate,
 		final org.drip.analytics.rates.DiscountCurve dc,
@@ -141,7 +141,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 			strCalendar = quotingParams.yieldCalendar();
 		}
 
-		for (org.drip.analytics.cashflow.CouponPeriod period : lsCouponPeriod)
+		for (org.drip.analytics.cashflow.GenericCouponPeriod period : lsCouponPeriod)
 			updateMapEntries (period.payDate(), iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
 
 		updateMapEntries (dblWorkoutDate, iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);

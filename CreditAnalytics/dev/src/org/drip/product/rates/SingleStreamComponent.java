@@ -163,7 +163,7 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 		return _stream.firstCouponDate();
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
 	{
 		return _stream.cashFlowPeriod();
 	}

@@ -52,7 +52,7 @@ public class ForwardDecompositionUtil {
 	{
 		if (null == fs) return null;
 
-		java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCouponFlow = fs.cashFlowPeriod();
+		java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsCouponFlow = fs.cashFlowPeriod();
 
 		int iNumPeriods = lsCouponFlow.size();
 
@@ -61,14 +61,14 @@ public class ForwardDecompositionUtil {
 		int iNumForward = iNumPeriods / iNumPeriodsToAccumulate;
 		org.drip.product.rates.Stream[] aFS = new org.drip.product.rates.Stream[iNumForward];
 
-		java.util.List<java.util.List<org.drip.analytics.cashflow.CouponPeriod>> lslsCouponPeriod = new
-			java.util.ArrayList<java.util.List<org.drip.analytics.cashflow.CouponPeriod>>();
+		java.util.List<java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod>> lslsCouponPeriod = new
+			java.util.ArrayList<java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod>>();
 
 		for (int i = 0; i < iNumForward; ++i)
-			lslsCouponPeriod.add (new java.util.ArrayList<org.drip.analytics.cashflow.CouponPeriod>());
+			lslsCouponPeriod.add (new java.util.ArrayList<org.drip.analytics.cashflow.GenericCouponPeriod>());
 
-		for (org.drip.analytics.cashflow.CouponPeriod cfp : lsCouponFlow) {
-			java.util.List<org.drip.analytics.cashflow.CouponPeriod> lsCouponPeriod = lslsCouponPeriod.get
+		for (org.drip.analytics.cashflow.GenericCouponPeriod cfp : lsCouponFlow) {
+			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsCouponPeriod = lslsCouponPeriod.get
 				(iCFPIndex);
 
 			lsCouponPeriod.add (cfp);

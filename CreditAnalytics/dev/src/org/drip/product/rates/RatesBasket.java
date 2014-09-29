@@ -416,7 +416,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
 	{
 		return null;
 	}
