@@ -29,23 +29,23 @@ package org.drip.analytics.cashflow;
  */
 
 /**
- * ComposableFixedPeriod contains the fixed cash flow periods' composable sub period details. Currently it
- *  holds the accrual start date, the accrual end date, the fixed coupon, the basis spread, coupon and
+ * ComposableUnitFixedPeriod contains the fixed cash flow periods' composable sub period details. Currently
+ *  it holds the accrual start date, the accrual end date, the fixed coupon, the basis spread, coupon and
  *  accrual day counts, and the EOM adjustment flags.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposableFixedPeriod extends org.drip.analytics.cashflow.ComposablePeriod {
+public class ComposableUnitFixedPeriod extends org.drip.analytics.cashflow.ComposableUnitPeriod {
 	private double _dblBasis = java.lang.Double.NaN;
 	private java.lang.String _strCouponCurrency = "";
 	private double _dblFixedCoupon = java.lang.Double.NaN;
 
 	/**
-	 * The ComposableFixedPeriod constructor
+	 * The ComposableUnitFixedPeriod constructor
 	 * 
-	 * @param dblAccrualStartDate Accrual Start Date
-	 * @param dblAccrualEndDate Accrual End Date
+	 * @param dblStartDate Accrual Start Date
+	 * @param dblEndDate Accrual End Date
 	 * @param strCouponDC Coupon Day Count
 	 * @param bCouponEOMAdjustment Coupon EOM Adjustment Flag
 	 * @param strAccrualDC Accrual Day Count
@@ -60,9 +60,9 @@ public class ComposableFixedPeriod extends org.drip.analytics.cashflow.Composabl
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ComposableFixedPeriod (
-		final double dblAccrualStartDate,
-		final double dblAccrualEndDate,
+	public ComposableUnitFixedPeriod (
+		final double dblStartDate,
+		final double dblEndDate,
 		final java.lang.String strCouponDC,
 		final boolean bCouponEOMAdjustment,
 		final java.lang.String strAccrualDC,
@@ -75,13 +75,13 @@ public class ComposableFixedPeriod extends org.drip.analytics.cashflow.Composabl
 		final java.lang.String strCouponCurrency)
 		throws java.lang.Exception
 	{
-		super (dblAccrualStartDate, dblAccrualEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC,
+		super (dblStartDate, dblEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC,
 			bAccrualEOMAdjustment, strCalendar, dblFullCouponDCF, dblNotional);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFixedCoupon = dblFixedCoupon) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis) || null == (_strCouponCurrency =
 				strCouponCurrency) || _strCouponCurrency.isEmpty())
-			throw new java.lang.Exception ("ComposableFixedPeriod ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ComposableUnitFixedPeriod ctr: Invalid Inputs");
 	}
 
 	@Override public double baseRate (

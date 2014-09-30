@@ -29,22 +29,22 @@ package org.drip.analytics.cashflow;
  */
 
 /**
- * ComposableFloatingPeriod contains the cash flow periods' composable sub period details. Currently it holds
- * 	the accrual start date, the accrual end date, the fixing date, the spread over the index, and the
+ * ComposableUnitFloatingPeriod contains the cash flow periods' composable sub period details. Currently it
+ * 	holds the accrual start date, the accrual end date, the fixing date, the spread over the index, and the
  * 	corresponding reference index period.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposableFloatingPeriod extends org.drip.analytics.cashflow.ComposablePeriod {
+public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.ComposableUnitPeriod {
 	private double _dblSpread = java.lang.Double.NaN;
 	private org.drip.analytics.cashflow.ReferenceIndexPeriod _refIndexPeriod = null;
 
 	/**
-	 * The ComposableFloatingPeriod constructor
+	 * The ComposableUnitFloatingPeriod constructor
 	 * 
-	 * @param dblAccrualStartDate Accrual Start Date
-	 * @param dblAccrualEndDate Accrual End Date
+	 * @param dblStartDate Accrual Start Date
+	 * @param dblEndDate Accrual End Date
 	 * @param strCouponDC Coupon Day Count
 	 * @param bCouponEOMAdjustment Coupon EOM Adjustment Flag
 	 * @param strAccrualDC Accrual Day Count
@@ -58,9 +58,9 @@ public class ComposableFloatingPeriod extends org.drip.analytics.cashflow.Compos
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ComposableFloatingPeriod (
-		final double dblAccrualStartDate,
-		final double dblAccrualEndDate,
+	public ComposableUnitFloatingPeriod (
+		final double dblStartDate,
+		final double dblEndDate,
 		final java.lang.String strCouponDC,
 		final boolean bCouponEOMAdjustment,
 		final java.lang.String strAccrualDC,
@@ -72,12 +72,12 @@ public class ComposableFloatingPeriod extends org.drip.analytics.cashflow.Compos
 		final double dblSpread)
 		throws java.lang.Exception
 	{
-		super (dblAccrualStartDate, dblAccrualEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC,
+		super (dblStartDate, dblEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC,
 			bAccrualEOMAdjustment, strCalendar, dblFullCouponDCF, dblNotional);
 
 		if (null == (_refIndexPeriod = refIndexPeriod) || !org.drip.quant.common.NumberUtil.IsValid
 			(_dblSpread = dblSpread))
-			throw new java.lang.Exception ("ComposableFloatingPeriod ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ComposableUnitFloatingPeriod ctr: Invalid Inputs");
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class ComposableFloatingPeriod extends org.drip.analytics.cashflow.Compos
 
 		if (null == dcFunding)
 			throw new java.lang.Exception
-				("ComposableFloatingPeriod::referenceRate => Cannot locate Funding Curve");
+				("ComposableUnitFloatingPeriod::referenceRate => Cannot locate Funding Curve");
 
 		double dblReferencePeriodStartDate = _refIndexPeriod.startDate();
 

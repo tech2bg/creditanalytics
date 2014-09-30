@@ -55,7 +55,7 @@ public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPer
 	 */
 
 	public ComposedFixedPeriod (
-		final java.util.List<org.drip.analytics.cashflow.ComposablePeriod> lsComposableFixedPeriod,
+		final java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsComposableFixedPeriod,
 		final int iFreq,
 		final double dblPayDate,
 		final java.lang.String strPayCurrency,
@@ -74,7 +74,7 @@ public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPer
 			throw new java.lang.Exception ("ComposedFixedPeriod ctr: Invalid Inputs");
 	}
 
-	@Override public org.drip.analytics.cashflow.ComposedPeriodQuoteSet periodQuoteSet (
+	@Override public org.drip.analytics.cashflow.CompositePeriodQuoteSet periodQuoteSet (
 		final org.drip.product.calib.ProductQuoteSet pqs,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -82,7 +82,7 @@ public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPer
 
 		double dblBaseRate = java.lang.Double.NaN;
 
-		org.drip.analytics.cashflow.ComposablePeriod cpFirst = periods().get (0);
+		org.drip.analytics.cashflow.ComposableUnitPeriod cpFirst = periods().get (0);
 
 		try {
 			dblBaseRate = cpFirst.baseRate (null);
@@ -102,7 +102,7 @@ public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPer
 
 			if (fsqs.containsCouponBasis()) dblBasis = fsqs.couponBasis();
 
-			return new org.drip.analytics.cashflow.ComposedPeriodQuoteSet (dblBaseRate, dblBasis);
+			return new org.drip.analytics.cashflow.CompositePeriodQuoteSet (dblBaseRate, dblBasis);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

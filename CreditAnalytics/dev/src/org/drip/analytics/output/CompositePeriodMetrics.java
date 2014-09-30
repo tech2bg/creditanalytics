@@ -1,5 +1,5 @@
 
-package org.drip.analytics.cashflow;
+package org.drip.analytics.output;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,53 +29,38 @@ package org.drip.analytics.cashflow;
  */
 
 /**
- * ComposedPeriodQuoteSet implements the composed period quote set functionality.
+ * CompositePeriodMetrics holds the results of the compounded Composed period metrics estimate output.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposedPeriodQuoteSet {
-	private double _dblBasis = java.lang.Double.NaN;
-	private double _dblBaseRate = java.lang.Double.NaN;
+public class CompositePeriodMetrics {
+	private java.util.List<org.drip.analytics.output.UnitPeriodMetrics> _lsUPM = null;
 
 	/**
-	 * ComposedPeriodQuoteSet constructor
+	 * CompositePeriodMetrics Instance from the list of the composite period metrics
 	 * 
-	 * @param dblBaseRate Base Rate
-	 * @param dblBasis Basis
+	 * @param lsUPM List of Unit Period Metrics
 	 * 
-	 * @throws java.lang.Exception Thrown if inputs are invalid
+	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
-	public ComposedPeriodQuoteSet (
-		final double dblBaseRate,
-		final double dblBasis)
+	public CompositePeriodMetrics (
+		final java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsUPM)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblBaseRate = dblBaseRate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis))
-			throw new java.lang.Exception ("ComposedPeriodQuoteSet ctr: Invalid Inputs");
+		if (null == (_lsUPM = lsUPM) || 0 == _lsUPM.size())
+			throw new java.lang.Exception ("CompositePeriodMetrics ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Get the Period Base Coupon Rate
+	 * Retrieve the List of the Unit Period Metrics
 	 * 
-	 * @return The Period Base Coupon Rate
+	 * @return The List of the Unit Period Metrics
 	 */
 
-	public double baseRate()
+	public java.util.List<org.drip.analytics.output.UnitPeriodMetrics> unitMetrics()
 	{
-		return _dblBaseRate;
-	}
-
-	/**
-	 * Get the Period Coupon Basis
-	 * 
-	 * @return The Period Coupon Basis
-	 */
-
-	public double basis()
-	{
-		return _dblBasis;
+		return _lsUPM;
 	}
 }

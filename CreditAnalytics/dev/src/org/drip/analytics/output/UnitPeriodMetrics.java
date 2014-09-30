@@ -29,12 +29,12 @@ package org.drip.analytics.output;
  */
 
 /**
- * ComposablePeriodMetrics holds the results of a single composable period metrics estimate output.
+ * UnitPeriodMetrics holds the results of a unit composable period metrics estimate output.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposablePeriodMetrics {
+public class UnitPeriodMetrics {
 	private double _dblDCF = java.lang.Double.NaN;
 	private double _dblRate = java.lang.Double.NaN;
 	private double _dblEndDate = java.lang.Double.NaN;
@@ -42,7 +42,7 @@ public class ComposablePeriodMetrics {
 	private org.drip.analytics.output.ConvexityAdjustment _convAdj = null;
 
 	/**
-	 * ComposablePeriodMetrics constructor
+	 * UnitPeriodMetrics constructor
 	 * 
 	 * @param dblStartDate Metric Period Start Date
 	 * @param dblEndDate Metric Period End Date
@@ -53,7 +53,7 @@ public class ComposablePeriodMetrics {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public ComposablePeriodMetrics (
+	public UnitPeriodMetrics (
 		final double dblStartDate,
 		final double dblEndDate,
 		final double dblDCF,
@@ -62,11 +62,11 @@ public class ComposablePeriodMetrics {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||_dblEndDate <=
+				_dblStartDate || !org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) ||
 					!org.drip.quant.common.NumberUtil.IsValid (_dblRate = dblRate) || null == (_convAdj =
 						convAdj))
-			throw new java.lang.Exception ("ComposablePeriodMetrics ctr: Invalid Inputs");
+			throw new java.lang.Exception ("UnitPeriodMetrics ctr: Invalid Inputs");
 	}
 
 	/**

@@ -43,21 +43,21 @@ public abstract class ComposedPeriod {
 	private double _dblFXFixingDate = java.lang.Double.NaN;
 	private org.drip.state.identifier.CreditLabel _creditLabel = null;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
-	private java.util.List<org.drip.analytics.cashflow.ComposablePeriod> _lsComposablePeriod = null;
+	private java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> _lsComposablePeriod = null;
 
 	private double calibAccrued (
-		final org.drip.analytics.cashflow.ComposedPeriodQuoteSet cpqs,
+		final org.drip.analytics.cashflow.CompositePeriodQuoteSet cpqs,
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		org.drip.analytics.output.ComposedPeriodMetrics cpm = accrualMetrics (dblValueDate, csqs);
+		org.drip.analytics.output.CompositePeriodMetrics cpm = accrualMetrics (dblValueDate, csqs);
 
 		if (null == cpm) return 0.;
 
 		double dblDCF = 0.;
 
-		for (org.drip.analytics.output.ComposablePeriodMetrics cm : cpm.composableMetrics())
+		for (org.drip.analytics.output.UnitPeriodMetrics cm : cpm.unitMetrics())
 			dblDCF += cm.dcf();
 
 		return notional (_dblPayDate) * fx (csqs) * dblDCF * (cpqs.baseRate() + cpqs.basis());
@@ -80,7 +80,7 @@ public abstract class ComposedPeriod {
 	 */
 
 	public ComposedPeriod (
-		final java.util.List<org.drip.analytics.cashflow.ComposablePeriod> lsComposablePeriod,
+		final java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsComposablePeriod,
 		final int iFreq,
 		final double dblPayDate,
 		final java.lang.String strPayCurrency,
@@ -112,7 +112,7 @@ public abstract class ComposedPeriod {
 	 * @return The List of Composable Periods
 	 */
 
-	public java.util.List<org.drip.analytics.cashflow.ComposablePeriod> periods()
+	public java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> periods()
 	{
 		return _lsComposablePeriod;
 	}
@@ -125,7 +125,7 @@ public abstract class ComposedPeriod {
 
 	public double startDate()
 	{
-		return _lsComposablePeriod.get (0).accrualStartDate();
+		return _lsComposablePeriod.get (0).startDate();
 	}
 
 	/**
@@ -136,7 +136,7 @@ public abstract class ComposedPeriod {
 
 	public double endDate()
 	{
-		return _lsComposablePeriod.get (_lsComposablePeriod.size() - 1).accrualEndDate();
+		return _lsComposablePeriod.get (_lsComposablePeriod.size() - 1).endDate();
 	}
 
 	/**
@@ -156,11 +156,11 @@ public abstract class ComposedPeriod {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("ComposedPeriod::contains => Invalid Inputs");
 
-		double dblStartDate = _lsComposablePeriod.get (0).accrualStartDate();
+		double dblStartDate = _lsComposablePeriod.get (0).startDate();
 
 		if (dblStartDate > dblDate) return false;
 
-		double dblEndDate = _lsComposablePeriod.get (_lsComposablePeriod.size() - 1).accrualEndDate();
+		double dblEndDate = _lsComposablePeriod.get (_lsComposablePeriod.size() - 1).endDate();
 
 		if (dblEndDate < dblDate) return false;
 
@@ -441,11 +441,11 @@ public abstract class ComposedPeriod {
 
 	public org.drip.state.identifier.ForwardLabel forwardLabel()
 	{
-		org.drip.analytics.cashflow.ComposablePeriod cp = _lsComposablePeriod.get (0);
+		org.drip.analytics.cashflow.ComposableUnitPeriod cp = _lsComposablePeriod.get (0);
 
-		if (cp instanceof org.drip.analytics.cashflow.ComposableFixedPeriod) return null;
+		if (cp instanceof org.drip.analytics.cashflow.ComposableUnitFixedPeriod) return null;
 
-		return ((org.drip.analytics.cashflow.ComposableFloatingPeriod)
+		return ((org.drip.analytics.cashflow.ComposableUnitFloatingPeriod)
 			cp).referenceIndexPeriod().forwardLabel();
 	}
 
@@ -543,7 +543,7 @@ public abstract class ComposedPeriod {
 						csqs.fundingFXCorrSurface (fundingLabel, fxLabel), dblValueDate, _dblPayDate));
 			}
 
-			for (org.drip.analytics.cashflow.ComposablePeriod cp : _lsComposablePeriod) {
+			for (org.drip.analytics.cashflow.ComposableUnitPeriod cp : _lsComposablePeriod) {
 				org.drip.analytics.output.ConvexityAdjustment convAdj = new
 					org.drip.analytics.output.ConvexityAdjustment();
 
@@ -554,9 +554,9 @@ public abstract class ComposedPeriod {
 				if (!convAdj.setFundingFX (dblFundingFXConvexityAdjustment)) return null;
 
 				if (null != forwardLabel) {
-					if (!(cp instanceof org.drip.analytics.cashflow.ComposableFloatingPeriod)) return null;
+					if (!(cp instanceof org.drip.analytics.cashflow.ComposableUnitFloatingPeriod)) return null;
 
-					double dblFixingDate = ((org.drip.analytics.cashflow.ComposableFloatingPeriod)
+					double dblFixingDate = ((org.drip.analytics.cashflow.ComposableUnitFloatingPeriod)
 						cp).referenceIndexPeriod().fixingDate();
 
 					if (dblValueDate < dblFixingDate) {
@@ -623,9 +623,9 @@ public abstract class ComposedPeriod {
 
 		org.drip.quant.function1D.AbstractUnivariate auFXVol = csqs.fxCurveVolSurface (fxLabel);
 
-		org.drip.analytics.cashflow.ComposablePeriod cp = _lsComposablePeriod.get (0);
+		org.drip.analytics.cashflow.ComposableUnitPeriod cp = _lsComposablePeriod.get (0);
 
-		if (!(cp instanceof org.drip.analytics.cashflow.ComposableFloatingPeriod)) return null;
+		if (!(cp instanceof org.drip.analytics.cashflow.ComposableUnitFloatingPeriod)) return null;
 
 		org.drip.analytics.output.ConvexityAdjustment convAdj = new
 			org.drip.analytics.output.ConvexityAdjustment();
@@ -646,7 +646,7 @@ public abstract class ComposedPeriod {
 					csqs.fundingFXCorrSurface (fundingLabel, fxLabel), dblValueDate, _dblPayDate))))
 				return null;
 
-			double dblFixingDate = ((org.drip.analytics.cashflow.ComposableFloatingPeriod)
+			double dblFixingDate = ((org.drip.analytics.cashflow.ComposableUnitFloatingPeriod)
 				cp).referenceIndexPeriod().fixingDate();
 
 			if (dblValueDate < dblFixingDate) {
@@ -683,14 +683,14 @@ public abstract class ComposedPeriod {
 	 * @return The Period Coupon Measures
 	 */
 
-	public org.drip.analytics.output.ComposedPeriodMetrics couponMetrics (
+	public org.drip.analytics.output.CompositePeriodMetrics couponMetrics (
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate)) return null;
 
-		java.util.List<org.drip.analytics.output.ComposablePeriodMetrics> lsCPM = new
-			java.util.ArrayList<org.drip.analytics.output.ComposablePeriodMetrics>();
+		java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsCPM = new
+			java.util.ArrayList<org.drip.analytics.output.UnitPeriodMetrics>();
 
 		try {
 			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
@@ -699,11 +699,10 @@ public abstract class ComposedPeriod {
 					periodWiseConvexityAdjustment (dblValueDate, csqs);
 
 				for (int i = 0; i < _lsComposablePeriod.size(); ++i) {
-					org.drip.analytics.cashflow.ComposablePeriod cp = _lsComposablePeriod.get (i);
+					org.drip.analytics.cashflow.ComposableUnitPeriod cp = _lsComposablePeriod.get (i);
 
-					lsCPM.add (new org.drip.analytics.output.ComposablePeriodMetrics (cp.accrualStartDate(),
-						cp.accrualEndDate(), cp.fullCouponDCF(), cp.fullCouponRate (csqs), lsConvAdj.get
-							(i)));
+					lsCPM.add (new org.drip.analytics.output.UnitPeriodMetrics (cp.startDate(),
+						cp.endDate(), cp.fullCouponDCF(), cp.fullCouponRate (csqs), lsConvAdj.get (i)));
 				}
 			} else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 				_iAccrualCompoundingRule) {
@@ -711,7 +710,7 @@ public abstract class ComposedPeriod {
 				double dblRate = 1.;
 
 				for (int i = 0; i < _lsComposablePeriod.size(); ++i) {
-					org.drip.analytics.cashflow.ComposablePeriod cp = _lsComposablePeriod.get (i);
+					org.drip.analytics.cashflow.ComposableUnitPeriod cp = _lsComposablePeriod.get (i);
 
 					double dblPeriodDCF = cp.fullCouponDCF();
 
@@ -721,11 +720,11 @@ public abstract class ComposedPeriod {
 					dblRate *= (1. + dblPeriodRate * dblPeriodDCF);
 				}
 
-				lsCPM.add (new org.drip.analytics.output.ComposablePeriodMetrics (startDate(), endDate(),
+				lsCPM.add (new org.drip.analytics.output.UnitPeriodMetrics (startDate(), endDate(),
 					dblDCF, (dblRate - 1.) / dblDCF, terminalConvexityAdjustment (dblValueDate, csqs)));
 			}
 
-			return new org.drip.analytics.output.ComposedPeriodMetrics (lsCPM);
+			return new org.drip.analytics.output.CompositePeriodMetrics (lsCPM);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -742,15 +741,15 @@ public abstract class ComposedPeriod {
 	 * @return The Coupon Accrual Measures to the specified Accrual End Date
 	 */
 
-	public org.drip.analytics.output.ComposedPeriodMetrics accrualMetrics (
+	public org.drip.analytics.output.CompositePeriodMetrics accrualMetrics (
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		try {
 			if (!contains (dblValueDate)) return null;
 
-			java.util.List<org.drip.analytics.output.ComposablePeriodMetrics> lsCPM = new
-				java.util.ArrayList<org.drip.analytics.output.ComposablePeriodMetrics>();
+			java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsCPM = new
+				java.util.ArrayList<org.drip.analytics.output.UnitPeriodMetrics>();
 
 			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_iAccrualCompoundingRule) {
@@ -758,20 +757,19 @@ public abstract class ComposedPeriod {
 					periodWiseConvexityAdjustment (dblValueDate, csqs);
 
 				for (int i = 0; i < _lsComposablePeriod.size(); ++i) {
-					org.drip.analytics.cashflow.ComposablePeriod cp = _lsComposablePeriod.get (i);
+					org.drip.analytics.cashflow.ComposableUnitPeriod cp = _lsComposablePeriod.get (i);
 
 					int iDateLocation = cp.dateLocation (dblValueDate);
 
-					if (org.drip.analytics.cashflow.ComposableFixedPeriod.NODE_INSIDE_SEGMENT ==
+					if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_INSIDE_SEGMENT ==
 						iDateLocation)
-						lsCPM.add (new org.drip.analytics.output.ComposablePeriodMetrics
-							(cp.accrualStartDate(), dblValueDate, cp.accrualDCF (dblValueDate),
-								cp.fullCouponRate (csqs), lsConvAdj.get (i)));
-					else if (org.drip.analytics.cashflow.ComposableFixedPeriod.NODE_LEFT_OF_SEGMENT ==
+						lsCPM.add (new org.drip.analytics.output.UnitPeriodMetrics (cp.startDate(),
+							dblValueDate, cp.accrualDCF (dblValueDate), cp.fullCouponRate (csqs),
+								lsConvAdj.get (i)));
+					else if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_LEFT_OF_SEGMENT ==
 						iDateLocation)
-						lsCPM.add (new org.drip.analytics.output.ComposablePeriodMetrics
-							(cp.accrualStartDate(), cp.accrualEndDate(), cp.fullCouponDCF(),
-								cp.fullCouponRate (csqs), lsConvAdj.get (i)));
+						lsCPM.add (new org.drip.analytics.output.UnitPeriodMetrics (cp.startDate(),
+							cp.endDate(), cp.fullCouponDCF(), cp.fullCouponRate (csqs), lsConvAdj.get (i)));
 				}
 			} else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 				_iAccrualCompoundingRule) {
@@ -779,18 +777,18 @@ public abstract class ComposedPeriod {
 				double dblRate = 1.;
 
 				for (int i = 0; i < _lsComposablePeriod.size(); ++i) {
-					org.drip.analytics.cashflow.ComposablePeriod cp = _lsComposablePeriod.get (i);
+					org.drip.analytics.cashflow.ComposableUnitPeriod cp = _lsComposablePeriod.get (i);
 
 					int iDateLocation = cp.dateLocation (dblValueDate);
 
-					if (org.drip.analytics.cashflow.ComposableFixedPeriod.NODE_INSIDE_SEGMENT ==
+					if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_INSIDE_SEGMENT ==
 						iDateLocation) {
 						double dblPeriodDCF = cp.accrualDCF (dblValueDate);
 
 						dblDCF += dblPeriodDCF;
 
 						dblRate *= (1. + cp.fullCouponRate (csqs) * dblPeriodDCF);
-					} else if (org.drip.analytics.cashflow.ComposableFixedPeriod.NODE_LEFT_OF_SEGMENT ==
+					} else if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_LEFT_OF_SEGMENT ==
 						iDateLocation) {
 						double dblPeriodDCF = cp.fullCouponDCF();
 
@@ -800,11 +798,11 @@ public abstract class ComposedPeriod {
 					}
 				}
 
-				lsCPM.add (new org.drip.analytics.output.ComposablePeriodMetrics (startDate(), dblValueDate,
+				lsCPM.add (new org.drip.analytics.output.UnitPeriodMetrics (startDate(), dblValueDate,
 					dblDCF, (dblRate - 1.) / dblDCF, terminalConvexityAdjustment (dblValueDate, csqs)));
 			}
 
-			return new org.drip.analytics.output.ComposedPeriodMetrics (lsCPM);
+			return new org.drip.analytics.output.CompositePeriodMetrics (lsCPM);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -835,7 +833,7 @@ public abstract class ComposedPeriod {
 		double dblNotional = java.lang.Double.NaN;
 		double dblSurvival = java.lang.Double.NaN;
 
-		org.drip.analytics.cashflow.ComposedPeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
+		org.drip.analytics.cashflow.CompositePeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
 
 		try {
 			dblFX = fx (csqs);
@@ -853,7 +851,7 @@ public abstract class ComposedPeriod {
 			return null;
 		}
 
-		org.drip.analytics.output.ComposedPeriodMetrics superMetric = couponMetrics (dblValueDate, csqs);
+		org.drip.analytics.output.CompositePeriodMetrics superMetric = couponMetrics (dblValueDate, csqs);
 
 		if (null == superMetric) return null;
 
@@ -863,24 +861,22 @@ public abstract class ComposedPeriod {
 		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel();
 
 		if (null == forwardLabel || !forwardLabel.match (pqs.forwardLabel())) {
-			for (org.drip.analytics.output.ComposablePeriodMetrics subMetric :
-				superMetric.composableMetrics()) {
+			for (org.drip.analytics.output.UnitPeriodMetrics subMetric : superMetric.unitMetrics()) {
 				if (!prwc.updateValue (-1. * dblNotional * dblFX * subMetric.dcf() * (cpqs.baseRate() +
 					cpqs.basis()) * dblSurvival * dblDF * subMetric.convAdj().cumulative()))
 					return null;
 			}
 		} else {
-			java.util.List<org.drip.analytics.output.ComposablePeriodMetrics> lsCPM =
-				superMetric.composableMetrics();
+			java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsCPM = superMetric.unitMetrics();
 
 			for (int i = 0; i < lsCPM.size(); ++i) {
-				org.drip.analytics.output.ComposablePeriodMetrics subMetric = lsCPM.get (i);
+				org.drip.analytics.output.UnitPeriodMetrics subMetric = lsCPM.get (i);
 
 				double dblSubMetricDCF = subMetric.dcf();
 
 				double dblSubMetricConvAdj = subMetric.convAdj().cumulative();
 
-				double dblDateAnchor = _lsComposablePeriod.get (i).accrualEndDate();
+				double dblDateAnchor = _lsComposablePeriod.get (i).endDate();
 
 				double dblForwardRateLoading = dblNotional * dblFX * dblSubMetricDCF * dblSurvival * dblDF *
 					dblSubMetricConvAdj;
@@ -926,7 +922,7 @@ public abstract class ComposedPeriod {
 		double dblNotional = java.lang.Double.NaN;
 		double dblSurvival = java.lang.Double.NaN;
 
-		org.drip.analytics.cashflow.ComposedPeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
+		org.drip.analytics.cashflow.CompositePeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
 
 		try {
 			dblFX = fx (csqs);
@@ -942,7 +938,7 @@ public abstract class ComposedPeriod {
 			return null;
 		}
 
-		org.drip.analytics.output.ComposedPeriodMetrics superMetric = couponMetrics (dblValueDate, csqs);
+		org.drip.analytics.output.CompositePeriodMetrics superMetric = couponMetrics (dblValueDate, csqs);
 
 		if (null == superMetric) return null;
 
@@ -960,18 +956,16 @@ public abstract class ComposedPeriod {
 				return null;
 			}
 
-			for (org.drip.analytics.output.ComposablePeriodMetrics subMetric :
-				superMetric.composableMetrics()) {
+			for (org.drip.analytics.output.UnitPeriodMetrics subMetric : superMetric.unitMetrics()) {
 				if (!prwc.updateValue (-1. * dblNotional * dblFX * subMetric.dcf() * (cpqs.baseRate() +
 					cpqs.basis()) * dblSurvival * dblDF * subMetric.convAdj().cumulative()))
 					return null;
 			}
 		} else {
-			java.util.List<org.drip.analytics.output.ComposablePeriodMetrics> lsCPM =
-				superMetric.composableMetrics();
+			java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsCPM = superMetric.unitMetrics();
 
 			for (int i = 0; i < lsCPM.size(); ++i) {
-				org.drip.analytics.output.ComposablePeriodMetrics subMetric = lsCPM.get (i);
+				org.drip.analytics.output.UnitPeriodMetrics subMetric = lsCPM.get (i);
 
 				double dblSubMetricDCF = subMetric.dcf();
 
@@ -1021,7 +1015,7 @@ public abstract class ComposedPeriod {
 	 * @return The Composed Period Quote Set
 	 */
 
-	abstract public org.drip.analytics.cashflow.ComposedPeriodQuoteSet periodQuoteSet (
+	abstract public org.drip.analytics.cashflow.CompositePeriodQuoteSet periodQuoteSet (
 		final org.drip.product.calib.ProductQuoteSet pqs,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
 }

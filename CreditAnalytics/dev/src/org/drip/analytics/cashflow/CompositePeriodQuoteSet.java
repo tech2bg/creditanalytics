@@ -1,5 +1,5 @@
 
-package org.drip.analytics.output;
+package org.drip.analytics.cashflow;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,38 +29,53 @@ package org.drip.analytics.output;
  */
 
 /**
- * ComposedPeriodMetrics holds the results of the compounded Composed period metrics estimate output.
+ * CompositePeriodQuoteSet implements the composite period's calibration quote set functionality.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposedPeriodMetrics {
-	private java.util.List<org.drip.analytics.output.ComposablePeriodMetrics> _lsCPM = null;
+public class CompositePeriodQuoteSet {
+	private double _dblBasis = java.lang.Double.NaN;
+	private double _dblBaseRate = java.lang.Double.NaN;
 
 	/**
-	 * Composed Period Metrics Instance from the list of composable period metrics
+	 * CompositePeriodQuoteSet constructor
 	 * 
-	 * @param lsCPM List of Composable Period Metrics
+	 * @param dblBaseRate Base Rate
+	 * @param dblBasis Basis
 	 * 
-	 * @throws java.lang.Exception Thrown if Inputs are Invalid
+	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public ComposedPeriodMetrics (
-		final java.util.List<org.drip.analytics.output.ComposablePeriodMetrics> lsCPM)
+	public CompositePeriodQuoteSet (
+		final double dblBaseRate,
+		final double dblBasis)
 		throws java.lang.Exception
 	{
-		if (null == (_lsCPM = lsCPM) || 0 == _lsCPM.size())
-			throw new java.lang.Exception ("ComposedPeriodMetrics ctr: Invalid Inputs");
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblBaseRate = dblBaseRate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis))
+			throw new java.lang.Exception ("CompositePeriodQuoteSet ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Retrieve the List of Composable Period Metrics
+	 * Get the Period Base Coupon Rate
 	 * 
-	 * @return The List of Composable Period Metrics
+	 * @return The Period Base Coupon Rate
 	 */
 
-	public java.util.List<org.drip.analytics.output.ComposablePeriodMetrics> composableMetrics()
+	public double baseRate()
 	{
-		return _lsCPM;
+		return _dblBaseRate;
+	}
+
+	/**
+	 * Get the Period Coupon Basis
+	 * 
+	 * @return The Period Coupon Basis
+	 */
+
+	public double basis()
+	{
+		return _dblBasis;
 	}
 }
