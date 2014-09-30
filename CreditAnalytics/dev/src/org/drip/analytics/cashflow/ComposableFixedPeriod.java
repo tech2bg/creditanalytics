@@ -38,6 +38,7 @@ package org.drip.analytics.cashflow;
 
 public class ComposableFixedPeriod extends org.drip.analytics.cashflow.ComposablePeriod {
 	private double _dblBasis = java.lang.Double.NaN;
+	private java.lang.String _strCouponCurrency = "";
 	private double _dblFixedCoupon = java.lang.Double.NaN;
 
 	/**
@@ -54,6 +55,7 @@ public class ComposableFixedPeriod extends org.drip.analytics.cashflow.Composabl
 	 * @param dblNotional The Period Notional
 	 * @param dblFixedCoupon Fixed Coupon (Annualized)
 	 * @param dblBasis Basis over the Fixed Coupon in the same units
+	 * @param strCouponCurrency Coupon Currency
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
@@ -69,14 +71,16 @@ public class ComposableFixedPeriod extends org.drip.analytics.cashflow.Composabl
 		final double dblFullCouponDCF,
 		final double dblNotional,
 		final double dblFixedCoupon,
-		final double dblBasis)
+		final double dblBasis,
+		final java.lang.String strCouponCurrency)
 		throws java.lang.Exception
 	{
 		super (dblAccrualStartDate, dblAccrualEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC,
 			bAccrualEOMAdjustment, strCalendar, dblFullCouponDCF, dblNotional);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFixedCoupon = dblFixedCoupon) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis))
+			!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis) || null == (_strCouponCurrency =
+				strCouponCurrency) || _strCouponCurrency.isEmpty())
 			throw new java.lang.Exception ("ComposableFixedPeriod ctr: Invalid Inputs");
 	}
 
@@ -90,5 +94,10 @@ public class ComposableFixedPeriod extends org.drip.analytics.cashflow.Composabl
 	@Override public double basis()
 	{
 		return _dblBasis;
+	}
+
+	@Override public java.lang.String couponCurrency()
+	{
+		return _strCouponCurrency;
 	}
 }

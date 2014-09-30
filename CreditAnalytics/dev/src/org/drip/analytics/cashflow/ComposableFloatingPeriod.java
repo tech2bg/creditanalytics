@@ -132,6 +132,11 @@ public class ComposableFloatingPeriod extends org.drip.analytics.cashflow.Compos
 		return _dblSpread;
 	}
 
+	@Override public java.lang.String couponCurrency()
+	{
+		return _refIndexPeriod.forwardLabel().currency();
+	}
+
 	/**
 	 * Retrieve the Reference Index Period
 	 * 

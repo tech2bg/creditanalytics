@@ -358,4 +358,12 @@ public abstract class ComposablePeriod {
 	 */
 
 	public abstract double basis();
+
+	/**
+	 * Get the Period Coupon Currency
+	 * 
+	 * @return The Period Coupon Currency
+	 */
+
+	public abstract java.lang.String couponCurrency();
 }

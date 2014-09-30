@@ -29,17 +29,18 @@ package org.drip.analytics.cashflow;
  */
 
 /**
- * ComposedFoxedPeriod implements the composed fixed coupon period functionality.
+ * ComposedFixedPeriod implements the composed fixed coupon period functionality.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPeriod{
+public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPeriod {
 	private java.lang.String _strCouponCurrency = "";
 
 	/**
 	 * ComposedFixedPeriod Constructor
 	 * 
+	 * @param lsComposableFixedPeriod List of Composable Fixed Periods
 	 * @param iFreq Frequency
 	 * @param dblPayDate Period Pay Date
 	 * @param strPayCurrency Pay Currency
@@ -54,6 +55,7 @@ public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPer
 	 */
 
 	public ComposedFixedPeriod (
+		final java.util.List<org.drip.analytics.cashflow.ComposablePeriod> lsComposableFixedPeriod,
 		final int iFreq,
 		final double dblPayDate,
 		final java.lang.String strPayCurrency,
@@ -65,20 +67,16 @@ public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPer
 		final java.lang.String strCouponCurrency)
 		throws java.lang.Exception
 	{
-		super (iFreq, dblPayDate, strPayCurrency, iAccrualCompoundingRule, dblBaseNotional, notlSchedule,
-			creditLabel, dblFXFixingDate);
+		super (lsComposableFixedPeriod, iFreq, dblPayDate, strPayCurrency, iAccrualCompoundingRule,
+			dblBaseNotional, notlSchedule, creditLabel, dblFXFixingDate);
 
 		if (null == (_strCouponCurrency = strCouponCurrency) || _strCouponCurrency.isEmpty())
 			throw new java.lang.Exception ("ComposedFixedPeriod ctr: Invalid Inputs");
 	}
 
-	@Override public java.lang.String couponCurrency()
-	{
-		return _strCouponCurrency;
-	}
-
 	@Override public org.drip.analytics.cashflow.ComposedPeriodQuoteSet periodQuoteSet (
-		final org.drip.product.calib.ProductQuoteSet pqs)
+		final org.drip.product.calib.ProductQuoteSet pqs,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (null == pqs || !(pqs instanceof org.drip.product.calib.FixedStreamQuoteSet)) return null;
 
