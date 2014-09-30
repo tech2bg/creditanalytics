@@ -35,98 +35,22 @@ package org.drip.analytics.output;
  */
 
 public class ComposedPeriodMetrics {
-	private double _dblDCF = java.lang.Double.NaN;
-	private double _dblCompoundedNominalAmount = java.lang.Double.NaN;
 	private java.util.List<org.drip.analytics.output.ComposablePeriodMetrics> _lsCPM = null;
 
 	/**
-	 * Instance of ComposedPeriodMetrics from the Composable Metrics list and the compounding Rule
+	 * Composed Period Metrics Instance from the list of composable period metrics
 	 * 
-	 * @param lsCPM List of the Composable Period Metrics
-	 * @param iAccrualCompoundingRule Accrual Compounding Rule
+	 * @param lsCPM List of Composable Period Metrics
 	 * 
-	 * @return Instance of ComposedPeriodMetrics
+	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
-	public static final ComposedPeriodMetrics Create (
-		final java.util.List<org.drip.analytics.output.ComposablePeriodMetrics> lsCPM,
-		final int iAccrualCompoundingRule)
-	{
-		if (null == lsCPM || 0 == lsCPM.size() ||
-			!org.drip.analytics.support.ResetUtil.ValidateCompoundingRule (iAccrualCompoundingRule))
-			return null;
-
-		double dblDCF = 0.;
-		double dblCompoundedNominalAmount = java.lang.Double.NaN;
-
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
-			iAccrualCompoundingRule)
-			dblCompoundedNominalAmount = 0.;
-		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-			iAccrualCompoundingRule)
-			dblCompoundedNominalAmount = 1.;
-
-		for (org.drip.analytics.output.ComposablePeriodMetrics cpm : lsCPM) {
-			double dblPeriodDCF = cpm.dcf();
-
-			dblDCF += dblPeriodDCF;
-
-			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
-				iAccrualCompoundingRule)
-				dblCompoundedNominalAmount += cpm.rate() * dblPeriodDCF;
-			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-				iAccrualCompoundingRule)
-				dblCompoundedNominalAmount *= (1. + cpm.rate() * dblPeriodDCF);
-		}
-
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-			iAccrualCompoundingRule)
-			dblCompoundedNominalAmount -= 1.;
-
-		return new ComposedPeriodMetrics (dblDCF, dblCompoundedNominalAmount, lsCPM);
-	}
-
-	private ComposedPeriodMetrics (
-		final double dblDCF,
-		final double dblCompoundedNominalAmount,
+	public ComposedPeriodMetrics (
 		final java.util.List<org.drip.analytics.output.ComposablePeriodMetrics> lsCPM)
+		throws java.lang.Exception
 	{
-		_lsCPM = lsCPM;
-		_dblDCF = dblDCF;
-		_dblCompoundedNominalAmount = dblCompoundedNominalAmount;
-	}
-
-	/**
-	 * Retrieve the Composite DCF
-	 * 
-	 * @return The Composite DCF
-	 */
-
-	public double dcf()
-	{
-		return _dblDCF;
-	}
-
-	/**
-	 * Retrieve the Compounded Nominal Amount
-	 * 
-	 * @return The Compounded Nominal Amount
-	 */
-
-	public double compoundedNominalAmount()
-	{
-		return _dblCompoundedNominalAmount;
-	}
-
-	/**
-	 * Retrieve the Compounded Rate
-	 * 
-	 * @return The Compounded Rate
-	 */
-
-	public double compoundedRate()
-	{
-		return _dblCompoundedNominalAmount / _dblDCF;
+		if (null == (_lsCPM = lsCPM) || 0 == _lsCPM.size())
+			throw new java.lang.Exception ("ComposedPeriodMetrics ctr: Invalid Inputs");
 	}
 
 	/**

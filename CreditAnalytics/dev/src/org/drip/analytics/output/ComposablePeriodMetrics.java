@@ -35,46 +35,60 @@ package org.drip.analytics.output;
  */
 
 public class ComposablePeriodMetrics {
-	private double _dblDF = java.lang.Double.NaN;
-	private double _dblFX = java.lang.Double.NaN;
 	private double _dblDCF = java.lang.Double.NaN;
 	private double _dblRate = java.lang.Double.NaN;
-	private double _dblNotional = java.lang.Double.NaN;
-	private double _dblSurvival = java.lang.Double.NaN;
+	private double _dblEndDate = java.lang.Double.NaN;
+	private double _dblStartDate = java.lang.Double.NaN;
 	private org.drip.analytics.output.ConvexityAdjustment _convAdj = null;
 
 	/**
 	 * ComposablePeriodMetrics constructor
 	 * 
-	 * @param dblDCF Fixed Coupon Period Coupon DCF
-	 * @param dblRate Fixed Coupon Period Coupon Rate
-	 * @param dblNotional Fixed Coupon Period Notional
-	 * @param dblSurvival Fixed Coupon Period End Survival Probability
-	 * @param dblDF Fixed Coupon Period End Discount Factor
-	 * @param dblFX Fixed Coupon Period End FX Rate
-	 * @param convAdj Fixed Coupon Period Convexity Adjustment
+	 * @param dblStartDate Metric Period Start Date
+	 * @param dblEndDate Metric Period End Date
+	 * @param dblDCF Coupon Period Coupon DCF
+	 * @param dblRate Coupon Period Coupon Rate
+	 * @param convAdj Coupon Period Convexity Adjustment
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public ComposablePeriodMetrics (
+		final double dblStartDate,
+		final double dblEndDate,
 		final double dblDCF,
 		final double dblRate,
-		final double dblNotional,
-		final double dblSurvival,
-		final double dblDF,
-		final double dblFX,
 		final org.drip.analytics.output.ConvexityAdjustment convAdj)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblRate = dblRate) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblSurvival = dblSurvival) ||
-						!org.drip.quant.common.NumberUtil.IsValid (_dblDF = dblDF) ||
-							!org.drip.quant.common.NumberUtil.IsValid (_dblFX = dblFX) || null ==
-								(_convAdj = convAdj))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) ||
+					!org.drip.quant.common.NumberUtil.IsValid (_dblRate = dblRate) || null == (_convAdj =
+						convAdj))
 			throw new java.lang.Exception ("ComposablePeriodMetrics ctr: Invalid Inputs");
+	}
+
+	/**
+	 * Retrieve the Start Date
+	 * 
+	 * @return The Start Date
+	 */
+
+	public double startDate()
+	{
+		return _dblStartDate;
+	}
+
+	/**
+	 * Retrieve the End Date
+	 * 
+	 * @return The End Date
+	 */
+
+	public double endDate()
+	{
+		return _dblEndDate;
 	}
 
 	/**
@@ -97,50 +111,6 @@ public class ComposablePeriodMetrics {
 	public double rate()
 	{
 		return _dblRate;
-	}
-
-	/**
-	 * Retrieve the Coupon Notional
-	 * 
-	 * @return The Coupon Notional
-	 */
-
-	public double notional()
-	{
-		return _dblNotional;
-	}
-
-	/**
-	 * Retrieve the Survival Probability
-	 * 
-	 * @return The Survival Probability
-	 */
-
-	public double survival()
-	{
-		return _dblSurvival;
-	}
-
-	/**
-	 * Retrieve the Discount Factor
-	 * 
-	 * @return The Discount Factor
-	 */
-
-	public double df()
-	{
-		return _dblDF;
-	}
-
-	/**
-	 * Retrieve the FX Rate
-	 * 
-	 * @return The FX Rate
-	 */
-
-	public double fx()
-	{
-		return _dblFX;
 	}
 
 	/**
