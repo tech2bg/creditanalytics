@@ -51,7 +51,7 @@ public class ResetPeriodContainer {
 		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
-		if (!org.drip.analytics.support.ResetUtil.ValidateCompoundingRule (_iAccrualCompoundingRule =
+		if (!org.drip.analytics.support.CompositePeriodUtil.ValidateCompoundingRule (_iAccrualCompoundingRule =
 			iAccrualCompoundingRule))
 			throw new java.lang.Exception ("ResetPeriodContainer ctr: Invalid Accrual Compounding Rule");
 	}

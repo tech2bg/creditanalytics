@@ -160,7 +160,7 @@ public class PeriodBuilder {
 		try {
 			return new org.drip.analytics.cashflow.GenericCouponPeriod (periodLeft.startDate(), periodRight.endDate(),
 				dblAccrualStartDate, periodRight.accrualEndDate(), periodRight.payDate(),
-					org.drip.analytics.support.ResetUtil.MergeResetPeriods (periodLeft.rpc(),
+					org.drip.analytics.support.CompositePeriodUtil.MergeResetPeriods (periodLeft.rpc(),
 						periodRight.rpc()), java.lang.Double.NaN, iFreq, periodLeft.accrualDCF
 							(periodRight.accrualStartDate()) + periodRight.couponDCF(), strCouponDC,
 								strAccrualDC, bCouponEOMAdjustment, bAccrualEOMAdjustment, strCalendar,
@@ -173,7 +173,8 @@ public class PeriodBuilder {
 		return null;
 	}
 
-	/** Fully Customized Generation of the period list backward starting from the end.
+	/**
+	 * Fully Customized Generation of the period list backward starting from the end.
 	 * 
 	 * @param dblEffective Effective date
 	 * @param dblMaturityUnadjusted Unadjusted Maturity date
@@ -290,7 +291,7 @@ public class PeriodBuilder {
 								dblAccrualEndDate), strCalendar);
 
 				if (null != forwardLabel&& !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
-					(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
+					(org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
 					(new org.drip.analytics.cashflow.GenericComposablePeriod (dblAdjustedStartDate,
 						dblAdjustedEndDate, DAPAdjust (dblPeriodStartDate, dapFixing), forwardLabel)))
 					return null;
@@ -441,7 +442,7 @@ public class PeriodBuilder {
 								(iFreq, dblAccrualStart, dblAccrualEnd), strCalendar);
 
 					if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
-						(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
+						(org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
 						(new org.drip.analytics.cashflow.GenericComposablePeriod (dblAdjustedStartDate,
 							dblAdjustedEndDate, DAPAdjust (dblPeriodStartDate, dapFixing), forwardLabel)))
 						return null;
@@ -464,7 +465,7 @@ public class PeriodBuilder {
 									dblPeriodEndDate), strCalendar);
 
 					if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
-						(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
+						(org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
 						(new org.drip.analytics.cashflow.GenericComposablePeriod (dblAdjustedStartDate,
 							dblPeriodEndDate, DAPAdjust (dblPeriodStartDate, dapFixing), forwardLabel)))
 						return null;
@@ -617,7 +618,7 @@ public class PeriodBuilder {
 				org.drip.analytics.cashflow.ResetPeriodContainer rpc = null;
 
 				if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
-					(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
+					(org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
 					(new org.drip.analytics.cashflow.GenericComposablePeriod (dblAdjustedStartDate,
 						dblAdjustedEndDate, DAPAdjust (dblPeriodStartDate, dapFixing), forwardLabel)))
 					return null;
@@ -766,7 +767,7 @@ public class PeriodBuilder {
 
 				lsCashflowPeriod.add (new org.drip.analytics.cashflow.GenericCouponPeriod (dblAdjustedStartDate,
 					dblAdjustedEndDate, dblAccrualStart, dblAccrualEnd, DAPAdjust (dblPeriodEndDate, dapPay),
-						null != forwardLabel ? org.drip.analytics.support.ResetUtil.DailyResetPeriod
+						null != forwardLabel ? org.drip.analytics.support.CompositePeriodUtil.DailyResetPeriod
 							(dblAdjustedStartDate, dblAdjustedEndDate, forwardLabel, iAccrualCompoundingRule,
 								strCalendar) : null, dblFXFixingDate, iFreq, dblDCF, strCouponDC,
 									strAccrualDC, bApplyCpnEOMAdj, bApplyAccEOMAdj, strCalendar,
@@ -833,7 +834,7 @@ public class PeriodBuilder {
 			org.drip.analytics.cashflow.ResetPeriodContainer rpc = null;
 
 			if (null != forwardLabel && !(rpc = new org.drip.analytics.cashflow.ResetPeriodContainer
-				(org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
+				(org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC)).appendResetPeriod
 					(new org.drip.analytics.cashflow.GenericComposablePeriod (dblEffective, dblMaturity,
 						dblEffective, forwardLabel)))
 				return null;

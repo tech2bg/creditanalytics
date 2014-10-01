@@ -631,7 +631,7 @@ public class FedFundOvernightCompounding {
 				0.,
 				strCurrency,
 				strCurrency,
-				ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+				CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				null
 			)
@@ -660,7 +660,7 @@ public class FedFundOvernightCompounding {
 			0.,
 			strCurrency,
 			strCurrency,
-			ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			null
 		);

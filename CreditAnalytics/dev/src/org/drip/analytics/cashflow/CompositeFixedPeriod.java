@@ -29,18 +29,18 @@ package org.drip.analytics.cashflow;
  */
 
 /**
- * ComposedFixedPeriod implements the composed fixed coupon period functionality.
+ * CompositeFixedPeriod implements the composed fixed coupon period functionality.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPeriod {
+public class CompositeFixedPeriod extends org.drip.analytics.cashflow.CompositePeriod {
 	private java.lang.String _strCouponCurrency = "";
 
 	/**
-	 * ComposedFixedPeriod Constructor
+	 * CompositeFixedPeriod Constructor
 	 * 
-	 * @param lsComposableFixedPeriod List of Composable Fixed Periods
+	 * @param lsCUP List of Composable Unit Fixed Periods
 	 * @param iFreq Frequency
 	 * @param dblPayDate Period Pay Date
 	 * @param strPayCurrency Pay Currency
@@ -54,8 +54,8 @@ public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPer
 	 * @throws java.lang.Exception Thrown if the Accrual Compounding Rule is invalid
 	 */
 
-	public ComposedFixedPeriod (
-		final java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsComposableFixedPeriod,
+	public CompositeFixedPeriod (
+		final java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP,
 		final int iFreq,
 		final double dblPayDate,
 		final java.lang.String strPayCurrency,
@@ -67,11 +67,11 @@ public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPer
 		final java.lang.String strCouponCurrency)
 		throws java.lang.Exception
 	{
-		super (lsComposableFixedPeriod, iFreq, dblPayDate, strPayCurrency, iAccrualCompoundingRule,
-			dblBaseNotional, notlSchedule, creditLabel, dblFXFixingDate);
+		super (lsCUP, iFreq, dblPayDate, strPayCurrency, iAccrualCompoundingRule, dblBaseNotional,
+			notlSchedule, creditLabel, dblFXFixingDate);
 
 		if (null == (_strCouponCurrency = strCouponCurrency) || _strCouponCurrency.isEmpty())
-			throw new java.lang.Exception ("ComposedFixedPeriod ctr: Invalid Inputs");
+			throw new java.lang.Exception ("CompositeFixedPeriod ctr: Invalid Inputs");
 	}
 
 	@Override public org.drip.analytics.cashflow.CompositePeriodQuoteSet periodQuoteSet (
@@ -80,29 +80,15 @@ public class ComposedFixedPeriod extends org.drip.analytics.cashflow.ComposedPer
 	{
 		if (null == pqs || !(pqs instanceof org.drip.product.calib.FixedStreamQuoteSet)) return null;
 
-		double dblBaseRate = java.lang.Double.NaN;
-
-		org.drip.analytics.cashflow.ComposableUnitPeriod cpFirst = periods().get (0);
-
-		try {
-			dblBaseRate = cpFirst.baseRate (null);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		double dblBasis = cpFirst.basis();
-
 		org.drip.product.calib.FixedStreamQuoteSet fsqs = (org.drip.product.calib.FixedStreamQuoteSet)
 			pqs;
 
+		org.drip.analytics.cashflow.ComposableUnitPeriod cup = periods().get (0);
+
 		try {
-			if (fsqs.containsCoupon()) dblBaseRate = fsqs.coupon();
-
-			if (fsqs.containsCouponBasis()) dblBasis = fsqs.couponBasis();
-
-			return new org.drip.analytics.cashflow.CompositePeriodQuoteSet (dblBaseRate, dblBasis);
+			return new org.drip.analytics.cashflow.CompositePeriodQuoteSet (fsqs.containsCoupon() ?
+				cup.baseRate (csqs) : fsqs.coupon(), fsqs.containsCouponBasis() ? fsqs.couponBasis() :
+					cup.basis());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -1202,7 +1202,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			return org.drip.analytics.output.GenericCouponPeriodMetrics.Create (dblPeriodStartDate,
 				dblPeriodEndDate, period.payDate(), notional (dblPeriodEndDate),
-					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
+					org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
 						1., null, null, null, fundingLabel()[0], null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

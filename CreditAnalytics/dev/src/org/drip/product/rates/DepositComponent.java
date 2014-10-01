@@ -224,7 +224,7 @@ public class DepositComponent extends org.drip.product.definition.CalibratableFi
 
 			return org.drip.analytics.output.GenericCouponPeriodMetrics.Create (_dblEffective, _dblMaturity,
 				_dblMaturity, notional (_dblMaturity),
-					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC, lsRPM, 1., 1.,
+					org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC, lsRPM, 1., 1.,
 						1., null, null, _fri, org.drip.state.identifier.FundingLabel.Standard (_strCurrency),
 							null);
 		} catch (java.lang.Exception e) {

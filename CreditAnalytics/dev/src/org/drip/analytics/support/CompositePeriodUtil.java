@@ -29,12 +29,12 @@ package org.drip.analytics.support;
  */
 
 /**
- * ResetUtil contains the Reset Period Manipulation Functionality
+ * CompositePeriodUtil contains the Composable Unit Period Manipulation Functionality
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class ResetUtil {
+public class CompositePeriodUtil {
 
 	/**
 	 * Accrual Compounding Rule - Arithmetic
@@ -140,9 +140,11 @@ public class ResetUtil {
 
 		if (iAccrualCompoundingRule != rpcRight.accrualCompoundingRule()) return null;
 
-		java.util.List<org.drip.analytics.cashflow.GenericComposablePeriod> lsResetPeriodsLeft = rpcLeft.resetPeriods();
+		java.util.List<org.drip.analytics.cashflow.GenericComposablePeriod> lsResetPeriodsLeft =
+			rpcLeft.resetPeriods();
 
-		java.util.List<org.drip.analytics.cashflow.GenericComposablePeriod> lsResetPeriodsRight = rpcRight.resetPeriods();
+		java.util.List<org.drip.analytics.cashflow.GenericComposablePeriod> lsResetPeriodsRight =
+			rpcRight.resetPeriods();
 
 		if (null == lsResetPeriodsLeft || null == lsResetPeriodsRight) return null;
 

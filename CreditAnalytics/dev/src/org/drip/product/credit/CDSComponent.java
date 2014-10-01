@@ -568,7 +568,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 			return org.drip.analytics.output.GenericCouponPeriodMetrics.Create (dblPeriodStartDate,
 				dblPeriodEndDate, period.payDate(), notional (dblPeriodEndDate),
-					org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
+					org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
 						1., null, creditLabel()[0], null, fundingLabel()[0], null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

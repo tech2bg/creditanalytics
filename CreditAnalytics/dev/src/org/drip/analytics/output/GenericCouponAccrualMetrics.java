@@ -68,7 +68,7 @@ public class GenericCouponAccrualMetrics {
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||
 				!org.drip.quant.common.NumberUtil.IsValid (_dblFX = dblFX) ||
 					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) ||
-						!org.drip.analytics.support.ResetUtil.ValidateCompoundingRule
+						!org.drip.analytics.support.CompositePeriodUtil.ValidateCompoundingRule
 							(_iAccrualCompoundingRule = iAccrualCompoundingRule) || null == (_lsRPM = lsRPM)
 								|| 0 == _lsRPM.size())
 			throw new java.lang.Exception ("GenericCouponAccrualMetrics ctr: Invalid Inputs");
@@ -147,10 +147,10 @@ public class GenericCouponAccrualMetrics {
 		double dblCumulativeDCF = 0.;
 		double dblCumulativeNominalRate = java.lang.Double.NaN;
 
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+		if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 			_iAccrualCompoundingRule)
 			dblCumulativeNominalRate = 0.;
-		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			dblCumulativeNominalRate = 1.;
 
@@ -159,15 +159,15 @@ public class GenericCouponAccrualMetrics {
 
 			dblCumulativeDCF += dblDCF;
 
-			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_iAccrualCompoundingRule)
 				dblCumulativeNominalRate += rpm.nominalRate() * dblDCF;
-			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 				_iAccrualCompoundingRule)
 				dblCumulativeNominalRate *= (1. + rpm.nominalRate() * dblDCF);
 		}
 
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			dblCumulativeNominalRate -= 1.;
 
@@ -261,25 +261,25 @@ public class GenericCouponAccrualMetrics {
 
 		double dblCumulativeNominalRate = java.lang.Double.NaN;
 
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+		if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 			_iAccrualCompoundingRule)
 			dblCumulativeNominalRate = 0.;
-		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			dblCumulativeNominalRate = 1.;
 
 		for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
 			double dblDCF = rpm.dcf();
 
-			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_iAccrualCompoundingRule)
 				dblCumulativeNominalRate += rpm.nominalRate() * dblDCF;
-			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 				_iAccrualCompoundingRule)
 				dblCumulativeNominalRate *= (1. + rpm.nominalRate() * dblDCF);
 		}
 
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			dblCumulativeNominalRate -= 1.;
 

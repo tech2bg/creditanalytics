@@ -148,7 +148,7 @@ public class GenericCouponPeriodMetrics {
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) ||
 				!org.drip.quant.common.NumberUtil.IsValid (_dblPayDate = dblPayDate) ||
 					!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) ||
-						!org.drip.analytics.support.ResetUtil.ValidateCompoundingRule
+						!org.drip.analytics.support.CompositePeriodUtil.ValidateCompoundingRule
 							(_iAccrualCompoundingRule = iAccrualCompoundingRule) || null == (_lsRPM = lsRPM)
 								|| 0 == _lsRPM.size() || !org.drip.quant.common.NumberUtil.IsValid
 									(_dblSurvival = dblSurvival) || !org.drip.quant.common.NumberUtil.IsValid
@@ -164,10 +164,10 @@ public class GenericCouponPeriodMetrics {
 
 	private boolean initialize()
 	{
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+		if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 			_iAccrualCompoundingRule)
 			_dblCumulativeAccrual = 0.;
-		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			_dblCumulativeAccrual = 1.;
 
@@ -176,15 +176,15 @@ public class GenericCouponPeriodMetrics {
 
 			_dblCumulativeDCF += dblDCF;
 
-			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_iAccrualCompoundingRule)
 				_dblCumulativeAccrual += rpm.nominalRate() * dblDCF;
-			else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+			else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 				_iAccrualCompoundingRule)
 				_dblCumulativeAccrual *= (1. + rpm.nominalRate() * dblDCF);
 		}
 
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			_dblCumulativeAccrual -= 1.;
 
@@ -193,7 +193,7 @@ public class GenericCouponPeriodMetrics {
 
 	private boolean setConvexityAdjustment()
 	{
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			return true;
 
@@ -431,11 +431,11 @@ public class GenericCouponPeriodMetrics {
 		java.util.Map<java.lang.Double, java.lang.Double> mapForwardRateLoading = new
 			java.util.TreeMap<java.lang.Double, java.lang.Double>();
 
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			mapForwardRateLoading.put (_dblEndDate, _dblNotional * _dblCumulativeDCF * _dblSurvival * _dblDF
 				* _dblFX * _convAdj.cumulative());
-		else if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+		else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 			_iAccrualCompoundingRule) {
 			for (org.drip.analytics.output.ResetPeriodMetrics rpm : _lsRPM) {
 				org.drip.analytics.output.ConvexityAdjustment convAdjResetPeriod = rpm.convexityAdjustment();
@@ -534,7 +534,7 @@ public class GenericCouponPeriodMetrics {
 	public double compoundingConvexityFactor()
 		throws java.lang.Exception
 	{
-		if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+		if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 			_iAccrualCompoundingRule)
 			return 1.;
 

@@ -657,7 +657,7 @@ public class OvernightArithmeticCompoundingConvexity {
 			0.,
 			strCurrency,
 			strCurrency,
-			ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 			null
 		);

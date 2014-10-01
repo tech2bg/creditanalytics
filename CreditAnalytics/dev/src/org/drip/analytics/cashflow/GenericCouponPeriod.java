@@ -275,7 +275,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 						org.drip.analytics.daycount.Convention.YearFraction (dblResetPeriodStartDate,
 							dblResetPeriodEndDate, _strCouponDC, _bApplyAccEOMAdj, null, _strCalendar));
 
-			if (org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_rpc.accrualCompoundingRule() && !rpm.setConvAdj (calcConvexityAdjustment (dblValueDate,
 					dblResetPeriodFixingDate, csqs)))
 				return null;
@@ -871,7 +871,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 			(fundingLabel);
 
 		int iAccrualCompoundingRule = null == _rpc ?
-			org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
+			org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
 				_rpc.accrualCompoundingRule();
 
 		java.util.List<org.drip.analytics.output.ResetPeriodMetrics> lsRPM = new
@@ -905,7 +905,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 
 			return org.drip.analytics.output.GenericCouponPeriodMetrics.Create (_dblStartDate, _dblEndDate,
 				_dblPayDate, notional (_dblEndDate), iAccrualCompoundingRule, lsRPM, dblSurvival, dblDF,
-					dblFX, org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+					dblFX, org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
 						iAccrualCompoundingRule ? calcConvexityAdjustment (dblValueDate, _dblStartDate, csqs)
 							: null, creditLabel, _forwardLabel, fundingLabel, fxLabel);
 		} catch (java.lang.Exception e) {
@@ -932,7 +932,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 			return null;
 
 		int iAccrualCompoundingRule = null == _rpc ?
-			org.drip.analytics.support.ResetUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
+			org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC :
 				_rpc.accrualCompoundingRule();
 
 		java.util.List<org.drip.analytics.output.ResetPeriodMetrics> lsRPM = new
