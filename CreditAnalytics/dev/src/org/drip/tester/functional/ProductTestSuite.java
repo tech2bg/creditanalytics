@@ -723,14 +723,14 @@ public class ProductTestSuite {
 			adblRate[i + 15] = 0.05;
 			astrCalibMeasure[i + 15] = "Rate";
 
-			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+			org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 				(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
 					adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null, null,
 						2, "Act/360", false, "Act/360", false, 
 							org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, "USD", -1., null,
 								0., "USD", "USD", null, null));
 
-			org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+			org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 				(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
 					adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null, null,
 						4, "Act/360", false, "Act/360", false,
@@ -1291,14 +1291,14 @@ public class ProductTestSuite {
 		final int iTestDetail)
 		throws java.lang.Exception
 	{
-		org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+		org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 			(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.addDays (2).julian(),
 				dt.addDays ((int)(365.25 * 9 + 2)).julian(), java.lang.Double.NaN, null, null, null, null,
 					null, null, null, null, 2, "Act/360", false, "Act/360", false,
 						org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, "USD", -1., null, 0.04,
 							"USD", "USD", null, null));
 
-		org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+		org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 			(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.addDays (2).julian(),
 				dt.addDays ((int)(365.25 * 9 + 2)).julian(), java.lang.Double.NaN, null, null, null, null,
 					null, null, null, null, 4, "Act/360", false, "Act/360", false,

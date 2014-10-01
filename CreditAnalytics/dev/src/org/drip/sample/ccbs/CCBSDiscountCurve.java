@@ -78,7 +78,7 @@ public class CCBSDiscountCurve {
 			 * The Reference 6M Leg
 			 */
 
-			Stream fsReference = new Stream (
+			GenericStream fsReference = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -112,7 +112,7 @@ public class CCBSDiscountCurve {
 			 * The Derived Leg
 			 */
 
-			Stream fsDerived = new Stream (
+			GenericStream fsDerived = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -165,7 +165,7 @@ public class CCBSDiscountCurve {
 		final double dblCoupon)
 		throws Exception
 	{
-		Stream fixStream = new Stream (
+		GenericStream fixStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -195,7 +195,7 @@ public class CCBSDiscountCurve {
 			)
 		);
 
-		Stream floatStream = new Stream (
+		GenericStream floatStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,

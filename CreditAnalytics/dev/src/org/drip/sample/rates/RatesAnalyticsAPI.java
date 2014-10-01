@@ -11,7 +11,7 @@ import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
 import org.drip.product.rates.FixFloatComponent;
-import org.drip.product.rates.Stream;
+import org.drip.product.rates.GenericStream;
 import org.drip.param.creator.*;
 import org.drip.product.creator.*;
 import org.drip.quant.calculus.WengertJacobian;
@@ -68,7 +68,7 @@ public class RatesAnalyticsAPI {
 		final double dblCoupon)
 		throws Exception
 	{
-		Stream fixStream = new Stream (
+		GenericStream fixStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -98,7 +98,7 @@ public class RatesAnalyticsAPI {
 			)
 		);
 
-		Stream floatStream = new Stream (
+		GenericStream floatStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,

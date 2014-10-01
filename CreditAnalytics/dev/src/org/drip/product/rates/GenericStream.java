@@ -29,12 +29,12 @@ package org.drip.product.rates;
  */
 
 /**
- * Stream is the base class on top which the fixed and the floating streams are implemented.
+ * GenericStream is the base class on top which the fixed and the floating streams are implemented.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class Stream {
+public class GenericStream {
 	protected java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> _lsCouponPeriod = null;
 
 	protected double notional (
@@ -56,19 +56,19 @@ public class Stream {
 	}
 
 	/**
-	 * Stream constructor
+	 * GenericStream constructor
 	 * 
 	 * @param lsCouponPeriod List of the Coupon Periods
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public Stream (
+	public GenericStream (
 		final java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsCouponPeriod)
 		throws java.lang.Exception
 	{
 		if (null == (_lsCouponPeriod = lsCouponPeriod) || 0 == _lsCouponPeriod.size())
-			throw new java.lang.Exception ("Stream ctr => Invalid Input params!");
+			throw new java.lang.Exception ("GenericStream ctr => Invalid Input params!");
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class Stream {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
+			throw new java.lang.Exception ("GenericStream::notional => Bad date into getNotional");
 
 		org.drip.analytics.cashflow.GenericCouponPeriod cpLeft = _lsCouponPeriod.get (0);
 
@@ -212,7 +212,7 @@ public class Stream {
 		org.drip.analytics.cashflow.GenericCouponPeriod cp = containingPeriod (dblDate);
 
 		if (null == cp)
-			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
+			throw new java.lang.Exception ("GenericStream::notional => Bad date into getNotional");
 
 		org.drip.product.params.FactorSchedule notlSchedule = cp.notionalSchedule();
 
@@ -237,12 +237,12 @@ public class Stream {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblDate2))
-			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
+			throw new java.lang.Exception ("GenericStream::notional => Bad date into getNotional");
 
 		org.drip.analytics.cashflow.GenericCouponPeriod cp = containingPeriod (dblDate1);
 
 		if (null == cp || !cp.contains (dblDate2))
-			throw new java.lang.Exception ("FixedStream::notional => Bad date into getNotional");
+			throw new java.lang.Exception ("GenericStream::notional => Bad date into getNotional");
 
 		org.drip.product.params.FactorSchedule notlSchedule = cp.notionalSchedule();
 

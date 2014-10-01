@@ -136,7 +136,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			Stream floatStream = new Stream (
+			GenericStream floatStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -166,7 +166,7 @@ public class OvernightArithmeticCompoundingConvexity {
 				)
 			);
 
-			Stream fixStream = new Stream (
+			GenericStream fixStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -229,7 +229,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			Stream floatStream = new Stream (
+			GenericStream floatStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -259,7 +259,7 @@ public class OvernightArithmeticCompoundingConvexity {
 				)
 			);
 
-			Stream fixStream = new Stream (
+			GenericStream fixStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -566,7 +566,7 @@ public class OvernightArithmeticCompoundingConvexity {
 	}
 
 	private static final void VolCorrScenario (
-		final Stream[] aFloatStream,
+		final GenericStream[] aFloatStream,
 		final String strCurrency,
 		final ForwardLabel fri,
 		final double dblAccrualEndDate,
@@ -662,7 +662,7 @@ public class OvernightArithmeticCompoundingConvexity {
 			null
 		);
 
-		Stream floatStream = new Stream (
+		GenericStream floatStream = new GenericStream (
 			lsFloatPeriods
 		);
 
@@ -706,7 +706,7 @@ public class OvernightArithmeticCompoundingConvexity {
 			for (double dblUSDFundingVol : adblUSDFundingVol) {
 				for (double dblUSDFundingUSDOISCorrelation : adblUSDFundingUSDOISCorrelation)
 					VolCorrScenario (
-						new Stream[] {floatStream},
+						new GenericStream[] {floatStream},
 						strCurrency,
 						fri,
 						period.endDate(),

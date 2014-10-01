@@ -46,8 +46,8 @@ public class ForwardDecompositionUtil {
 	 * @return The Array of Single Forward Period Streams
 	 */
 
-	public static final org.drip.product.rates.Stream[] SinglePeriodStreamDecompose (
-		final org.drip.product.rates.Stream fs,
+	public static final org.drip.product.rates.GenericStream[] SinglePeriodStreamDecompose (
+		final org.drip.product.rates.GenericStream fs,
 		final int iNumPeriodsToAccumulate)
 	{
 		if (null == fs) return null;
@@ -59,7 +59,7 @@ public class ForwardDecompositionUtil {
 		int iCFPIndex = 0;
 		int iNumPeriodsAccumulated = 0;
 		int iNumForward = iNumPeriods / iNumPeriodsToAccumulate;
-		org.drip.product.rates.Stream[] aFS = new org.drip.product.rates.Stream[iNumForward];
+		org.drip.product.rates.GenericStream[] aFS = new org.drip.product.rates.GenericStream[iNumForward];
 
 		java.util.List<java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod>> lslsCouponPeriod = new
 			java.util.ArrayList<java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod>>();
@@ -78,7 +78,7 @@ public class ForwardDecompositionUtil {
 			iNumPeriodsAccumulated = 0;
 
 			try {
-				aFS[iCFPIndex++] = new org.drip.product.rates.Stream (lsCouponPeriod);
+				aFS[iCFPIndex++] = new org.drip.product.rates.GenericStream (lsCouponPeriod);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -102,13 +102,13 @@ public class ForwardDecompositionUtil {
 	{
 		if (null == dsc) return null;
 
-		org.drip.product.rates.Stream streamDerived = dsc.derivedStream();
+		org.drip.product.rates.GenericStream streamDerived = dsc.derivedStream();
 
-		org.drip.product.rates.Stream streamReference = dsc.referenceStream();
+		org.drip.product.rates.GenericStream streamReference = dsc.referenceStream();
 
 		int iNumForward = 0;
-		org.drip.product.rates.Stream[] aStreamDerivedForward = null;
-		org.drip.product.rates.Stream[] aStreamReferenceForward = null;
+		org.drip.product.rates.GenericStream[] aStreamDerivedForward = null;
+		org.drip.product.rates.GenericStream[] aStreamReferenceForward = null;
 
 		int iDerivedStreamTenorMonths = 12 / streamDerived.freq();
 

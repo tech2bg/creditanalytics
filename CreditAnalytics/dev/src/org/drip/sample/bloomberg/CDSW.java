@@ -17,7 +17,7 @@ import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
 import org.drip.product.rates.FixFloatComponent;
-import org.drip.product.rates.Stream;
+import org.drip.product.rates.GenericStream;
 import org.drip.product.creator.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
@@ -69,7 +69,7 @@ public class CDSW {
 		final double dblCoupon)
 		throws Exception
 	{
-		Stream fixStream = new Stream (
+		GenericStream fixStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -99,7 +99,7 @@ public class CDSW {
 			)
 		);
 
-		Stream floatStream = new Stream (
+		GenericStream floatStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,

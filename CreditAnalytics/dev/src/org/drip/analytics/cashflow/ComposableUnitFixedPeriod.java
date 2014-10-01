@@ -52,7 +52,6 @@ public class ComposableUnitFixedPeriod extends org.drip.analytics.cashflow.Compo
 	 * @param bAccrualEOMAdjustment Accrual EOM Adjustment Flag
 	 * @param strCalendar Calendar
 	 * @param dblFullCouponDCF The Period's Full Coupon DCF
-	 * @param dblNotional The Period Notional
 	 * @param dblFixedCoupon Fixed Coupon (Annualized)
 	 * @param dblBasis Basis over the Fixed Coupon in the same units
 	 * @param strCouponCurrency Coupon Currency
@@ -69,14 +68,13 @@ public class ComposableUnitFixedPeriod extends org.drip.analytics.cashflow.Compo
 		final boolean bAccrualEOMAdjustment,
 		final java.lang.String strCalendar,
 		final double dblFullCouponDCF,
-		final double dblNotional,
 		final double dblFixedCoupon,
 		final double dblBasis,
 		final java.lang.String strCouponCurrency)
 		throws java.lang.Exception
 	{
 		super (dblStartDate, dblEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC,
-			bAccrualEOMAdjustment, strCalendar, dblFullCouponDCF, dblNotional);
+			bAccrualEOMAdjustment, strCalendar, dblFullCouponDCF);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFixedCoupon = dblFixedCoupon) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis) || null == (_strCouponCurrency =

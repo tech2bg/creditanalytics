@@ -364,7 +364,7 @@ public class RatesClosesLoader {
 							strFixedDC, bApplyEOMAdjustmentFixed, false, strCurrency, 1., null, dblCoupon,
 								strCurrency, strCurrency, null, null);
 
-			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+			org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 				(lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsFloatingCouponPeriod =
@@ -375,7 +375,7 @@ public class RatesClosesLoader {
 								strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create
 									(strCurrency, "LIBOR", _mapFloatingTenor.get (strCurrency)), null);
 
-			org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+			org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 				(lsFloatingCouponPeriod);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
@@ -424,7 +424,7 @@ public class RatesClosesLoader {
 						_mapFixedFrequency.get (strCurrency), strFixedDC, false, strFixedDC, false, false,
 							strCurrency, 1., null, dblCoupon, strCurrency, strCurrency, null, null);
 
-			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+			org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 				(lsFixedCouponPeriod);
 
 			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsFloatingCouponPeriod =
@@ -433,7 +433,7 @@ public class RatesClosesLoader {
 						strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create (strCurrency,
 							"LIBOR", _mapFloatingTenor.get (strCurrency)), null);
 
-			org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+			org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 				(lsFloatingCouponPeriod);
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
@@ -450,7 +450,7 @@ public class RatesClosesLoader {
 	}
 
 	private static final double calcMeasure (
-		final org.drip.product.rates.Stream stream,
+		final org.drip.product.rates.GenericStream stream,
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.lang.String strMeasure,

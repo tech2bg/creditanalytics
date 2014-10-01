@@ -106,7 +106,7 @@ public class MultiLegSwapAPI {
 			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
 
-			Stream floatStream = new Stream (
+			GenericStream floatStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtStart.julian(),
 					astrIRSTenor[i],
@@ -136,7 +136,7 @@ public class MultiLegSwapAPI {
 				)
 			);
 
-			Stream fixStream = new Stream (
+			GenericStream fixStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtStart.julian(),
 					astrIRSTenor[i],
@@ -199,9 +199,9 @@ public class MultiLegSwapAPI {
 		 * Create a sequence of Fixed Streams
 		 */
 
-		Stream[] aStream = new Stream[3];
+		GenericStream[] aStream = new GenericStream[3];
 
-		aStream[0] = new Stream (
+		aStream[0] = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"3Y",
@@ -231,7 +231,7 @@ public class MultiLegSwapAPI {
 			)
 		);
 
-		aStream[1] = new Stream (
+		aStream[1] = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"5Y",
@@ -261,7 +261,7 @@ public class MultiLegSwapAPI {
 			)
 		);
 
-		aStream[2] = new Stream (
+		aStream[2] = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"7Y",
@@ -295,9 +295,9 @@ public class MultiLegSwapAPI {
 		 * Create a sequence of Float Streams
 		 */
 
-		Stream[] aFloatStream = new Stream[3];
+		GenericStream[] aFloatStream = new GenericStream[3];
 
-		aFloatStream[0] = new Stream (
+		aFloatStream[0] = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"3Y",
@@ -327,7 +327,7 @@ public class MultiLegSwapAPI {
 			)
 		);
 
-		aFloatStream[1] = new Stream (
+		aFloatStream[1] = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"5Y",
@@ -357,7 +357,7 @@ public class MultiLegSwapAPI {
 			)
 		);
 
-		aFloatStream[2] = new Stream (
+		aFloatStream[2] = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				"7Y",

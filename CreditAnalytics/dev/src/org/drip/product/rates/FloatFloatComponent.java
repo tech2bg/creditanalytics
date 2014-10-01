@@ -50,8 +50,8 @@ package org.drip.product.rates;
 public class FloatFloatComponent extends org.drip.product.rates.DualStreamComponent {
 	private java.lang.String _strCode = "";
 	private org.drip.param.valuation.CashSettleParams _csp = null;
-	private org.drip.product.rates.Stream _floatDerived = null;
-	private org.drip.product.rates.Stream _floatReference = null;
+	private org.drip.product.rates.GenericStream _floatDerived = null;
+	private org.drip.product.rates.GenericStream _floatReference = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -73,8 +73,8 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 	 */
 
 	public FloatFloatComponent (
-		final org.drip.product.rates.Stream floatReference,
-		final org.drip.product.rates.Stream floatDerived,
+		final org.drip.product.rates.GenericStream floatReference,
+		final org.drip.product.rates.GenericStream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
@@ -197,12 +197,12 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		return null;
 	}
 
-	@Override public org.drip.product.rates.Stream referenceStream()
+	@Override public org.drip.product.rates.GenericStream referenceStream()
 	{
 		return _floatReference;
 	}
 
-	@Override public org.drip.product.rates.Stream derivedStream()
+	@Override public org.drip.product.rates.GenericStream derivedStream()
 	{
 		return _floatDerived;
 	}

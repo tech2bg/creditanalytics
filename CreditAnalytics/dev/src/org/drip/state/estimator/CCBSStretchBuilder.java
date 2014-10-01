@@ -185,7 +185,7 @@ public class CCBSStretchBuilder {
 			org.drip.state.identifier.FundingLabel fundingLabel = null;
 
 			if (comp instanceof org.drip.product.rates.DualStreamComponent) {
-				org.drip.product.rates.Stream streamDerived = ((org.drip.product.rates.DualStreamComponent)
+				org.drip.product.rates.GenericStream streamDerived = ((org.drip.product.rates.DualStreamComponent)
 					comp).derivedStream();
 
 				forwardLabel = streamDerived.forwardLabel();

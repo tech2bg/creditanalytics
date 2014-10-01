@@ -35,8 +35,6 @@ package org.drip.analytics.cashflow;
  */
 
 public class CompositeFixedPeriod extends org.drip.analytics.cashflow.CompositePeriod {
-	private java.lang.String _strCouponCurrency = "";
-
 	/**
 	 * CompositeFixedPeriod Constructor
 	 * 
@@ -49,7 +47,6 @@ public class CompositeFixedPeriod extends org.drip.analytics.cashflow.CompositeP
 	 * @param notlSchedule Coupon Period Notional Schedule
 	 * @param creditLabel The Credit Label
 	 * @param dblFXFixingDate The FX Fixing Date for non-MTM'ed Cash-flow
-	 * @param strCouponCurrency Coupon Currency
 	 * 
 	 * @throws java.lang.Exception Thrown if the Accrual Compounding Rule is invalid
 	 */
@@ -63,15 +60,11 @@ public class CompositeFixedPeriod extends org.drip.analytics.cashflow.CompositeP
 		final double dblBaseNotional,
 		final org.drip.product.params.FactorSchedule notlSchedule,
 		final org.drip.state.identifier.CreditLabel creditLabel,
-		final double dblFXFixingDate,
-		final java.lang.String strCouponCurrency)
+		final double dblFXFixingDate)
 		throws java.lang.Exception
 	{
 		super (lsCUP, iFreq, dblPayDate, strPayCurrency, iAccrualCompoundingRule, dblBaseNotional,
 			notlSchedule, creditLabel, dblFXFixingDate);
-
-		if (null == (_strCouponCurrency = strCouponCurrency) || _strCouponCurrency.isEmpty())
-			throw new java.lang.Exception ("CompositeFixedPeriod ctr: Invalid Inputs");
 	}
 
 	@Override public org.drip.analytics.cashflow.CompositePeriodQuoteSet periodQuoteSet (

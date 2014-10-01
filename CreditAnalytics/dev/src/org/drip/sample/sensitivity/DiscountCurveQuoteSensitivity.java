@@ -181,7 +181,7 @@ public class DiscountCurveQuoteSensitivity {
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			Stream floatStream = new Stream (
+			GenericStream floatStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -211,7 +211,7 @@ public class DiscountCurveQuoteSensitivity {
 				)
 			);
 
-			Stream fixStream = new Stream (
+			GenericStream fixStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -301,7 +301,7 @@ public class DiscountCurveQuoteSensitivity {
 		final double dblCoupon)
 		throws Exception
 	{
-		Stream fixStream = new Stream (
+		GenericStream fixStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -331,7 +331,7 @@ public class DiscountCurveQuoteSensitivity {
 			)
 		);
 
-		Stream floatStream = new Stream (
+		GenericStream floatStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,

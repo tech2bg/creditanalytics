@@ -180,7 +180,7 @@ public class IBOR {
 			 * The Fixed Leg
 			 */
 
-			Stream fixStream = new Stream (
+			GenericStream fixStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -214,7 +214,7 @@ public class IBOR {
 			 * The Derived Leg
 			 */
 
-			Stream fsDerived = new Stream (
+			GenericStream fsDerived = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -284,7 +284,7 @@ public class IBOR {
 			 * The Reference 6M Leg
 			 */
 
-			Stream fsReference = new Stream (
+			GenericStream fsReference = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -318,7 +318,7 @@ public class IBOR {
 			 * The Derived Leg
 			 */
 
-			Stream fsDerived = new Stream (
+			GenericStream fsDerived = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],

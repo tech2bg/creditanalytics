@@ -241,7 +241,7 @@ public class ShapeDFZeroLocalSmooth {
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			Stream floatStream = new Stream (
+			GenericStream floatStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -271,7 +271,7 @@ public class ShapeDFZeroLocalSmooth {
 				)
 			);
 
-			Stream fixStream = new Stream (
+			GenericStream fixStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],

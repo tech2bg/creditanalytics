@@ -67,7 +67,7 @@ public class FloatFloatFloatFloat {
 			 * The Reference Leg
 			 */
 
-		Stream floatStreamReference = new Stream (
+		GenericStream floatStreamReference = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strMaturityTenor,
@@ -101,7 +101,7 @@ public class FloatFloatFloatFloat {
 		 * The Derived Leg
 		 */
 
-		Stream floatStreamDerived = new Stream (
+		GenericStream floatStreamDerived = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strMaturityTenor,

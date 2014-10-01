@@ -65,7 +65,7 @@ public class FixFloatFixFloatAnalysis {
 		 * The Fixed Leg
 		 */
 
-		Stream fixStream = new Stream (
+		GenericStream fixStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -99,7 +99,7 @@ public class FixFloatFixFloatAnalysis {
 		 * The Derived Leg
 		 */
 
-		Stream floatStream = new Stream (
+		GenericStream floatStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,

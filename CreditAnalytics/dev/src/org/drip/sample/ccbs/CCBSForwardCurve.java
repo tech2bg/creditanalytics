@@ -78,7 +78,7 @@ public class CCBSForwardCurve {
 			 * The Reference 6M Leg
 			 */
 
-			Stream fsReference = new Stream (
+			GenericStream fsReference = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -112,7 +112,7 @@ public class CCBSForwardCurve {
 			 * The Derived Leg
 			 */
 
-			Stream fsDerived = new Stream (
+			GenericStream fsDerived = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],

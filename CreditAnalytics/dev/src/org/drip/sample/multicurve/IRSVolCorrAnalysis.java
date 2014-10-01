@@ -101,7 +101,7 @@ public class IRSVolCorrAnalysis {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenor (astrTenor[i]);
 
-			Stream floatStream = new Stream (
+			GenericStream floatStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -131,7 +131,7 @@ public class IRSVolCorrAnalysis {
 				)
 			);
 
-			Stream fixStream = new Stream (
+			GenericStream fixStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -290,7 +290,7 @@ public class IRSVolCorrAnalysis {
 			 * The Reference 6M Leg
 			 */
 
-			Stream fsReference = new Stream (
+			GenericStream fsReference = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -324,7 +324,7 @@ public class IRSVolCorrAnalysis {
 			 * The Derived Leg
 			 */
 
-			Stream fsDerived = new Stream (
+			GenericStream fsDerived = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrTenor[i],
@@ -538,7 +538,7 @@ public class IRSVolCorrAnalysis {
 	{
 		JulianDate dtMaturity = dtEffective.addTenor (strTenor);
 
-		Stream floatStream = new Stream (
+		GenericStream floatStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -568,7 +568,7 @@ public class IRSVolCorrAnalysis {
 			)
 		);
 
-		Stream fixStream = new Stream (
+		GenericStream fixStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,

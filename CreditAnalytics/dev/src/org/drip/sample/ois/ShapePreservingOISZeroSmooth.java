@@ -166,7 +166,7 @@ public class ShapePreservingOISZeroSmooth {
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			Stream floatStream = new Stream (
+			GenericStream floatStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -196,7 +196,7 @@ public class ShapePreservingOISZeroSmooth {
 				)
 			);
 
-			Stream fixStream = new Stream (
+			GenericStream fixStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -259,7 +259,7 @@ public class ShapePreservingOISZeroSmooth {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			Stream floatStream = new Stream (
+			GenericStream floatStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -289,7 +289,7 @@ public class ShapePreservingOISZeroSmooth {
 				)
 			);
 
-			Stream fixStream = new Stream (
+			GenericStream fixStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],

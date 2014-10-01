@@ -67,7 +67,7 @@ public class CrossFixedPlainFloat {
 		 * The Fixed Leg
 		 */
 
-		Stream fixStream = new Stream (
+		GenericStream fixStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -101,7 +101,7 @@ public class CrossFixedPlainFloat {
 		 * The Derived Leg
 		 */
 
-		Stream floatStream = new Stream (
+		GenericStream floatStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,

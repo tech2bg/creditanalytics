@@ -36,7 +36,7 @@ package org.drip.product.rates;
 
 public class SingleStreamComponent extends org.drip.product.definition.FixedIncomeComponent {
 	private java.lang.String _strName = "";
-	private org.drip.product.rates.Stream _stream = null;
+	private org.drip.product.rates.GenericStream _stream = null;
 	private org.drip.param.valuation.CashSettleParams _csp = null;
 
 	/**
@@ -50,7 +50,7 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 
 	public SingleStreamComponent (
 		final java.lang.String strName,
-		final org.drip.product.rates.Stream stream)
+		final org.drip.product.rates.GenericStream stream)
 		throws java.lang.Exception
 	{
 		if (null == (_strName = strName) || _strName.isEmpty() || null == (_stream = stream))
@@ -63,7 +63,7 @@ public class SingleStreamComponent extends org.drip.product.definition.FixedInco
 	 * @return The Stream Instance
 	 */
 
-	public org.drip.product.rates.Stream stream()
+	public org.drip.product.rates.GenericStream stream()
 	{
 		return _stream;
 	}

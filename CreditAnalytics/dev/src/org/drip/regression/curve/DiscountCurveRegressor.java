@@ -213,7 +213,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 							org.drip.analytics.date.JulianDate dtMaturity = new
 								org.drip.analytics.date.JulianDate (adblDate[i + 15]);
 
-							org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+							org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 								(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset
 									(_dtStart.julian(), dtMaturity.julian(), java.lang.Double.NaN, null,
 										null, null, null, null, null, null, null, 2, "Act/360", false,
@@ -222,7 +222,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 													_strCurrency, -1., null, 0., _strCurrency, _strCurrency,
 														null, null));
 
-							org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+							org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 								(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset
 									(_dtStart.julian(), dtMaturity.julian(), java.lang.Double.NaN, null,
 										null, null, null, null, null, null, null, 4, "Act/360", false,

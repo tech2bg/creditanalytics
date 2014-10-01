@@ -62,7 +62,6 @@ public abstract class ComposableUnitPeriod {
 	private boolean _bCouponEOMAdjustment = false;
 	private boolean _bAccrualEOMAdjustment = false;
 	private double _dblEndDate = java.lang.Double.NaN;
-	private double _dblNotional = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
 	private double _dblFullCouponDCF = java.lang.Double.NaN;
 
@@ -74,8 +73,7 @@ public abstract class ComposableUnitPeriod {
 		final java.lang.String strAccrualDC,
 		final boolean bAccrualEOMAdjustment,
 		final java.lang.String strCalendar,
-		final double dblFullCouponDCF,
-		final double dblNotional)
+		final double dblFullCouponDCF)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
@@ -83,8 +81,7 @@ public abstract class ComposableUnitPeriod {
 				_dblEndDate || null == (_strCouponDC = strCouponDC) || _strCouponDC.isEmpty() || null ==
 					(_strAccrualDC = strAccrualDC) || _strAccrualDC.isEmpty() || null == (_strCalendar =
 						strCalendar) || _strCalendar.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
-							(_dblFullCouponDCF = dblFullCouponDCF) ||
-								!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional))
+							(_dblFullCouponDCF = dblFullCouponDCF))
 			throw new java.lang.Exception ("ComposableUnitPeriod ctr: Invalid Inputs");
 
 		_bCouponEOMAdjustment = bCouponEOMAdjustment;
@@ -177,17 +174,6 @@ public abstract class ComposableUnitPeriod {
 	public double fullCouponDCF()
 	{
 		return _dblFullCouponDCF;
-	}
-
-	/**
-	 * Retrieve the Period Notional
-	 * 
-	 * @return The Period Notional
-	 */
-
-	public double notional()
-	{
-		return _dblNotional;
 	}
 
 	/**

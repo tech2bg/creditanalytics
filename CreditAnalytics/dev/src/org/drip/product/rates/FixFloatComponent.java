@@ -48,8 +48,8 @@ package org.drip.product.rates;
 
 public class FixFloatComponent extends org.drip.product.rates.DualStreamComponent {
 	private java.lang.String _strCode = "";
-	private org.drip.product.rates.Stream _fixReference = null;
-	private org.drip.product.rates.Stream _floatDerived = null;
+	private org.drip.product.rates.GenericStream _fixReference = null;
+	private org.drip.product.rates.GenericStream _floatDerived = null;
 	private org.drip.param.valuation.CashSettleParams _csp = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
@@ -72,8 +72,8 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 	 */
 
 	public FixFloatComponent (
-		final org.drip.product.rates.Stream fixReference,
-		final org.drip.product.rates.Stream floatDerived,
+		final org.drip.product.rates.GenericStream fixReference,
+		final org.drip.product.rates.GenericStream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
@@ -195,12 +195,12 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return null;
 	}
 
-	@Override public org.drip.product.rates.Stream referenceStream()
+	@Override public org.drip.product.rates.GenericStream referenceStream()
 	{
 		return _fixReference;
 	}
 
-	@Override public org.drip.product.rates.Stream derivedStream()
+	@Override public org.drip.product.rates.GenericStream derivedStream()
 	{
 		return _floatDerived;
 	}

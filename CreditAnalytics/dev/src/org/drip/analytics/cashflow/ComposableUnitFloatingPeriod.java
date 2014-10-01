@@ -51,7 +51,6 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 	 * @param bAccrualEOMAdjustment Accrual EOM Adjustment Flag
 	 * @param strCalendar Calendar
 	 * @param dblFullCouponDCF The Period's Full Coupon DCF
-	 * @param dblNotional The Period Notional
 	 * @param refIndexPeriod The Reference Index Period
 	 * @param dblSpread The Floater Spread
 	 * 
@@ -67,13 +66,12 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 		final boolean bAccrualEOMAdjustment,
 		final java.lang.String strCalendar,
 		final double dblFullCouponDCF,
-		final double dblNotional,
 		final org.drip.analytics.cashflow.ReferenceIndexPeriod refIndexPeriod,
 		final double dblSpread)
 		throws java.lang.Exception
 	{
 		super (dblStartDate, dblEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC,
-			bAccrualEOMAdjustment, strCalendar, dblFullCouponDCF, dblNotional);
+			bAccrualEOMAdjustment, strCalendar, dblFullCouponDCF);
 
 		if (null == (_refIndexPeriod = refIndexPeriod) || !org.drip.quant.common.NumberUtil.IsValid
 			(_dblSpread = dblSpread))

@@ -127,14 +127,14 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 						astrCalibMeasure[i] = "Rate";
 
 						try {
-							org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+							org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 								(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset
 									(dtStart.julian(), adblDate[i], java.lang.Double.NaN, null, null, null,
 										null, null, null, null, null, 2, "Act/360", false, "Act/360", false,
 											org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true,
 												"USD", -1., null, 0., "USD", "USD", null, null));
 
-							org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+							org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 								(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset
 									(dtStart.julian(), adblDate[i], java.lang.Double.NaN, null, null, null,
 										null, null, null, null, null, 4, "Act/360", false, "Act/360", false,

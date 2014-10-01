@@ -71,13 +71,13 @@ public class EODCurves {
 
 			if ("S".equalsIgnoreCase (strInstrCode)) {
 				try {
-					org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+					org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 						(org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset
 							(dtEffective.julian(), strTenor, java.lang.Double.NaN, null, null, null, null,
 								null, null, null, null, 2, "Act/360", false, "Act/360", false, true,
 									strCurrency, 1., null, 0., strCurrency, strCurrency, null, null));
 
-					org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
+					org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 						(org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset
 							(dtEffective.julian(), strTenor, java.lang.Double.NaN, null, null, null, null,
 								null, null, null, null, 4, "Act/360", false, "Act/360", false, true,

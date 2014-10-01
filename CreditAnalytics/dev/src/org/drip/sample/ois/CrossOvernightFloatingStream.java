@@ -178,7 +178,7 @@ public class CrossOvernightFloatingStream {
 		FixFloatComponent[] aCalibComp = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			Stream floatStream = new Stream (
+			GenericStream floatStream = new GenericStream (
 				PeriodBuilder.DailyPeriodDailyReset (
 					dtEffective.julian(),
 					dtEffective.addTenor (astrMaturityTenor[i]).julian(),
@@ -198,7 +198,7 @@ public class CrossOvernightFloatingStream {
 				)
 			);
 
-			Stream fixStream = new Stream (
+			GenericStream fixStream = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
 					astrMaturityTenor[i],
@@ -488,7 +488,7 @@ public class CrossOvernightFloatingStream {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		Stream floatStreamGeometric = new Stream (
+		GenericStream floatStreamGeometric = new GenericStream (
 			PeriodBuilder.RegularPeriodDailyReset (
 				dtCustomOISStart.julian(),
 				"6M",
@@ -518,7 +518,7 @@ public class CrossOvernightFloatingStream {
 			)
 		);
 
-		Stream floatStreamArithmetic = new Stream (
+		GenericStream floatStreamArithmetic = new GenericStream (
 			PeriodBuilder.RegularPeriodDailyReset (
 				dtCustomOISStart.julian(),
 				"6M",

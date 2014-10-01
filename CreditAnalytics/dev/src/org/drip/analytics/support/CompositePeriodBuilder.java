@@ -37,10 +37,10 @@ package org.drip.analytics.support;
 public class CompositePeriodBuilder {
 
 	/**
-	 * Period Set Generation Customization - No adjustment on either end
+	 * Period Set Generation Customization - Short Stub (i.e., No adjustment on either end)
 	 */
 
-	public static final int NO_ADJUSTMENT = 0;
+	public static final int SHORT_STUB = 0;
 
 	/**
 	 * Period Set Generation Customization - Merge the front periods to produce a long front
@@ -49,16 +49,23 @@ public class CompositePeriodBuilder {
 	public static final int FULL_FRONT_PERIOD = 1;
 
 	/**
-	 * Period Set Generation Customization - Stub (if present) belongs to the front end
+	 * Period Set Generation Customization - Long Stub (if present) belongs to the front/back end depending
+	 * 	upon backwards/forwards generation scheme
 	 */
 
-	public static final int LONG_FRONT_STUB = 2;
+	public static final int LONG_STUB = 2;
 
 	/**
-	 * Period Set Generation Customization - Stub (if present) belongs to the back end
+	 * Reference Period Fixing is IN-ARREARS (i.e., displaced one period to the right) of the Coupon Period
 	 */
 
-	public static final int LONG_BACK_STUB = 4;
+	public static final int REFERENCE_PERIOD_IN_ARREARS = 0;
+
+	/**
+	 * Reference Period Fixing is IN-ADVANCE (i.e., the same as that) of the Coupon Period
+	 */
+
+	public static final int REFERENCE_PERIOD_IN_ADVANCE = 1;
 
 	private static final double DAPAdjust (
 		final double dblDate,
@@ -76,7 +83,7 @@ public class CompositePeriodBuilder {
 	}
 
 	/**
-	 * Generate a list of period edge dates backward from the end.
+	 * Generate a list of period edge dates forward from the start.
 	 * 
 	 * @param dtEffective Effective date
 	 * @param dtMaturity Maturity date
@@ -98,47 +105,45 @@ public class CompositePeriodBuilder {
 			== strTenor || strTenor.isEmpty())
 			return null;
 
-		java.util.List<java.lang.Double> lsDate = new java.util.ArrayList<java.lang.Double>();
+		java.util.List<java.lang.Double> lsEdgeDate = new java.util.ArrayList<java.lang.Double>();
 
-		lsDate.add (dtEffective.julian());
+		org.drip.analytics.date.JulianDate dtEdge = dtEffective;
 
-		org.drip.analytics.date.JulianDate dtPeriodEnd = dtEffective.addTenor (strTenor);
+		while (dtEdge.julian() < dtMaturity.julian()) {
+			lsEdgeDate.add (dtEdge.julian());
 
-		while (dtPeriodEnd.julian() < dtMaturity.julian()) {
-			lsDate.add (dtPeriodEnd.julian());
-
-			dtPeriodEnd = dtPeriodEnd.addTenor (strTenor);
+			dtEdge = dtEdge.addTenor (strTenor);
 		}
 
-		if (dtPeriodEnd.julian() > dtMaturity.julian()) {
-			if (NO_ADJUSTMENT == iPSEC)
-				lsDate.add (dtEffective.julian());
-			else if (LONG_BACK_STUB == iPSEC) {
-				lsDate.remove (lsDate.size() - 1);
+		if (dtEdge.julian() > dtMaturity.julian()) {
+			if (SHORT_STUB == iPSEC)
+				lsEdgeDate.add (dtMaturity.julian());
+			else if (LONG_STUB == iPSEC) {
+				lsEdgeDate.remove (lsEdgeDate.size() - 1);
 
-				lsDate.add (dtMaturity.julian());
+				lsEdgeDate.add (dtMaturity.julian());
 			}
-		} else if (dtPeriodEnd.julian() == dtMaturity.julian())
-			lsDate.add (dtMaturity.julian());
+		} else if (dtEdge.julian() == dtMaturity.julian())
+			lsEdgeDate.add (dtMaturity.julian());
 
-		int iNumDate = lsDate.size();
+		if (null == dap) return lsEdgeDate;
 
-		if (null == dap) return lsDate;
+		java.util.List<java.lang.Double> lsAdjustedEdgeDate = new java.util.ArrayList<java.lang.Double>();
 
-		java.util.List<java.lang.Double> lsDateAdjusted = new java.util.ArrayList<java.lang.Double>();
+		lsAdjustedEdgeDate.add (lsEdgeDate.get (0));
 
-		lsDateAdjusted.add (lsDate.get (0));
+		int iNumDate = lsEdgeDate.size();
 
 		for (int i = 1; i < iNumDate - 1; ++i)
-			lsDateAdjusted.add (DAPAdjust (lsDate.get (i), dap));
+			lsAdjustedEdgeDate.add (DAPAdjust (lsEdgeDate.get (i), dap));
 
-		lsDateAdjusted.add (lsDate.get (iNumDate - 1));
+		lsAdjustedEdgeDate.add (lsEdgeDate.get (iNumDate - 1));
 
-		return lsDateAdjusted;
+		return lsAdjustedEdgeDate;
 	}
 
 	/**
-	 * Generate a list of period edge dates forward from the start.
+	 * Generate a list of period edge dates backward from the end.
 	 * 
 	 * @param dtEffective Effective date
 	 * @param dtMaturity Maturity date
@@ -160,52 +165,49 @@ public class CompositePeriodBuilder {
 			== strTenor || strTenor.isEmpty())
 			return null;
 
-		java.util.List<java.lang.Double> lsDate = new java.util.ArrayList<java.lang.Double>();
+		java.util.List<java.lang.Double> lsEdgeDate = new java.util.ArrayList<java.lang.Double>();
 
-		lsDate.add (dtMaturity.julian());
+		org.drip.analytics.date.JulianDate dtEdge = dtMaturity;
 
-		org.drip.analytics.date.JulianDate dtPeriodStart = dtMaturity.subtractTenor (strTenor);
+		while (dtEdge.julian() > dtEffective.julian()) {
+			lsEdgeDate.add (0, dtEdge.julian());
 
-		while (dtPeriodStart.julian() > dtEffective.julian()) {
-			lsDate.add (0, dtPeriodStart.julian());
-
-			dtPeriodStart = dtPeriodStart.subtractTenor (strTenor);
+			dtEdge = dtEdge.subtractTenor (strTenor);
 		}
 
-		if (dtPeriodStart.julian() < dtEffective.julian()) {
-			if (NO_ADJUSTMENT == iPSEC)
-				lsDate.add (0, dtEffective.julian());
+		if (dtEdge.julian() < dtEffective.julian()) {
+			if (SHORT_STUB == iPSEC)
+				lsEdgeDate.add (0, dtEffective.julian());
 			else if (FULL_FRONT_PERIOD == iPSEC)
-				lsDate.add (0, dtPeriodStart.julian());
-			else if (LONG_FRONT_STUB == iPSEC) {
-				lsDate.remove (0);
+				lsEdgeDate.add (0, dtEdge.julian());
+			else if (LONG_STUB == iPSEC) {
+				lsEdgeDate.remove (0);
 
-				lsDate.add (0, dtEffective.julian());
+				lsEdgeDate.add (0, dtEffective.julian());
 			}
-		} else if (dtPeriodStart.julian() == dtEffective.julian())
-			lsDate.add (0, dtEffective.julian());
+		} else if (dtEdge.julian() == dtEffective.julian())
+			lsEdgeDate.add (0, dtEffective.julian());
 
-		int iNumDate = lsDate.size();
+		if (null == dap) return lsEdgeDate;
 
-		if (null == dap) return lsDate;
+		java.util.List<java.lang.Double> lsAdjustedEdgeDate = new java.util.ArrayList<java.lang.Double>();
 
-		java.util.List<java.lang.Double> lsDateAdjusted = new java.util.ArrayList<java.lang.Double>();
+		lsAdjustedEdgeDate.add (lsEdgeDate.get (0));
 
-		lsDateAdjusted.add (lsDate.get (0));
+		int iNumDate = lsEdgeDate.size();
 
 		for (int i = 1; i < iNumDate - 1; ++i)
-			lsDateAdjusted.add (DAPAdjust (lsDate.get (i), dap));
+			lsAdjustedEdgeDate.add (DAPAdjust (lsEdgeDate.get (i), dap));
 
-		lsDateAdjusted.add (lsDate.get (iNumDate - 1));
+		lsAdjustedEdgeDate.add (lsEdgeDate.get (iNumDate - 1));
 
-		return lsDateAdjusted;
+		return lsAdjustedEdgeDate;
 	}
 
 	/**
 	 * Generate a list of regular period edge dates forward from the start.
 	 * 
 	 * @param dtEffective Effective date
-	 * @param dtMaturity Maturity date
 	 * @param strPeriodTenor Period Tenor
 	 * @param strMaturityTenor Period Tenor
 	 * @param dap Inner Date Adjustment Parameters
@@ -215,23 +217,21 @@ public class CompositePeriodBuilder {
 
 	public static final java.util.List<java.lang.Double> RegularEdgeDates (
 		final org.drip.analytics.date.JulianDate dtEffective,
-		final org.drip.analytics.date.JulianDate dtMaturity,
 		final java.lang.String strPeriodTenor,
 		final java.lang.String strMaturityTenor,
 		final org.drip.analytics.daycount.DateAdjustParams dap)
 	{
-		if (null == dtEffective || null == dtMaturity || dtEffective.julian() >= dtMaturity.julian() || null
-			== strPeriodTenor || strPeriodTenor.isEmpty() || null == strMaturityTenor ||
-				strMaturityTenor.isEmpty())
+		if (null == dtEffective || null == strPeriodTenor || strPeriodTenor.isEmpty() || null ==
+			strMaturityTenor || strMaturityTenor.isEmpty())
 			return null;
 
-		int iPeriodTenorMonths = -1;
-		int iMaturityTenorMonths = -1;
+		int iPeriodTenorMonth = -1;
+		int iMaturityTenorMonth = -1;
 
 		try {
-			iPeriodTenorMonths = org.drip.analytics.support.AnalyticsHelper.TenorToMonths (strPeriodTenor);
+			iPeriodTenorMonth = org.drip.analytics.support.AnalyticsHelper.TenorToMonths (strPeriodTenor);
 
-			iMaturityTenorMonths = org.drip.analytics.support.AnalyticsHelper.TenorToMonths
+			iMaturityTenorMonth = org.drip.analytics.support.AnalyticsHelper.TenorToMonths
 				(strMaturityTenor);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -239,23 +239,617 @@ public class CompositePeriodBuilder {
 			return null;
 		}
 
-		if (iPeriodTenorMonths > iMaturityTenorMonths) return null;
+		if (iPeriodTenorMonth > iMaturityTenorMonth) return null;
 
-		java.util.List<java.lang.Double> lsDate = new java.util.ArrayList<java.lang.Double>();
+		java.util.List<java.lang.Double> lsEdgeDate = new java.util.ArrayList<java.lang.Double>();
 
-		lsDate.add (dtEffective.julian());
+		org.drip.analytics.date.JulianDate dtEdge = dtEffective;
+		int iNumPeriod = iMaturityTenorMonth / iPeriodTenorMonth;
 
-		org.drip.analytics.date.JulianDate dtEnd = dtEffective;
-		int iNumPeriod = iMaturityTenorMonths / iPeriodTenorMonths;
+		lsEdgeDate.add (dtEffective.julian());
 
 		for (int i = 0; i < iNumPeriod - 1; ++i) {
-			dtEnd = dtEnd.addTenor (strPeriodTenor);
+			dtEdge = dtEdge.addTenor (strPeriodTenor);
 
-			lsDate.add (DAPAdjust (dtEnd.julian(), dap));
+			lsEdgeDate.add (DAPAdjust (dtEdge.julian(), dap));
 		}
 
-		lsDate.add (dtEnd.addTenor (strPeriodTenor).julian());
+		lsEdgeDate.add (dtEdge.addTenor (strPeriodTenor).julian());
 
-		return lsDate;
+		return lsEdgeDate;
+	}
+
+	/**
+	 * Generate the List of Overnight Edge Dates between the specified dates, using the specified Calendar
+	 * 
+	 * @param dtStart Start Date
+	 * @param dtEnd End Date
+	 * @param strCalendar Calendar
+	 * 
+	 * @return List of Overnight Edge Dates
+	 */
+
+	public static final java.util.List<java.lang.Double> OvernightEdgeDates (
+		final org.drip.analytics.date.JulianDate dtStart,
+		final org.drip.analytics.date.JulianDate dtEnd,
+		final java.lang.String strCalendar)
+	{
+		if (null == dtStart || null == dtEnd || dtEnd.julian() <= dtStart.julian()) return null;
+
+		org.drip.analytics.date.JulianDate dtEdge = dtStart;
+
+		java.util.List<java.lang.Double> lsOvernightEdgeDate = new java.util.ArrayList<java.lang.Double>();
+
+		while (dtEdge.julian() < dtEnd.julian()) {
+			lsOvernightEdgeDate.add (dtEdge.julian());
+
+			dtEdge = dtEdge.addBusDays (1, strCalendar);
+		}
+
+		lsOvernightEdgeDate.add (dtEnd.julian());
+
+		return lsOvernightEdgeDate;
+	}
+
+	/**
+	 * Construct a Reference Period using the Start/End Dates, Fixing DAP, Forward Label, and the Reference
+	 * 	Period Arrears Type
+	 * 
+	 * @param dtStart Start Date
+	 * @param dtEnd End Date
+	 * @param dapFixing Fixing DAP
+	 * @param forwardLabel Forward Label
+	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
+	 * 
+	 * @return The Reference Period
+	 */
+
+	public static final org.drip.analytics.cashflow.ReferenceIndexPeriod MakeReferencePeriod (
+		final org.drip.analytics.date.JulianDate dtStart,
+		final org.drip.analytics.date.JulianDate dtEnd,
+		final org.drip.analytics.daycount.DateAdjustParams dapFixing,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final int iReferencePeriodArrearsType)
+	{
+		if (null == dtStart || null == dtEnd || null == forwardLabel) return null;
+
+		java.lang.String strForwardTenor = forwardLabel.tenor();
+
+		double dblStartDate = REFERENCE_PERIOD_IN_ARREARS == iReferencePeriodArrearsType ? dtStart.addTenor
+			(strForwardTenor).julian() : dtStart.julian();
+
+		try {
+			return new org.drip.analytics.cashflow.ReferenceIndexPeriod (dblStartDate,
+				REFERENCE_PERIOD_IN_ARREARS == iReferencePeriodArrearsType ? dtEnd.addTenor
+					(strForwardTenor).julian() : dtEnd.julian(), DAPAdjust (dblStartDate, dapFixing),
+						forwardLabel);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Generate a list of period edge dates forward from the start.
+	 * 
+	 * @param dblEffective Effective Date
+	 * @param dblMaturity Maturity Date
+	 * @param strTenor Period Tenor
+	 * @param dap Inner Date Adjustment Parameters
+	 * @param iPSEC Period Set Edge Customizer Setting
+	 * 
+	 * @return List of Period Edge Dates
+	 */
+
+	public static final java.util.List<java.lang.Double> ForwardEdgeDates (
+		final double dblEffective,
+		final double dblMaturity,
+		final java.lang.String strTenor,
+		final org.drip.analytics.daycount.DateAdjustParams dap,
+		final int iPSEC)
+	{
+		try {
+			return ForwardEdgeDates (new org.drip.analytics.date.JulianDate (dblEffective), new
+				org.drip.analytics.date.JulianDate (dblMaturity), strTenor, dap, iPSEC);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Generate a list of period edge dates backward from the end.
+	 * 
+	 * @param dblEffective Effective Date
+	 * @param dblMaturity Maturity Date
+	 * @param strTenor Period Tenor
+	 * @param dap Inner Date Adjustment Parameters
+	 * @param iPSEC Period Set Edge Customizer Setting
+	 * 
+	 * @return List of Period Edge Dates
+	 */
+
+	public static final java.util.List<java.lang.Double> BackwardEdgeDates (
+		final double dblEffective,
+		final double dblMaturity,
+		final java.lang.String strTenor,
+		final org.drip.analytics.daycount.DateAdjustParams dap,
+		final int iPSEC)
+	{
+		try {
+			return BackwardEdgeDates (new org.drip.analytics.date.JulianDate (dblEffective), new
+				org.drip.analytics.date.JulianDate (dblMaturity), strTenor, dap, iPSEC);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Generate a list of regular period edge dates forward from the start.
+	 * 
+	 * @param dblEffective Effective Date
+	 * @param strPeriodTenor Period Tenor
+	 * @param strMaturityTenor Period Tenor
+	 * @param dap Inner Date Adjustment Parameters
+	 * 
+	 * @return List of Period Edge Dates
+	 */
+
+	public static final java.util.List<java.lang.Double> RegularEdgeDates (
+		final double dblEffective,
+		final java.lang.String strPeriodTenor,
+		final java.lang.String strMaturityTenor,
+		final org.drip.analytics.daycount.DateAdjustParams dap)
+	{
+		try {
+			return RegularEdgeDates (new org.drip.analytics.date.JulianDate (dblEffective), strPeriodTenor,
+				strMaturityTenor, dap);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Generate the List of Overnight Edge Dates between the specified dates, using the specified Calendar
+	 * 
+	 * @param dblStartDate Start Date
+	 * @param dblEndDate End Date
+	 * @param strCalendar Calendar
+	 * 
+	 * @return List of Overnight Edge Dates
+	 */
+
+	public static final java.util.List<java.lang.Double> OvernightEdgeDates (
+		final double dblStartDate,
+		final double dblEndDate,
+		final java.lang.String strCalendar)
+	{
+		try {
+			return OvernightEdgeDates (new org.drip.analytics.date.JulianDate (dblStartDate), new
+				org.drip.analytics.date.JulianDate (dblEndDate), strCalendar);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Construct a Reference Period using the Start/End Dates, Fixing DAP, Forward Label, and the Reference
+	 * 	Period Arrears Type
+	 * 
+	 * @param dblStartDate Start Date
+	 * @param dblEndDate End Date
+	 * @param dapFixing Fixing DAP
+	 * @param forwardLabel Forward Label
+	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
+	 * 
+	 * @return The Reference Period
+	 */
+
+	public static final org.drip.analytics.cashflow.ReferenceIndexPeriod MakeReferencePeriod (
+		final double dblStartDate,
+		final double dblEndDate,
+		final org.drip.analytics.daycount.DateAdjustParams dapFixing,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final int iReferencePeriodArrearsType)
+	{
+		try {
+			return MakeReferencePeriod (new org.drip.analytics.date.JulianDate (dblStartDate), new
+				org.drip.analytics.date.JulianDate (dblEndDate), dapFixing, forwardLabel,
+					iReferencePeriodArrearsType);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Construct the List of Composable Floating Units from the inputs
+	 * 
+	 * @param lsDate The List of Dates
+	 * @param strCouponDC Coupon Day Count
+	 * @param bCouponEOMAdjustment Coupon EOM Adjustment
+	 * @param strAccrualDC Accrual Day Count
+	 * @param bAccrualEOMAdjustment Accrual EOM Adjustment
+	 * @param strCalendar Calendar
+	 * @param dblSpread Spread
+	 * @param forwardLabel Forward Label
+	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
+	 * @param dapFixing Fixing Date Adjust Parameters
+	 * 
+	 * @return The List of Composable Floating Units
+	 */
+
+	public static final java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> FloatingUnits (
+		final java.util.List<java.lang.Double> lsDate,
+		final java.lang.String strCouponDC,
+		final boolean bCouponEOMAdjustment,
+		final java.lang.String strAccrualDC,
+		final boolean bAccrualEOMAdjustment,
+		final java.lang.String strCalendar,
+		final double dblSpread,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final int iReferencePeriodArrearsType,
+		final org.drip.analytics.daycount.DateAdjustParams dapFixing)
+	{
+		if (null == lsDate || null == forwardLabel) return null;
+
+		int iNumDate = lsDate.size();
+
+		if (2 > iNumDate) return null;
+
+		java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP = new
+			java.util.ArrayList<org.drip.analytics.cashflow.ComposableUnitPeriod>();
+
+		for (int i = 1; i < iNumDate; ++i) {
+			double dblStartDate = lsDate.get (i - 1);
+
+			double dblEndDate = lsDate.get (i);
+
+			try {
+				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFloatingPeriod (dblStartDate,
+					dblEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC, bAccrualEOMAdjustment,
+						strCalendar, org.drip.analytics.daycount.Convention.YearFraction (dblStartDate,
+							dblEndDate, strCouponDC, bCouponEOMAdjustment, null, strCalendar),
+								MakeReferencePeriod (dblStartDate, dblEndDate, dapFixing, forwardLabel,
+									iReferencePeriodArrearsType), dblSpread));
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return lsCUP;
+	}
+
+	/**
+	 * Construct the List of Composite Fixed Period made from single composable Fixed Period Units
+	 * 
+	 * @param lsDate The Period Edge Dates
+	 * @param iFreq Frequency
+	 * @param strPayCurrency Pay Currency
+	 * @param strCouponCurrency Coupon Currency
+	 * @param strCouponDC Coupon Day Count
+	 * @param bCouponEOMAdjustment Coupon EOM Adjustment
+	 * @param strAccrualDC Accrual Day Count
+	 * @param bAccrualEOMAdjustment Accrual EOM Adjustment
+	 * @param strCalendar Calendar
+	 * @param dblFullCouponDCF Composite Period Full Coupon DCF
+	 * @param dblFixedCoupon Period Fixed Coupon
+	 * @param dblBasis Fixed Coupon Basis
+	 * @param dblBaseNotional Period Base Notional
+	 * @param notlSchedule Period Notional Schedule
+	 * @param creditLabel Period Credit Label
+	 * @param dblFXFixingDate Period FX Fixing Date
+	 * @param dapPay Pay Date Adjust Parameters
+	 * 
+	 * @return List of Composite Fixed Periods
+	 */
+
+	public static final java.util.List<org.drip.analytics.cashflow.CompositePeriod>
+		FixedCompositeSingleUnit (
+			final java.util.List<java.lang.Double> lsDate,
+			final int iFreq,
+			final java.lang.String strPayCurrency,
+			final java.lang.String strCouponCurrency,
+			final java.lang.String strCouponDC,
+			final boolean bCouponEOMAdjustment,
+			final java.lang.String strAccrualDC,
+			final boolean bAccrualEOMAdjustment,
+			final java.lang.String strCalendar,
+			final double dblFullCouponDCF,
+			final double dblFixedCoupon,
+			final double dblBasis,
+			final double dblBaseNotional,
+			final org.drip.product.params.FactorSchedule notlSchedule,
+			final org.drip.state.identifier.CreditLabel creditLabel,
+			final double dblFXFixingDate,
+			final org.drip.analytics.daycount.DateAdjustParams dapPay)
+	{
+		if (null == lsDate) return null;
+
+		int iNumDate = lsDate.size();
+
+		if (2 > iNumDate) return null;
+
+		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCFP = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
+
+		for (int i = 1; i < iNumDate; ++i) {
+			double dblEndDate = lsDate.get (i);
+
+			java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP = new
+				java.util.ArrayList<org.drip.analytics.cashflow.ComposableUnitPeriod>();
+
+			try {
+				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFixedPeriod (lsDate.get (i - 1),
+					dblEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC, bAccrualEOMAdjustment,
+						strCalendar, dblFullCouponDCF, dblFixedCoupon, dblBasis, strCouponCurrency));
+
+				lsCFP.add (new org.drip.analytics.cashflow.CompositeFixedPeriod (lsCUP, iFreq, DAPAdjust
+					(dblEndDate, dapPay), strPayCurrency,
+						org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+							dblBaseNotional, notlSchedule, creditLabel, dblFXFixingDate));
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return lsCFP;
+	}
+
+	/**
+	 * Construct the List of Composite Floating Period made from single composable Floating Period Units
+	 * 
+	 * @param lsDate The Period Edge Dates
+	 * @param iFreq Frequency
+	 * @param strPayCurrency Pay Currency
+	 * @param strCouponDC Coupon Day Count
+	 * @param bCouponEOMAdjustment Coupon EOM Adjustment
+	 * @param strAccrualDC Accrual Day Count
+	 * @param bAccrualEOMAdjustment Accrual EOM Adjustment
+	 * @param strCalendar Calendar
+	 * @param dblFullCouponDCF Composite Period Full Coupon DCF
+	 * @param dblSpread Spread
+	 * @param dblBaseNotional Period Base Notional
+	 * @param notlSchedule Period Notional Schedule
+	 * @param creditLabel Period Credit Label
+	 * @param forwardLabel Period Forward Label
+	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
+	 * @param dblFXFixingDate Period FX Fixing Date
+	 * @param dapPay Pay Date Adjust Parameters
+	 * @param dapFixing Fixing Date Adjust Parameters
+	 * 
+	 * @return List of Composite Floating Periods
+	 */
+
+	public static final java.util.List<org.drip.analytics.cashflow.CompositePeriod>
+		FloatingCompositeSingleUnit (
+			final java.util.List<java.lang.Double> lsDate,
+			final int iFreq,
+			final java.lang.String strPayCurrency,
+			final java.lang.String strCouponDC,
+			final boolean bCouponEOMAdjustment,
+			final java.lang.String strAccrualDC,
+			final boolean bAccrualEOMAdjustment,
+			final java.lang.String strCalendar,
+			final double dblFullCouponDCF,
+			final double dblSpread,
+			final double dblBaseNotional,
+			final org.drip.product.params.FactorSchedule notlSchedule,
+			final org.drip.state.identifier.CreditLabel creditLabel,
+			final org.drip.state.identifier.ForwardLabel forwardLabel,
+			final int iReferencePeriodArrearsType,
+			final double dblFXFixingDate,
+			final org.drip.analytics.daycount.DateAdjustParams dapPay,
+			final org.drip.analytics.daycount.DateAdjustParams dapFixing)
+	{
+		if (null == lsDate) return null;
+
+		int iNumDate = lsDate.size();
+
+		if (2 > iNumDate) return null;
+
+		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCFP = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
+
+		for (int i = 1; i < iNumDate; ++i) {
+			double dblStartDate = lsDate.get (i - 1);
+
+			double dblEndDate = lsDate.get (i);
+
+			java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP = new
+				java.util.ArrayList<org.drip.analytics.cashflow.ComposableUnitPeriod>();
+
+			try {
+				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFloatingPeriod (dblStartDate,
+					dblEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC, bAccrualEOMAdjustment,
+						strCalendar, dblFullCouponDCF, new org.drip.analytics.cashflow.ReferenceIndexPeriod
+							(dblStartDate, dblEndDate, DAPAdjust (dblStartDate, dapFixing), forwardLabel),
+								dblSpread));
+
+				lsCFP.add (new org.drip.analytics.cashflow.CompositeFloatingPeriod (lsCUP, iFreq, DAPAdjust
+					(dblEndDate, dapPay), strPayCurrency,
+						org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+							dblBaseNotional, notlSchedule, creditLabel, dblFXFixingDate));
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return lsCFP;
+	}
+
+	/**
+	 * Construct the List of Composite Floating Period made from Multiple composable Floating Period Units
+	 * 
+	 * @param lsDate The Period Edge Dates
+	 * @param iFreq Frequency
+	 * @param strPayCurrency Pay Currency
+	 * @param strCouponDC Coupon Day Count
+	 * @param bCouponEOMAdjustment Coupon EOM Adjustment
+	 * @param strAccrualDC Accrual Day Count
+	 * @param bAccrualEOMAdjustment Accrual EOM Adjustment
+	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
+	 * @param strCalendar Calendar
+	 * @param dblSpread Spread
+	 * @param dblBaseNotional Period Base Notional
+	 * @param notlSchedule Period Notional Schedule
+	 * @param creditLabel Period Credit Label
+	 * @param forwardLabel Period Forward Label
+	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
+	 * @param dblFXFixingDate Period FX Fixing Date
+	 * @param strCompositeTenor The Composite/"Outer" Period Tenor
+	 * @param strUnitTenor The Unit/"Inner" Period Tenor
+	 * @param dapPay Pay Date Adjust Parameters
+	 * @param dapUnit Unit Date Adjust Parameters
+	 * @param dapFixing Fixing Date Adjust Parameters
+	 * 
+	 * @return List of Composite Floating Periods
+	 */
+
+	public static final java.util.List<org.drip.analytics.cashflow.CompositePeriod>
+		FloatingCompositeMultiUnit (
+			final java.util.List<java.lang.Double> lsDate,
+			final int iFreq,
+			final java.lang.String strPayCurrency,
+			final java.lang.String strCouponDC,
+			final boolean bCouponEOMAdjustment,
+			final java.lang.String strAccrualDC,
+			final boolean bAccrualEOMAdjustment,
+			final int iAccrualCompoundingRule,
+			final java.lang.String strCalendar,
+			final double dblSpread,
+			final double dblBaseNotional,
+			final org.drip.product.params.FactorSchedule notlSchedule,
+			final org.drip.state.identifier.CreditLabel creditLabel,
+			final org.drip.state.identifier.ForwardLabel forwardLabel,
+			final int iReferencePeriodArrearsType,
+			final double dblFXFixingDate,
+			final java.lang.String strCompositeTenor,
+			final java.lang.String strUnitTenor,
+			final org.drip.analytics.daycount.DateAdjustParams dapPay,
+			final org.drip.analytics.daycount.DateAdjustParams dapUnit,
+			final org.drip.analytics.daycount.DateAdjustParams dapFixing)
+	{
+		if (null == lsDate) return null;
+
+		int iNumDate = lsDate.size();
+
+		if (2 > iNumDate) return null;
+
+		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCFP = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
+
+		for (int i = 1; i < iNumDate; ++i) {
+			double dblStartDate = lsDate.get (i - 1);
+
+			double dblEndDate = lsDate.get (i);
+
+			try {
+				java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP = FloatingUnits
+					(RegularEdgeDates (dblStartDate, strUnitTenor, strCompositeTenor, dapUnit), strCouponDC,
+						bCouponEOMAdjustment, strAccrualDC, bAccrualEOMAdjustment, strCalendar, dblSpread,
+							forwardLabel, iReferencePeriodArrearsType, dapFixing);
+
+				lsCFP.add (new org.drip.analytics.cashflow.CompositeFloatingPeriod (lsCUP, iFreq, DAPAdjust
+					(dblEndDate, dapPay), strPayCurrency, iAccrualCompoundingRule, dblBaseNotional,
+						notlSchedule, creditLabel, dblFXFixingDate));
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return lsCFP;
+	}
+
+	/**
+	 * Construct the List of Composite Floating Period made from Daily composable Floating Period Units
+	 * 
+	 * @param lsDate The Period Edge Dates
+	 * @param iFreq Frequency
+	 * @param strPayCurrency Pay Currency
+	 * @param strCouponDC Coupon Day Count
+	 * @param bCouponEOMAdjustment Coupon EOM Adjustment
+	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
+	 * @param strCalendar Calendar
+	 * @param dblSpread Spread
+	 * @param dblBaseNotional Period Base Notional
+	 * @param notlSchedule Period Notional Schedule
+	 * @param creditLabel Period Credit Label
+	 * @param forwardLabel Period Forward Label
+	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
+	 * @param dblFXFixingDate Period FX Fixing Date
+	 * @param dapPay Pay Date Adjust Parameters
+	 * @param dapFixing Fixing Date Adjust Parameters
+	 * 
+	 * @return List of Composite Floating Periods
+	 */
+
+	public static final java.util.List<org.drip.analytics.cashflow.CompositePeriod>
+		FloatingCompositeDailyUnit (
+			final java.util.List<java.lang.Double> lsDate,
+			final int iFreq,
+			final java.lang.String strPayCurrency,
+			final java.lang.String strCouponDC,
+			final boolean bCouponEOMAdjustment,
+			final int iAccrualCompoundingRule,
+			final java.lang.String strCalendar,
+			final double dblSpread,
+			final double dblBaseNotional,
+			final org.drip.product.params.FactorSchedule notlSchedule,
+			final org.drip.state.identifier.CreditLabel creditLabel,
+			final org.drip.state.identifier.ForwardLabel forwardLabel,
+			final int iReferencePeriodArrearsType,
+			final double dblFXFixingDate,
+			final org.drip.analytics.daycount.DateAdjustParams dapPay,
+			final org.drip.analytics.daycount.DateAdjustParams dapFixing)
+	{
+		if (null == lsDate) return null;
+
+		int iNumDate = lsDate.size();
+
+		if (2 > iNumDate) return null;
+
+		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCFP = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
+
+		for (int i = 1; i < iNumDate; ++i) {
+			double dblStartDate = lsDate.get (i - 1);
+
+			double dblEndDate = lsDate.get (i);
+
+			try {
+				java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP = FloatingUnits
+					(OvernightEdgeDates (dblStartDate, dblEndDate, strCalendar), strCouponDC,
+						bCouponEOMAdjustment, strCouponDC, bCouponEOMAdjustment, strCalendar, dblSpread,
+							forwardLabel, iReferencePeriodArrearsType, dapFixing);
+
+				lsCFP.add (new org.drip.analytics.cashflow.CompositeFloatingPeriod (lsCUP, iFreq, DAPAdjust
+					(dblEndDate, dapPay), strPayCurrency, iAccrualCompoundingRule, dblBaseNotional,
+						notlSchedule, creditLabel, dblFXFixingDate));
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return lsCFP;
 	}
 }

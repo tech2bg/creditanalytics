@@ -23,7 +23,7 @@ import org.drip.product.params.FactorSchedule;
  */
 
 import org.drip.product.rates.FixFloatComponent;
-import org.drip.product.rates.Stream;
+import org.drip.product.rates.GenericStream;
 import org.drip.param.creator.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
@@ -79,7 +79,7 @@ public class BondBasketAPI {
 		final double dblCoupon)
 		throws Exception
 	{
-		Stream fixStream = new Stream (
+		GenericStream fixStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,
@@ -109,7 +109,7 @@ public class BondBasketAPI {
 			)
 		);
 
-		Stream floatStream = new Stream (
+		GenericStream floatStream = new GenericStream (
 			PeriodBuilder.RegularPeriodSingleReset (
 				dtEffective.julian(),
 				strTenor,

@@ -44,7 +44,7 @@ public abstract class DualStreamComponent extends
 	 * @return The Reference Stream
 	 */
 
-	public abstract org.drip.product.rates.Stream referenceStream();
+	public abstract org.drip.product.rates.GenericStream referenceStream();
 
 	/**
 	 * Retrieve the Derived Stream
@@ -52,5 +52,5 @@ public abstract class DualStreamComponent extends
 	 * @return The Derived Stream
 	 */
 
-	public abstract org.drip.product.rates.Stream derivedStream();
+	public abstract org.drip.product.rates.GenericStream derivedStream();
 }
