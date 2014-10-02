@@ -29,38 +29,58 @@ package org.drip.analytics.output;
  */
 
 /**
- * CompositePeriodMetrics holds the results of the compounded Composed period metrics estimate output.
+ * CompositePeriodAccrualMetrics holds the results of the compounded Composed period Accrual Metrics Estimate
+ *  Output.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CompositePeriodMetrics {
-	private java.util.List<org.drip.analytics.output.UnitPeriodMetrics> _lsUPM = null;
+public class CompositePeriodAccrualMetrics extends org.drip.analytics.output.CompositePeriodCouponMetrics {
+	private double _dblResetDate = java.lang.Double.NaN;
 
 	/**
-	 * CompositePeriodMetrics Instance from the list of the composite period metrics
+	 * CompositePeriodAccrualMetrics Instance from the list of the composite period metrics
 	 * 
+	 * @param dblResetDate Reset Date
 	 * @param lsUPM List of Unit Period Metrics
 	 * 
-	 * @throws java.lang.Exception Thrown if Inputs are Invalid
+	 * @return Instance of CompositePeriodAccrualMetrics
 	 */
 
-	public CompositePeriodMetrics (
+	public static final CompositePeriodAccrualMetrics Create (
+		final double dblResetDate,
+		final java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsUPM)
+	{
+		try {
+			CompositePeriodAccrualMetrics cpam = new CompositePeriodAccrualMetrics (dblResetDate, lsUPM);
+
+			return cpam.initialize() ? cpam : null;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	protected CompositePeriodAccrualMetrics (
+		final double dblResetDate,
 		final java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsUPM)
 		throws java.lang.Exception
 	{
-		if (null == (_lsUPM = lsUPM) || 0 == _lsUPM.size())
-			throw new java.lang.Exception ("CompositePeriodMetrics ctr: Invalid Inputs");
+		super (lsUPM);
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblResetDate = dblResetDate))
+		throw new java.lang.Exception ("CompositePeriodAccrualMetrics ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Retrieve the List of the Unit Period Metrics
+	 * Retrieve the Reset Date
 	 * 
-	 * @return The List of the Unit Period Metrics
+	 * @return The Reset Date
 	 */
 
-	public java.util.List<org.drip.analytics.output.UnitPeriodMetrics> unitMetrics()
+	public double resetDate()
 	{
-		return _lsUPM;
+		return _dblResetDate;
 	}
 }
