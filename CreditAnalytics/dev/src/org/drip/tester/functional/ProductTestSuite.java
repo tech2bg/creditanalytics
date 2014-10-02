@@ -738,7 +738,7 @@ public class ProductTestSuite {
 								0., "USD", "USD", org.drip.state.identifier.ForwardLabel.Create ("USD",
 									"LIBOR", "3M"), null));
 
-			aCompCalib[i + 15] = new org.drip.product.rates.FixFloatComponent (fixStream, floatStream, null);
+			aCompCalib[i + 15] = new org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream, null);
 		}
 
 		mpc.addFixings (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),
@@ -1307,7 +1307,7 @@ public class ProductTestSuite {
 								"3M"), null));
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent irs = new
-			org.drip.product.rates.FixFloatComponent (fixStream, floatStream, null);
+			org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream, null);
 
 		org.drip.analytics.output.ComponentMeasures irsOut = irs.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);

@@ -125,14 +125,14 @@ public class CustomOISCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OvernightIndexFromMaturityTenor (
+	private static final GenericFixFloatComponent[] OvernightIndexFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
+		GenericFixFloatComponent[] aOIS = new GenericFixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			GenericStream floatStream = new GenericStream (
@@ -195,7 +195,7 @@ public class CustomOISCurveBuilder {
 				)
 			);
 
-			FixFloatComponent ois = new FixFloatComponent (
+			GenericFixFloatComponent ois = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -215,7 +215,7 @@ public class CustomOISCurveBuilder {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
+	private static final GenericFixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
@@ -223,7 +223,7 @@ public class CustomOISCurveBuilder {
 		final String strCurrency)
 		throws Exception
 	{
-		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
+		GenericFixFloatComponent[] aOIS = new GenericFixFloatComponent[astrStartTenor.length];
 
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
@@ -288,7 +288,7 @@ public class CustomOISCurveBuilder {
 				)
 			);
 
-			FixFloatComponent ois = new FixFloatComponent (
+			GenericFixFloatComponent ois = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -304,7 +304,7 @@ public class CustomOISCurveBuilder {
 
 	private static final LatentStateStretchSpec OISStretch (
 		final String strName,
-		final FixFloatComponent[] aOIS,
+		final GenericFixFloatComponent[] aOIS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -390,7 +390,7 @@ public class CustomOISCurveBuilder {
 			0.00074     //   1M
 		};
 
-		FixFloatComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
+		GenericFixFloatComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {
 				"1W", "2W", "3W", "1M"
@@ -421,7 +421,7 @@ public class CustomOISCurveBuilder {
 			-0.00014     //   5M x 1M
 		};
 
-		FixFloatComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
+		GenericFixFloatComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {
 				"1M", "2M", "3M", "4M", "5M"
@@ -468,7 +468,7 @@ public class CustomOISCurveBuilder {
 			0.02038     //  30Y
 		};
 
-		FixFloatComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
+		GenericFixFloatComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {
 				"15M", "18M", "21M", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"

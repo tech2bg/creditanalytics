@@ -37,7 +37,7 @@ package org.drip.product.rates;
 public class Stream {
 	private java.util.List<org.drip.analytics.cashflow.CompositePeriod> _lsPeriod = null;
 
-	private double notional (
+	private double fxAdjustedNotional (
 		final double dblDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
@@ -50,9 +50,9 @@ public class Stream {
 			if (cp.contains (dblDate)) return cp.notional (dblDate) * cp.fx (csqs);
 		}
 
-		org.drip.analytics.cashflow.CompositePeriod cp = _lsPeriod.get (_lsPeriod.size() - 1);
+		org.drip.analytics.cashflow.CompositePeriod cpRight = _lsPeriod.get (_lsPeriod.size() - 1);
 
-		return cp.notional (cp.endDate()) * cp.fx (csqs);
+		return cpRight.notional (cpRight.endDate()) * cpRight.fx (csqs);
 	}
 
 	/**
@@ -187,17 +187,15 @@ public class Stream {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Stream::notional => Invalid Input");
 
-		org.drip.analytics.cashflow.CompositePeriod cpLeft = _lsPeriod.get (0);
+		double dblEffectiveDate = effective().julian();
 
-		if (dblDate <= cpLeft.startDate()) return cpLeft.notional (cpLeft.startDate());
+		double dblAdjustedDate = dblEffectiveDate > dblDate ? dblEffectiveDate : dblDate;
 
-		org.drip.analytics.cashflow.CompositePeriod cp = containingPeriod (dblDate);
+		org.drip.analytics.cashflow.CompositePeriod cp = containingPeriod (dblAdjustedDate);
 
 		if (null == cp) throw new java.lang.Exception ("Stream::notional => Invalid Input");
 
-		org.drip.product.params.FactorSchedule notlSchedule = cp.notionalSchedule();
-
-		return null == notlSchedule ? 1. : notlSchedule.getFactor (dblDate);
+		return cp.notional (dblAdjustedDate);
 	}
 
 	/**
@@ -227,7 +225,7 @@ public class Stream {
 
 		org.drip.product.params.FactorSchedule notlSchedule = cp.notionalSchedule();
 
-		return null == notlSchedule ? 1. : notlSchedule.getFactor (dblDate1, dblDate2);
+		return initialNotional() * (null == notlSchedule ? 1. : notlSchedule.getFactor (dblDate1, dblDate2));
 	}
 
 	/**
@@ -366,9 +364,9 @@ public class Stream {
 	{
 		if (null == valParams) return null;
 
-		org.drip.analytics.cashflow.CompositePeriod currentPeriod = containingPeriod (dblAccrualEndDate);
+		org.drip.analytics.cashflow.CompositePeriod cp = containingPeriod (dblAccrualEndDate);
 
-		return null == currentPeriod ? null : currentPeriod.couponMetrics (valParams.valueDate(), csqs);
+		return null == cp ? null : cp.couponMetrics (valParams.valueDate(), csqs);
 	}
 
 	/**
@@ -393,6 +391,17 @@ public class Stream {
 	}
 
 	/**
+	 * Retrieve the Stream Coupon Basis
+	 * 
+	 * @return The Stream Coupon Basis
+	 */
+
+	public double basis()
+	{
+		return _lsPeriod.get (0).basis();
+	}
+
+	/**
 	 * Generate a Value Map for the Stream
 	 * 
 	 * @param valParams The Valuation Parameters
@@ -411,12 +420,7 @@ public class Stream {
 	{
 		if (null == valParams || null == csqs) return null;
 
-		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
-			(payCurrency());
-
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
-
-		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel();
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
 
 		if (null == dcFunding) return null;
 
@@ -424,7 +428,6 @@ public class Stream {
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblFixing01 = 0.;
 		double dblAccrued01 = 0.;
 		double dblTotalCoupon = 0.;
 		double dblAccrualCoupon = java.lang.Double.NaN;
@@ -434,8 +437,7 @@ public class Stream {
 		double dblCompoundingAdjustedDirtyDV01 = 0.;
 		double dblCashPayDF = java.lang.Double.NaN;
 		double dblResetDate = java.lang.Double.NaN;
-		double dblResetRate = java.lang.Double.NaN;
-		double dblValueNotional = java.lang.Double.NaN;
+		double dblFXAdjustedValueNotional = java.lang.Double.NaN;
 		double dblCreditForwardConvexityAdjustedDirtyPV = 0.;
 		double dblCreditForwardConvexityAdjustedDirtyDV01 = 0.;
 		double dblCreditFundingConvexityAdjustedDirtyPV = 0.;
@@ -451,69 +453,69 @@ public class Stream {
 		double dblFundingFXConvexityAdjustedDirtyPV = 0.;
 		double dblFundingFXConvexityAdjustedDirtyDV01 = 0.;
 
-		double dblBasis = null != forwardLabel ? _lsPeriod.get (0).periods().get (0).basis() : 0.;
-
 		for (org.drip.analytics.cashflow.CompositePeriod period : _lsPeriod) {
 			double dblUnadjustedDirtyPeriodDV01 = java.lang.Double.NaN;
-			double dblCompoundingAdjustedDirtyPeriodDV01 = java.lang.Double.NaN;
 
 			double dblPeriodPayDate = period.payDate();
 
 			if (dblPeriodPayDate < dblValueDate) continue;
 
-			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = period.couponMetrics (dblValueDate, csqs);
+			org.drip.analytics.output.CompositePeriodCouponMetrics cpcm = period.couponMetrics (dblValueDate,
+				csqs);
 
-			if (null == pcm) return null;
+			if (null == cpcm) return null;
 
-			double dblPeriodDCF = pcm.dcf();
+			double dblPeriodDCF = cpcm.dcf();
 
-			double dblPeriodBaseRate = pcm.rate();
+			double dblPeriodFullRate = cpcm.rate();
 
 			org.drip.analytics.output.CompositePeriodAccrualMetrics cpam = period.accrualMetrics
 				(dblValueDate, csqs);
 
 			try {
+				double dblPeriodNotional = period.notional (dblPeriodPayDate);
+
+				double dblPeriodFX = period.fx (csqs);
+
 				if (null != cpam) {
-					dblResetRate = cpam.rate();
+					dblAccrualCoupon = cpam.rate();
 
 					dblResetDate = cpam.resetDate();
 
-					dblAccrued01 = dblFixing01 = 0.0001 * cpam.dcf() * period.notional (dblPeriodPayDate) *
-						period.fx (csqs);
+					dblAccrued01 = 0.0001 * cpam.dcf() * dblPeriodNotional * dblPeriodFX;
 				}
 
-				dblUnadjustedDirtyPeriodDV01 = 0.0001 * dblPeriodDCF * period.notional (dblPeriodPayDate) *
-					period.fx (csqs) * period.survival (csqs) * period.df (csqs);
-
-				dblCompoundingAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 * pcm.compounding();
+				dblUnadjustedDirtyPeriodDV01 = 0.0001 * dblPeriodDCF * dblPeriodNotional * dblPeriodFX *
+					period.survival (csqs) * period.df (csqs);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
 				return null;
 			}
 
+			double dblCompoundingAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 * cpcm.compounding();
+
 			double dblCreditForwardConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
-				pcm.creditForward();
+				cpcm.creditForward();
 
 			double dblCreditFundingConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
-				pcm.creditFunding();
+				cpcm.creditFunding();
 
 			double dblCreditFXConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
-				pcm.creditFX();
+				cpcm.creditFX();
 
 			double dblCumulativeConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
-				pcm.cumulative();
+				cpcm.cumulative();
 
 			double dblForwardFundingConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
-				pcm.forwardFunding();
+				cpcm.forwardFunding();
 
 			double dblForwardFXConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
-				pcm.forwardFX();
+				cpcm.forwardFX();
 
 			double dblFundingFXConvexityAdjustedDirtyPeriodDV01 = dblUnadjustedDirtyPeriodDV01 *
-				pcm.fundingFX();
+				cpcm.fundingFX();
 
-			double dblPeriodFullRate = dblPeriodBaseRate + dblBasis;
 			dblTotalCoupon += dblPeriodFullRate;
 			dblUnadjustedDirtyDV01 += dblUnadjustedDirtyPeriodDV01;
 			dblUnadjustedDirtyPV += dblUnadjustedDirtyPeriodDV01 * 10000. * dblPeriodFullRate;
@@ -546,10 +548,7 @@ public class Stream {
 		try {
 			dblCashPayDF = dcFunding.df (dblValueDate);
 
-			dblValueNotional = notional (dblValueDate, csqs);
-
-			dblAccrualCoupon = (null == forwardLabel ? _lsPeriod.get (0).periods().get (0).baseRate (csqs) :
-				dblResetRate) + dblBasis;
+			dblFXAdjustedValueNotional = fxAdjustedNotional (dblValueDate, csqs);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -659,7 +658,7 @@ public class Stream {
 		mapResult.put ("CompoundingAdjustmentPremium", dblCompoundingAdjustedCleanPV - dblUnadjustedCleanPV);
 
 		mapResult.put ("CompoundingAdjustmentPremiumUpfront", (dblCompoundingAdjustedCleanPV -
-			dblUnadjustedCleanPV) / dblValueNotional);
+			dblUnadjustedCleanPV) / dblFXAdjustedValueNotional);
 
 		mapResult.put ("CreditForwardConvexityAdjustedCleanDV01",
 			dblCreditForwardConvexityAdjustedCleanDV01);
@@ -692,7 +691,7 @@ public class Stream {
 			- dblUnadjustedCleanPV);
 
 		mapResult.put ("CreditForwardConvexityAdjustmentPremiumUpfront",
-			(dblCreditForwardConvexityAdjustedCleanPV - dblUnadjustedCleanPV) / dblValueNotional);
+			(dblCreditForwardConvexityAdjustedCleanPV - dblUnadjustedCleanPV) / dblFXAdjustedValueNotional);
 
 		mapResult.put ("CreditFundingConvexityAdjustedCleanDV01",
 			dblCreditFundingConvexityAdjustedCleanDV01);
@@ -725,7 +724,7 @@ public class Stream {
 			- dblUnadjustedCleanPV);
 
 		mapResult.put ("CreditFundingConvexityAdjustmentPremiumUpfront",
-			(dblCreditFundingConvexityAdjustedCleanPV - dblUnadjustedCleanPV) / dblValueNotional);
+			(dblCreditFundingConvexityAdjustedCleanPV - dblUnadjustedCleanPV) / dblFXAdjustedValueNotional);
 
 		mapResult.put ("CreditFXConvexityAdjustedCleanDV01", dblCreditFXConvexityAdjustedCleanDV01);
 
@@ -754,7 +753,7 @@ public class Stream {
 			dblUnadjustedCleanPV);
 
 		mapResult.put ("CreditFXConvexityAdjustmentPremiumUpfront", (dblCreditFXConvexityAdjustedCleanPV -
-			dblUnadjustedCleanPV) / dblValueNotional);
+			dblUnadjustedCleanPV) / dblFXAdjustedValueNotional);
 
 		mapResult.put ("CumulativeConvexityAdjustedCleanDV01", dblCumulativeConvexityAdjustedCleanDV01);
 
@@ -783,7 +782,7 @@ public class Stream {
 			dblUnadjustedCleanPV);
 
 		mapResult.put ("CumulativeConvexityAdjustmentPremiumUpfront", (dblCumulativeConvexityAdjustedCleanPV
-			- dblUnadjustedCleanPV) / dblValueNotional);
+			- dblUnadjustedCleanPV) / dblFXAdjustedValueNotional);
 
 		mapResult.put ("CV01", dblCumulativeConvexityAdjustedCleanDV01);
 
@@ -795,7 +794,7 @@ public class Stream {
 
 		mapResult.put ("FairPremium", dblCumulativeConvexityAdjustedFairPremium);
 
-		mapResult.put ("Fixing01", dblFixing01 / dblCashPayDF);
+		mapResult.put ("Fixing01", dblAccrued01);
 
 		mapResult.put ("ForwardFundingConvexityAdjustedCleanDV01",
 			dblForwardFundingConvexityAdjustedCleanDV01);
@@ -828,7 +827,7 @@ public class Stream {
 			- dblUnadjustedCleanPV);
 
 		mapResult.put ("ForwardFundingConvexityAdjustmentPremiumUpfront",
-			(dblForwardFundingConvexityAdjustedCleanPV - dblUnadjustedCleanPV) / dblValueNotional);
+			(dblForwardFundingConvexityAdjustedCleanPV - dblUnadjustedCleanPV) / dblFXAdjustedValueNotional);
 
 		mapResult.put ("ForwardFXConvexityAdjustedCleanDV01", dblForwardFXConvexityAdjustedCleanDV01);
 
@@ -857,7 +856,7 @@ public class Stream {
 			dblUnadjustedCleanPV);
 
 		mapResult.put ("ForwardFXConvexityAdjustmentPremiumUpfront", (dblForwardFXConvexityAdjustedCleanPV -
-			dblUnadjustedCleanPV) / dblValueNotional);
+			dblUnadjustedCleanPV) / dblFXAdjustedValueNotional);
 
 		mapResult.put ("FundingFXConvexityAdjustedCleanDV01", dblFundingFXConvexityAdjustedCleanDV01);
 
@@ -886,7 +885,7 @@ public class Stream {
 			dblUnadjustedCleanPV);
 
 		mapResult.put ("FundingFXConvexityAdjustmentPremiumUpfront", (dblFundingFXConvexityAdjustedCleanPV -
-			dblUnadjustedCleanPV) / dblValueNotional);
+			dblUnadjustedCleanPV) / dblFXAdjustedValueNotional);
 
 		mapResult.put ("ParRate", dblCumulativeConvexityAdjustedFairPremium);
 
@@ -896,7 +895,7 @@ public class Stream {
 
 		mapResult.put ("ResetDate", dblResetDate);
 
-		mapResult.put ("ResetRate", dblResetRate);
+		mapResult.put ("ResetRate", dblAccrualCoupon - basis());
 
 		mapResult.put ("TotalCoupon", dblTotalCoupon);
 
@@ -920,101 +919,96 @@ public class Stream {
 
 		mapResult.put ("Upfront", dblCumulativeConvexityAdjustedCleanPV);
 
-		if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
-			double dblCompoundingAdjustedCleanPrice = 100. * (1. + (dblCompoundingAdjustedCleanPV /
-				dblValueNotional));
-			double dblCreditForwardConvexityAdjustedCleanPrice = 100. * (1. +
-				(dblCreditForwardConvexityAdjustedCleanPV / dblValueNotional));
-			double dblCreditFundingConvexityAdjustedCleanPrice = 100. * (1. +
-				(dblCreditFundingConvexityAdjustedCleanPV / dblValueNotional));
-			double dblCreditFXConvexityAdjustedCleanPrice = 100. * (1. + (dblCreditFXConvexityAdjustedCleanPV
-				/ dblValueNotional));
-			double dblCumulativeConvexityAdjustedCleanPrice = 100. * (1. +
-				(dblCumulativeConvexityAdjustedCleanPV / dblValueNotional));
-			double dblForwardFundingConvexityAdjustedCleanPrice = 100. * (1. +
-				(dblForwardFundingConvexityAdjustedCleanPV / dblValueNotional));
-			double dblForwardFXConvexityAdjustedCleanPrice = 100. * (1. +
-				(dblForwardFXConvexityAdjustedCleanPV / dblValueNotional));
-			double dblFundingFXConvexityAdjustedCleanPrice = 100. * (1. +
-				(dblFundingFXConvexityAdjustedCleanPV / dblValueNotional));
-			double dblUnadjustedCleanPrice = 100. * (1. + (dblUnadjustedCleanPV / dblValueNotional));
+		double dblCompoundingAdjustedCleanPrice = 100. * (1. + (dblCompoundingAdjustedCleanPV /
+			dblFXAdjustedValueNotional));
+		double dblCreditForwardConvexityAdjustedCleanPrice = 100. * (1. +
+			(dblCreditForwardConvexityAdjustedCleanPV / dblFXAdjustedValueNotional));
+		double dblCreditFundingConvexityAdjustedCleanPrice = 100. * (1. +
+			(dblCreditFundingConvexityAdjustedCleanPV / dblFXAdjustedValueNotional));
+		double dblCreditFXConvexityAdjustedCleanPrice = 100. * (1. + (dblCreditFXConvexityAdjustedCleanPV
+			/ dblFXAdjustedValueNotional));
+		double dblCumulativeConvexityAdjustedCleanPrice = 100. * (1. + (dblCumulativeConvexityAdjustedCleanPV
+			/ dblFXAdjustedValueNotional));
+		double dblForwardFundingConvexityAdjustedCleanPrice = 100. * (1. +
+			(dblForwardFundingConvexityAdjustedCleanPV / dblFXAdjustedValueNotional));
+		double dblForwardFXConvexityAdjustedCleanPrice = 100. * (1. + (dblForwardFXConvexityAdjustedCleanPV /
+			dblFXAdjustedValueNotional));
+		double dblFundingFXConvexityAdjustedCleanPrice = 100. * (1. + (dblFundingFXConvexityAdjustedCleanPV /
+			dblFXAdjustedValueNotional));
+		double dblUnadjustedCleanPrice = 100. * (1. + (dblUnadjustedCleanPV / dblFXAdjustedValueNotional));
 
-			mapResult.put ("CleanPrice", dblCumulativeConvexityAdjustedCleanPrice);
+		mapResult.put ("CleanPrice", dblCumulativeConvexityAdjustedCleanPrice);
 
-			mapResult.put ("CompoundingAdjustedCleanPrice", dblCompoundingAdjustedCleanPrice);
+		mapResult.put ("CompoundingAdjustedCleanPrice", dblCompoundingAdjustedCleanPrice);
 
-			mapResult.put ("CompoundingAdjustedDirtyPrice", 100. * (1. + (dblCompoundingAdjustedDirtyPV /
-				dblValueNotional)));
+		mapResult.put ("CompoundingAdjustedDirtyPrice", 100. * (1. + (dblCompoundingAdjustedDirtyPV /
+			dblFXAdjustedValueNotional)));
 
-			mapResult.put ("CompoundingAdjustedPrice", dblCompoundingAdjustedCleanPrice);
+		mapResult.put ("CompoundingAdjustedPrice", dblCompoundingAdjustedCleanPrice);
 
-			mapResult.put ("CreditForwardConvexityAdjustedCleanPrice",
-				dblCreditForwardConvexityAdjustedCleanPrice);
+		mapResult.put ("CreditForwardConvexityAdjustedCleanPrice",
+			dblCreditForwardConvexityAdjustedCleanPrice);
 
-			mapResult.put ("CreditForwardConvexityAdjustedDirtyPrice", 100. * (1. +
-				(dblCreditForwardConvexityAdjustedDirtyPV / dblValueNotional)));
+		mapResult.put ("CreditForwardConvexityAdjustedDirtyPrice", 100. * (1. +
+			(dblCreditForwardConvexityAdjustedDirtyPV / dblFXAdjustedValueNotional)));
 
-			mapResult.put ("CreditForwardConvexityAdjustedPrice",
-				dblCreditForwardConvexityAdjustedCleanPrice);
+		mapResult.put ("CreditForwardConvexityAdjustedPrice", dblCreditForwardConvexityAdjustedCleanPrice);
 
-			mapResult.put ("CreditFundingConvexityAdjustedCleanPrice",
-				dblCreditFundingConvexityAdjustedCleanPrice);
+		mapResult.put ("CreditFundingConvexityAdjustedCleanPrice",
+			dblCreditFundingConvexityAdjustedCleanPrice);
 
-			mapResult.put ("CreditFundingConvexityAdjustedDirtyPrice", 100. * (1. +
-				(dblCreditFundingConvexityAdjustedDirtyPV / dblValueNotional)));
+		mapResult.put ("CreditFundingConvexityAdjustedDirtyPrice", 100. * (1. +
+			(dblCreditFundingConvexityAdjustedDirtyPV / dblFXAdjustedValueNotional)));
 
-			mapResult.put ("CreditFundingConvexityAdjustedPrice",
-				dblCreditFundingConvexityAdjustedCleanPrice);
+		mapResult.put ("CreditFundingConvexityAdjustedPrice", dblCreditFundingConvexityAdjustedCleanPrice);
 
-			mapResult.put ("CreditFXConvexityAdjustedCleanPrice", dblCreditFXConvexityAdjustedCleanPrice);
+		mapResult.put ("CreditFXConvexityAdjustedCleanPrice", dblCreditFXConvexityAdjustedCleanPrice);
 
-			mapResult.put ("CreditFXConvexityAdjustedDirtyPrice", 100. * (1. +
-				(dblCreditFXConvexityAdjustedDirtyPV / dblValueNotional)));
+		mapResult.put ("CreditFXConvexityAdjustedDirtyPrice", 100. * (1. +
+			(dblCreditFXConvexityAdjustedDirtyPV / dblFXAdjustedValueNotional)));
 
-			mapResult.put ("CreditFXConvexityAdjustedPrice", dblCreditFXConvexityAdjustedCleanPrice);
+		mapResult.put ("CreditFXConvexityAdjustedPrice", dblCreditFXConvexityAdjustedCleanPrice);
 
-			mapResult.put ("CumulativeConvexityAdjustedCleanPrice",
-				dblCumulativeConvexityAdjustedCleanPrice);
+		mapResult.put ("CumulativeConvexityAdjustedCleanPrice", dblCumulativeConvexityAdjustedCleanPrice);
 
-			mapResult.put ("CumulativeConvexityAdjustedDirtyPrice", 100. * (1. +
-				(dblCumulativeConvexityAdjustedDirtyPV / dblValueNotional)));
+		mapResult.put ("CumulativeConvexityAdjustedDirtyPrice", 100. * (1. +
+			(dblCumulativeConvexityAdjustedDirtyPV / dblFXAdjustedValueNotional)));
 
-			mapResult.put ("CumulativeConvexityAdjustedPrice", dblCumulativeConvexityAdjustedCleanPrice);
+		mapResult.put ("CumulativeConvexityAdjustedPrice", dblCumulativeConvexityAdjustedCleanPrice);
 
-			mapResult.put ("DirtyPrice", 100. * (1. + (dblCumulativeConvexityAdjustedDirtyPV /
-				dblValueNotional)));
+		mapResult.put ("DirtyPrice", 100. * (1. + (dblCumulativeConvexityAdjustedDirtyPV /
+			dblFXAdjustedValueNotional)));
 
-			mapResult.put ("ForwardFundingConvexityAdjustedCleanPrice",
-				dblForwardFundingConvexityAdjustedCleanPrice);
+		mapResult.put ("ForwardFundingConvexityAdjustedCleanPrice",
+			dblForwardFundingConvexityAdjustedCleanPrice);
 
-			mapResult.put ("ForwardFundingConvexityAdjustedDirtyPrice", 100. * (1. +
-				(dblForwardFundingConvexityAdjustedDirtyPV / dblValueNotional)));
+		mapResult.put ("ForwardFundingConvexityAdjustedDirtyPrice", 100. * (1. +
+			(dblForwardFundingConvexityAdjustedDirtyPV / dblFXAdjustedValueNotional)));
 
-			mapResult.put ("ForwardFundingConvexityAdjustedPrice",
-				dblForwardFundingConvexityAdjustedCleanPrice);
+		mapResult.put ("ForwardFundingConvexityAdjustedPrice", dblForwardFundingConvexityAdjustedCleanPrice);
 
-			mapResult.put ("ForwardFXConvexityAdjustedCleanPrice", dblForwardFXConvexityAdjustedCleanPrice);
+		mapResult.put ("ForwardFXConvexityAdjustedCleanPrice", dblForwardFXConvexityAdjustedCleanPrice);
 
-			mapResult.put ("ForwardFXConvexityAdjustedDirtyPrice", 100. * (1. +
-				(dblForwardFXConvexityAdjustedDirtyPV / dblValueNotional)));
+		mapResult.put ("ForwardFXConvexityAdjustedDirtyPrice", 100. * (1. +
+			(dblForwardFXConvexityAdjustedDirtyPV / dblFXAdjustedValueNotional)));
 
-			mapResult.put ("ForwardFXConvexityAdjustedPrice", dblForwardFXConvexityAdjustedCleanPrice);
+		mapResult.put ("ForwardFXConvexityAdjustedPrice", dblForwardFXConvexityAdjustedCleanPrice);
 
-			mapResult.put ("FundingFXConvexityAdjustedCleanPrice", dblFundingFXConvexityAdjustedCleanPrice);
+		mapResult.put ("FundingFXConvexityAdjustedCleanPrice", dblFundingFXConvexityAdjustedCleanPrice);
 
-			mapResult.put ("FundingFXConvexityAdjustedDirtyPrice", 100. * (1. +
-				(dblFundingFXConvexityAdjustedDirtyPV / dblValueNotional)));
+		mapResult.put ("FundingFXConvexityAdjustedDirtyPrice", 100. * (1. +
+			(dblFundingFXConvexityAdjustedDirtyPV / dblFXAdjustedValueNotional)));
 
-			mapResult.put ("FundingFXConvexityAdjustedPrice", dblFundingFXConvexityAdjustedCleanPrice);
+		mapResult.put ("FundingFXConvexityAdjustedPrice", dblFundingFXConvexityAdjustedCleanPrice);
 
-			mapResult.put ("Price", dblCumulativeConvexityAdjustedCleanPrice);
+		mapResult.put ("Price", dblCumulativeConvexityAdjustedCleanPrice);
 
-			mapResult.put ("UnadjustedCleanPrice", dblUnadjustedCleanPrice);
+		mapResult.put ("UnadjustedCleanPrice", dblUnadjustedCleanPrice);
 
-			mapResult.put ("UnadjustedDirtyPrice", 100. * (1. + (dblUnadjustedDirtyPV / dblValueNotional)));
+		mapResult.put ("UnadjustedDirtyPrice", 100. * (1. + (dblUnadjustedDirtyPV /
+			dblFXAdjustedValueNotional)));
 
-			mapResult.put ("UnadjustedPrice", dblUnadjustedCleanPrice);
-		}
+		mapResult.put ("UnadjustedPrice", dblUnadjustedCleanPrice);
 
 		mapResult.put ("CalcTime", (System.nanoTime() - lStart) * 1.e-09);
 
@@ -1529,12 +1523,9 @@ public class Stream {
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp)
 	{
-		if (null == valParams || valParams.valueDate() >= _lsPeriod.get (_lsPeriod.size() - 1).endDate() ||
-			null == csqs)
-			return null;
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (couponCurrency()));
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
 
 		if (null == dcFunding) return null;
 
@@ -1559,7 +1550,7 @@ public class Stream {
 					jackDDirtyPVDManifestMeasure = new org.drip.quant.calculus.WengertJacobian (1,
 						iNumQuote);
 
-				double dblPeriodNotional = p.baseNotional() * p.notional (p.startDate(), p.endDate());
+				double dblPeriodNotional = p.notional (p.startDate(), p.endDate()) * p.fx (csqs);
 
 				double dblPeriodDCF = p.couponMetrics (valParams.valueDate(), csqs).dcf();
 

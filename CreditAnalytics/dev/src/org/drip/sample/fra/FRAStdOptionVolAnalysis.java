@@ -163,7 +163,7 @@ public class FRAStdOptionVolAnalysis {
 				)
 			);
 
-			FixFloatComponent irs = new FixFloatComponent (
+			GenericFixFloatComponent irs = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)

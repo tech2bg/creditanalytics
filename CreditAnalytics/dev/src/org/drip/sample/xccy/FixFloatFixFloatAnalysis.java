@@ -52,7 +52,7 @@ import org.drip.state.identifier.*;
 
 public class FixFloatFixFloatAnalysis {
 
-	private static final FixFloatComponent MakeFixFloatSwap (
+	private static final GenericFixFloatComponent MakeFixFloatSwap (
 		final JulianDate dtEffective,
 		final boolean bFXMTM,
 		final String strPayCurrency,
@@ -133,7 +133,7 @@ public class FixFloatFixFloatAnalysis {
 		 * The fix-float swap instance
 		 */
 
-		FixFloatComponent fixFloat = new FixFloatComponent (
+		GenericFixFloatComponent fixFloat = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			new CashSettleParams (0, strCouponCurrency, 0)
@@ -260,7 +260,7 @@ public class FixFloatFixFloatAnalysis {
 
 		FXLabel fxLabel = FXLabel.Standard (CurrencyPair.FromCode ("USD/EUR"));
 
-		FixFloatComponent fixFloatUSD = MakeFixFloatSwap (
+		GenericFixFloatComponent fixFloatUSD = MakeFixFloatSwap (
 			dtToday,
 			false,
 			"USD",
@@ -269,7 +269,7 @@ public class FixFloatFixFloatAnalysis {
 			3
 		);
 
-		FixFloatComponent fixFloatEURMTM = MakeFixFloatSwap (
+		GenericFixFloatComponent fixFloatEURMTM = MakeFixFloatSwap (
 			dtToday,
 			true,
 			"USD",
@@ -284,7 +284,7 @@ public class FixFloatFixFloatAnalysis {
 			fixFloatEURMTM
 		);
 
-		FixFloatComponent fixFloatEURNonMTM = MakeFixFloatSwap (
+		GenericFixFloatComponent fixFloatEURNonMTM = MakeFixFloatSwap (
 			dtToday,
 			false,
 			"USD",

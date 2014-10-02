@@ -22,7 +22,7 @@ import org.drip.product.params.FactorSchedule;
  * Credit Analytics API Imports
  */
 
-import org.drip.product.rates.FixFloatComponent;
+import org.drip.product.rates.GenericFixFloatComponent;
 import org.drip.product.rates.GenericStream;
 import org.drip.param.creator.*;
 import org.drip.quant.common.FormatUtil;
@@ -72,7 +72,7 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class BondBasketAPI {
 
-	private static final FixFloatComponent IRS (
+	private static final GenericFixFloatComponent IRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String strTenor,
@@ -139,7 +139,7 @@ public class BondBasketAPI {
 			)
 		);
 
-		FixFloatComponent irs = new FixFloatComponent (
+		GenericFixFloatComponent irs = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			null

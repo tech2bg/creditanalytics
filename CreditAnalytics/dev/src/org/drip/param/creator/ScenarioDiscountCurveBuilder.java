@@ -98,7 +98,7 @@ public class ScenarioDiscountCurveBuilder {
 											org.drip.state.identifier.ForwardLabel.Create (strCurrency,
 												"LIBOR", "3M"), null));
 
-					comp = new org.drip.product.rates.FixFloatComponent (fixStream, floatStream, null);
+					comp = new org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream, null);
 				} else
 					comp = new org.drip.product.rates.DepositComponent (dtEffective, dtMaturity, null,
 						strCurrency, "Act/360", strCurrency);

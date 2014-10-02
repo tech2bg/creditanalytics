@@ -29,7 +29,7 @@ package org.drip.product.rates;
  */
 
 /**
- * FixFloatComponent contains the implementation of the Fix-Float Index Basis Swap product
+ * GenericFixFloatComponent contains the implementation of the Fix-Float Index Basis Swap product
  *  contract/valuation details. It is made off one Reference Fixed stream and one Derived floating stream.
  *  It exports the following functionality:
  *  - Standard/Custom Constructor for the FixFloatComponent
@@ -46,10 +46,10 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FixFloatComponent extends org.drip.product.rates.DualStreamComponent {
+public class GenericFixFloatComponent extends org.drip.product.rates.GenericDualStreamComponent {
 	private java.lang.String _strCode = "";
-	private org.drip.product.rates.Stream _fixReference = null;
-	private org.drip.product.rates.Stream _floatDerived = null;
+	private org.drip.product.rates.GenericStream _fixReference = null;
+	private org.drip.product.rates.GenericStream _floatDerived = null;
 	private org.drip.param.valuation.CashSettleParams _csp = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
@@ -62,7 +62,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 	}
 
 	/**
-	 * Construct the FixFloatComponent from the Reference Fixed and the Derived Floating Streams.
+	 * Construct the GenericFixFloatComponent from the Reference Fixed and the Derived Floating Streams.
 	 * 
 	 * @param fixReference The Reference Fixed Stream
 	 * @param floatDerived The Derived Floating Stream
@@ -71,14 +71,14 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public FixFloatComponent (
-		final org.drip.product.rates.Stream fixReference,
-		final org.drip.product.rates.Stream floatDerived,
+	public GenericFixFloatComponent (
+		final org.drip.product.rates.GenericStream fixReference,
+		final org.drip.product.rates.GenericStream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
 		if (null == (_fixReference = fixReference) || null == (_floatDerived = floatDerived))
-			throw new java.lang.Exception ("FixFloatComponent ctr: Invalid Inputs");
+			throw new java.lang.Exception ("GenericFixFloatComponent ctr: Invalid Inputs");
 
 		_csp = csp;
 	}
@@ -166,7 +166,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		return null;
+		return _fixReference.coupon (dblAccrualEndDate, valParams, csqs);
 	}
 
 	@Override public int freq()
@@ -176,8 +176,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
 	{
-		return new org.drip.state.identifier.CreditLabel[] {_fixReference.creditLabel(),
-			_floatDerived.creditLabel()};
+		return null;
 	}
 
 	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
@@ -193,15 +192,15 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
-		return new org.drip.state.identifier.FXLabel[] {_fixReference.fxLabel(), _floatDerived.fxLabel()};
+		return null;
 	}
 
-	@Override public org.drip.product.rates.Stream referenceStream()
+	@Override public org.drip.product.rates.GenericStream referenceStream()
 	{
 		return _fixReference;
 	}
 
-	@Override public org.drip.product.rates.Stream derivedStream()
+	@Override public org.drip.product.rates.GenericStream derivedStream()
 	{
 		return _floatDerived;
 	}
@@ -211,6 +210,8 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		org.drip.analytics.date.JulianDate dtFloatReferenceEffective = _fixReference.effective();
 
 		org.drip.analytics.date.JulianDate dtFloatDerivedEffective = _floatDerived.effective();
+
+		if (null == dtFloatReferenceEffective || null == dtFloatDerivedEffective) return null;
 
 		return dtFloatReferenceEffective.julian() < dtFloatDerivedEffective.julian() ?
 			dtFloatReferenceEffective : dtFloatDerivedEffective;
@@ -222,6 +223,8 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 		org.drip.analytics.date.JulianDate dtFloatDerivedMaturity = _floatDerived.maturity();
 
+		if (null == dtFloatReferenceMaturity || null == dtFloatDerivedMaturity) return null;
+
 		return dtFloatReferenceMaturity.julian() > dtFloatDerivedMaturity.julian() ?
 			dtFloatReferenceMaturity : dtFloatDerivedMaturity;
 	}
@@ -232,13 +235,16 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 		org.drip.analytics.date.JulianDate dtFloatDerivedFirstCoupon = _floatDerived.firstCouponDate();
 
+		if (null == dtFloatReferenceFirstCoupon || null == dtFloatDerivedFirstCoupon) return null;
+
 		return dtFloatReferenceFirstCoupon.julian() < dtFloatDerivedFirstCoupon.julian() ?
 			dtFloatReferenceFirstCoupon : dtFloatDerivedFirstCoupon;
 	}
 
 	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
 	{
-		return null;
+		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists (_fixReference.cashFlowPeriod(),
+			_floatDerived.cashFlowPeriod());
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()

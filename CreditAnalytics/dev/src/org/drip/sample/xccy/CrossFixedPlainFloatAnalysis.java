@@ -52,7 +52,7 @@ import org.drip.state.identifier.*;
 
 public class CrossFixedPlainFloatAnalysis {
 
-	private static final FixFloatComponent MakeFixFloatSwap (
+	private static final GenericFixFloatComponent MakeFixFloatSwap (
 		final JulianDate dtEffective,
 		final boolean bFXMTM,
 		final String strPayCurrency,
@@ -133,7 +133,7 @@ public class CrossFixedPlainFloatAnalysis {
 		 * The fix-float swap instance
 		 */
 
-		FixFloatComponent fixFloat = new FixFloatComponent (
+		GenericFixFloatComponent fixFloat = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			new CashSettleParams (0, strPayCurrency, 0)
@@ -169,7 +169,7 @@ public class CrossFixedPlainFloatAnalysis {
 	}
 
 	private static final void VolCorrScenario (
-		final FixFloatComponent[] aFixFloat,
+		final GenericFixFloatComponent[] aFixFloat,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
 		final ForwardLabel forwardLabel,
@@ -262,7 +262,7 @@ public class CrossFixedPlainFloatAnalysis {
 
 		CurrencyPair cp = CurrencyPair.FromCode ("USD/EUR");
 
-		FixFloatComponent fixMTMFloat = MakeFixFloatSwap (
+		GenericFixFloatComponent fixMTMFloat = MakeFixFloatSwap (
 			dtToday,
 			true,
 			"USD",
@@ -271,7 +271,7 @@ public class CrossFixedPlainFloatAnalysis {
 			3
 		);
 
-		FixFloatComponent fixNonMTMFloat = MakeFixFloatSwap (
+		GenericFixFloatComponent fixNonMTMFloat = MakeFixFloatSwap (
 			dtToday,
 			false,
 			"USD",
@@ -313,7 +313,7 @@ public class CrossFixedPlainFloatAnalysis {
 						for (double dblForwardFXCorr : adblForwardFXCorr) {
 							for (double dblFundingFXCorr : adblFundingFXCorr)
 								VolCorrScenario (
-									new FixFloatComponent[] {fixMTMFloat, fixNonMTMFloat},
+									new GenericFixFloatComponent[] {fixMTMFloat, fixNonMTMFloat},
 									valParams,
 									mktParams,
 									fri3M,

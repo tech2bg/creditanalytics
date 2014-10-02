@@ -29,13 +29,13 @@ package org.drip.product.rates;
  */
 
 /**
- * DualStreamComponent is the abstract class that extends the CalibratableFixedIncomeComponent on top of
+ * GenericDualStreamComponent is the abstract class that extends the CalibratableFixedIncomeComponent on top of
  *  which all the dual stream rates components (fix-float, float-float, IRS etc.) are implemented.
  *  
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class DualStreamComponent extends
+public abstract class GenericDualStreamComponent extends
 	org.drip.product.definition.CalibratableFixedIncomeComponent {
 
 	/**
@@ -44,7 +44,7 @@ public abstract class DualStreamComponent extends
 	 * @return The Reference Stream
 	 */
 
-	public abstract org.drip.product.rates.Stream referenceStream();
+	public abstract org.drip.product.rates.GenericStream referenceStream();
 
 	/**
 	 * Retrieve the Derived Stream
@@ -52,5 +52,5 @@ public abstract class DualStreamComponent extends
 	 * @return The Derived Stream
 	 */
 
-	public abstract org.drip.product.rates.Stream derivedStream();
+	public abstract org.drip.product.rates.GenericStream derivedStream();
 }

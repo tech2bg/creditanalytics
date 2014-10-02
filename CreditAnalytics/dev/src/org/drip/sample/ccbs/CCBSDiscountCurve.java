@@ -158,7 +158,7 @@ public class CCBSDiscountCurve {
 		return aFFC;
 	}
 
-	private static final FixFloatComponent IRS (
+	private static final GenericFixFloatComponent IRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String strTenor,
@@ -225,7 +225,7 @@ public class CCBSDiscountCurve {
 			)
 		);
 
-		FixFloatComponent irs = new FixFloatComponent (
+		GenericFixFloatComponent irs = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			null
@@ -242,13 +242,13 @@ public class CCBSDiscountCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] MakeIRS (
+	private static final GenericFixFloatComponent[] MakeIRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrTenor)
 		throws Exception
 	{
-		FixFloatComponent[] aCalibComp = new FixFloatComponent[astrTenor.length];
+		GenericFixFloatComponent[] aCalibComp = new GenericFixFloatComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i)
 			aCalibComp[i] = IRS (
@@ -278,7 +278,7 @@ public class CCBSDiscountCurve {
 			3
 		);
 
-		FixFloatComponent[] aIRS = MakeIRS (
+		GenericFixFloatComponent[] aIRS = MakeIRS (
 			dtValue,
 			strDerivedCurrency,
 			astrTenor

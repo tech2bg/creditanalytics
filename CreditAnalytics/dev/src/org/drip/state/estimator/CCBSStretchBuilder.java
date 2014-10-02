@@ -76,8 +76,8 @@ public class CCBSStretchBuilder {
 
 			org.drip.product.definition.CalibratableFixedIncomeComponent comp = aCCSP[i].derivedComponent();
 
-			if (comp instanceof org.drip.product.rates.DualStreamComponent)
-				forwardLabel = ((org.drip.product.rates.DualStreamComponent)
+			if (comp instanceof org.drip.product.rates.GenericDualStreamComponent)
+				forwardLabel = ((org.drip.product.rates.GenericDualStreamComponent)
 					comp).derivedStream().forwardLabel();
 			else {
 				org.drip.state.identifier.ForwardLabel[] aForwardLabel =  comp.forwardLabel();
@@ -184,8 +184,8 @@ public class CCBSStretchBuilder {
 			org.drip.state.identifier.ForwardLabel forwardLabel = null;
 			org.drip.state.identifier.FundingLabel fundingLabel = null;
 
-			if (comp instanceof org.drip.product.rates.DualStreamComponent) {
-				org.drip.product.rates.GenericStream streamDerived = ((org.drip.product.rates.DualStreamComponent)
+			if (comp instanceof org.drip.product.rates.GenericDualStreamComponent) {
+				org.drip.product.rates.GenericStream streamDerived = ((org.drip.product.rates.GenericDualStreamComponent)
 					comp).derivedStream();
 
 				forwardLabel = streamDerived.forwardLabel();

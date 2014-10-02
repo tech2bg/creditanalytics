@@ -142,7 +142,7 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 													org.drip.state.identifier.ForwardLabel.Create ("USD",
 														"LIBOR", "3M"), null));
 
-							aCompCalib[i] = new org.drip.product.rates.FixFloatComponent (fixStream,
+							aCompCalib[i] = new org.drip.product.rates.GenericFixFloatComponent (fixStream,
 								floatStream, null);
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();

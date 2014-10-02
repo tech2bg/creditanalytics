@@ -124,14 +124,14 @@ public class OISProduct {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OvernightIndexFromMaturityTenor (
+	private static final GenericFixFloatComponent[] OvernightIndexFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
+		GenericFixFloatComponent[] aOIS = new GenericFixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			GenericStream floatStream = new GenericStream (
@@ -194,7 +194,7 @@ public class OISProduct {
 				)
 			);
 
-			FixFloatComponent ois = new FixFloatComponent (
+			GenericFixFloatComponent ois = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -214,14 +214,14 @@ public class OISProduct {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OvernightFundFromMaturityTenor (
+	private static final GenericFixFloatComponent[] OvernightFundFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
+		GenericFixFloatComponent[] aOIS = new GenericFixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			GenericStream floatStream = new GenericStream (
@@ -274,7 +274,7 @@ public class OISProduct {
 				)
 			);
 
-			FixFloatComponent ois = new FixFloatComponent (
+			GenericFixFloatComponent ois = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -294,7 +294,7 @@ public class OISProduct {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
+	private static final GenericFixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
@@ -302,7 +302,7 @@ public class OISProduct {
 		final String strCurrency)
 		throws Exception
 	{
-		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
+		GenericFixFloatComponent[] aOIS = new GenericFixFloatComponent[astrStartTenor.length];
 
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
@@ -367,7 +367,7 @@ public class OISProduct {
 				)
 			);
 
-			FixFloatComponent ois = new FixFloatComponent (
+			GenericFixFloatComponent ois = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -387,7 +387,7 @@ public class OISProduct {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OvernightFundFutureFromMaturityTenor (
+	private static final GenericFixFloatComponent[] OvernightFundFutureFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
@@ -395,7 +395,7 @@ public class OISProduct {
 		final String strCurrency)
 		throws Exception
 	{
-		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
+		GenericFixFloatComponent[] aOIS = new GenericFixFloatComponent[astrStartTenor.length];
 
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
@@ -450,7 +450,7 @@ public class OISProduct {
 				)
 			);
 
-			FixFloatComponent ois = new FixFloatComponent (
+			GenericFixFloatComponent ois = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -466,7 +466,7 @@ public class OISProduct {
 
 	private static final LatentStateStretchSpec OISStretch (
 		final String strName,
-		final FixFloatComponent[] aOIS,
+		final GenericFixFloatComponent[] aOIS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -554,7 +554,7 @@ public class OISProduct {
 			0.00074     //   1M
 		};
 
-		FixFloatComponent[] aShortEndOISComp = bOvernightIndex ?
+		GenericFixFloatComponent[] aShortEndOISComp = bOvernightIndex ?
 			OvernightIndexFromMaturityTenor (
 				dtToday,
 				new java.lang.String[]
@@ -591,7 +591,7 @@ public class OISProduct {
 			-0.00014     //   5M x 1M
 		};
 
-		FixFloatComponent[] aOISFutureComp = bOvernightIndex ?
+		GenericFixFloatComponent[] aOISFutureComp = bOvernightIndex ?
 			OvernightIndexFutureFromMaturityTenor (
 				dtToday,
 				new java.lang.String[] {"1M", "2M", "3M", "4M", "5M"},
@@ -640,7 +640,7 @@ public class OISProduct {
 			0.02038     //  30Y
 		};
 
-		FixFloatComponent[] aLongEndOISComp = bOvernightIndex ?
+		GenericFixFloatComponent[] aLongEndOISComp = bOvernightIndex ?
 			OvernightIndexFromMaturityTenor (
 				dtToday,
 				new java.lang.String[]
@@ -875,7 +875,7 @@ public class OISProduct {
 			)
 		);
 
-		FixFloatComponent ois = new FixFloatComponent (
+		GenericFixFloatComponent ois = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			new CashSettleParams (0, strCurrency, 0)

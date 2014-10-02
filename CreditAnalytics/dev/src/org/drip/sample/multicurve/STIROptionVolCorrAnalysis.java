@@ -162,7 +162,7 @@ public class STIROptionVolCorrAnalysis {
 				)
 			);
 
-			FixFloatComponent irs = new FixFloatComponent (
+			GenericFixFloatComponent irs = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -530,7 +530,7 @@ public class STIROptionVolCorrAnalysis {
 		return mapFC;
 	}
 
-	private static final FixFloatComponent CreateSTIR (
+	private static final GenericFixFloatComponent CreateSTIR (
 		final JulianDate dtEffective,
 		final String strTenor,
 		final ForwardLabel fri,
@@ -600,7 +600,7 @@ public class STIROptionVolCorrAnalysis {
 			)
 		);
 
-		FixFloatComponent stir = new FixFloatComponent (
+		GenericFixFloatComponent stir = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			new CashSettleParams (0, strCurrency, 0)
@@ -612,7 +612,7 @@ public class STIROptionVolCorrAnalysis {
 	}
 
 	private static final void VolCorrScenario (
-		final FixFloatComponent stir,
+		final GenericFixFloatComponent stir,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
 		final double dblCustomMetricVolatility,
@@ -723,7 +723,7 @@ public class STIROptionVolCorrAnalysis {
 
 		JulianDate dtForward = dtToday.addTenor (strTenor);
 
-		FixFloatComponent stir = CreateSTIR (dtForward, "5Y", fri, 0.05, strCurrency);
+		GenericFixFloatComponent stir = CreateSTIR (dtForward, "5Y", fri, 0.05, strCurrency);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);

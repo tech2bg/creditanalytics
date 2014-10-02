@@ -54,7 +54,7 @@ import org.drip.state.identifier.*;
 
 public class CrossFixedPlainFloat {
 
-	private static final FixFloatComponent MakeFixFloatSwap (
+	private static final GenericFixFloatComponent MakeFixFloatSwap (
 		final JulianDate dtEffective,
 		final boolean bFXMTM,
 		final String strPayCurrency,
@@ -135,7 +135,7 @@ public class CrossFixedPlainFloat {
 		 * The fix-float swap instance
 		 */
 
-		FixFloatComponent fixFloat = new FixFloatComponent (
+		GenericFixFloatComponent fixFloat = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			new CashSettleParams (0, strPayCurrency, 0)
@@ -196,7 +196,7 @@ public class CrossFixedPlainFloat {
 
 		CurrencyPair cp = CurrencyPair.FromCode ("USD/EUR");
 
-		FixFloatComponent fixMTMFloat = MakeFixFloatSwap (
+		GenericFixFloatComponent fixMTMFloat = MakeFixFloatSwap (
 			dtToday,
 			true,
 			"USD",
@@ -205,7 +205,7 @@ public class CrossFixedPlainFloat {
 			3
 		);
 
-		FixFloatComponent fixNonMTMFloat = MakeFixFloatSwap (
+		GenericFixFloatComponent fixNonMTMFloat = MakeFixFloatSwap (
 			dtToday,
 			false,
 			"USD",

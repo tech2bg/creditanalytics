@@ -98,7 +98,7 @@ public class ForwardDecompositionUtil {
 	 */
 
 	public static final org.drip.product.definition.CalibratableFixedIncomeComponent[] DualStreamForwardArray
-		(final org.drip.product.rates.DualStreamComponent dsc)
+		(final org.drip.product.rates.GenericDualStreamComponent dsc)
 	{
 		if (null == dsc) return null;
 
@@ -167,7 +167,7 @@ public class ForwardDecompositionUtil {
 		CalibratableFixedIncomeComponentForwardArray (
 			final org.drip.product.definition.CalibratableFixedIncomeComponent rc)
 	{
-		return null != rc && rc instanceof org.drip.product.rates.DualStreamComponent ?
-			DualStreamForwardArray ((org.drip.product.rates.DualStreamComponent) rc) : null;
+		return null != rc && rc instanceof org.drip.product.rates.GenericDualStreamComponent ?
+			DualStreamForwardArray ((org.drip.product.rates.GenericDualStreamComponent) rc) : null;
 	}
 }

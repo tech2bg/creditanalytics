@@ -560,7 +560,7 @@ public class StaticBACurves {
 										org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
 											"3M"), null));
 
-				aCompCalib[i + 15] = new org.drip.product.rates.FixFloatComponent (fixStream, floatStream,
+				aCompCalib[i + 15] = new org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream,
 					null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

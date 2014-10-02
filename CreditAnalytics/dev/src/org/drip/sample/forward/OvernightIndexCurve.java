@@ -121,14 +121,14 @@ public class OvernightIndexCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OvernightIndexFromMaturityTenor (
+	private static final GenericFixFloatComponent[] OvernightIndexFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
+		GenericFixFloatComponent[] aOIS = new GenericFixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			GenericStream floatStream = new GenericStream (
@@ -191,7 +191,7 @@ public class OvernightIndexCurve {
 				)
 			);
 
-			FixFloatComponent ois = new FixFloatComponent (
+			GenericFixFloatComponent ois = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -211,7 +211,7 @@ public class OvernightIndexCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
+	private static final GenericFixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
@@ -219,7 +219,7 @@ public class OvernightIndexCurve {
 		final String strCurrency)
 		throws Exception
 	{
-		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
+		GenericFixFloatComponent[] aOIS = new GenericFixFloatComponent[astrStartTenor.length];
 
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
@@ -284,7 +284,7 @@ public class OvernightIndexCurve {
 
 			GenericStream fixStream = new GenericStream (lsFixedPeriods);
 
-			FixFloatComponent ois = new FixFloatComponent (
+			GenericFixFloatComponent ois = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -300,7 +300,7 @@ public class OvernightIndexCurve {
 
 	private static final LatentStateStretchSpec OISStretch (
 		final String strName,
-		final FixFloatComponent[] aOIS,
+		final GenericFixFloatComponent[] aOIS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -376,7 +376,7 @@ public class OvernightIndexCurve {
 		 * Construct the Array of Short End OIS Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
+		GenericFixFloatComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
 			dtSpot,
 			astrShortEndOISMaturityTenor,
 			adblShortEndOISQuote,
@@ -397,7 +397,7 @@ public class OvernightIndexCurve {
 		 * Construct the Array of OIS Futures Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
+		GenericFixFloatComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
 			dtSpot,
 			astrOISFutureMaturityTenor,
 			astrOISFutureTenor,
@@ -419,7 +419,7 @@ public class OvernightIndexCurve {
 		 * Construct the Array of Long End OIS Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
+		GenericFixFloatComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
 			dtSpot,
 			astrLongEndOISMaturityTenor,
 			adblLongEndOISQuote,

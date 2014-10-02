@@ -311,7 +311,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 							org.drip.state.identifier.ForwardLabel.Create (currency(), "LIBOR", "3M"),
 								null));
 
-		org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+		org.drip.product.rates.GenericFixFloatComponent irs = new org.drip.product.rates.GenericFixFloatComponent
 			(fixStream, floatStream, null);
 
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new

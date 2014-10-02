@@ -111,7 +111,7 @@ public class ForwardCurveReferenceBasis {
 		return aCalibComp;
 	}
 
-	private static final FixFloatComponent IRS (
+	private static final GenericFixFloatComponent IRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String strTenor,
@@ -178,7 +178,7 @@ public class ForwardCurveReferenceBasis {
 			)
 		);
 
-		FixFloatComponent irs = new FixFloatComponent (
+		GenericFixFloatComponent irs = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			null
@@ -207,7 +207,7 @@ public class ForwardCurveReferenceBasis {
 		for (int i = 0; i < astrTenor.length; ++i) {
 			JulianDate dtMaturity = dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency);
 
-			FixFloatComponent irs = IRS (
+			GenericFixFloatComponent irs = IRS (
 				dtEffective,
 				strCurrency,
 				astrTenor[i],

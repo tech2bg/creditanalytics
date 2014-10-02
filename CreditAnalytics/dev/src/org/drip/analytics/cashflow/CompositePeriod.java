@@ -51,16 +51,10 @@ public abstract class CompositePeriod {
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		org.drip.analytics.output.CompositePeriodCouponMetrics cpm = accrualMetrics (dblValueDate, csqs);
+		org.drip.analytics.output.CompositePeriodAccrualMetrics cpam = accrualMetrics (dblValueDate, csqs);
 
-		if (null == cpm) return 0.;
-
-		double dblAccrualDCF = 0.;
-
-		for (org.drip.analytics.output.UnitPeriodMetrics upm : cpm.unitMetrics())
-			dblAccrualDCF += upm.dcf();
-
-		return notional (_dblPayDate) * fx (csqs) * dblAccrualDCF * (cpqs.baseRate() + cpqs.basis());
+		return null == cpam ? 0. : notional (_dblPayDate) * fx (csqs) * cpam.dcf() * (cpqs.baseRate() +
+			cpqs.basis());
 	}
 
 	/**
@@ -278,6 +272,17 @@ public abstract class CompositePeriod {
 	public java.lang.String couponCurrency()
 	{
 		return _lsCUP.get (0).couponCurrency();
+	}
+
+	/**
+	 * Period Basis
+	 * 
+	 * @return The Period Basis
+	 */
+
+	public double basis()
+	{
+		return _lsCUP.get (0).basis();
 	}
 
 	/**

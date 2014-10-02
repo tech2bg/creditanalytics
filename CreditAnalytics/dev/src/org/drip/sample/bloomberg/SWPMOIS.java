@@ -11,7 +11,7 @@ import org.drip.param.market.*;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
-import org.drip.product.rates.FixFloatComponent;
+import org.drip.product.rates.GenericFixFloatComponent;
 import org.drip.product.rates.GenericStream;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
@@ -83,7 +83,7 @@ public class SWPMOIS {
 		return aCalibComp;
 	}
 
-	private static final FixFloatComponent IRS (
+	private static final GenericFixFloatComponent IRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String strTenor,
@@ -150,7 +150,7 @@ public class SWPMOIS {
 			)
 		);
 
-		FixFloatComponent irs = new FixFloatComponent (
+		GenericFixFloatComponent irs = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			null
@@ -303,7 +303,7 @@ public class SWPMOIS {
 		 * Build the Fixed Receive Stream
 		 */
 
-		FixFloatComponent swap = IRS (
+		GenericFixFloatComponent swap = IRS (
 			dtEffective,
 			"USD",
 			"5Y",

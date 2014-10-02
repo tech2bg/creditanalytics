@@ -162,7 +162,7 @@ public class FixFloatForwardCurve {
 				)
 			);
 
-			FixFloatComponent irs = new FixFloatComponent (
+			GenericFixFloatComponent irs = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -259,7 +259,7 @@ public class FixFloatForwardCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] MakeFixFloatxMSwap (
+	private static final GenericFixFloatComponent[] MakeFixFloatxMSwap (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrTenor,
@@ -267,7 +267,7 @@ public class FixFloatForwardCurve {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		FixFloatComponent[] aFFC = new FixFloatComponent[astrTenor.length];
+		GenericFixFloatComponent[] aFFC = new GenericFixFloatComponent[astrTenor.length];
 
 		for (int i = 0; i < astrTenor.length; ++i) {
 
@@ -343,7 +343,7 @@ public class FixFloatForwardCurve {
 			 * The fix-float swap instance
 			 */
 
-			aFFC[i] = new FixFloatComponent (
+			aFFC[i] = new GenericFixFloatComponent (
 				fixStream,
 				fsDerived,
 				new CashSettleParams (0, strCurrency, 0)
@@ -378,7 +378,7 @@ public class FixFloatForwardCurve {
 		 * Construct the 6M-xM float-float basis swap.
 		 */
 
-		FixFloatComponent[] aFFC = MakeFixFloatxMSwap (
+		GenericFixFloatComponent[] aFFC = MakeFixFloatxMSwap (
 			dtSpot,
 			strCurrency,
 			astrxM6MFwdTenor,
@@ -533,7 +533,7 @@ public class FixFloatForwardCurve {
 
 			double dblFwdStartDate = dtSpot.addTenor (strMaturityTenor).subtractTenor (strBasisTenor).julian();
 
-			FixFloatComponent ffc = aFFC[i++];
+			GenericFixFloatComponent ffc = aFFC[i++];
 
 			CaseInsensitiveTreeMap<Double> mapCubicValue = ffc.value (valParams, null, mktParamsCubicFwd, null);
 

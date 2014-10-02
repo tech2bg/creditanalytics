@@ -232,7 +232,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 														org.drip.state.identifier.ForwardLabel.Create
 															(_strCurrency, "LIBOR", "3M"), null));
 
-							_aCompCalib[i + 15] = new org.drip.product.rates.FixFloatComponent
+							_aCompCalib[i + 15] = new org.drip.product.rates.GenericFixFloatComponent
 									(fixStream, floatStream, null);
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();

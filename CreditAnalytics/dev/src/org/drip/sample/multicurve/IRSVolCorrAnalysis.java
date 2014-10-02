@@ -161,7 +161,7 @@ public class IRSVolCorrAnalysis {
 				)
 			);
 
-			FixFloatComponent irs = new FixFloatComponent (
+			GenericFixFloatComponent irs = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -528,7 +528,7 @@ public class IRSVolCorrAnalysis {
 		return mapFC;
 	}
 
-	private static final FixFloatComponent CreateIRS (
+	private static final GenericFixFloatComponent CreateIRS (
 		final JulianDate dtEffective,
 		final String strTenor,
 		final ForwardLabel fri,
@@ -598,7 +598,7 @@ public class IRSVolCorrAnalysis {
 			)
 		);
 
-		FixFloatComponent irs = new FixFloatComponent (
+		GenericFixFloatComponent irs = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			new CashSettleParams (0, strCurrency, 0)
@@ -610,7 +610,7 @@ public class IRSVolCorrAnalysis {
 	}
 
 	private static final double RunWithVolCorrSurface (
-		final FixFloatComponent irs,
+		final GenericFixFloatComponent irs,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
 		final ForwardLabel fri,
@@ -667,7 +667,7 @@ public class IRSVolCorrAnalysis {
 
 		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 
-		FixFloatComponent irs = CreateIRS (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
+		GenericFixFloatComponent irs = CreateIRS (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);

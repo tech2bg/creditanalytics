@@ -85,7 +85,7 @@ public class EODCurves {
 										org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
 											"3M"), null));
 
-					org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+					org.drip.product.rates.GenericFixFloatComponent irs = new org.drip.product.rates.GenericFixFloatComponent
 						(fixStream, floatStream, null);
 
 					irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);

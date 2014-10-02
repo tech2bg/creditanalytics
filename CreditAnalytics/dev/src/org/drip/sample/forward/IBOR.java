@@ -71,8 +71,8 @@ public class IBOR {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aCalibComp[i] instanceof DualStreamComponent ?
-							((DualStreamComponent) aCalibComp[i]).derivedStream().forwardLabel() : aCalibComp[i].forwardLabel()[0]
+						aCalibComp[i] instanceof GenericDualStreamComponent ?
+							((GenericDualStreamComponent) aCalibComp[i]).derivedStream().forwardLabel() : aCalibComp[i].forwardLabel()[0]
 					)
 				}
 			);
@@ -160,7 +160,7 @@ public class IBOR {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] FixFloatSwap (
+	private static final GenericFixFloatComponent[] FixFloatSwap (
 		final JulianDate dtEffective,
 		final ForwardLabel fri,
 		final String[] astrMaturityTenor)
@@ -170,7 +170,7 @@ public class IBOR {
 
 		String strCurrency = fri.currency();
 
-		FixFloatComponent[] aFFC = new FixFloatComponent[astrMaturityTenor.length];
+		GenericFixFloatComponent[] aFFC = new GenericFixFloatComponent[astrMaturityTenor.length];
 
 		int iTenorInMonths = new Integer (fri.tenor().split ("M")[0]);
 
@@ -248,7 +248,7 @@ public class IBOR {
 			 * The fix-float swap instance
 			 */
 
-			aFFC[i] = new FixFloatComponent (
+			aFFC[i] = new GenericFixFloatComponent (
 				fixStream,
 				fsDerived,
 				new CashSettleParams (0, strCurrency, 0)
@@ -431,7 +431,7 @@ public class IBOR {
 			adblFRAQuote
 		);
 
-		FixFloatComponent[] aFixFloat = FixFloatSwap (
+		GenericFixFloatComponent[] aFixFloat = FixFloatSwap (
 			dtValue,
 			fri,
 			astrFixFloatTenor

@@ -378,7 +378,7 @@ public class RatesClosesLoader {
 			org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 				(lsFloatingCouponPeriod);
 
-			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+			org.drip.product.rates.GenericFixFloatComponent irs = new org.drip.product.rates.GenericFixFloatComponent
 				(fixStream, floatStream, new org.drip.param.valuation.CashSettleParams (0, strCurrency, 0));
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
@@ -436,7 +436,7 @@ public class RatesClosesLoader {
 			org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 				(lsFloatingCouponPeriod);
 
-			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+			org.drip.product.rates.GenericFixFloatComponent irs = new org.drip.product.rates.GenericFixFloatComponent
 				(fixStream, floatStream, new org.drip.param.valuation.CashSettleParams (0, strCurrency, 0));
 
 			irs.setPrimaryCode ("DIS." + dtMaturity.toString() + "." + strCurrency);
@@ -540,7 +540,7 @@ public class RatesClosesLoader {
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		org.drip.product.rates.FixFloatComponent irs = (org.drip.product.rates.FixFloatComponent) comp;
+		org.drip.product.rates.GenericFixFloatComponent irs = (org.drip.product.rates.GenericFixFloatComponent) comp;
 
 		double dblFixedCoupon = irs.referenceStream().coupon (dtPrev.julian(), null,
 			null).compoundedAccrualRate();
@@ -802,8 +802,8 @@ public class RatesClosesLoader {
 		org.drip.state.representation.LatentStateSpecification lssForward = null;
 		org.drip.state.representation.LatentStateSpecification lssDiscount = null;
 
-		if (comp instanceof org.drip.product.rates.DualStreamComponent)
-			forwardLabel =((org.drip.product.rates.DualStreamComponent)
+		if (comp instanceof org.drip.product.rates.GenericDualStreamComponent)
+			forwardLabel =((org.drip.product.rates.GenericDualStreamComponent)
 				comp).derivedStream().forwardLabel();
 		else {
 			org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp.forwardLabel();
@@ -829,8 +829,8 @@ public class RatesClosesLoader {
 				(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
 					org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						org.drip.state.identifier.FundingLabel.Standard (comp instanceof
-							org.drip.product.rates.DualStreamComponent ?
-								((org.drip.product.rates.DualStreamComponent)
+							org.drip.product.rates.GenericDualStreamComponent ?
+								((org.drip.product.rates.GenericDualStreamComponent)
 									comp).derivedStream().couponCurrency() : comp.payCurrency()[0]));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

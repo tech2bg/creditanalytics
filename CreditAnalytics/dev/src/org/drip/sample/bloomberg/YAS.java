@@ -21,7 +21,7 @@ import org.drip.product.params.EmbeddedOptionSchedule;
  * Credit Analytics API imports
  */
 
-import org.drip.product.rates.FixFloatComponent;
+import org.drip.product.rates.GenericFixFloatComponent;
 import org.drip.product.rates.GenericStream;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
@@ -65,7 +65,7 @@ import org.drip.state.identifier.ForwardLabel;
 public class YAS {
 	private static final String FIELD_SEPARATOR = "    ";
 
-	private static final FixFloatComponent IRS (
+	private static final GenericFixFloatComponent IRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String strTenor,
@@ -132,7 +132,7 @@ public class YAS {
 			)
 		);
 
-		FixFloatComponent irs = new FixFloatComponent (
+		GenericFixFloatComponent irs = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			null

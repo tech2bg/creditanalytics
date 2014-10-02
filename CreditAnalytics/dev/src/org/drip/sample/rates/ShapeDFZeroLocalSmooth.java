@@ -232,13 +232,13 @@ public class ShapeDFZeroLocalSmooth {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final GenericFixFloatComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
+		GenericFixFloatComponent[] aIRS = new GenericFixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			GenericStream floatStream = new GenericStream (
@@ -301,7 +301,7 @@ public class ShapeDFZeroLocalSmooth {
 				)
 			);
 
-			FixFloatComponent irs = new FixFloatComponent (
+			GenericFixFloatComponent irs = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -316,7 +316,7 @@ public class ShapeDFZeroLocalSmooth {
 	}
 
 	private static final LatentStateStretchSpec SwapStretch (
-		final FixFloatComponent[] aIRS,
+		final GenericFixFloatComponent[] aIRS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -489,7 +489,7 @@ public class ShapeDFZeroLocalSmooth {
 		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
+		GenericFixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
 			new java.lang.String[]

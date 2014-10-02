@@ -16,7 +16,7 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
-import org.drip.product.rates.FixFloatComponent;
+import org.drip.product.rates.GenericFixFloatComponent;
 import org.drip.product.rates.GenericStream;
 import org.drip.product.creator.*;
 import org.drip.quant.common.FormatUtil;
@@ -62,7 +62,7 @@ import org.drip.state.identifier.ForwardLabel;
 public class CDSW {
 	private static final java.lang.String FIELD_SEPARATOR = "   ";
 
-	private static final FixFloatComponent IRS (
+	private static final GenericFixFloatComponent IRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String strTenor,
@@ -129,7 +129,7 @@ public class CDSW {
 			)
 		);
 
-		FixFloatComponent irs = new FixFloatComponent (
+		GenericFixFloatComponent irs = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			null

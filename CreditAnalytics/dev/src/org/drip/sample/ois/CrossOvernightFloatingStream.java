@@ -168,14 +168,14 @@ public class CrossOvernightFloatingStream {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OISInstrumentsFromMaturityTenor (
+	private static final GenericFixFloatComponent[] OISInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		FixFloatComponent[] aCalibComp = new FixFloatComponent[astrMaturityTenor.length];
+		GenericFixFloatComponent[] aCalibComp = new GenericFixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			GenericStream floatStream = new GenericStream (
@@ -228,7 +228,7 @@ public class CrossOvernightFloatingStream {
 				)
 			);
 
-			FixFloatComponent ois = new FixFloatComponent (
+			GenericFixFloatComponent ois = new GenericFixFloatComponent (
 				fixStream,
 				floatStream,
 				new CashSettleParams (0, strCurrency, 0)
@@ -348,7 +348,7 @@ public class CrossOvernightFloatingStream {
 			0.03488     // 10Y
 		};
 
-		FixFloatComponent[] aOISComp = OISInstrumentsFromMaturityTenor (
+		GenericFixFloatComponent[] aOISComp = OISInstrumentsFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y"

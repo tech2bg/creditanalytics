@@ -10,7 +10,7 @@ import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
-import org.drip.product.rates.FixFloatComponent;
+import org.drip.product.rates.GenericFixFloatComponent;
 import org.drip.product.rates.GenericStream;
 import org.drip.param.creator.*;
 import org.drip.product.creator.*;
@@ -61,7 +61,7 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class RatesAnalyticsAPI {
 
-	private static final FixFloatComponent IRS (
+	private static final GenericFixFloatComponent IRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String strTenor,
@@ -128,7 +128,7 @@ public class RatesAnalyticsAPI {
 			)
 		);
 
-		FixFloatComponent irs = new FixFloatComponent (
+		GenericFixFloatComponent irs = new GenericFixFloatComponent (
 			fixStream,
 			floatStream,
 			null

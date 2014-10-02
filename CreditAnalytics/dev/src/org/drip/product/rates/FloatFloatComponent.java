@@ -47,7 +47,7 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FloatFloatComponent extends org.drip.product.rates.DualStreamComponent {
+public class FloatFloatComponent extends org.drip.product.rates.GenericDualStreamComponent {
 	private java.lang.String _strCode = "";
 	private org.drip.param.valuation.CashSettleParams _csp = null;
 	private org.drip.product.rates.GenericStream _floatDerived = null;
