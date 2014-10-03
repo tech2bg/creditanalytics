@@ -95,37 +95,37 @@ public class CompositePeriodCouponMetrics {
 			dblAmount += dblUnitAmount;
 			_dblDCF += dblUnitDCF;
 
-			_dblCollateralCredit = convAdj.collateralCredit() * dblUnitAmount;
+			_dblCollateralCredit = convAdj.collateralCredit() * dblUnitDCF;
 
-			_dblCollateralForward = convAdj.collateralForward() * dblUnitAmount;
+			_dblCollateralForward = convAdj.collateralForward() * dblUnitDCF;
 
-			_dblCollateralFunding = convAdj.collateralFunding() * dblUnitAmount;
+			_dblCollateralFunding = convAdj.collateralFunding() * dblUnitDCF;
 
-			_dblCollateralFX = convAdj.collateralFX() * dblUnitAmount;
+			_dblCollateralFX = convAdj.collateralFX() * dblUnitDCF;
 
-			_dblCreditForward = convAdj.creditForward() * dblUnitAmount;
+			_dblCreditForward = convAdj.creditForward() * dblUnitDCF;
 
-			_dblCreditFunding = convAdj.creditFunding() * dblUnitAmount;
+			_dblCreditFunding = convAdj.creditFunding() * dblUnitDCF;
 
-			_dblCreditFX = convAdj.creditFX() * dblUnitAmount;
+			_dblCreditFX = convAdj.creditFX() * dblUnitDCF;
 
-			_dblForwardFunding = convAdj.forwardFunding() * dblUnitAmount;
+			_dblForwardFunding = convAdj.forwardFunding() * dblUnitDCF;
 
-			_dblForwardFX = convAdj.forwardFX() * dblUnitAmount;
+			_dblForwardFX = convAdj.forwardFX() * dblUnitDCF;
 
-			_dblFundingFX = convAdj.fundingFX() * dblUnitAmount;
+			_dblFundingFX = convAdj.fundingFX() * dblUnitDCF;
 		}
 
-		_dblCollateralCredit /= dblAmount;
-		_dblCollateralForward /= dblAmount;
-		_dblCollateralFunding /= dblAmount;
-		_dblCollateralFX /= dblAmount;
-		_dblCreditForward /= dblAmount;
-		_dblCreditFunding /= dblAmount;
-		_dblCreditFX /= dblAmount;
-		_dblForwardFunding /= dblAmount;
-		_dblForwardFX /= dblAmount;
-		_dblFundingFX /= dblAmount;
+		_dblCollateralCredit /= _dblDCF;
+		_dblCollateralForward /= _dblDCF;
+		_dblCollateralFunding /= _dblDCF;
+		_dblCollateralFX /= _dblDCF;
+		_dblCreditForward /= _dblDCF;
+		_dblCreditFunding /= _dblDCF;
+		_dblCreditFX /= _dblDCF;
+		_dblForwardFunding /= _dblDCF;
+		_dblForwardFX /= _dblDCF;
+		_dblFundingFX /= _dblDCF;
 		_dblRate = dblAmount / _dblDCF;
 		return true;
 	}

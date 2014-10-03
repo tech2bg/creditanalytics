@@ -29,61 +29,68 @@ package org.drip.analytics.output;
  */
 
 /**
- * UnitPeriodMetrics holds the results of a unit composable period metrics estimate output.
+ * UnitPeriodMetrics holds the results of a unit composable period convexity metrics estimate output.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class UnitPeriodMetrics extends org.drip.analytics.output.UnitPeriodConvexityMetrics {
-	private double _dblDCF = java.lang.Double.NaN;
-	private double _dblRate = java.lang.Double.NaN;
+public class UnitPeriodConvexityMetrics {
+	private double _dblEndDate = java.lang.Double.NaN;
+	private double _dblStartDate = java.lang.Double.NaN;
+	private org.drip.analytics.output.ConvexityAdjustment _convAdj = null;
 
 	/**
-	 * UnitPeriodMetrics constructor
+	 * UnitPeriodConvexityMetrics constructor
 	 * 
 	 * @param dblStartDate Metric Period Start Date
 	 * @param dblEndDate Metric Period End Date
-	 * @param dblDCF Coupon Period Coupon DCF
-	 * @param dblRate Coupon Period Coupon Rate
 	 * @param convAdj Coupon Period Convexity Adjustment
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public UnitPeriodMetrics (
+	public UnitPeriodConvexityMetrics (
 		final double dblStartDate,
 		final double dblEndDate,
-		final double dblDCF,
-		final double dblRate,
 		final org.drip.analytics.output.ConvexityAdjustment convAdj)
 		throws java.lang.Exception
 	{
-		super (dblStartDate, dblEndDate, convAdj);
-
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblDCF = dblDCF) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblRate = dblRate))
-			throw new java.lang.Exception ("UnitPeriodMetrics ctr: Invalid Inputs");
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) || _dblEndDate <=
+				_dblStartDate || null == (_convAdj = convAdj))
+			throw new java.lang.Exception ("UnitPeriodConvexityMetrics ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Retrieve the Day Count Fraction
+	 * Retrieve the Start Date
 	 * 
-	 * @return The DCF
+	 * @return The Start Date
 	 */
 
-	public double dcf()
+	public double startDate()
 	{
-		return _dblDCF;
+		return _dblStartDate;
 	}
 
 	/**
-	 * Retrieve the Coupon Rate
+	 * Retrieve the End Date
 	 * 
-	 * @return The Coupon Rate
+	 * @return The End Date
 	 */
 
-	public double rate()
+	public double endDate()
 	{
-		return _dblRate;
+		return _dblEndDate;
+	}
+
+	/**
+	 * Retrieve the Convexity Adjustment
+	 * 
+	 * @return The Convexity Adjustment
+	 */
+
+	public org.drip.analytics.output.ConvexityAdjustment convAdj()
+	{
+		return _convAdj;
 	}
 }

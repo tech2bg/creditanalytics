@@ -45,18 +45,6 @@ public abstract class CompositePeriod {
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> _lsCUP = null;
 
-	private double calibAccrued (
-		final org.drip.analytics.cashflow.CompositePeriodQuoteSet cpqs,
-		final double dblValueDate,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-		throws java.lang.Exception
-	{
-		org.drip.analytics.output.CompositePeriodAccrualMetrics cpam = accrualMetrics (dblValueDate, csqs);
-
-		return null == cpam ? 0. : notional (_dblPayDate) * fx (csqs) * cpam.dcf() * (cpqs.baseRate() +
-			cpqs.basis());
-	}
-
 	/**
 	 * ComposedPeriod Constructor
 	 * 
@@ -668,12 +656,59 @@ public abstract class CompositePeriod {
 	}
 
 	/**
-	 * Compute the Period Coupon Measures
+	 * Compute the Unit Period Convexity Measures
 	 * 
 	 * @param dblValueDate Valuation Date
 	 * @param csqs The Market Curve Surface/Quote Set
 	 * 
-	 * @return The Period Coupon Measures
+	 * @return The Unit Period Convexity Measures
+	 */
+
+	public java.util.List<org.drip.analytics.output.UnitPeriodConvexityMetrics> unitPeriodConvexityMetrics (
+		final double dblValueDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValueDate)) return null;
+
+		java.util.List<org.drip.analytics.output.UnitPeriodConvexityMetrics> lsUPCM = new
+			java.util.ArrayList<org.drip.analytics.output.UnitPeriodConvexityMetrics>();
+
+		int iNumPeriodUnit = _lsCUP.size();
+
+		try {
+			if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+				_iAccrualCompoundingRule) {
+				java.util.List<org.drip.analytics.output.ConvexityAdjustment> lsConvAdj =
+					periodWiseConvexityAdjustment (dblValueDate, csqs);
+
+				if (null == lsConvAdj || iNumPeriodUnit != lsConvAdj.size()) return null;
+
+				for (int i = 0; i < iNumPeriodUnit; ++i) {
+					org.drip.analytics.cashflow.ComposableUnitPeriod cup = _lsCUP.get (i);
+
+					lsUPCM.add (new org.drip.analytics.output.UnitPeriodConvexityMetrics (cup.startDate(),
+						cup.endDate(), lsConvAdj.get (i)));
+				}
+			} else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
+				_iAccrualCompoundingRule)
+				lsUPCM.add (new org.drip.analytics.output.UnitPeriodConvexityMetrics (startDate(), endDate(),
+					terminalConvexityAdjustment (dblValueDate, csqs)));
+
+			return lsUPCM;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Compute the Full Period Coupon Measures
+	 * 
+	 * @param dblValueDate Valuation Date
+	 * @param csqs The Market Curve Surface/Quote Set
+	 * 
+	 * @return The Full Period Coupon Measures
 	 */
 
 	public org.drip.analytics.output.CompositePeriodCouponMetrics couponMetrics (
@@ -726,6 +761,41 @@ public abstract class CompositePeriod {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Compute the Coupon Accrual DCF to the specified Accrual End Date
+	 * 
+	 * @param dblValueDate The Valuation Date
+	 * 
+	 * @return The Coupon Accrual DCF to the specified Accrual End Date
+	 * 
+	 * @throws java.lang.Exception Thrown if the Accrual DCF cannot be calculated
+	 */
+
+	public double accrualDCF (
+		final double dblValueDate)
+		throws java.lang.Exception
+	{
+		if (!contains (dblValueDate)) return 0.;
+
+		int iNumPeriodUnit = _lsCUP.size();
+
+		double dblAccrualDCF = 0.;
+
+		for (int i = 0; i < iNumPeriodUnit; ++i) {
+			org.drip.analytics.cashflow.ComposableUnitPeriod cup = _lsCUP.get (i);
+
+			int iDateLocation = cup.dateLocation (dblValueDate);
+
+			if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_INSIDE_SEGMENT == iDateLocation)
+				dblAccrualDCF += cup.accrualDCF (dblValueDate);
+			else if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_LEFT_OF_SEGMENT ==
+				iDateLocation)
+				dblAccrualDCF += cup.fullCouponDCF();
+		}
+
+		return dblAccrualDCF;
 	}
 
 	/**
@@ -809,12 +879,14 @@ public abstract class CompositePeriod {
 					}
 				}
 
-				lsUPM.add (new org.drip.analytics.output.UnitPeriodMetrics (startDate(), dblValueDate,
-					dblAccrualDCF, (dblAccrualRate - 1.) / dblAccrualDCF, terminalConvexityAdjustment
-						(dblValueDate, csqs)));
+				if (0. < dblAccrualDCF)
+					lsUPM.add (new org.drip.analytics.output.UnitPeriodMetrics (startDate(), dblValueDate,
+						dblAccrualDCF, (dblAccrualRate - 1.) / dblAccrualDCF, terminalConvexityAdjustment
+							(dblValueDate, csqs)));
 			}
 
-			return org.drip.analytics.output.CompositePeriodAccrualMetrics.Create (dblResetDate, lsUPM);
+			return 0 == lsUPM.size() ? null : org.drip.analytics.output.CompositePeriodAccrualMetrics.Create
+				(dblResetDate, lsUPM);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -856,7 +928,7 @@ public abstract class CompositePeriod {
 
 			dblNotional = notional (_dblPayDate);
 
-			dblAccrued = calibAccrued (cpqs, dblValueDate, csqs);
+			dblAccrued = dblNotional * dblFX * accrualDCF (dblValueDate) * (cpqs.baseRate() + cpqs.basis());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -933,7 +1005,7 @@ public abstract class CompositePeriod {
 
 			dblNotional = notional (_dblPayDate);
 
-			dblAccrued = calibAccrued (cpqs, dblValueDate, csqs);
+			dblAccrued = dblNotional * dblFX * accrualDCF (dblValueDate) * (cpqs.baseRate() + cpqs.basis());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -1009,8 +1081,6 @@ public abstract class CompositePeriod {
 		double dblNotional = java.lang.Double.NaN;
 		double dblSurvival = java.lang.Double.NaN;
 
-		org.drip.analytics.cashflow.CompositePeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
-
 		try {
 			dblFX = fx (csqs);
 
@@ -1018,7 +1088,7 @@ public abstract class CompositePeriod {
 
 			dblNotional = notional (_dblPayDate);
 
-			dblAccrued = calibAccrued (cpqs, dblValueDate, csqs);
+			dblAccrued = accrualDCF (dblValueDate) * basisQuote (pqs) * dblNotional * dblFX;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -1028,16 +1098,17 @@ public abstract class CompositePeriod {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		org.drip.analytics.output.CompositePeriodCouponMetrics cpm = couponMetrics (dblValueDate, csqs);
+		java.util.List<org.drip.analytics.output.UnitPeriodConvexityMetrics> lsUPCM =
+			unitPeriodConvexityMetrics (dblValueDate, csqs);
 
-		if (null == cpm) return null;
+		if (null == lsUPCM || 0 == lsUPCM.size()) return null;
 
-		for (org.drip.analytics.output.UnitPeriodMetrics upm : cpm.unitMetrics()) {
-			double dblFundingLoading = dblNotional * dblFX * dblSurvival * upm.convAdj().cumulative();
+		for (org.drip.analytics.output.UnitPeriodConvexityMetrics upcm : lsUPCM) {
+			double dblFundingLoading = dblNotional * dblFX * dblSurvival * upcm.convAdj().cumulative();
 
-			double dblStartDate = upm.startDate();
+			double dblStartDate = upcm.startDate();
 
-			double dblEndDate = upm.endDate();
+			double dblEndDate = upcm.endDate();
 
 			if (!prwc.addPredictorResponseWeight (dblStartDate, dblFundingLoading)) return null;
 
@@ -1069,4 +1140,15 @@ public abstract class CompositePeriod {
 	abstract public org.drip.analytics.cashflow.CompositePeriodQuoteSet periodQuoteSet (
 		final org.drip.product.calib.ProductQuoteSet pqs,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
+
+	/**
+	 * Retrieve the Period Calibration Basis Quote from the specified product quote set
+	 * 
+	 * @param pqs The Product Quote Set
+	 * 
+	 * @return The Period Calibration Basis Quote
+	 */
+
+	abstract public double basisQuote (
+		final org.drip.product.calib.ProductQuoteSet pqs);
 }

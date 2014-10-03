@@ -35,6 +35,7 @@ package org.drip.analytics.cashflow;
  */
 
 public class CompositeFixedPeriod extends org.drip.analytics.cashflow.CompositePeriod {
+
 	/**
 	 * CompositeFixedPeriod Constructor
 	 * 
@@ -80,12 +81,31 @@ public class CompositeFixedPeriod extends org.drip.analytics.cashflow.CompositeP
 
 		try {
 			return new org.drip.analytics.cashflow.CompositePeriodQuoteSet (fsqs.containsCoupon() ?
-				cup.baseRate (csqs) : fsqs.coupon(), fsqs.containsCouponBasis() ? fsqs.couponBasis() :
-					cup.basis());
+				fsqs.coupon() : cup.baseRate (csqs), fsqs.containsCouponBasis() ? fsqs.couponBasis() :
+					basis());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
+	}
+
+	@Override public double basisQuote (
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		double dblBasis = basis();
+
+		if (null == pqs || !(pqs instanceof org.drip.product.calib.FixedStreamQuoteSet)) return dblBasis;
+
+		org.drip.product.calib.FixedStreamQuoteSet fsqs = (org.drip.product.calib.FixedStreamQuoteSet)
+			pqs;
+
+		try {
+			if (fsqs.containsCouponBasis()) return fsqs.couponBasis();
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return dblBasis;
 	}
 }

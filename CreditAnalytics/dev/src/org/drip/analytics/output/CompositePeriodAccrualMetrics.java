@@ -70,7 +70,7 @@ public class CompositePeriodAccrualMetrics extends org.drip.analytics.output.Com
 		super (lsUPM);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblResetDate = dblResetDate))
-		throw new java.lang.Exception ("CompositePeriodAccrualMetrics ctr: Invalid Inputs");
+			throw new java.lang.Exception ("CompositePeriodAccrualMetrics ctr: Invalid Inputs");
 	}
 
 	/**

@@ -81,11 +81,30 @@ public class CompositeFloatingPeriod extends org.drip.analytics.cashflow.Composi
 
 		try {
 			return new org.drip.analytics.cashflow.CompositePeriodQuoteSet (cup.baseRate (csqs),
-				fsqs.containsSpread() ? fsqs.spread() : cup.basis());
+				fsqs.containsSpread() ? fsqs.spread() : basis());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
+	}
+
+	@Override public double basisQuote (
+		final org.drip.product.calib.ProductQuoteSet pqs)
+	{
+		double dblBasis = basis();
+
+		if (null == pqs || !(pqs instanceof org.drip.product.calib.FloatingStreamQuoteSet)) return dblBasis;
+
+		org.drip.product.calib.FloatingStreamQuoteSet fsqs = (org.drip.product.calib.FloatingStreamQuoteSet)
+			pqs;
+
+		try {
+			if (fsqs.containsSpread()) return fsqs.spread();
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return dblBasis;
 	}
 }

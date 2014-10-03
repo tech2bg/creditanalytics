@@ -53,8 +53,11 @@ public class CompositePeriodQuoteSet {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblBaseRate = dblBaseRate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis))
+			!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis)) {
+			System.out.println ("\tBase Rate: " + _dblBaseRate);
+
 			throw new java.lang.Exception ("CompositePeriodQuoteSet ctr: Invalid Inputs");
+		}
 	}
 
 	/**
