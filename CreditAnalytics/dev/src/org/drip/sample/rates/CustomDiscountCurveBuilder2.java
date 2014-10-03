@@ -8,6 +8,8 @@ import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CompositePeriodBuilder;
 import org.drip.param.creator.*;
+import org.drip.param.period.ComposableFixedUnitSetting;
+import org.drip.param.period.UnitCouponAccrualSetting;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
@@ -177,6 +179,26 @@ public class CustomDiscountCurveBuilder2 {
 	{
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true
+		);
+
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true
+		);
+
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			List<Double> lsStreamDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtEffective,
@@ -188,14 +210,8 @@ public class CustomDiscountCurveBuilder2 {
 			Stream floatingStream = new Stream (
 				CompositePeriodBuilder.FloatingCompositeSingleUnit (
 					lsStreamDate,
-					2,
 					strCurrency,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					strCurrency,
-					0.5,
+					ucasFloating,
 					0.,
 					-1.,
 					null,
@@ -211,17 +227,13 @@ public class CustomDiscountCurveBuilder2 {
 			Stream fixedStream = new Stream (
 				CompositePeriodBuilder.FixedCompositeSingleUnit (
 					lsStreamDate,
-					2,
 					strCurrency,
-					strCurrency,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					strCurrency,
-					0.5,
-					0.,
-					0.,
+					ucasFixed,
+					new ComposableFixedUnitSetting (
+						0.,
+						0.,
+						strCurrency
+					),
 					1.,
 					null,
 					null,

@@ -45,12 +45,7 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 	 * 
 	 * @param dblStartDate Accrual Start Date
 	 * @param dblEndDate Accrual End Date
-	 * @param strCouponDC Coupon Day Count
-	 * @param bCouponEOMAdjustment Coupon EOM Adjustment Flag
-	 * @param strAccrualDC Accrual Day Count
-	 * @param bAccrualEOMAdjustment Accrual EOM Adjustment Flag
-	 * @param strCalendar Calendar
-	 * @param dblFullCouponDCF The Period's Full Coupon DCF
+	 * @param ucas Coupon/Accrual Setting
 	 * @param refIndexPeriod The Reference Index Period
 	 * @param dblSpread The Floater Spread
 	 * 
@@ -60,18 +55,12 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 	public ComposableUnitFloatingPeriod (
 		final double dblStartDate,
 		final double dblEndDate,
-		final java.lang.String strCouponDC,
-		final boolean bCouponEOMAdjustment,
-		final java.lang.String strAccrualDC,
-		final boolean bAccrualEOMAdjustment,
-		final java.lang.String strCalendar,
-		final double dblFullCouponDCF,
+		final org.drip.param.period.UnitCouponAccrualSetting ucas,
 		final org.drip.analytics.cashflow.ReferenceIndexPeriod refIndexPeriod,
 		final double dblSpread)
 		throws java.lang.Exception
 	{
-		super (dblStartDate, dblEndDate, strCouponDC, bCouponEOMAdjustment, strAccrualDC,
-			bAccrualEOMAdjustment, strCalendar, dblFullCouponDCF);
+		super (dblStartDate, dblEndDate, ucas);
 
 		if (null == (_refIndexPeriod = refIndexPeriod) || !org.drip.quant.common.NumberUtil.IsValid
 			(_dblSpread = dblSpread))

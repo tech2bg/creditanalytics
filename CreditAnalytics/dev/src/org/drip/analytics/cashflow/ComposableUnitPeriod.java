@@ -56,36 +56,26 @@ public abstract class ComposableUnitPeriod {
 
 	public static final int NODE_RIGHT_OF_SEGMENT = 4;
 
-	private java.lang.String _strCalendar = "";
-	private java.lang.String _strCouponDC = "";
-	private java.lang.String _strAccrualDC = "";
-	private boolean _bCouponEOMAdjustment = false;
-	private boolean _bAccrualEOMAdjustment = false;
 	private double _dblEndDate = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
 	private double _dblFullCouponDCF = java.lang.Double.NaN;
+	private org.drip.param.period.UnitCouponAccrualSetting _ucas = null;
 
 	protected ComposableUnitPeriod (
 		final double dblStartDate,
 		final double dblEndDate,
-		final java.lang.String strCouponDC,
-		final boolean bCouponEOMAdjustment,
-		final java.lang.String strAccrualDC,
-		final boolean bAccrualEOMAdjustment,
-		final java.lang.String strCalendar,
-		final double dblFullCouponDCF)
+		final org.drip.param.period.UnitCouponAccrualSetting ucas)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) || _dblStartDate >=
-				_dblEndDate || null == (_strCouponDC = strCouponDC) || _strCouponDC.isEmpty() || null ==
-					(_strAccrualDC = strAccrualDC) || _strAccrualDC.isEmpty() || null == (_strCalendar =
-						strCalendar) || _strCalendar.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
-							(_dblFullCouponDCF = dblFullCouponDCF))
+				_dblEndDate || null == (_ucas = ucas))
 			throw new java.lang.Exception ("ComposableUnitPeriod ctr: Invalid Inputs");
 
-		_bCouponEOMAdjustment = bCouponEOMAdjustment;
-		_bAccrualEOMAdjustment = bAccrualEOMAdjustment;
+		_dblFullCouponDCF = _ucas.couponDCFOffOfFreq() ? 1. / _ucas.freq() :
+			org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate, _dblEndDate,
+				_ucas.couponDC(), _ucas.couponEOMAdjustment(), null, _ucas.calendar());
+		
 	}
 
 	/**
@@ -111,6 +101,17 @@ public abstract class ComposableUnitPeriod {
 	}
 
 	/**
+	 * Retrieve the Coupon Frequency
+	 * 
+	 * @return The Coupon Frequency
+	 */
+
+	public int freq()
+	{
+		return _ucas.freq();
+	}
+
+	/**
 	 * Retrieve the Coupon Day Count
 	 * 
 	 * @return The Coupon Day Count
@@ -118,7 +119,7 @@ public abstract class ComposableUnitPeriod {
 
 	public java.lang.String couponDC()
 	{
-		return _strCouponDC;
+		return _ucas.couponDC();
 	}
 
 	/**
@@ -129,7 +130,7 @@ public abstract class ComposableUnitPeriod {
 
 	public boolean couponEOMAdjustment()
 	{
-		return _bCouponEOMAdjustment;
+		return _ucas.couponEOMAdjustment();
 	}
 
 	/**
@@ -140,7 +141,7 @@ public abstract class ComposableUnitPeriod {
 
 	public java.lang.String accrualDC()
 	{
-		return _strAccrualDC;
+		return _ucas.accrualDC();
 	}
 
 	/**
@@ -151,7 +152,18 @@ public abstract class ComposableUnitPeriod {
 
 	public boolean accrualEOMAdjustment()
 	{
-		return _bAccrualEOMAdjustment;
+		return _ucas.accrualEOMAdjustment();
+	}
+
+	/**
+	 * Retrieve the Flag indicating whether Coupon DCF is computed off of the DCF Flag
+	 * 
+	 * @return TRUE => The Flag indicating whether Coupon DCF is computed off of the DCF Flag
+	 */
+
+	public boolean couponDCFOffOfFreq()
+	{
+		return _ucas.couponDCFOffOfFreq();
 	}
 
 	/**
@@ -162,7 +174,7 @@ public abstract class ComposableUnitPeriod {
 
 	public java.lang.String calendar()
 	{
-		return _strCalendar;
+		return _ucas.calendar();
 	}
 
 	/**
@@ -174,6 +186,20 @@ public abstract class ComposableUnitPeriod {
 	public double fullCouponDCF()
 	{
 		return _dblFullCouponDCF;
+	}
+
+	/**
+	 * Convert the Coupon Frequency into a Tenor
+	 * 
+	 * @return The Coupon Frequency converted into a Tenor
+	 */
+
+	public java.lang.String tenor()
+	{
+		int iTenorInMonths = 12 / freq() ;
+
+		return 1 == iTenorInMonths || 2 == iTenorInMonths || 3 == iTenorInMonths || 6 == iTenorInMonths || 12
+			== iTenorInMonths ? iTenorInMonths + "M" : "ON";
 	}
 
 	/**
@@ -219,9 +245,9 @@ public abstract class ComposableUnitPeriod {
 				("ComposableUnitPeriod::accrualDCF => Invalid in-period accrual date!");
 
 		return org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate, dblAccrualEnd,
-			_strAccrualDC, _bAccrualEOMAdjustment, null, _strCalendar) /
+			accrualDC(), accrualEOMAdjustment(), null, calendar()) /
 				org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate, _dblEndDate,
-					_strAccrualDC, _bAccrualEOMAdjustment, null, _strCalendar) * _dblFullCouponDCF;
+					accrualDC(), accrualEOMAdjustment(), null, calendar()) * _dblFullCouponDCF;
 	}
 
 	/**

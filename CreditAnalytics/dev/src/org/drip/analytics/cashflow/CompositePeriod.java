@@ -35,7 +35,7 @@ package org.drip.analytics.cashflow;
  */
 
 public abstract class CompositePeriod {
-	private int _iFreq = 2;
+	private int _iFreq = -1;
 	private int _iAccrualCompoundingRule = -1;
 	private java.lang.String _strPayCurrency = "";
 	private double _dblPayDate = java.lang.Double.NaN;
@@ -49,7 +49,7 @@ public abstract class CompositePeriod {
 	 * ComposedPeriod Constructor
 	 * 
 	 * @param lsCUP List of the Composable Unit Periods
-	 * @param iFreq Frequency
+	 * @param iFreq Composite Freq
 	 * @param dblPayDate Period Pay Date
 	 * @param strPayCurrency Pay Currency
 	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
@@ -73,12 +73,12 @@ public abstract class CompositePeriod {
 		final double dblFXFixingDate)
 		throws java.lang.Exception
 	{
-		if (null == (_lsCUP = lsCUP) || 0 == _lsCUP.size() || 0 >= (_iFreq = iFreq) ||
+		if (0 >= (_iFreq = iFreq) || null == (_lsCUP = lsCUP) || 0 == _lsCUP.size() ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblPayDate = dblPayDate) || null == (_strPayCurrency
 				= strPayCurrency) || _strPayCurrency.isEmpty() ||
-					!org.drip.analytics.support.CompositePeriodUtil.ValidateCompoundingRule (_iAccrualCompoundingRule =
-						iAccrualCompoundingRule) || !org.drip.quant.common.NumberUtil.IsValid
-							(_dblBaseNotional = dblBaseNotional))
+					!org.drip.analytics.support.CompositePeriodUtil.ValidateCompoundingRule
+						(_iAccrualCompoundingRule = iAccrualCompoundingRule) ||
+							!org.drip.quant.common.NumberUtil.IsValid (_dblBaseNotional = dblBaseNotional))
 			throw new java.lang.Exception ("CompositePeriod ctr: Invalid Inputs");
 
 		_creditLabel = creditLabel;
@@ -235,7 +235,8 @@ public abstract class CompositePeriod {
 
 	public java.lang.String tenor()
 	{
-		int iTenorInMonths = 12 / _iFreq ;
+		int iTenorInMonths = 12 / freq() ;
+
 		return 1 == iTenorInMonths || 2 == iTenorInMonths || 3 == iTenorInMonths || 6 == iTenorInMonths || 12
 			== iTenorInMonths ? iTenorInMonths + "M" : "ON";
 	}
