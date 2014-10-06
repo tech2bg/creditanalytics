@@ -9,6 +9,7 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CompositePeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.period.ComposableFixedUnitSetting;
+import org.drip.param.period.ComposableFloatingUnitSetting;
 import org.drip.param.period.UnitCouponAccrualSetting;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
@@ -212,14 +213,19 @@ public class CustomDiscountCurveBuilder2 {
 					lsStreamDate,
 					strCurrency,
 					ucasFloating,
-					0.,
+					new ComposableFloatingUnitSetting (
+						"6M",
+						CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+						null,
+						ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+						CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+						null,
+						0.
+					),
 					-1.,
 					null,
 					null,
-					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
-					CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 					Double.NaN,
-					null,
 					null
 				)
 			);
@@ -230,6 +236,9 @@ public class CustomDiscountCurveBuilder2 {
 					strCurrency,
 					ucasFixed,
 					new ComposableFixedUnitSetting (
+						"6M",
+						CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+						null,
 						0.,
 						0.,
 						strCurrency

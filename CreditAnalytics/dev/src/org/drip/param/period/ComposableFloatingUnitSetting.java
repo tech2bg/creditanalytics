@@ -29,50 +29,52 @@ package org.drip.param.period;
  */
 
 /**
- * ComposableFixedUnitSetting contains the fixed unit details. Currently it holds the coupon currency, the
- * 	fixed coupon, and the basis.
+ * ComposableFloatingUnitSetting contains the cash flow periods' composable sub period details.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposableFixedUnitSetting {
+public class ComposableFloatingUnitSetting {
 	private java.lang.String _strTenor = "";
 	private int _iEdgeDateSequenceScheme = -1;
-	private double _dblBasis = java.lang.Double.NaN;
-	private java.lang.String _strCouponCurrency = "";
-	private double _dblFixedCoupon = java.lang.Double.NaN;
+	private int _iReferencePeriodArrearsType = -1;
+	private double _dblSpread = java.lang.Double.NaN;
+	private org.drip.state.identifier.ForwardLabel _forwardLabel = null;
 	private org.drip.analytics.daycount.DateAdjustParams _dapEdge = null;
+	private org.drip.analytics.daycount.DateAdjustParams _dapForwardFixing = null;
 
 	/**
-	 * ComposableFixedUnitSetting constructor
+	 * ComposableFloatingUnitSetting constructor
 	 * 
 	 * @param strTenor Unit Tenor
 	 * @param iEdgeDateSequenceScheme Edge Date Generation Scheme
 	 * @param dapEdge Date Adjust Parameter Settings for the Edge Dates
-	 * @param dblFixedCoupon Fixed Coupon (Annualized)
-	 * @param dblBasis Basis over the Fixed Coupon in the same units
-	 * @param strCouponCurrency Coupon Currency
+	 * @param forwardLabel Forward Label
+	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
+	 * @param dapForwardFixing Date Adjust Parameter Settings for the Forward Fixing Date
+	 * @param dblSpread Floater Spread
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
 
-	public ComposableFixedUnitSetting (
+	public ComposableFloatingUnitSetting (
 		final java.lang.String strTenor,
 		final int iEdgeDateSequenceScheme,
 		final org.drip.analytics.daycount.DateAdjustParams dapEdge,
-		final double dblFixedCoupon,
-		final double dblBasis,
-		final java.lang.String strCouponCurrency)
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final int iReferencePeriodArrearsType,
+		final org.drip.analytics.daycount.DateAdjustParams dapForwardFixing,
+		final double dblSpread)
 		throws java.lang.Exception
 	{
-		if (null == (_strTenor = strTenor) || _strTenor.isEmpty() ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblFixedCoupon = dblFixedCoupon) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis) || null ==
-					(_strCouponCurrency = strCouponCurrency) || _strCouponCurrency.isEmpty())
-			throw new java.lang.Exception ("ComposableFixedUnitSetting ctr: Invalid Inputs");
+		if (null == (_strTenor = strTenor) || _strTenor.isEmpty() || null == (_forwardLabel = forwardLabel)
+			|| !org.drip.quant.common.NumberUtil.IsValid (_dblSpread = dblSpread))
+			throw new java.lang.Exception ("ComposableFloatingUnitSetting ctr: Invalid Inputs");
 
 		_dapEdge = dapEdge;
+		_dapForwardFixing = dapForwardFixing;
 		_iEdgeDateSequenceScheme = iEdgeDateSequenceScheme;
+		_iReferencePeriodArrearsType = iReferencePeriodArrearsType;
 	}
 
 	/**
@@ -109,35 +111,46 @@ public class ComposableFixedUnitSetting {
 	}
 
 	/**
-	 * Retrieve the Fixed Coupon
+	 * Retrieve the Forward Label
 	 * 
-	 * @return The Fixed Coupon
+	 * @return The Forward Label
 	 */
 
-	public double fixedCoupon()
+	public org.drip.state.identifier.ForwardLabel forwardLabel()
 	{
-		return _dblFixedCoupon;
+		return _forwardLabel;
 	}
 
 	/**
-	 * Retrieve the Fixed Coupon Basis
+	 * Retrieve the Reference Period Arrears Type
 	 * 
-	 * @return The Fixed Coupon Basis
+	 * @return The Reference Period Arrears Type
 	 */
 
-	public double basis()
+	public int referencePeriodArrearsType()
 	{
-		return _dblBasis;
+		return _iReferencePeriodArrearsType;
 	}
 
 	/**
-	 * Retrieve the Fixed Coupon Currency
+	 * Retrieve the Forward Fixing Date Adjust Parameters
 	 * 
-	 * @return The Fixed Coupon Currency
+	 * @return The Forward Fixing Date Adjust Parameters
 	 */
 
-	public java.lang.String couponCurrency()
+	public org.drip.analytics.daycount.DateAdjustParams dapForwardFixing()
 	{
-		return _strCouponCurrency;
+		return _dapForwardFixing;
+	}
+
+	/**
+	 * Retrieve the Floating Unit Spread
+	 * 
+	 * @return The Floating Unit Spread
+	 */
+
+	public double spread()
+	{
+		return _dblSpread;
 	}
 }

@@ -37,6 +37,30 @@ package org.drip.analytics.support;
 public class CompositePeriodBuilder {
 
 	/**
+	 * Edge Date Generation Sequence - Forward
+	 */
+
+	public static final int EDGE_DATE_SEQUENCE_FORWARD = 0;
+
+	/**
+	 * Edge Date Generation Sequence - Reverse
+	 */
+
+	public static final int EDGE_DATE_SEQUENCE_REVERSE = 1;
+
+	/**
+	 * Edge Date Generation Sequence - Regular
+	 */
+
+	public static final int EDGE_DATE_SEQUENCE_REGULAR = 2;
+
+	/**
+	 * Edge Date Generation Sequence - Overnight
+	 */
+
+	public static final int EDGE_DATE_SEQUENCE_OVERNIGHT = 4;
+
+	/**
 	 * Period Set Generation Customization - Short Stub (i.e., No adjustment on either end)
 	 */
 
@@ -472,29 +496,63 @@ public class CompositePeriodBuilder {
 	}
 
 	/**
+	 * Retrieve the List of Edge Dates across all Units
+	 * 
+	 * @param dblUnitPeriodStartDate Unit Period Start Date
+	 * @param dblUnitPeriodEndDate Unit Period End Date
+	 * @param ucas Unit Coupon Accrual Settings
+	 * @param cfus Composable Floating Unit Setting
+	 * @param strCompositeTenor Composite Tenor
+	 * 
+	 * @return List of Edge Dates across all Units
+	 */
+
+	public static final java.util.List<java.lang.Double> UnitDateEdges (
+		final double dblUnitPeriodStartDate,
+		final double dblUnitPeriodEndDate,
+		final org.drip.param.period.UnitCouponAccrualSetting ucas,
+		final org.drip.param.period.ComposableFloatingUnitSetting cfus,
+		final java.lang.String strCompositeTenor)
+	{
+		if (null == cfus) return null;
+
+		if (EDGE_DATE_SEQUENCE_REGULAR == cfus.edgeDateSequenceScheme())
+			return RegularEdgeDates (dblUnitPeriodStartDate, cfus.tenor(), strCompositeTenor,
+				cfus.dapEdge());
+
+		if (EDGE_DATE_SEQUENCE_OVERNIGHT == cfus.edgeDateSequenceScheme())
+			return OvernightEdgeDates (dblUnitPeriodStartDate, dblUnitPeriodEndDate, ucas.calendar());
+
+		return null;
+	}
+
+	/**
 	 * Construct the List of Composable Floating Units from the inputs
 	 * 
-	 * @param lsDate The List of Dates
+	 * @param dblUnitPeriodStartDate Unit Period Start Date
+	 * @param dblUnitPeriodEndDate Unit Period End Date
 	 * @param ucas Unit Coupon/Accrual Setting
-	 * @param dblSpread Spread
-	 * @param forwardLabel Forward Label
-	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
-	 * @param dapFixing Fixing Date Adjust Parameters
+	 * @param cfus Composable Floating Unit Setting
+	 * @param strCompositeTenor Composite Tenor
 	 * 
 	 * @return The List of Composable Floating Units
 	 */
 
 	public static final java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> FloatingUnits (
-		final java.util.List<java.lang.Double> lsDate,
+		final double dblUnitPeriodStartDate,
+		final double dblUnitPeriodEndDate,
 		final org.drip.param.period.UnitCouponAccrualSetting ucas,
-		final double dblSpread,
-		final org.drip.state.identifier.ForwardLabel forwardLabel,
-		final int iReferencePeriodArrearsType,
-		final org.drip.analytics.daycount.DateAdjustParams dapFixing)
+		final org.drip.param.period.ComposableFloatingUnitSetting cfus,
+		final java.lang.String strCompositeTenor)
 	{
-		if (null == lsDate || null == forwardLabel) return null;
+		if (null == cfus) return null;
 
-		int iNumDate = lsDate.size();
+		java.util.List<java.lang.Double> lsUnitEdgeDate = UnitDateEdges (dblUnitPeriodStartDate,
+			dblUnitPeriodEndDate, ucas, cfus, strCompositeTenor);
+
+		if (null == lsUnitEdgeDate) return null;
+
+		int iNumDate = lsUnitEdgeDate.size();
 
 		if (2 > iNumDate) return null;
 
@@ -502,14 +560,15 @@ public class CompositePeriodBuilder {
 			java.util.ArrayList<org.drip.analytics.cashflow.ComposableUnitPeriod>();
 
 		for (int i = 1; i < iNumDate; ++i) {
-			double dblStartDate = lsDate.get (i - 1);
+			double dblUnitStartDate = lsUnitEdgeDate.get (i - 1);
 
-			double dblEndDate = lsDate.get (i);
+			double dblUnitEndDate = lsUnitEdgeDate.get (i);
 
 			try {
-				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFloatingPeriod (dblStartDate,
-					dblEndDate, ucas, MakeReferencePeriod (dblStartDate, dblEndDate, dapFixing, forwardLabel,
-						iReferencePeriodArrearsType), dblSpread));
+				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFloatingPeriod (dblUnitStartDate,
+					dblUnitEndDate, ucas, MakeReferencePeriod (dblUnitStartDate, dblUnitEndDate,
+						cfus.dapForwardFixing(), cfus.forwardLabel(), cfus.referencePeriodArrearsType()),
+							cfus.spread()));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -523,35 +582,35 @@ public class CompositePeriodBuilder {
 	/**
 	 * Construct the List of Composite Fixed Period made from single composable Fixed Period Units
 	 * 
-	 * @param lsDate The Period Edge Dates
+	 * @param lsCompositeEdgeDate The Composite Period Edge Dates
 	 * @param iCompositeFreq The Composite Frequency
-	 * @param strPayCurrency Pay Currency
+	 * @param strCompositePayCurrency The Composite Pay Currency
 	 * @param ucas Unit Coupon/Accrual Setting
 	 * @param cufs Composable Unit Fixed Setting
-	 * @param dblBaseNotional Period Base Notional
-	 * @param notlSchedule Period Notional Schedule
-	 * @param creditLabel Period Credit Label
-	 * @param dblFXFixingDate Period FX Fixing Date
-	 * @param dapPay Pay Date Adjust Parameters
+	 * @param dblCompositeBaseNotional The Composite Period Base Notional
+	 * @param fsCompositeNotional The Composite Period Notional Schedule
+	 * @param clComposite The Composite Period Credit Label
+	 * @param dblCompositeFXFixingDate The Composite Period FX Fixing Date
+	 * @param dapCompositePay The Composite Pay Date Adjust Parameters
 	 * 
 	 * @return List of Composite Fixed Periods
 	 */
 
 	public static final java.util.List<org.drip.analytics.cashflow.CompositePeriod>
 		FixedCompositeSingleUnit (
-			final java.util.List<java.lang.Double> lsDate,
-			final java.lang.String strPayCurrency,
+			final java.util.List<java.lang.Double> lsCompositeEdgeDate,
+			final java.lang.String strCompositePayCurrency,
 			final org.drip.param.period.UnitCouponAccrualSetting ucas,
 			final org.drip.param.period.ComposableFixedUnitSetting cufs,
-			final double dblBaseNotional,
-			final org.drip.product.params.FactorSchedule notlSchedule,
-			final org.drip.state.identifier.CreditLabel creditLabel,
-			final double dblFXFixingDate,
-			final org.drip.analytics.daycount.DateAdjustParams dapPay)
+			final double dblCompositeBaseNotional,
+			final org.drip.product.params.FactorSchedule fsCompositeNotional,
+			final org.drip.state.identifier.CreditLabel clComposite,
+			final double dblCompositeFXFixingDate,
+			final org.drip.analytics.daycount.DateAdjustParams dapCompositePay)
 	{
-		if (null == lsDate || null == ucas) return null;
+		if (null == lsCompositeEdgeDate || null == ucas) return null;
 
-		int iNumDate = lsDate.size();
+		int iNumDate = lsCompositeEdgeDate.size();
 
 		if (2 > iNumDate) return null;
 
@@ -559,19 +618,20 @@ public class CompositePeriodBuilder {
 			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
 
 		for (int i = 1; i < iNumDate; ++i) {
-			double dblEndDate = lsDate.get (i);
+			double dblEndDate = lsCompositeEdgeDate.get (i);
 
 			java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP = new
 				java.util.ArrayList<org.drip.analytics.cashflow.ComposableUnitPeriod>();
 
 			try {
-				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFixedPeriod (lsDate.get (i - 1),
-					dblEndDate, ucas, cufs));
+				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFixedPeriod (lsCompositeEdgeDate.get
+					(i - 1), dblEndDate, ucas, cufs));
 
 				lsCFP.add (new org.drip.analytics.cashflow.CompositeFixedPeriod (lsCUP, ucas.freq(),
-					DAPAdjust (dblEndDate, dapPay), strPayCurrency,
+					DAPAdjust (dblEndDate, dapCompositePay), strCompositePayCurrency,
 						org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-							dblBaseNotional, notlSchedule, creditLabel, dblFXFixingDate));
+							dblCompositeBaseNotional, fsCompositeNotional, clComposite,
+								dblCompositeFXFixingDate));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -585,40 +645,34 @@ public class CompositePeriodBuilder {
 	/**
 	 * Construct the List of Composite Floating Period made from single composable Floating Period Units
 	 * 
-	 * @param lsDate The Period Edge Dates
-	 * @param strPayCurrency Pay Currency
+	 * @param lsCompositeEdgeDate The Composite Period Edge Dates
+	 * @param strCompositePayCurrency The Composite Pay Currency
 	 * @param ucas Unit Coupon/Accrual Setting
-	 * @param dblSpread Spread
-	 * @param dblBaseNotional Period Base Notional
-	 * @param notlSchedule Period Notional Schedule
-	 * @param creditLabel Period Credit Label
-	 * @param forwardLabel Period Forward Label
-	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
-	 * @param dblFXFixingDate Period FX Fixing Date
-	 * @param dapPay Pay Date Adjust Parameters
-	 * @param dapFixing Fixing Date Adjust Parameters
+	 * @param cfus Composable Floating Unit Setting
+	 * @param dblCompositeBaseNotional The Composite Period Base Notional
+	 * @param fsCompositeNotional The Composite Period Notional Schedule
+	 * @param clComposite The Composite Period Credit Label
+	 * @param dblCompositeFXFixingDate The Composite Period FX Fixing Date
+	 * @param dapCompositePay Composite Pay Date Adjust Parameters
 	 * 
 	 * @return List of Composite Floating Periods
 	 */
 
 	public static final java.util.List<org.drip.analytics.cashflow.CompositePeriod>
 		FloatingCompositeSingleUnit (
-			final java.util.List<java.lang.Double> lsDate,
-			final java.lang.String strPayCurrency,
+			final java.util.List<java.lang.Double> lsCompositeEdgeDate,
+			final java.lang.String strCompositePayCurrency,
 			final org.drip.param.period.UnitCouponAccrualSetting ucas,
-			final double dblSpread,
-			final double dblBaseNotional,
-			final org.drip.product.params.FactorSchedule notlSchedule,
-			final org.drip.state.identifier.CreditLabel creditLabel,
-			final org.drip.state.identifier.ForwardLabel forwardLabel,
-			final int iReferencePeriodArrearsType,
-			final double dblFXFixingDate,
-			final org.drip.analytics.daycount.DateAdjustParams dapPay,
-			final org.drip.analytics.daycount.DateAdjustParams dapFixing)
+			final org.drip.param.period.ComposableFloatingUnitSetting cfus,
+			final double dblCompositeBaseNotional,
+			final org.drip.product.params.FactorSchedule fsCompositeNotional,
+			final org.drip.state.identifier.CreditLabel clComposite,
+			final double dblCompositeFXFixingDate,
+			final org.drip.analytics.daycount.DateAdjustParams dapCompositePay)
 	{
-		if (null == lsDate || null == ucas) return null;
+		if (null == lsCompositeEdgeDate || null == ucas || null == cfus) return null;
 
-		int iNumDate = lsDate.size();
+		int iNumDate = lsCompositeEdgeDate.size();
 
 		if (2 > iNumDate) return null;
 
@@ -626,9 +680,9 @@ public class CompositePeriodBuilder {
 			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
 
 		for (int i = 1; i < iNumDate; ++i) {
-			double dblStartDate = lsDate.get (i - 1);
+			double dblStartDate = lsCompositeEdgeDate.get (i - 1);
 
-			double dblEndDate = lsDate.get (i);
+			double dblEndDate = lsCompositeEdgeDate.get (i);
 
 			java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP = new
 				java.util.ArrayList<org.drip.analytics.cashflow.ComposableUnitPeriod>();
@@ -636,12 +690,14 @@ public class CompositePeriodBuilder {
 			try {
 				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFloatingPeriod (dblStartDate,
 					dblEndDate, ucas, new org.drip.analytics.cashflow.ReferenceIndexPeriod (dblStartDate,
-						dblEndDate, DAPAdjust (dblStartDate, dapFixing), forwardLabel), dblSpread));
+						dblEndDate, DAPAdjust (dblStartDate, cfus.dapForwardFixing()), cfus.forwardLabel()),
+							cfus.spread()));
 
 				lsCFP.add (new org.drip.analytics.cashflow.CompositeFloatingPeriod (lsCUP, ucas.freq(),
-					DAPAdjust (dblEndDate, dapPay), strPayCurrency,
+					DAPAdjust (dblEndDate, dapCompositePay), strCompositePayCurrency,
 						org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-							dblBaseNotional, notlSchedule, creditLabel, dblFXFixingDate));
+							dblCompositeBaseNotional, fsCompositeNotional, clComposite,
+								dblCompositeFXFixingDate));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -655,51 +711,40 @@ public class CompositePeriodBuilder {
 	/**
 	 * Construct the List of Composite Floating Period made from Multiple composable Floating Period Units
 	 * 
-	 * @param lsDate The Period Edge Dates
+	 * @param lsCompositeEdgeDate The Composite Period Edge Dates
 	 * @param iCompositeFreq The Composite Frequency
-	 * @param strPayCurrency Pay Currency
+	 * @param strCompositePayCurrency The Composite Pay Currency
 	 * @param ucas Unit Coupon/Accrual Setting
-	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
-	 * @param strCalendar Calendar
-	 * @param dblSpread Spread
-	 * @param dblBaseNotional Period Base Notional
-	 * @param notlSchedule Period Notional Schedule
-	 * @param creditLabel Period Credit Label
-	 * @param forwardLabel Period Forward Label
-	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
-	 * @param dblFXFixingDate Period FX Fixing Date
-	 * @param strCompositeTenor The Composite/"Outer" Period Tenor
-	 * @param strUnitTenor The Unit/"Inner" Period Tenor
-	 * @param dapPay Pay Date Adjust Parameters
-	 * @param dapUnit Unit Date Adjust Parameters
-	 * @param dapFixing Fixing Date Adjust Parameters
+	 * @param cfus Composable Floating Unit Setting
+	 * @param iCompositeAccrualCompoundingRule The Composite Accrual Compounding Rule
+	 * @param dblCompositeBaseNotional The Composite Period Base Notional
+	 * @param fsCompositeNotional Composite Period Notional Schedule
+	 * @param clComposite The Composite Period Credit Label
+	 * @param dblCompositeFXFixingDate Composite Period FX Fixing Date
+	 * @param strCompositeTenor The Composite Period Tenor
+	 * @param dapCompositePay The Composite Pay Date Adjust Parameters
 	 * 
 	 * @return List of Composite Floating Periods
 	 */
 
 	public static final java.util.List<org.drip.analytics.cashflow.CompositePeriod>
 		FloatingCompositeMultiUnit (
-			final java.util.List<java.lang.Double> lsDate,
+			final java.util.List<java.lang.Double> lsCompositeEdgeDate,
 			final int iCompositeFreq,
-			final java.lang.String strPayCurrency,
+			final java.lang.String strCompositePayCurrency,
 			final org.drip.param.period.UnitCouponAccrualSetting ucas,
-			final int iAccrualCompoundingRule,
-			final double dblSpread,
-			final double dblBaseNotional,
-			final org.drip.product.params.FactorSchedule notlSchedule,
-			final org.drip.state.identifier.CreditLabel creditLabel,
-			final org.drip.state.identifier.ForwardLabel forwardLabel,
-			final int iReferencePeriodArrearsType,
-			final double dblFXFixingDate,
+			final org.drip.param.period.ComposableFloatingUnitSetting cfus,
+			final int iCompositeAccrualCompoundingRule,
+			final double dblCompositeBaseNotional,
+			final org.drip.product.params.FactorSchedule fsCompositeNotional,
+			final org.drip.state.identifier.CreditLabel clComposite,
+			final double dblCompositeFXFixingDate,
 			final java.lang.String strCompositeTenor,
-			final java.lang.String strUnitTenor,
-			final org.drip.analytics.daycount.DateAdjustParams dapPay,
-			final org.drip.analytics.daycount.DateAdjustParams dapUnit,
-			final org.drip.analytics.daycount.DateAdjustParams dapFixing)
+			final org.drip.analytics.daycount.DateAdjustParams dapCompositePay)
 	{
-		if (null == lsDate) return null;
+		if (null == lsCompositeEdgeDate || null == cfus) return null;
 
-		int iNumDate = lsDate.size();
+		int iNumDate = lsCompositeEdgeDate.size();
 
 		if (2 > iNumDate) return null;
 
@@ -707,18 +752,18 @@ public class CompositePeriodBuilder {
 			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
 
 		for (int i = 1; i < iNumDate; ++i) {
-			double dblStartDate = lsDate.get (i - 1);
+			double dblStartDate = lsCompositeEdgeDate.get (i - 1);
 
-			double dblEndDate = lsDate.get (i);
+			double dblEndDate = lsCompositeEdgeDate.get (i);
 
 			try {
 				java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP = FloatingUnits
-					(RegularEdgeDates (dblStartDate, strUnitTenor, strCompositeTenor, dapUnit), ucas,
-						dblSpread, forwardLabel, iReferencePeriodArrearsType, dapFixing);
+					(dblStartDate, dblEndDate, ucas, cfus, strCompositeTenor);
 
 				lsCFP.add (new org.drip.analytics.cashflow.CompositeFloatingPeriod (lsCUP, iCompositeFreq,
-					DAPAdjust (dblEndDate, dapPay), strPayCurrency, iAccrualCompoundingRule, dblBaseNotional,
-						notlSchedule, creditLabel, dblFXFixingDate));
+					DAPAdjust (dblEndDate, dapCompositePay), strCompositePayCurrency,
+						iCompositeAccrualCompoundingRule, dblCompositeBaseNotional, fsCompositeNotional,
+							clComposite, dblCompositeFXFixingDate));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -732,44 +777,40 @@ public class CompositePeriodBuilder {
 	/**
 	 * Construct the List of Composite Floating Period made from Daily composable Floating Period Units
 	 * 
-	 * @param lsDate The Period Edge Dates
+	 * @param lsCompositeEdgeDate The Composite Period Edge Dates
 	 * @param iCompositeFreq The Composite Frequency
-	 * @param strPayCurrency Pay Currency
+	 * @param strCompositePayCurrency The Composite Pay Currency
 	 * @param ucas Unit Coupon/Accrual Setting
-	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
-	 * @param dblSpread Spread
-	 * @param dblBaseNotional Period Base Notional
-	 * @param notlSchedule Period Notional Schedule
-	 * @param creditLabel Period Credit Label
-	 * @param forwardLabel Period Forward Label
-	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
-	 * @param dblFXFixingDate Period FX Fixing Date
-	 * @param dapPay Pay Date Adjust Parameters
-	 * @param dapFixing Fixing Date Adjust Parameters
+	 * @param cfus Composable Floating Unit Setting
+	 * @param iCompositeAccrualCompoundingRule The Composite Accrual Compounding Rule
+	 * @param dblCompositeBaseNotional Composite Period Base Notional
+	 * @param fsCompositeNotional Composite Period Notional Schedule
+	 * @param clComposite Composite Period Credit Label
+	 * @param dblCompositeFXFixingDate Composite Period FX Fixing Date
+	 * @param strCompositeTenor The Composite Period Tenor
+	 * @param dapCompositePay Composite Pay Date Adjust Parameters
 	 * 
 	 * @return List of Composite Floating Periods
 	 */
 
 	public static final java.util.List<org.drip.analytics.cashflow.CompositePeriod>
 		FloatingCompositeDailyUnit (
-			final java.util.List<java.lang.Double> lsDate,
+			final java.util.List<java.lang.Double> lsCompositeEdgeDate,
 			final int iCompositeFreq,
-			final java.lang.String strPayCurrency,
+			final java.lang.String strCompositePayCurrency,
 			final org.drip.param.period.UnitCouponAccrualSetting ucas,
-			final int iAccrualCompoundingRule,
-			final double dblSpread,
-			final double dblBaseNotional,
-			final org.drip.product.params.FactorSchedule notlSchedule,
-			final org.drip.state.identifier.CreditLabel creditLabel,
-			final org.drip.state.identifier.ForwardLabel forwardLabel,
-			final int iReferencePeriodArrearsType,
-			final double dblFXFixingDate,
-			final org.drip.analytics.daycount.DateAdjustParams dapPay,
-			final org.drip.analytics.daycount.DateAdjustParams dapFixing)
+			final org.drip.param.period.ComposableFloatingUnitSetting cfus,
+			final int iCompositeAccrualCompoundingRule,
+			final double dblCompositeBaseNotional,
+			final org.drip.product.params.FactorSchedule fsCompositeNotional,
+			final org.drip.state.identifier.CreditLabel clComposite,
+			final double dblCompositeFXFixingDate,
+			final java.lang.String strCompositeTenor,
+			final org.drip.analytics.daycount.DateAdjustParams dapCompositePay)
 	{
-		if (null == lsDate || null == ucas) return null;
+		if (null == lsCompositeEdgeDate || null == ucas || null == cfus) return null;
 
-		int iNumDate = lsDate.size();
+		int iNumDate = lsCompositeEdgeDate.size();
 
 		if (2 > iNumDate) return null;
 
@@ -777,18 +818,18 @@ public class CompositePeriodBuilder {
 			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
 
 		for (int i = 1; i < iNumDate; ++i) {
-			double dblStartDate = lsDate.get (i - 1);
+			double dblStartDate = lsCompositeEdgeDate.get (i - 1);
 
-			double dblEndDate = lsDate.get (i);
+			double dblEndDate = lsCompositeEdgeDate.get (i);
 
 			try {
 				java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP = FloatingUnits
-					(OvernightEdgeDates (dblStartDate, dblEndDate, ucas.calendar()), ucas, dblSpread,
-						forwardLabel, iReferencePeriodArrearsType, dapFixing);
+					(dblStartDate, dblEndDate, ucas, cfus, strCompositeTenor);
 
 				lsCFP.add (new org.drip.analytics.cashflow.CompositeFloatingPeriod (lsCUP, iCompositeFreq,
-					DAPAdjust (dblEndDate, dapPay), strPayCurrency, iAccrualCompoundingRule, dblBaseNotional,
-						notlSchedule, creditLabel, dblFXFixingDate));
+					DAPAdjust (dblEndDate, dapCompositePay), strCompositePayCurrency,
+						iCompositeAccrualCompoundingRule, dblCompositeBaseNotional, fsCompositeNotional,
+							clComposite, dblCompositeFXFixingDate));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
