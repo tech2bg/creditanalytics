@@ -44,15 +44,23 @@ public class Stream {
 	{
 		org.drip.analytics.cashflow.CompositePeriod cpLeft = _lsPeriod.get (0);
 
-		if (dblDate <= cpLeft.startDate()) return cpLeft.notional (cpLeft.startDate()) * cpLeft.fx (csqs);
+		double dblLeftStartDate = cpLeft.startDate();
+
+		if (dblDate <= dblLeftStartDate)
+			return cpLeft.notional (dblLeftStartDate) * cpLeft.couponFactor (dblLeftStartDate) * cpLeft.fx
+				(csqs);
 
 		for (org.drip.analytics.cashflow.CompositePeriod cp : _lsPeriod) {
-			if (cp.contains (dblDate)) return cp.notional (dblDate) * cp.fx (csqs);
+			if (cp.contains (dblDate))
+				return cp.notional (dblDate) * cp.couponFactor (dblDate) * cp.fx (csqs);
 		}
 
 		org.drip.analytics.cashflow.CompositePeriod cpRight = _lsPeriod.get (_lsPeriod.size() - 1);
 
-		return cpRight.notional (cpRight.endDate()) * cpRight.fx (csqs);
+		double dblRightEndDate = cpRight.endDate();
+
+		return cpRight.notional (dblRightEndDate) * cpRight.couponFactor (dblRightEndDate) * cpRight.fx
+			(csqs);
 	}
 
 	/**
@@ -473,7 +481,8 @@ public class Stream {
 				(dblValueDate, csqs);
 
 			try {
-				double dblPeriodNotional = period.notional (dblPeriodPayDate);
+				double dblPeriodNotional = period.notional (dblPeriodPayDate) * period.couponFactor
+					(dblPeriodPayDate);
 
 				double dblPeriodFX = period.fx (csqs);
 

@@ -7,9 +7,11 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CompositePeriodBuilder;
+import org.drip.analytics.support.CompositePeriodUtil;
 import org.drip.param.creator.*;
 import org.drip.param.period.ComposableFixedUnitSetting;
 import org.drip.param.period.ComposableFloatingUnitSetting;
+import org.drip.param.period.CompositePeriodSetting;
 import org.drip.param.period.UnitCouponAccrualSetting;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
@@ -200,8 +202,66 @@ public class CustomDiscountCurveBuilder2 {
 			true
 		);
 
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			0.,
+			0.,
+			strCurrency
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			Double.NaN
+		);
+
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			Double.NaN
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<Double> lsStreamDate = CompositePeriodBuilder.RegularEdgeDates (
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtEffective,
 				"6M",
 				astrMaturityTenor[i],
@@ -209,52 +269,27 @@ public class CustomDiscountCurveBuilder2 {
 			);
 
 			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeSingleUnit (
-					lsStreamDate,
-					strCurrency,
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsFloatingStreamEdgeDate,
+					cpsFloating,
 					ucasFloating,
-					new ComposableFloatingUnitSetting (
-						"6M",
-						CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-						null,
-						ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
-						CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-						null,
-						0.
-					),
-					-1.,
-					null,
-					null,
-					Double.NaN,
-					null
+					cfusFloating
 				)
 			);
 
 			Stream fixedStream = new Stream (
 				CompositePeriodBuilder.FixedCompositeSingleUnit (
-					lsStreamDate,
-					strCurrency,
+					lsFixedStreamEdgeDate,
+					cpsFixed,
 					ucasFixed,
-					new ComposableFixedUnitSetting (
-						"6M",
-						CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-						null,
-						0.,
-						0.,
-						strCurrency
-					),
-					1.,
-					null,
-					null,
-					Double.NaN,
-					null
+					cfusFixed
 				)
 			);
 
 			FixFloatComponent irs = new FixFloatComponent (
 				fixedStream,
 				floatingStream,
-				new CashSettleParams (0, strCurrency, 0)
+				csp
 			);
 
 			irs.setPrimaryCode ("IRS." + astrMaturityTenor[i] + "." + strCurrency);

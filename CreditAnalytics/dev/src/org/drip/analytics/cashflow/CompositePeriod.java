@@ -36,56 +36,48 @@ package org.drip.analytics.cashflow;
 
 public abstract class CompositePeriod {
 	private int _iFreq = -1;
+	private java.lang.String _strTenor = "";
 	private int _iAccrualCompoundingRule = -1;
 	private java.lang.String _strPayCurrency = "";
 	private double _dblPayDate = java.lang.Double.NaN;
 	private double _dblBaseNotional = java.lang.Double.NaN;
 	private double _dblFXFixingDate = java.lang.Double.NaN;
+	private org.drip.product.params.FactorSchedule _fsCoupon = null;
+	private org.drip.product.params.FactorSchedule _fsNotional = null;
 	private org.drip.state.identifier.CreditLabel _creditLabel = null;
-	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 	private java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> _lsCUP = null;
 
-	/**
-	 * ComposedPeriod Constructor
-	 * 
-	 * @param lsCUP List of the Composable Unit Periods
-	 * @param iFreq Composite Freq
-	 * @param dblPayDate Period Pay Date
-	 * @param strPayCurrency Pay Currency
-	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
-	 * @param dblBaseNotional Coupon Period Base Notional
-	 * @param notlSchedule Coupon Period Notional Schedule
-	 * @param creditLabel The Credit Label
-	 * @param dblFXFixingDate The FX Fixing Date for non-MTM'ed Cash-flow
-	 * 
-	 * @throws java.lang.Exception Thrown if the Accrual Compounding Rule is invalid
-	 */
-
-	public CompositePeriod (
-		final java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP,
-		final int iFreq,
-		final double dblPayDate,
-		final java.lang.String strPayCurrency,
-		final int iAccrualCompoundingRule,
-		final double dblBaseNotional,
-		final org.drip.product.params.FactorSchedule notlSchedule,
-		final org.drip.state.identifier.CreditLabel creditLabel,
-		final double dblFXFixingDate)
+	protected CompositePeriod (
+		final org.drip.param.period.CompositePeriodSetting cps,
+		final java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP)
 		throws java.lang.Exception
 	{
-		if (0 >= (_iFreq = iFreq) || null == (_lsCUP = lsCUP) || 0 == _lsCUP.size() ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblPayDate = dblPayDate) || null == (_strPayCurrency
-				= strPayCurrency) || _strPayCurrency.isEmpty() ||
-					!org.drip.analytics.support.CompositePeriodUtil.ValidateCompoundingRule
-						(_iAccrualCompoundingRule = iAccrualCompoundingRule) ||
-							!org.drip.quant.common.NumberUtil.IsValid (_dblBaseNotional = dblBaseNotional))
+		if (null == cps || null == (_lsCUP = lsCUP) || 0 == _lsCUP.size())
 			throw new java.lang.Exception ("CompositePeriod ctr: Invalid Inputs");
 
-		_creditLabel = creditLabel;
-		_dblFXFixingDate = dblFXFixingDate;
+		_iFreq = cps.freq();
 
-		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+		_strTenor = cps.tenor();
+
+		org.drip.analytics.daycount.DateAdjustParams dapPay = cps.dapPay();
+
+		_dblPayDate = _lsCUP.get (_lsCUP.size() - 1).endDate();
+
+		if (null != dapPay) _dblPayDate = dapPay.roll (_dblPayDate);
+
+		_strPayCurrency = cps.payCurrency();
+
+		_iAccrualCompoundingRule = cps.accrualCompoundingRule();
+
+		_dblBaseNotional = cps.baseNotional();
+
+		_dblFXFixingDate = cps.fxFixingDate();
+
+		_creditLabel = cps.creditLabel();
+
+		_fsNotional = cps.notionalSchedule();
+
+		_fsCoupon = cps.couponSchedule();
 	}
 
 	/**
@@ -235,6 +227,8 @@ public abstract class CompositePeriod {
 
 	public java.lang.String tenor()
 	{
+		if (null != _strTenor && !_strTenor.isEmpty()) return _strTenor;
+
 		int iTenorInMonths = 12 / freq() ;
 
 		return 1 == iTenorInMonths || 2 == iTenorInMonths || 3 == iTenorInMonths || 6 == iTenorInMonths || 12
@@ -349,7 +343,7 @@ public abstract class CompositePeriod {
 
 	public org.drip.product.params.FactorSchedule notionalSchedule()
 	{
-		return _notlSchedule;
+		return _fsNotional;
 	}
 
 	/**
@@ -369,7 +363,7 @@ public abstract class CompositePeriod {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || !contains (dblDate))
 			throw new java.lang.Exception ("CompositePeriod::notional => Invalid Inputs");
 
-		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate));
+		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.getFactor (dblDate));
 	}
 
 	/**
@@ -392,8 +386,61 @@ public abstract class CompositePeriod {
 			(dblDate2) || !contains (dblDate1) || !contains (dblDate2))
 			throw new java.lang.Exception ("CompositePeriod::notional => Invalid Dates");
 
-		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate1,
-			dblDate2));
+		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.getFactor (dblDate1, dblDate2));
+	}
+
+	/**
+	 * Get the period Coupon Schedule
+	 * 
+	 * @return Period Coupon Schedule
+	 */
+
+	public org.drip.product.params.FactorSchedule couponSchedule()
+	{
+		return _fsCoupon;
+	}
+
+	/**
+	 * Period Coupon Schedule Factor Corresponding to the specified Date
+	 * 
+	 * @param dblDate The Specified Date
+	 * 
+	 * @return The Period Coupon Schedule Factor Corresponding to the specified Date
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public double couponFactor (
+		final double dblDate)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || !contains (dblDate))
+			throw new java.lang.Exception ("CompositePeriod::couponFactor => Invalid Inputs");
+
+		return null == _fsCoupon ? 1. : _fsCoupon.getFactor (dblDate);
+	}
+
+	/**
+	 * Period Coupon Schedule Factor Aggregated over the specified Dates
+	 * 
+	 * @param dblDate1 The Date #1
+	 * @param dblDate2 The Date #2
+	 * 
+	 * @return The Period Coupon Schedule Factor Aggregated over the specified Dates
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public double couponFactor (
+		final double dblDate1,
+		final double dblDate2)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblDate2) || !contains (dblDate1) || !contains (dblDate2))
+			throw new java.lang.Exception ("CompositePeriod::couponFactor => Invalid Dates");
+
+		return null == _fsCoupon ? 1. : _fsCoupon.getFactor (dblDate1, dblDate2);
 	}
 
 	/**
@@ -927,7 +974,7 @@ public abstract class CompositePeriod {
 
 			dblSurvival = survival (csqs);
 
-			dblNotional = notional (_dblPayDate);
+			dblNotional = notional (_dblPayDate) * couponFactor (_dblPayDate);
 
 			dblAccrued = dblNotional * dblFX * accrualDCF (dblValueDate) * (cpqs.baseRate() + cpqs.basis());
 		} catch (java.lang.Exception e) {
@@ -1004,7 +1051,7 @@ public abstract class CompositePeriod {
 
 			dblSurvival = survival (csqs);
 
-			dblNotional = notional (_dblPayDate);
+			dblNotional = notional (_dblPayDate) * couponFactor (_dblPayDate);
 
 			dblAccrued = dblNotional * dblFX * accrualDCF (dblValueDate) * (cpqs.baseRate() + cpqs.basis());
 		} catch (java.lang.Exception e) {
@@ -1087,7 +1134,7 @@ public abstract class CompositePeriod {
 
 			dblSurvival = survival (csqs);
 
-			dblNotional = notional (_dblPayDate);
+			dblNotional = notional (_dblPayDate) * couponFactor (_dblPayDate);
 
 			dblAccrued = accrualDCF (dblValueDate) * basisQuote (pqs) * dblNotional * dblFX;
 		} catch (java.lang.Exception e) {

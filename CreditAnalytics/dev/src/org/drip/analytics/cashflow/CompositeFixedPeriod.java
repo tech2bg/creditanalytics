@@ -39,33 +39,18 @@ public class CompositeFixedPeriod extends org.drip.analytics.cashflow.CompositeP
 	/**
 	 * CompositeFixedPeriod Constructor
 	 * 
+	 * @param cps Composite Period Setting Instance
 	 * @param lsCUP List of Composable Unit Fixed Periods
-	 * @param iFreq Frequency
-	 * @param dblPayDate Period Pay Date
-	 * @param strPayCurrency Pay Currency
-	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
-	 * @param dblBaseNotional Coupon Period Base Notional
-	 * @param notlSchedule Coupon Period Notional Schedule
-	 * @param creditLabel The Credit Label
-	 * @param dblFXFixingDate The FX Fixing Date for non-MTM'ed Cash-flow
 	 * 
 	 * @throws java.lang.Exception Thrown if the Accrual Compounding Rule is invalid
 	 */
 
 	public CompositeFixedPeriod (
-		final java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP,
-		final int iFreq,
-		final double dblPayDate,
-		final java.lang.String strPayCurrency,
-		final int iAccrualCompoundingRule,
-		final double dblBaseNotional,
-		final org.drip.product.params.FactorSchedule notlSchedule,
-		final org.drip.state.identifier.CreditLabel creditLabel,
-		final double dblFXFixingDate)
+		final org.drip.param.period.CompositePeriodSetting cps,
+		final java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP)
 		throws java.lang.Exception
 	{
-		super (lsCUP, iFreq, dblPayDate, strPayCurrency, iAccrualCompoundingRule, dblBaseNotional,
-			notlSchedule, creditLabel, dblFXFixingDate);
+		super (cps, lsCUP);
 	}
 
 	@Override public org.drip.analytics.cashflow.CompositePeriodQuoteSet periodQuoteSet (
