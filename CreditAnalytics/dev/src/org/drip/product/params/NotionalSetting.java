@@ -109,7 +109,7 @@ public class NotionalSetting implements org.drip.product.params.Validatable {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotional)) return false;
 
-		if (null == _fsPrincipalOutstanding) _fsPrincipalOutstanding = FactorSchedule.CreateBulletSchedule();
+		if (null == _fsPrincipalOutstanding) _fsPrincipalOutstanding = FactorSchedule.BulletSchedule();
 
 		return true;
 	}

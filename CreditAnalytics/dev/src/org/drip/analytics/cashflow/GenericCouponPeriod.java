@@ -362,7 +362,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 		_dblFXFixingDate = dblFXFixingDate;
 
 		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+			_notlSchedule = org.drip.product.params.FactorSchedule.BulletSchedule();
 
 		if (null != (_forwardLabel = forwardLabel)) {
 			if (null == (_rpc = rpc) || !org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread =
@@ -756,7 +756,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || !contains (dblDate))
 			throw new java.lang.Exception ("CouponPeriod::notional => Invalid Inputs");
 
-		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate));
+		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.factor (dblDate));
 	}
 
 	/**
@@ -779,8 +779,7 @@ public class GenericCouponPeriod implements java.lang.Comparable<GenericCouponPe
 			(dblDate2) || !contains (dblDate1) || !contains (dblDate2))
 			throw new java.lang.Exception ("Coupon::notional => Invalid Dates");
 
-		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate1,
-			dblDate2));
+		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.factor (dblDate1, dblDate2));
 	}
 
 	/**

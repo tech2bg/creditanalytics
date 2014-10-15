@@ -146,7 +146,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 		_strDC = strDC;
 		_strCalendar = strCalendar;
 
-		_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+		_notlSchedule = org.drip.product.params.FactorSchedule.BulletSchedule();
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 
 		_dblMaturity = dtEffective.addMonths (3).julian();
 
-		_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+		_notlSchedule = org.drip.product.params.FactorSchedule.BulletSchedule();
 
 		_fri = org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", "3M");
 	}
@@ -273,7 +273,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("EDFComponent::notional => Got NaN date");
 
-		return _notlSchedule.getFactor (dblDate);
+		return _notlSchedule.factor (dblDate);
 	}
 
 	@Override public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
@@ -315,7 +315,7 @@ public class EDFComponent extends org.drip.product.definition.CalibratableFixedI
 			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
 			throw new java.lang.Exception ("EDFComponent::notional => Got NaN date");
 
-		return _notlSchedule.getFactor (dblDate1, dblDate2);
+		return _notlSchedule.factor (dblDate1, dblDate2);
 	}
 
 	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()

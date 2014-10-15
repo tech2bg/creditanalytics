@@ -41,10 +41,10 @@ public abstract class CompositePeriod {
 	private java.lang.String _strPayCurrency = "";
 	private double _dblPayDate = java.lang.Double.NaN;
 	private double _dblBaseNotional = java.lang.Double.NaN;
-	private double _dblFXFixingDate = java.lang.Double.NaN;
 	private org.drip.product.params.FactorSchedule _fsCoupon = null;
 	private org.drip.product.params.FactorSchedule _fsNotional = null;
 	private org.drip.state.identifier.CreditLabel _creditLabel = null;
+	private org.drip.param.period.FixingSetting _fxFixingSetting = null;
 	private java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> _lsCUP = null;
 
 	protected CompositePeriod (
@@ -71,7 +71,7 @@ public abstract class CompositePeriod {
 
 		_dblBaseNotional = cps.baseNotional();
 
-		_dblFXFixingDate = cps.fxFixingDate();
+		_fxFixingSetting = cps.fxFixingSetting();
 
 		_creditLabel = cps.creditLabel();
 
@@ -159,11 +159,31 @@ public abstract class CompositePeriod {
 	 * Return the period FX Fixing Date
 	 * 
 	 * @return Period FX Fixing Date
+	 * 
+	 * @throws java.lang.Exception Thrown if FX Fixing Date cannot be generated
 	 */
 
 	public double fxFixingDate()
+		throws java.lang.Exception
 	{
-		return _dblFXFixingDate;
+		if (null == _fxFixingSetting) return _dblPayDate;
+
+		double dblUnadjustedFixingDate = java.lang.Double.NaN;
+
+		int iFixingType = _fxFixingSetting.type();
+
+		if (org.drip.param.period.FixingSetting.FIXING_COMPOSITE_PERIOD_END == iFixingType)
+			dblUnadjustedFixingDate = endDate();
+		else if (org.drip.param.period.FixingSetting.FIXING_COMPOSITE_PERIOD_START == iFixingType)
+			dblUnadjustedFixingDate = startDate();
+		else if (org.drip.param.period.FixingSetting.FIXING_PRESET_STATIC == iFixingType)
+			dblUnadjustedFixingDate = _fxFixingSetting.staticDate();
+
+		org.drip.analytics.daycount.DateAdjustParams dapFixing = _fxFixingSetting.dap();
+
+		if (null == dapFixing) return dblUnadjustedFixingDate;
+
+		return dapFixing.roll (dblUnadjustedFixingDate);
 	}
 
 	/**
@@ -174,7 +194,7 @@ public abstract class CompositePeriod {
 
 	public boolean isFXMTM()
 	{
-		return !org.drip.quant.common.NumberUtil.IsValid (_dblFXFixingDate);
+		return null == _fxFixingSetting;
 	}
 
 	/**
@@ -197,7 +217,7 @@ public abstract class CompositePeriod {
 
 		if (null == csqs) throw new java.lang.Exception ("CompositePeriod::fx => Invalid Inputs");
 
-		if (!isFXMTM()) return csqs.getFixing (_dblFXFixingDate, fxLabel);
+		if (!isFXMTM()) return csqs.getFixing (fxFixingDate(), fxLabel);
 
 		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
 
@@ -363,7 +383,7 @@ public abstract class CompositePeriod {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || !contains (dblDate))
 			throw new java.lang.Exception ("CompositePeriod::notional => Invalid Inputs");
 
-		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.getFactor (dblDate));
+		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.factor (dblDate));
 	}
 
 	/**
@@ -386,7 +406,7 @@ public abstract class CompositePeriod {
 			(dblDate2) || !contains (dblDate1) || !contains (dblDate2))
 			throw new java.lang.Exception ("CompositePeriod::notional => Invalid Dates");
 
-		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.getFactor (dblDate1, dblDate2));
+		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.factor (dblDate1, dblDate2));
 	}
 
 	/**
@@ -417,7 +437,7 @@ public abstract class CompositePeriod {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || !contains (dblDate))
 			throw new java.lang.Exception ("CompositePeriod::couponFactor => Invalid Inputs");
 
-		return null == _fsCoupon ? 1. : _fsCoupon.getFactor (dblDate);
+		return null == _fsCoupon ? 1. : _fsCoupon.factor (dblDate);
 	}
 
 	/**
@@ -440,7 +460,7 @@ public abstract class CompositePeriod {
 			(dblDate2) || !contains (dblDate1) || !contains (dblDate2))
 			throw new java.lang.Exception ("CompositePeriod::couponFactor => Invalid Dates");
 
-		return null == _fsCoupon ? 1. : _fsCoupon.getFactor (dblDate1, dblDate2);
+		return null == _fsCoupon ? 1. : _fsCoupon.factor (dblDate1, dblDate2);
 	}
 
 	/**
@@ -961,11 +981,13 @@ public abstract class CompositePeriod {
 
 		double dblDF = java.lang.Double.NaN;
 		double dblFX = java.lang.Double.NaN;
+		double dblBasis = java.lang.Double.NaN;
 		double dblAccrued = java.lang.Double.NaN;
+		double dblBaseRate = java.lang.Double.NaN;
 		double dblNotional = java.lang.Double.NaN;
 		double dblSurvival = java.lang.Double.NaN;
 
-		org.drip.analytics.cashflow.CompositePeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
+		org.drip.product.calib.CompositePeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
 
 		try {
 			dblFX = fx (csqs);
@@ -974,9 +996,13 @@ public abstract class CompositePeriod {
 
 			dblSurvival = survival (csqs);
 
+			dblBasis = cpqs.containsBasis() ? cpqs.basis() : 0.;
+
+			dblBaseRate = cpqs.containsBaseRate() ? cpqs.baseRate() : 0.;
+
 			dblNotional = notional (_dblPayDate) * couponFactor (_dblPayDate);
 
-			dblAccrued = dblNotional * dblFX * accrualDCF (dblValueDate) * (cpqs.baseRate() + cpqs.basis());
+			dblAccrued = dblNotional * dblFX * accrualDCF (dblValueDate) * (dblBaseRate + cpqs.basis());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -994,8 +1020,8 @@ public abstract class CompositePeriod {
 
 		if (null == forwardLabel || !forwardLabel.match (pqs.forwardLabel())) {
 			for (org.drip.analytics.output.UnitPeriodMetrics upm : cpm.unitMetrics()) {
-				if (!prwc.updateValue (-1. * dblNotional * dblFX * upm.dcf() * (cpqs.baseRate() +
-					cpqs.basis()) * dblSurvival * dblDF * upm.convAdj().cumulative()))
+				if (!prwc.updateValue (-1. * dblNotional * dblFX * upm.dcf() * (dblBaseRate + dblBasis) *
+					dblSurvival * dblDF * upm.convAdj().cumulative()))
 					return null;
 			}
 		} else {
@@ -1010,7 +1036,7 @@ public abstract class CompositePeriod {
 				if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblDateAnchor, dblForwardLoading))
 					return null;
 
-				if (!prwc.updateValue (-1. * dblForwardLoading * cpqs.basis())) return null;
+				if (!prwc.updateValue (-1. * dblForwardLoading * dblBasis)) return null;
 			}
 		}
 
@@ -1040,20 +1066,26 @@ public abstract class CompositePeriod {
 
 		double dblDF = java.lang.Double.NaN;
 		double dblFX = java.lang.Double.NaN;
+		double dblBasis = java.lang.Double.NaN;
 		double dblAccrued = java.lang.Double.NaN;
+		double dblBaseRate = java.lang.Double.NaN;
 		double dblNotional = java.lang.Double.NaN;
 		double dblSurvival = java.lang.Double.NaN;
 
-		org.drip.analytics.cashflow.CompositePeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
+		org.drip.product.calib.CompositePeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
 
 		try {
 			dblFX = fx (csqs);
 
 			dblSurvival = survival (csqs);
 
+			dblBasis = cpqs.containsBasis() ? cpqs.basis() : 0.;
+
+			dblBaseRate = cpqs.containsBaseRate() ? cpqs.baseRate() : 0.;
+
 			dblNotional = notional (_dblPayDate) * couponFactor (_dblPayDate);
 
-			dblAccrued = dblNotional * dblFX * accrualDCF (dblValueDate) * (cpqs.baseRate() + cpqs.basis());
+			dblAccrued = dblNotional * dblFX * accrualDCF (dblValueDate) * (dblBaseRate + dblBasis);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -1079,14 +1111,14 @@ public abstract class CompositePeriod {
 			}
 
 			for (org.drip.analytics.output.UnitPeriodMetrics upm : cpm.unitMetrics()) {
-				if (!prwc.updateValue (-1. * dblNotional * dblFX * upm.dcf() * (cpqs.baseRate() +
-					cpqs.basis()) * dblSurvival * dblDF * upm.convAdj().cumulative()))
+				if (!prwc.updateValue (-1. * dblNotional * dblFX * upm.dcf() * (dblBaseRate + dblBasis) *
+					dblSurvival * dblDF * upm.convAdj().cumulative()))
 					return null;
 			}
 		} else {
 			for (org.drip.analytics.output.UnitPeriodMetrics upm : cpm.unitMetrics()) {
-				double dblFundingLoading = dblNotional * dblFX * upm.dcf() * (cpqs.baseRate() +
-					cpqs.basis()) * dblSurvival * upm.convAdj().cumulative();
+				double dblFundingLoading = dblNotional * dblFX * upm.dcf() * (dblBaseRate + dblBasis) *
+					dblSurvival * upm.convAdj().cumulative();
 
 				if (!prwc.addPredictorResponseWeight (_dblPayDate, dblFundingLoading)) return null;
 
@@ -1129,6 +1161,8 @@ public abstract class CompositePeriod {
 		double dblNotional = java.lang.Double.NaN;
 		double dblSurvival = java.lang.Double.NaN;
 
+		org.drip.product.calib.CompositePeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
+
 		try {
 			dblFX = fx (csqs);
 
@@ -1136,7 +1170,7 @@ public abstract class CompositePeriod {
 
 			dblNotional = notional (_dblPayDate) * couponFactor (_dblPayDate);
 
-			dblAccrued = accrualDCF (dblValueDate) * basisQuote (pqs) * dblNotional * dblFX;
+			dblAccrued = accrualDCF (dblValueDate) * cpqs.basis() * dblNotional * dblFX;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -1146,30 +1180,58 @@ public abstract class CompositePeriod {
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		java.util.List<org.drip.analytics.output.UnitPeriodConvexityMetrics> lsUPCM =
-			unitPeriodConvexityMetrics (dblValueDate, csqs);
+		if (cpqs.containsBaseRate()) {
+			double dblStartDate = startDate();
 
-		if (null == lsUPCM || 0 == lsUPCM.size()) return null;
+			double dblEndDate = endDate();
 
-		for (org.drip.analytics.output.UnitPeriodConvexityMetrics upcm : lsUPCM) {
-			double dblFundingLoading = dblNotional * dblFX * dblSurvival * upcm.convAdj().cumulative();
+			org.drip.analytics.cashflow.ComposableUnitPeriod cup = _lsCUP.get (0);
 
-			double dblStartDate = upcm.startDate();
+			try {
+				double dblForwardDF = 1. / (1. + org.drip.analytics.daycount.Convention.YearFraction
+					(dblStartDate, dblEndDate, cup.couponDC(), false, null, cup.calendar()) *
+						cpqs.baseRate());
 
-			double dblEndDate = upcm.endDate();
+				if (!prwc.addPredictorResponseWeight (dblStartDate, dblNotional * dblForwardDF)) return null;
 
-			if (!prwc.addPredictorResponseWeight (dblStartDate, dblFundingLoading)) return null;
+				if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblStartDate, dblNotional *
+					dblForwardDF))
+					return null;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
 
-			if (!prwc.addPredictorResponseWeight (dblEndDate, -1. * dblFundingLoading)) return null;
-
-			if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblStartDate, dblFundingLoading))
 				return null;
+			}
 
-			if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblEndDate, -1. * dblFundingLoading))
-				return null;
+			if (!prwc.addPredictorResponseWeight (dblEndDate, -1. * dblNotional)) return null;
+
+			if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblEndDate, -1. * dblNotional)) return null;
+		} else {
+			java.util.List<org.drip.analytics.output.UnitPeriodConvexityMetrics> lsUPCM =
+				unitPeriodConvexityMetrics (dblValueDate, csqs);
+
+			if (null == lsUPCM || 0 == lsUPCM.size()) return null;
+
+			for (org.drip.analytics.output.UnitPeriodConvexityMetrics upcm : lsUPCM) {
+				double dblFundingLoading = dblNotional * dblFX * dblSurvival * upcm.convAdj().cumulative();
+
+				double dblStartDate = upcm.startDate();
+
+				double dblEndDate = upcm.endDate();
+
+				if (!prwc.addPredictorResponseWeight (dblStartDate, dblFundingLoading)) return null;
+
+				if (!prwc.addPredictorResponseWeight (dblEndDate, -1. * dblFundingLoading)) return null;
+
+				if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblStartDate, dblFundingLoading))
+					return null;
+
+				if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblEndDate, -1. * dblFundingLoading))
+					return null;
+			}
+
+			if (!prwc.updateValue (dblAccrued)) return null;
 		}
-
-		if (!prwc.updateValue (dblAccrued)) return null;
 
 		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
 
@@ -1185,7 +1247,7 @@ public abstract class CompositePeriod {
 	 * @return The Composed Period Quote Set
 	 */
 
-	abstract public org.drip.analytics.cashflow.CompositePeriodQuoteSet periodQuoteSet (
+	abstract public org.drip.product.calib.CompositePeriodQuoteSet periodQuoteSet (
 		final org.drip.product.calib.ProductQuoteSet pqs,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
 

@@ -52,7 +52,7 @@ public class FactorSchedule {
 	 * @return FactorSchedule object
 	 */
 
-	public static final FactorSchedule CreateFromDateFactorSet (
+	public static final FactorSchedule FromDateFactorSet (
 		final java.lang.String strDates,
 		final java.lang.String strFactors)
 	{
@@ -80,7 +80,7 @@ public class FactorSchedule {
 	 * @return FactorSchedule object
 	 */
 
-	public static final FactorSchedule CreateFromDateFactorArray (
+	public static final FactorSchedule FromDateFactorArray (
 		final double[] adblDate,
 		final double[] adblFactor)
 	{
@@ -102,7 +102,7 @@ public class FactorSchedule {
 	 * @return FactorSchedule object
 	 */
 
-	public static final FactorSchedule CreateFromDateFactorDeltaArray (
+	public static final FactorSchedule FromDateFactorDeltaArray (
 		final double[] adblDate,
 		final double[] adblFactorDelta)
 	{
@@ -136,7 +136,7 @@ public class FactorSchedule {
 	 * @return FactorSchedule object
 	 */
 
-	public static final FactorSchedule CreateBulletSchedule()
+	public static final FactorSchedule BulletSchedule()
 	{
 		double[] adblDate = new double[1];
 		double[] adblFactor = new double[1];
@@ -181,12 +181,12 @@ public class FactorSchedule {
 	 * @throws java.lang.Exception Thrown if the notional cannot be computed
 	 */
 
-	public double getFactor (
+	public double factor (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("FactorSchedule::getFactor => Invalid Input");
+			throw new java.lang.Exception ("FactorSchedule::factor => Invalid Input");
 
 		if (dblDate <= _adblDate[0]) return _adblFactor[0];
 
@@ -207,12 +207,12 @@ public class FactorSchedule {
 	 * @throws java.lang.Exception Thrown if the index cannot be computed
 	 */
 
-	public int getIndex (
+	public int index (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("FactorSchedule::getIndex => Invalid Input/State");
+			throw new java.lang.Exception ("FactorSchedule::index => Invalid Input/State");
 
 		if (dblDate <= _adblDate[0]) return 0;
 
@@ -234,18 +234,18 @@ public class FactorSchedule {
 	 * @throws java.lang.Exception Thrown if the notional cannot be computed
 	 */
 
-	public double getFactor (
+	public double factor (
 		final double dblStartDate,
 		final double dblEndDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblEndDate))
-			throw new java.lang.Exception ("FactorSchedule::getFactor => Invalid Inputs");
+			throw new java.lang.Exception ("FactorSchedule::factor => Invalid Inputs");
 
-		int iEndIndex = getIndex (dblEndDate);
+		int iEndIndex = index (dblEndDate);
 
-		int iStartIndex = getIndex (dblStartDate);
+		int iStartIndex = index (dblStartDate);
 
 		if (iStartIndex == iEndIndex) return _adblFactor[iStartIndex];
 
@@ -264,7 +264,7 @@ public class FactorSchedule {
 	 * @return Double array of JulianDate
 	 */
 
-	public double[] getDates()
+	public double[] dates()
 	{
 		return _adblDate;
 	}
@@ -275,7 +275,7 @@ public class FactorSchedule {
 	 * @return Double array of notional factors
 	 */
 
-	public double[] getFactors()
+	public double[] factors()
 	{
 		return _adblFactor;
 	}

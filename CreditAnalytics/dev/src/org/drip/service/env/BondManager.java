@@ -246,13 +246,13 @@ public class BondManager {
 			e.printStackTrace();
 
 			return new org.drip.product.params.NotionalSetting
-				(org.drip.product.params.FactorSchedule.CreateBulletSchedule(), 1.,
+				(org.drip.product.params.FactorSchedule.BulletSchedule(), 1.,
 					org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
 		}
 
 		if (0 == ldblAmortDates.size() || 0 == ldblAmortDates.size())
 			return new org.drip.product.params.NotionalSetting
-				(org.drip.product.params.FactorSchedule.CreateBulletSchedule(), 1.,
+				(org.drip.product.params.FactorSchedule.BulletSchedule(), 1.,
 					org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
 
 		double[] adblDate = new double[ldblAmortDates.size()];
@@ -268,7 +268,7 @@ public class BondManager {
 			adblPrincipalPaydownFactor[i++] = dblPrincipalPaydownFactor;
 
 		return new org.drip.product.params.NotionalSetting
-			(org.drip.product.params.FactorSchedule.CreateFromDateFactorDeltaArray (adblDate,
+			(org.drip.product.params.FactorSchedule.FromDateFactorDeltaArray (adblDate,
 				adblPrincipalPaydownFactor), 1.,
 					org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
 	}

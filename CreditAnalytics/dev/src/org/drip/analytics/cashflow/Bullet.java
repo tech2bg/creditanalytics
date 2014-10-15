@@ -136,7 +136,7 @@ public class Bullet {
 		_dblFXFixingDate = dblFXFixingDate;
 
 		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+			_notlSchedule = org.drip.product.params.FactorSchedule.BulletSchedule();
 	}
 
 	/**
@@ -274,7 +274,7 @@ public class Bullet {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Bullet::notional => Invalid Inputs");
 
-		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate));
+		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.factor (dblDate));
 	}
 
 	/**
@@ -297,8 +297,7 @@ public class Bullet {
 			(dblDate2))
 			throw new java.lang.Exception ("Bullet::notional => Invalid Dates");
 
-		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.getFactor (dblDate1,
-			dblDate2));
+		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.factor (dblDate1, dblDate2));
 	}
 
 	/**

@@ -415,7 +415,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		_crValParams = crValParams;
 
 		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+			_notlSchedule = org.drip.product.params.FactorSchedule.BulletSchedule();
 
 		_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (
 			_dblEffective = dblEffective, // Effective
@@ -503,7 +503,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("CDSComponent::notional => Bad date");
 
-		return _notlSchedule.getFactor (dblDate);
+		return _notlSchedule.factor (dblDate);
 	}
 
 	@Override public double notional (
@@ -515,7 +515,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
 			throw new java.lang.Exception ("CDSComponent::notional => Bad date");
 
-		return _notlSchedule.getFactor (dblDate1, dblDate2);
+		return _notlSchedule.factor (dblDate1, dblDate2);
 	}
 
 	@Override public double getRecovery (

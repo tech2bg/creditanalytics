@@ -259,7 +259,7 @@ public class BondAnalyticsAPI {
 		for (int i = 0; i < 5; ++i)
 			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 
-		return FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
+		return FactorSchedule.FromDateFactorArray (adblDate, adblFactor);
 	}
 
 	/*
@@ -280,7 +280,7 @@ public class BondAnalyticsAPI {
 		for (int i = 0; i < 5; ++i)
 			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 
-		return FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
+		return FactorSchedule.FromDateFactorArray (adblDate, adblFactor);
 	}
 
 	/*

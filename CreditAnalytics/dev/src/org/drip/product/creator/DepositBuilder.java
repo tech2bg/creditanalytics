@@ -66,7 +66,7 @@ public class DepositBuilder {
 
 		try {
 			org.drip.product.definition.CalibratableFixedIncomeComponent deposit = new
-				org.drip.product.rates.DepositComponent (dtEffective, dtEffective.addTenor (strTenor), null,
+				org.drip.product.rates.GenericDepositComponent (dtEffective, dtEffective.addTenor (strTenor), null,
 					strIR, "Act/360", strIR);
 
 			deposit.setPrimaryCode (strCode + "." + strTenor + "." + strIR);
@@ -90,7 +90,7 @@ public class DepositBuilder {
 	 * @return Deposit product
 	 */
 
-	public static final org.drip.product.rates.DepositComponent CreateDeposit (
+	public static final org.drip.product.rates.GenericDepositComponent CreateDeposit (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
 		final org.drip.state.identifier.ForwardLabel fri,
@@ -103,7 +103,7 @@ public class DepositBuilder {
 		}
 
 		try {
-			org.drip.product.rates.DepositComponent deposit = new org.drip.product.rates.DepositComponent
+			org.drip.product.rates.GenericDepositComponent deposit = new org.drip.product.rates.GenericDepositComponent
 				(dtEffective, dtMaturity, fri, strIR, "Act/360", strIR);
 
 			deposit.setPrimaryCode ("CD." + dtMaturity + "." + strIR);

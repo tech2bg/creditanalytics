@@ -35,13 +35,10 @@ package org.drip.param.period;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposableFixedUnitSetting {
-	private java.lang.String _strTenor = "";
-	private int _iEdgeDateSequenceScheme = -1;
+public class ComposableFixedUnitSetting extends org.drip.param.period.ComposableUnitSetting {
 	private double _dblBasis = java.lang.Double.NaN;
 	private java.lang.String _strCouponCurrency = "";
 	private double _dblFixedCoupon = java.lang.Double.NaN;
-	private org.drip.analytics.daycount.DateAdjustParams _dapEdge = null;
 
 	/**
 	 * ComposableFixedUnitSetting constructor
@@ -65,47 +62,12 @@ public class ComposableFixedUnitSetting {
 		final java.lang.String strCouponCurrency)
 		throws java.lang.Exception
 	{
-		if (null == (_strTenor = strTenor) || _strTenor.isEmpty() ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblFixedCoupon = dblFixedCoupon) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis) || null ==
-					(_strCouponCurrency = strCouponCurrency) || _strCouponCurrency.isEmpty())
+		super (strTenor, iEdgeDateSequenceScheme, dapEdge);
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFixedCoupon = dblFixedCoupon) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblBasis = dblBasis) || null ==
+				(_strCouponCurrency = strCouponCurrency) || _strCouponCurrency.isEmpty())
 			throw new java.lang.Exception ("ComposableFixedUnitSetting ctr: Invalid Inputs");
-
-		_dapEdge = dapEdge;
-		_iEdgeDateSequenceScheme = iEdgeDateSequenceScheme;
-	}
-
-	/**
-	 * Retrieve the Tenor
-	 * 
-	 * @return The Tenor
-	 */
-
-	public java.lang.String tenor()
-	{
-		return _strTenor;
-	}
-
-	/**
-	 * Retrieve the Edge Date Generation Scheme
-	 * 
-	 * @return The Edge Date Generation Scheme
-	 */
-
-	public int edgeDateSequenceScheme()
-	{
-		return _iEdgeDateSequenceScheme;
-	}
-
-	/**
-	 * Retrieve the Edge Date Adjust Parameters
-	 * 
-	 * @return The Edge Date Adjust Parameters
-	 */
-
-	public org.drip.analytics.daycount.DateAdjustParams dapEdge()
-	{
-		return _dapEdge;
 	}
 
 	/**

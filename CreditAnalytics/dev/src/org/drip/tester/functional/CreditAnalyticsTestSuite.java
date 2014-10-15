@@ -186,7 +186,7 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		try {
-			return org.drip.product.params.FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
+			return org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblFactor);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -210,7 +210,7 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		try {
-			return org.drip.product.params.FactorSchedule.CreateFromDateFactorArray (adblDate, adblFactor);
+			return org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblFactor);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

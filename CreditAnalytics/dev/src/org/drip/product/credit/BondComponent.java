@@ -324,8 +324,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		return _cpnParams.processCouponWindow (dblCoupon * _cpnParams._fsCoupon.getFactor (dblDate),
-			dblDate);
+		return _cpnParams.processCouponWindow (dblCoupon * _cpnParams._fsCoupon.factor (dblDate), dblDate);
 	}
 
 	private double getFixedCoupon (
@@ -1127,7 +1126,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			(dblDate))
 			throw new java.lang.Exception ("Bond::notional => Bad state/inputs");
 
-		return _notlParams._fsPrincipalOutstanding.getFactor (dblDate);
+		return _notlParams._fsPrincipalOutstanding.factor (dblDate);
 	}
 
 	@Override public double notional (
@@ -1139,7 +1138,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			(dblDateStart) || java.lang.Double.isNaN (dblDateEnd))
 			throw new java.lang.Exception ("Bond::notional => Bad state/inputs");
 
-		return _notlParams._fsPrincipalOutstanding.getFactor (dblDateStart, dblDateEnd);
+		return _notlParams._fsPrincipalOutstanding.factor (dblDateStart, dblDateEnd);
 	}
 
 	@Override public double initialNotional()

@@ -623,7 +623,7 @@ public class FRAStdCapFloor {
 		);
 
 		FRAStandardCapFloor fraCap = new FRAStandardCapFloor (
-			new SingleStreamComponent ("FRA_CAP", floatStream),
+			new GenericSingleStreamComponent ("FRA_CAP", floatStream),
 			strManifestMeasure,
 			true,
 			dblStrike,
@@ -633,7 +633,7 @@ public class FRAStdCapFloor {
 		);
 
 		FRAStandardCapFloor fraFloor = new FRAStandardCapFloor (
-			new SingleStreamComponent ("FRA_FLOOR", floatStream),
+			new GenericSingleStreamComponent ("FRA_FLOOR", floatStream),
 			strManifestMeasure,
 			false,
 			dblStrike,

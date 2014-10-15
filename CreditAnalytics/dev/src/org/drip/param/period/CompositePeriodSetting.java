@@ -40,11 +40,11 @@ public class CompositePeriodSetting {
 	private int _iAccrualCompoundingRule = -1;
 	private java.lang.String _strPayCurrency = "";
 	private double _dblBaseNotional = java.lang.Double.NaN;
-	private double _dblFXFixingDate = java.lang.Double.NaN;
 	private org.drip.product.params.FactorSchedule _fsCoupon = null;
 	private org.drip.product.params.FactorSchedule _fsNotional = null;
 	private org.drip.state.identifier.CreditLabel _creditLabel = null;
 	private org.drip.analytics.daycount.DateAdjustParams _dapPay = null;
+	private org.drip.param.period.FixingSetting _fxFixingSetting = null;
 
 	/**
 	 * CompositePeriodSetting Constructor
@@ -57,8 +57,8 @@ public class CompositePeriodSetting {
 	 * @param dblBaseNotional The Period Base Notional
 	 * @param fsCoupon The Period Coupon Schedule
 	 * @param fsNotional The Period Notional Schedule
+	 * @param fxFixingSetting The FX Fixing Setting
 	 * @param creditLabel The Period Credit Label
-	 * @param dblFXFixingDate The Period FX Fixing Date
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
@@ -72,8 +72,8 @@ public class CompositePeriodSetting {
 		final double dblBaseNotional,
 		final org.drip.product.params.FactorSchedule fsCoupon,
 		final org.drip.product.params.FactorSchedule fsNotional,
-		final org.drip.state.identifier.CreditLabel creditLabel,
-		final double dblFXFixingDate)
+		final org.drip.param.period.FixingSetting fxFixingSetting,
+		final org.drip.state.identifier.CreditLabel creditLabel)
 		throws java.lang.Exception
 	{
 		if (0 >= (_iFreq = iFreq) || null == (_strTenor = strTenor) || _strTenor.isEmpty() || null ==
@@ -85,13 +85,13 @@ public class CompositePeriodSetting {
 
 		_dapPay = dapPay;
 		_creditLabel = creditLabel;
-		_dblFXFixingDate = dblFXFixingDate;
+		_fxFixingSetting = fxFixingSetting;
 
 		if (null == (_fsCoupon = fsCoupon))
-			_fsCoupon = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+			_fsCoupon = org.drip.product.params.FactorSchedule.BulletSchedule();
 
 		if (null == (_fsNotional = fsNotional))
-			_fsNotional = org.drip.product.params.FactorSchedule.CreateBulletSchedule();
+			_fsNotional = org.drip.product.params.FactorSchedule.BulletSchedule();
 	}
 
 	/**
@@ -183,6 +183,17 @@ public class CompositePeriodSetting {
 	}
 
 	/**
+	 * Retrieve the FX Fixing Setting
+	 * 
+	 * @return The FX Fixing Setting
+	 */
+
+	public org.drip.param.period.FixingSetting fxFixingSetting()
+	{
+		return _fxFixingSetting;
+	}
+
+	/**
 	 * Retrieve the Credit Label
 	 * 
 	 * @return The Credit Label
@@ -191,16 +202,5 @@ public class CompositePeriodSetting {
 	public org.drip.state.identifier.CreditLabel creditLabel()
 	{
 		return _creditLabel;
-	}
-
-	/**
-	 * Retrieve the FX Fixing Date
-	 * 
-	 * @return The FX Fixing Date
-	 */
-
-	public double fxFixingDate()
-	{
-		return _dblFXFixingDate;
 	}
 }

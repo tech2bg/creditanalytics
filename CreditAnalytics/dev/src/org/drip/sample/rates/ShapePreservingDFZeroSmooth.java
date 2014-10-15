@@ -97,13 +97,13 @@ public class ShapePreservingDFZeroSmooth {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final DepositComponent[] DepositInstrumentsFromMaturityDays (
+	private static final GenericDepositComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final int[] aiDay)
 		throws Exception
 	{
-		DepositComponent[] aDeposit = new DepositComponent[aiDay.length];
+		GenericDepositComponent[] aDeposit = new GenericDepositComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
 			aDeposit[i] = DepositBuilder.CreateDeposit (
@@ -117,7 +117,7 @@ public class ShapePreservingDFZeroSmooth {
 	}
 
 	private static final LatentStateStretchSpec DepositStretch (
-		final DepositComponent[] aDeposit,
+		final GenericDepositComponent[] aDeposit,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -361,7 +361,7 @@ public class ShapePreservingDFZeroSmooth {
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
 
-		DepositComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
+		GenericDepositComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			strCurrency,
 			new int[] {1, 2, 7, 14, 30, 60}

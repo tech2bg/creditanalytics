@@ -124,6 +124,70 @@ public class EDFutureBuilder {
 	}
 
 	/**
+	 * Generate a Futures Pack corresponding to the specified number of contracts
+	 * 
+	 * @param dt Spot date specifying the contract issue
+	 * @param iNumContract Number of contracts
+	 * @param strCurrency Contract currency string
+	 * 
+	 * @return Array of EDF product
+	 */
+
+	public static org.drip.product.rates.SingleStreamComponent[] GenerateFuturesPack (
+		final org.drip.analytics.date.JulianDate dt,
+		final int iNumContract,
+		final java.lang.String strCurrency)
+	{
+		if (0 == iNumContract || null == dt) return null;
+
+		org.drip.product.rates.SingleStreamComponent[] aSSC = new
+			org.drip.product.rates.SingleStreamComponent[iNumContract];
+
+		try {
+			org.drip.param.period.UnitCouponAccrualSetting ucas = new
+				org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false, "Act/360", false,
+					strCurrency, false);
+
+			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
+				org.drip.param.period.ComposableFloatingUnitSetting ("3M",
+					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
+						org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+							org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+								null, 0.);
+
+			org.drip.param.period.CompositePeriodSetting cps = new
+				org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null,
+					org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
+						null, null, null, null);
+
+			org.drip.param.valuation.CashSettleParams csp = new org.drip.param.valuation.CashSettleParams (0,
+				strCurrency, 0);
+
+			org.drip.analytics.date.JulianDate dtStart = dt.firstEDFStartDate (3);
+
+			for (int i = 0; i < iNumContract; ++i) {
+				org.drip.analytics.date.JulianDate dtMaturity = dtStart.addMonths (3);
+
+				aSSC[i] = new org.drip.product.rates.SingleStreamComponent ("FUTURE_" + i, new
+					org.drip.product.rates.Stream
+						(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
+							(org.drip.analytics.support.CompositePeriodBuilder.EdgePair (dtStart,
+								dtMaturity), cps, ucas, cfus)), csp);
+
+				aSSC[i].setPrimaryCode (MakeBaseEDFCode (dtStart.julian()));
+
+				dtStart = dtStart.addMonths (3);
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		return aSSC;
+	}
+
+	/**
 	 * Create an EDF product from the effective and maturity dates, and the IR curve
 	 * 
 	 * @param dtEffective JulianDate effective

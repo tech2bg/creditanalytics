@@ -216,7 +216,7 @@ public class GenericStream {
 
 		org.drip.product.params.FactorSchedule notlSchedule = cp.notionalSchedule();
 
-		return null == notlSchedule ? 1. : notlSchedule.getFactor (dblDate);
+		return null == notlSchedule ? 1. : notlSchedule.factor (dblDate);
 	}
 
 	/**
@@ -246,7 +246,7 @@ public class GenericStream {
 
 		org.drip.product.params.FactorSchedule notlSchedule = cp.notionalSchedule();
 
-		return null == notlSchedule ? 1. : notlSchedule.getFactor (dblDate1, dblDate2);
+		return null == notlSchedule ? 1. : notlSchedule.factor (dblDate1, dblDate2);
 	}
 
 	/**

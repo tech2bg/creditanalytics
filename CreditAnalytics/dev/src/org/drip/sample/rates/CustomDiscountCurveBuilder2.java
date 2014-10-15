@@ -6,13 +6,9 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.CompositePeriodBuilder;
-import org.drip.analytics.support.CompositePeriodUtil;
+import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
-import org.drip.param.period.ComposableFixedUnitSetting;
-import org.drip.param.period.ComposableFloatingUnitSetting;
-import org.drip.param.period.CompositePeriodSetting;
-import org.drip.param.period.UnitCouponAccrualSetting;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
@@ -80,44 +76,100 @@ public class CustomDiscountCurveBuilder2 {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final DepositComponent[] DepositInstrumentsFromMaturityDays (
+	private static final SingleStreamComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final int[] aiDay)
 		throws Exception
 	{
-		DepositComponent[] aDeposit = new DepositComponent[aiDay.length];
+		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
-		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit (
-				dtEffective,
-				dtEffective.addBusDays (aiDay[i], strCurrency),
-				null,
-				strCurrency
+		UnitCouponAccrualSetting ucas = new UnitCouponAccrualSetting (
+			4,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfus = new ComposableFloatingUnitSetting (
+			"3M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		CompositePeriodSetting cps = new CompositePeriodSetting (
+			4,
+			"3M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
+		for (int i = 0; i < aiDay.length; ++i) {
+			aDeposit[i] = new SingleStreamComponent (
+				"DEPOSIT_" + aiDay[i],
+				new Stream (
+					CompositePeriodBuilder.FloatingCompositeUnit (
+						CompositePeriodBuilder.EdgePair (
+							dtEffective,
+							dtEffective.addBusDays (aiDay[i], strCurrency)
+						),
+						cps,
+						ucas,
+						cfus
+					)
+				),
+				csp
 			);
+
+			aDeposit[i].setPrimaryCode (aiDay[i] + "D");
+		}
 
 		return aDeposit;
 	}
 
 	private static final LatentStateStretchSpec DepositStretch (
-		final DepositComponent[] aDeposit,
+		final SingleStreamComponent[] aDeposit,
 		final double[] adblQuote)
 		throws Exception
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
 		for (int i = 0; i < aDeposit.length; ++i) {
-			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
+			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
 						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						FundingLabel.Standard (aDeposit[i].payCurrency()[0])
+					),
+					new LatentStateSpecification (
+						LatentStateStatic.LATENT_STATE_FORWARD,
+						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
+						aDeposit[i].forwardLabel()[0]
 					)
 				}
 			);
 
-			depositQuote.setRate (adblQuote[i]);
+			depositQuote.setForwardRate (adblQuote[i]);
 
 			aSegmentSpec[i] = new LatentStateSegmentSpec (
 				aDeposit[i],
@@ -132,14 +184,14 @@ public class CustomDiscountCurveBuilder2 {
 	}
 
 	private static final LatentStateStretchSpec EDFStretch (
-		final EDFComponent[] aEDF,
+		final SingleStreamComponent[] aEDF,
 		final double[] adblQuote)
 		throws Exception
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aEDF.length];
 
 		for (int i = 0; i < aEDF.length; ++i) {
-			EDFComponentQuoteSet edfQuote = new EDFComponentQuoteSet (
+			FloatingStreamQuoteSet edfQuote = new FloatingStreamQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
@@ -154,7 +206,7 @@ public class CustomDiscountCurveBuilder2 {
 				}
 			);
 
-			edfQuote.setRate (adblQuote[i]);
+			edfQuote.setForwardRate (adblQuote[i]);
 
 			aSegmentSpec[i] = new LatentStateSegmentSpec (
 				aEDF[i],
@@ -227,11 +279,11 @@ public class CustomDiscountCurveBuilder2 {
 			strCurrency,
 			null,
 			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-			1.,
+			-1.,
 			null,
 			null,
 			null,
-			Double.NaN
+			null
 		);
 
 		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
@@ -244,7 +296,7 @@ public class CustomDiscountCurveBuilder2 {
 			null,
 			null,
 			null,
-			Double.NaN
+			null
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -278,7 +330,7 @@ public class CustomDiscountCurveBuilder2 {
 			);
 
 			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeSingleUnit (
+				CompositePeriodBuilder.FixedCompositeUnit (
 					lsFixedStreamEdgeDate,
 					cpsFixed,
 					ucasFixed,
@@ -366,7 +418,7 @@ public class CustomDiscountCurveBuilder2 {
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
 
-		DepositComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
+		SingleStreamComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			strCurrency,
 			new int[] {1, 2, 7, 14, 30, 60}
@@ -389,7 +441,7 @@ public class CustomDiscountCurveBuilder2 {
 		 * Construct the Array of EDF Instruments and their Quotes from the given set of parameters
 		 */
 
-		EDFComponent[] aEDFComp = EDFutureBuilder.GenerateEDPack (
+		SingleStreamComponent[] aEDFComp = EDFutureBuilder.GenerateFuturesPack (
 			dtSpot,
 			8,
 			strCurrency
@@ -452,7 +504,8 @@ public class CustomDiscountCurveBuilder2 {
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
-			null);
+			null
+		);
 
 		ValuationParams valParams = new ValuationParams (
 			dtSpot,

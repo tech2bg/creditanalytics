@@ -133,7 +133,7 @@ public class CouponSetting implements org.drip.product.params.Validatable {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon)) return false;
 
-		if (null == _fsCoupon) _fsCoupon = FactorSchedule.CreateBulletSchedule();
+		if (null == _fsCoupon) _fsCoupon = FactorSchedule.BulletSchedule();
 
 		if (org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeiling) &&
 			org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloor) && _dblCouponCeiling < _dblCouponFloor)

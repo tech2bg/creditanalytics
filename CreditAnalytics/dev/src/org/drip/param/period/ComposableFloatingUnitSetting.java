@@ -34,13 +34,10 @@ package org.drip.param.period;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposableFloatingUnitSetting {
-	private java.lang.String _strTenor = "";
-	private int _iEdgeDateSequenceScheme = -1;
+public class ComposableFloatingUnitSetting extends org.drip.param.period.ComposableUnitSetting {
 	private int _iReferencePeriodArrearsType = -1;
 	private double _dblSpread = java.lang.Double.NaN;
 	private org.drip.state.identifier.ForwardLabel _forwardLabel = null;
-	private org.drip.analytics.daycount.DateAdjustParams _dapEdge = null;
 	private org.drip.analytics.daycount.DateAdjustParams _dapForwardFixing = null;
 
 	/**
@@ -67,47 +64,14 @@ public class ComposableFloatingUnitSetting {
 		final double dblSpread)
 		throws java.lang.Exception
 	{
-		if (null == (_strTenor = strTenor) || _strTenor.isEmpty() || null == (_forwardLabel = forwardLabel)
-			|| !org.drip.quant.common.NumberUtil.IsValid (_dblSpread = dblSpread))
+		super (strTenor, iEdgeDateSequenceScheme, dapEdge);
+
+		if (null == (_forwardLabel = forwardLabel) || !org.drip.quant.common.NumberUtil.IsValid (_dblSpread =
+			dblSpread))
 			throw new java.lang.Exception ("ComposableFloatingUnitSetting ctr: Invalid Inputs");
 
-		_dapEdge = dapEdge;
 		_dapForwardFixing = dapForwardFixing;
-		_iEdgeDateSequenceScheme = iEdgeDateSequenceScheme;
 		_iReferencePeriodArrearsType = iReferencePeriodArrearsType;
-	}
-
-	/**
-	 * Retrieve the Tenor
-	 * 
-	 * @return The Tenor
-	 */
-
-	public java.lang.String tenor()
-	{
-		return _strTenor;
-	}
-
-	/**
-	 * Retrieve the Edge Date Generation Scheme
-	 * 
-	 * @return The Edge Date Generation Scheme
-	 */
-
-	public int edgeDateSequenceScheme()
-	{
-		return _iEdgeDateSequenceScheme;
-	}
-
-	/**
-	 * Retrieve the Edge Date Adjust Parameters
-	 * 
-	 * @return The Edge Date Adjust Parameters
-	 */
-
-	public org.drip.analytics.daycount.DateAdjustParams dapEdge()
-	{
-		return _dapEdge;
 	}
 
 	/**

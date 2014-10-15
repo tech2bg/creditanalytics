@@ -99,6 +99,53 @@ public class FloatingStreamQuoteSet extends org.drip.product.calib.ProductQuoteS
 	}
 
 	/**
+	 * Set the Forward Rate
+	 * 
+	 * @param dblForwardRate The Forward Rate
+	 * 
+	 * @return TRUE => The Forward Rate successfully set
+	 */
+
+	public boolean setForwardRate (
+		final double dblForwardRate)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblForwardRate)) return false;
+
+		_mapQuote.put ("ForwardRate", dblForwardRate);
+
+		return true;
+	}
+
+	/**
+	 * Indicate if the Forward Rate Field exists
+	 * 
+	 * @return TRUE => Forward Rate Field Exists
+	 */
+
+	public boolean containsForwardRate()
+	{
+		return _mapQuote.containsKey ("ForwardRate");
+	}
+
+	/**
+	 * Retrieve the Forward Rate
+	 * 
+	 * @return The Forward Rate
+	 * 
+	 * @throws java.lang.Exception Thrown if the Forward Rate Field does not exist
+	 */
+
+	public double forwardRate()
+		throws java.lang.Exception
+	{
+		if (!containsForwardRate())
+			throw new java.lang.Exception
+				("FloatingStreamQuoteSet::forwardRate => Does not contain Forward Rate");
+
+		return _mapQuote.get ("ForwardRate");
+	}
+
+	/**
 	 * Set the Spread
 	 * 
 	 * @param dblSpread The Spread

@@ -29,46 +29,32 @@ package org.drip.product.rates;
  */
 
 /**
- * SingleStreamComponent implements fixed income component that is based off of a single stream.
+ * GenericSingleStreamComponent implements fixed income component that is based off of a single stream.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class SingleStreamComponent extends org.drip.product.definition.CalibratableFixedIncomeComponent {
-	private java.lang.String _strCode = "";
+public class GenericSingleStreamComponent extends org.drip.product.definition.FixedIncomeComponent {
 	private java.lang.String _strName = "";
-	private org.drip.product.rates.Stream _stream = null;
+	private org.drip.product.rates.GenericStream _stream = null;
 	private org.drip.param.valuation.CashSettleParams _csp = null;
 
-	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
-	{
-		return null;
-	}
-
 	/**
-	 * SingleStreamComponent constructor
+	 * GenericSingleStreamComponent constructor
 	 * 
 	 * @param strName The Component Name
 	 * @param stream The Single Stream Instance
-	 * @param csp Cash Settle Parameters Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public SingleStreamComponent (
+	public GenericSingleStreamComponent (
 		final java.lang.String strName,
-		final org.drip.product.rates.Stream stream,
-		final org.drip.param.valuation.CashSettleParams csp)
+		final org.drip.product.rates.GenericStream stream)
 		throws java.lang.Exception
 	{
 		if (null == (_strName = strName) || _strName.isEmpty() || null == (_stream = stream))
-			throw new java.lang.Exception ("SingleStreamComponent ctr: Invalid Inputs");
-
-		_csp = csp;
+			throw new java.lang.Exception ("GenericSingleStreamComponent ctr: Invalid Inputs");
 	}
 
 	/**
@@ -77,7 +63,7 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 	 * @return The Stream Instance
 	 */
 
-	public org.drip.product.rates.Stream stream()
+	public org.drip.product.rates.GenericStream stream()
 	{
 		return _stream;
 	}
@@ -154,7 +140,7 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
-		return null;
+		return _stream.coupon (dblAccrualEndDate, valParams, csqs);
 	}
 
 	@Override public int freq()
@@ -179,7 +165,7 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 
 	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
 	{
-		return null;
+		return _stream.cashFlowPeriod();
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
@@ -199,77 +185,5 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 	@Override public java.util.Set<java.lang.String> measureNames()
 	{
 		return null;
-	}
-
-	@Override public void setPrimaryCode (
-		final java.lang.String strCode)
-	{
-		_strCode = strCode;
-	}
-
-	@Override public java.lang.String primaryCode()
-	{
-		return _strCode;
-	}
-
-	@Override public org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasure (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
-	{
-		return null;
-	}
-
-	@Override public org.drip.quant.calculus.WengertJacobian manifestMeasureDFMicroJack (
-		final java.lang.String strManifestMeasure,
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
-	{
-		return null;
-	}
-
-	@Override public org.drip.product.calib.ProductQuoteSet calibQuoteSet (
-		final org.drip.state.representation.LatentStateSpecification[] aLSS)
-	{
-		try {
-			return new org.drip.product.calib.FloatingStreamQuoteSet (aLSS);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams vcp,
-		final org.drip.product.calib.ProductQuoteSet pqs)
-	{
-		return _stream.forwardPRWC (valParams, pricerParams, csqs, vcp, pqs);
-	}
-
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams vcp,
-		final org.drip.product.calib.ProductQuoteSet pqs)
-	{
-		return _stream.fundingPRWC (valParams, pricerParams, csqs, vcp, pqs);
-	}
-
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams vcp,
-		final org.drip.product.calib.ProductQuoteSet pqs)
-	{
-		return _stream.fundingForwardPRWC (valParams, pricerParams, csqs, vcp, pqs);
 	}
 }

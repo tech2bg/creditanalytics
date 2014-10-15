@@ -53,7 +53,7 @@ public class CompositeFloatingPeriod extends org.drip.analytics.cashflow.Composi
 		super (cps, lsCUP);
 	}
 
-	@Override public org.drip.analytics.cashflow.CompositePeriodQuoteSet periodQuoteSet (
+	@Override public org.drip.product.calib.CompositePeriodQuoteSet periodQuoteSet (
 		final org.drip.product.calib.ProductQuoteSet pqs,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -62,11 +62,15 @@ public class CompositeFloatingPeriod extends org.drip.analytics.cashflow.Composi
 		org.drip.product.calib.FloatingStreamQuoteSet fsqs = (org.drip.product.calib.FloatingStreamQuoteSet)
 			pqs;
 
-		org.drip.analytics.cashflow.ComposableUnitPeriod cup = periods().get (0);
-
 		try {
-			return new org.drip.analytics.cashflow.CompositePeriodQuoteSet (cup.baseRate (csqs),
-				fsqs.containsSpread() ? fsqs.spread() : basis());
+			org.drip.product.calib.CompositePeriodQuoteSet cpqs = new
+				org.drip.product.calib.CompositePeriodQuoteSet (pqs.lss());
+
+			if (fsqs.containsForwardRate() && !cpqs.setBaseRate (fsqs.forwardRate())) return null;
+
+			if (!cpqs.setBasis (fsqs.containsSpread() ? fsqs.spread() : basis())) return null;
+
+			return cpqs;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

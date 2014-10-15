@@ -1,11 +1,14 @@
 
 package org.drip.sample.rates;
 
+import java.util.List;
+
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.*;
 import org.drip.param.creator.MarketParamsBuilder;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
@@ -86,44 +89,100 @@ public class CustomDiscountCurveReconciler {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final DepositComponent[] DepositInstrumentsFromMaturityDays (
+	private static final SingleStreamComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final int[] aiDay)
 		throws Exception
 	{
-		DepositComponent[] aDeposit = new DepositComponent[aiDay.length];
+		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
-		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit (
-				dtEffective,
-				dtEffective.addBusDays (aiDay[i], strCurrency),
-				null,
-				strCurrency
+		UnitCouponAccrualSetting ucas = new UnitCouponAccrualSetting (
+			4,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfus = new ComposableFloatingUnitSetting (
+			"3M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		CompositePeriodSetting cps = new CompositePeriodSetting (
+			4,
+			"3M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
+		for (int i = 0; i < aiDay.length; ++i) {
+			aDeposit[i] = new SingleStreamComponent (
+				"DEPOSIT_" + aiDay[i],
+				new Stream (
+					CompositePeriodBuilder.FloatingCompositeUnit (
+						CompositePeriodBuilder.EdgePair (
+							dtEffective,
+							dtEffective.addBusDays (aiDay[i], strCurrency)
+						),
+						cps,
+						ucas,
+						cfus
+					)
+				),
+				csp
 			);
+
+			aDeposit[i].setPrimaryCode (aiDay[i] + "D");
+		}
 
 		return aDeposit;
 	}
 
 	private static final LatentStateStretchSpec DepositStretch (
-		final DepositComponent[] aDeposit,
+		final SingleStreamComponent[] aDeposit,
 		final double[] adblQuote)
 		throws Exception
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
 		for (int i = 0; i < aDeposit.length; ++i) {
-			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
+			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
 						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						FundingLabel.Standard (aDeposit[i].payCurrency()[0])
+					),
+					new LatentStateSpecification (
+						LatentStateStatic.LATENT_STATE_FORWARD,
+						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
+						aDeposit[i].forwardLabel()[0]
 					)
 				}
 			);
 
-			depositQuote.setRate (adblQuote[i]);
+			depositQuote.setForwardRate (adblQuote[i]);
 
 			aSegmentSpec[i] = new LatentStateSegmentSpec (
 				aDeposit[i],
@@ -180,7 +239,133 @@ public class CustomDiscountCurveReconciler {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final GenericFixFloatComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
+		final JulianDate dtEffective,
+		final String strCurrency,
+		final String[] astrMaturityTenor)
+		throws Exception
+	{
+		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
+
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			0.,
+			0.,
+			strCurrency
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			Stream floatingStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsFloatingStreamEdgeDate,
+					cpsFloating,
+					ucasFloating,
+					cfusFloating
+				)
+			);
+
+			Stream fixedStream = new Stream (
+				CompositePeriodBuilder.FixedCompositeUnit (
+					lsFixedStreamEdgeDate,
+					cpsFixed,
+					ucasFixed,
+					cfusFixed
+				)
+			);
+
+			FixFloatComponent irs = new FixFloatComponent (
+				fixedStream,
+				floatingStream,
+				csp
+			);
+
+			irs.setPrimaryCode ("IRS." + astrMaturityTenor[i] + "." + strCurrency);
+
+			aIRS[i] = irs;
+		}
+
+		return aIRS;
+	}
+
+	/* private static final GenericFixFloatComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrMaturityTenor)
@@ -261,10 +446,10 @@ public class CustomDiscountCurveReconciler {
 		}
 
 		return aIRS;
-	}
+	} */
 
 	private static final LatentStateStretchSpec SwapStretch (
-		final GenericFixFloatComponent[] aIRS,
+		final FixFloatComponent[] aIRS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -342,7 +527,7 @@ public class CustomDiscountCurveReconciler {
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
 
-		DepositComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
+		SingleStreamComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			strCurrency,
 			new int[] {
@@ -390,7 +575,7 @@ public class CustomDiscountCurveReconciler {
 		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
 		 */
 
-		GenericFixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
 			new java.lang.String[] {
@@ -604,12 +789,17 @@ public class CustomDiscountCurveReconciler {
 			new PolynomialFunctionSetParams (4),
 			SegmentInelasticDesignControl.Create (2, 2),
 			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-			null);
+			null
+		);
 
 		/*
 		 * Run the full spline linear discount curve builder sample.
 		 */
 
-		SplineLinearDiscountCurve (JulianDate.Today(), "USD", prbpPolynomial);
+		SplineLinearDiscountCurve (
+			JulianDate.Today(),
+			"USD",
+			prbpPolynomial
+		);
 	}
 }

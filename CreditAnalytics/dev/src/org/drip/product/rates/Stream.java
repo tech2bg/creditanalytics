@@ -233,7 +233,7 @@ public class Stream {
 
 		org.drip.product.params.FactorSchedule notlSchedule = cp.notionalSchedule();
 
-		return initialNotional() * (null == notlSchedule ? 1. : notlSchedule.getFactor (dblDate1, dblDate2));
+		return initialNotional() * (null == notlSchedule ? 1. : notlSchedule.factor (dblDate1, dblDate2));
 	}
 
 	/**

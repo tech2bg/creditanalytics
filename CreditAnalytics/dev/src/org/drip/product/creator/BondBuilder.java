@@ -333,10 +333,10 @@ public class BondBuilder {
 					(dblPeriodStart, adblDate[i], dblPeriodStart, null)))
 					return null;
 
-				lsCouponPeriod.add (new org.drip.analytics.cashflow.GenericCouponPeriod (dblPeriodStart, adblDate[i],
-					dblPeriodStart, adblDate[i], adblDate[i], rpc, java.lang.Double.NaN, iFreq, 1. / iFreq,
-						"30/360", "30/360", false, false, "", dblTotalPrincipal,
-							org.drip.product.params.FactorSchedule.CreateFromDateFactorArray (adblDate,
+				lsCouponPeriod.add (new org.drip.analytics.cashflow.GenericCouponPeriod (dblPeriodStart,
+					adblDate[i], dblPeriodStart, adblDate[i], adblDate[i], rpc, java.lang.Double.NaN, iFreq,
+						1. / iFreq, "30/360", "30/360", false, false, "", dblTotalPrincipal,
+							org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate,
 								adblCouponFactor), 1., strCurrency, strCurrency, null, null));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -358,8 +358,8 @@ public class BondBuilder {
 
 		return CreateBondFromParams (null, new org.drip.product.params.IdentifierSet (strName, strName,
 			strName, strCurrency), new org.drip.product.params.CouponSetting
-				(org.drip.product.params.FactorSchedule.CreateFromDateFactorArray (adblDate,
-					adblCouponFactor), "", 1., java.lang.Double.NaN, java.lang.Double.NaN),
+				(org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblCouponFactor), "",
+					1., java.lang.Double.NaN, java.lang.Double.NaN),
 						org.drip.product.params.CurrencySet.Create (strCurrency), null, new
 							org.drip.product.params.QuoteConvention (null, "", dtEffective.julian(), 100.,
 								0, strCurrency, org.drip.analytics.daycount.Convention.DR_ACTUAL), new
@@ -369,7 +369,7 @@ public class BondBuilder {
 												org.drip.product.params.TerminationSetting (false, false,
 													false), bfpgp, new
 														org.drip.product.params.NotionalSetting
-															(org.drip.product.params.FactorSchedule.CreateFromDateFactorArray
+															(org.drip.product.params.FactorSchedule.FromDateFactorArray
 			(adblDate, adblNormalizedPrincipal), 100.,
 				org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false));
 	}

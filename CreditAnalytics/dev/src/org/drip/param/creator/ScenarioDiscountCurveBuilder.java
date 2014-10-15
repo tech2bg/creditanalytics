@@ -100,7 +100,7 @@ public class ScenarioDiscountCurveBuilder {
 
 					comp = new org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream, null);
 				} else
-					comp = new org.drip.product.rates.DepositComponent (dtEffective, dtMaturity, null,
+					comp = new org.drip.product.rates.GenericDepositComponent (dtEffective, dtMaturity, null,
 						strCurrency, "Act/360", strCurrency);
 
 				lsCompDENSE.add (comp);
