@@ -275,7 +275,7 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = DepositBuilder.CreateDeposit (
+			aCompCalib[i] = DepositBuilder.CreateDeposit2 (
 				dtCashEffective, // Effective
 				new JulianDate (adblMaturity[i]).addBusDays (2, "USD"), // Maturity
 				null, // FRI
@@ -312,7 +312,7 @@ public class RatesAnalyticsAPI {
 		adblCompCalibValue[13] = .0134;
 		adblCompCalibValue[14] = .0160;
 
-		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtStart, 8, "USD");
+		CalibratableFixedIncomeComponent[] aEDF = IRFutureBuilder.GenerateFuturesPack (dtStart, 8, "USD");
 
 		for (int i = 0; i < 8; ++i) {
 			adblRate[i + 7] = 0.01;

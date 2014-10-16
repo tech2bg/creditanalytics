@@ -180,10 +180,11 @@ public class BondAnalyticsAPI {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = DepositBuilder.CreateDeposit (dtCashEffective,
+			aCompCalib[i] = DepositBuilder.CreateDeposit2 (dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
 				null,
-				strCurrency);
+				strCurrency
+			);
 		}
 
 		// IRS Calibration

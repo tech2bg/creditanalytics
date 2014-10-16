@@ -149,7 +149,8 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					org.drip.analytics.date.JulianDate dtEDFStart = _dtStart;
 
 					org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
-						org.drip.product.creator.EDFutureBuilder.GenerateEDPack (_dtStart, 8, _strCurrency);
+						org.drip.product.creator.IRFutureBuilder.GenerateFuturesPack (_dtStart, 8,
+							_strCurrency);
 
 					for (int i = 0; i < 8; ++i) {
 						_aCompCalib[i + 7] = aEDF[i];

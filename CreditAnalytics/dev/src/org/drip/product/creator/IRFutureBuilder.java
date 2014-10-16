@@ -32,17 +32,17 @@ package org.drip.product.creator;
  */
 
 /**
- * EDFutureBuilder contains the suite of helper functions for creating the EDFuture product and product pack
+ * IRFutureBuilder contains the suite of helper functions for creating the Futures product and product pack
  *  from the parameters/codes/byte array streams. It also contains function to construct EDF codes and the
  *  EDF product from code.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class EDFutureBuilder {
+public class IRFutureBuilder {
 
 	/**
-	 * Creates the EDF Code given a effective date
+	 * Create the EDF Code given a effective date
 	 * 
 	 * @param dblEffective Double representing the Effective JulianDate
 	 * 
@@ -81,46 +81,6 @@ public class EDFutureBuilder {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Generate a EDF pack with the specified number of contracts
-	 * 
-	 * @param dt Spot date specifying the contract issue
-	 * @param iNumEDF Number of contracts
-	 * @param strCurrency Contract currency string
-	 * 
-	 * @return Array of EDF product
-	 */
-
-	public static org.drip.product.rates.EDFComponent[] GenerateEDPack (
-		final org.drip.analytics.date.JulianDate dt,
-		final int iNumEDF,
-		final java.lang.String strCurrency)
-	{
-		if (0 == iNumEDF || null == dt) return null;
-
-		org.drip.product.rates.EDFComponent[] aEDF = new org.drip.product.rates.EDFComponent[iNumEDF];
-
-		try {
-			org.drip.analytics.date.JulianDate dtEDFStart = dt.firstEDFStartDate (3);
-
-			for (int i = 0; i < iNumEDF; ++i) {
-				org.drip.analytics.date.JulianDate dtEDFMaturity = dtEDFStart.addMonths (3);
-
-				(aEDF[i] = new org.drip.product.rates.EDFComponent (dtEDFStart, dtEDFMaturity,
-					org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", "3M"), strCurrency,
-						"Act/360", strCurrency)).setPrimaryCode (MakeBaseEDFCode (dtEDFStart.julian()));
-
-				dtEDFStart = dtEDFStart.addMonths (3);
-			}
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		return aEDF;
 	}
 
 	/**
@@ -185,96 +145,5 @@ public class EDFutureBuilder {
 		}
 
 		return aSSC;
-	}
-
-	/**
-	 * Create an EDF product from the effective and maturity dates, and the IR curve
-	 * 
-	 * @param dtEffective JulianDate effective
-	 * @param dtMaturity JulianDate Maturity
-	 * @param strIR IR curve name
-	 * 
-	 * @return EDF product
-	 */
-
-	public static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateEDF (
-		final org.drip.analytics.date.JulianDate dtEffective,
-		final org.drip.analytics.date.JulianDate dtMaturity,
-		final java.lang.String strIR)
-	{
-		try {
-			org.drip.product.definition.CalibratableFixedIncomeComponent edf = new
-				org.drip.product.rates.EDFComponent (dtEffective, dtMaturity,
-					org.drip.state.identifier.ForwardLabel.Create (strIR, "LIBOR", "3M"), strIR, "Act/360",
-						strIR);
-
-			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.julian()));
-
-			return edf;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Create an EDF product from the effective date, the tenor, and the IR curve
-	 * 
-	 * @param dtEffective JulianDate effective
-	 * @param strTenor Tenor string
-	 * @param strIR IR curve name
-	 * 
-	 * @return EDF product
-	 */
-
-	public static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateEDF (
-		final org.drip.analytics.date.JulianDate dtEffective,
-		final java.lang.String strTenor,
-		final java.lang.String strIR)
-	{
-		try {
-			org.drip.product.definition.CalibratableFixedIncomeComponent edf = new
-				org.drip.product.rates.EDFComponent (dtEffective, dtEffective.addTenor (strTenor),
-					org.drip.state.identifier.ForwardLabel.Create (strIR, "LIBOR", strTenor), strIR,
-						"Act/360", strIR);
-
-			edf.setPrimaryCode (MakeBaseEDFCode (dtEffective.julian()));
-
-			return edf;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Create an EDF product from the effective date, the product code, and the IR curve
-	 * 
-	 * @param strFullEDCode EDF product code
-	 * @param dt JulianDate effective
-	 * @param strIR IR curve name
-	 * 
-	 * @return EDF product
-	 */
-
-	public static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateEDF (
-		final java.lang.String strFullEDCode,
-		final org.drip.analytics.date.JulianDate dt,
-		final java.lang.String strIR)
-	{
-		try {
-			org.drip.product.definition.CalibratableFixedIncomeComponent edf = new
-				org.drip.product.rates.EDFComponent (strFullEDCode, dt, strIR);
-
-			edf.setPrimaryCode (strFullEDCode);
-
-			return edf;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 }

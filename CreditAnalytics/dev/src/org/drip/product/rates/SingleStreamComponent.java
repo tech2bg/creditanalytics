@@ -218,6 +218,52 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == csqs)
+			return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
+
+		if (null == dcFunding) return null;
+
+		try {
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = value
+				(valParams, pricerParams, csqs, quotingParams);
+
+			if (null == mapMeasures) return null;
+
+			double dblEffectiveDate = effective().julian();
+
+			double dblDFEffective = dcFunding.df (dblEffectiveDate);
+
+			double dblDFMaturity = dcFunding.df (maturity().julian());
+
+			org.drip.quant.calculus.WengertJacobian wjDFEffective = dcFunding.jackDDFDManifestMeasure
+				(dblEffectiveDate, "Rate");
+
+			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dcFunding.jackDDFDManifestMeasure
+				(maturity().julian(), "Rate");
+
+			if (null == wjDFEffective || null == wjDFMaturity) return null;
+
+			org.drip.quant.calculus.WengertJacobian wjPVDFMicroJack = new
+				org.drip.quant.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
+
+			for (int i = 0; i < wjDFMaturity.numParameters(); ++i) {
+				if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, i, wjDFMaturity.getFirstDerivative
+					(0, i) / dblDFEffective))
+					return null;
+
+				if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, i,
+					-wjDFEffective.getFirstDerivative (0, i) * dblDFMaturity / dblDFEffective /
+						dblDFEffective))
+					return null;
+			}
+
+			return wjPVDFMicroJack;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
 		return null;
 	}
 
@@ -228,6 +274,50 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
+		if (null == valParams || valParams.valueDate() >= maturity().julian() || null ==
+			strManifestMeasure || strManifestMeasure.isEmpty() || null == csqs)
+			return null;
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
+
+		if (null == dcFunding) return null;
+
+		if ("Rate".equalsIgnoreCase (strManifestMeasure)) {
+			double dblEffectiveDate = effective().julian();
+
+			try {
+				double dblDFEffective = dcFunding.df (dblEffectiveDate);
+
+				double dblDFMaturity = dcFunding.df (maturity().julian());
+
+				org.drip.quant.calculus.WengertJacobian wjDFEffective = dcFunding.jackDDFDManifestMeasure
+					(dblEffectiveDate, "Rate");
+
+				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dcFunding.jackDDFDManifestMeasure
+					(maturity().julian(), "Rate");
+
+				if (null == wjDFEffective || null == wjDFMaturity) return null;
+
+				org.drip.quant.calculus.WengertJacobian wjDFMicroJack = new
+					org.drip.quant.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
+
+				for (int i = 0; i < wjDFMaturity.numParameters(); ++i) {
+					if (!wjDFMicroJack.accumulatePartialFirstDerivative (0, i,
+						wjDFMaturity.getFirstDerivative (0, i) / dblDFEffective))
+						return null;
+
+					if (!wjDFMicroJack.accumulatePartialFirstDerivative (0, i, -1. *
+						wjDFEffective.getFirstDerivative (0, i) * dblDFMaturity / dblDFEffective /
+							dblDFEffective))
+						return null;
+				}
+
+				return wjDFMicroJack;
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 		return null;
 	}
 

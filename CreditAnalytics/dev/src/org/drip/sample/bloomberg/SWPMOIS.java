@@ -73,9 +73,10 @@ public class SWPMOIS {
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
 				null,
-				strCurrency);
+				strCurrency
+			);
 
-		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
+		CalibratableFixedIncomeComponent[] aEDF = IRFutureBuilder.GenerateFuturesPack (dtEffective, iNumFutures, strCurrency);
 
 		for (int i = aiDay.length; i < aiDay.length + iNumFutures; ++i)
 			aCalibComp[i] = aEDF[i - aiDay.length];

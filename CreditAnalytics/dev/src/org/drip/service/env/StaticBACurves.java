@@ -340,7 +340,7 @@ public class StaticBACurves {
 
 		long lStart = System.nanoTime();
 
-		if (null == (aCompCalib = org.drip.product.creator.EDFutureBuilder.GenerateEDPack (dt, 8,
+		if (null == (aCompCalib = org.drip.product.creator.IRFutureBuilder.GenerateFuturesPack (dt, 8,
 			strCurrency)) || 8 != aCompCalib.length)
 			return false;
 
@@ -431,7 +431,7 @@ public class StaticBACurves {
 			astrCalibMeasure[i] = "Rate";
 
 			try {
-				aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dt.addDays (2), new
+				aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit2 (dt.addDays (2), new
 					org.drip.analytics.date.JulianDate (adblDate[i]), null, strCurrency);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -442,8 +442,8 @@ public class StaticBACurves {
 
 		// Next 8 instruments - EDF calibration
 
-		if (null == (aEDF = org.drip.product.creator.EDFutureBuilder.GenerateEDPack (dt, 8, strCurrency)) || 8 !=
-			aEDF.length)
+		if (null == (aEDF = org.drip.product.creator.IRFutureBuilder.GenerateFuturesPack (dt, 8,
+			strCurrency)) || 8 != aEDF.length)
 			return false;
 
 		adblCompCalibValue[7] = .0027;

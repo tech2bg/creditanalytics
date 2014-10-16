@@ -69,13 +69,14 @@ public class IRSVolCorrAnalysis {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = DepositBuilder.CreateDeposit (
+			aCalibComp[i] = DepositBuilder.CreateDeposit2 (
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
 				null,
-				strCurrency);
+				strCurrency
+			);
 
-		CalibratableFixedIncomeComponent[] aEDF = EDFutureBuilder.GenerateEDPack (dtEffective, iNumFutures, strCurrency);
+		CalibratableFixedIncomeComponent[] aEDF = IRFutureBuilder.GenerateFuturesPack (dtEffective, iNumFutures, strCurrency);
 
 		for (int i = aiDay.length; i < aiDay.length + iNumFutures; ++i)
 			aCalibComp[i] = aEDF[i - aiDay.length];

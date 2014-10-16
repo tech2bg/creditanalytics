@@ -184,14 +184,14 @@ public class CustomDiscountCurveBuilder {
 	}
 
 	private static final LatentStateStretchSpec EDFStretch (
-		final EDFComponent[] aEDF,
+		final SingleStreamComponent[] aEDF,
 		final double[] adblQuote)
 		throws Exception
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aEDF.length];
 
 		for (int i = 0; i < aEDF.length; ++i) {
-			EDFComponentQuoteSet edfQuote = new EDFComponentQuoteSet (
+			FloatingStreamQuoteSet edfQuote = new FloatingStreamQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
@@ -206,7 +206,7 @@ public class CustomDiscountCurveBuilder {
 				}
 			);
 
-			edfQuote.setRate (adblQuote[i]);
+			edfQuote.setForwardRate (adblQuote[i]);
 
 			aSegmentSpec[i] = new LatentStateSegmentSpec (
 				aEDF[i],
@@ -441,7 +441,7 @@ public class CustomDiscountCurveBuilder {
 		 * Construct the Array of EDF Instruments and their Quotes from the given set of parameters
 		 */
 
-		EDFComponent[] aEDFComp = EDFutureBuilder.GenerateEDPack (
+		SingleStreamComponent[] aEDFComp = IRFutureBuilder.GenerateFuturesPack (
 			dtSpot,
 			8,
 			strCurrency

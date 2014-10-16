@@ -179,7 +179,8 @@ public class YAS {
 				dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
 				null,
-				strCurrency);
+				strCurrency
+			);
 		}
 
 		// IRS Calibration

@@ -76,7 +76,7 @@ public class OvernightArithmeticCompoundingConvexity {
 		GenericDepositComponent[] aDeposit = new GenericDepositComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = DepositBuilder.CreateDeposit2 (
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),

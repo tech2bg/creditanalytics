@@ -76,7 +76,7 @@ public class CrossOvernightFloatingStream {
 		GenericDepositComponent[] aDeposit = new GenericDepositComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = DepositBuilder.CreateDeposit2 (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],
@@ -124,21 +124,19 @@ public class CrossOvernightFloatingStream {
 	}
 
 	private static final LatentStateStretchSpec EDFStretch (
-		final EDFComponent[] aEDF,
+		final SingleStreamComponent[] aEDF,
 		final double[] adblQuote)
 		throws Exception
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aEDF.length];
 
-		String strCurrency = aEDF[0].payCurrency()[0];
-
 		for (int i = 0; i < aEDF.length; ++i) {
-			EDFComponentQuoteSet edfQuote = new EDFComponentQuoteSet (
+			FloatingStreamQuoteSet edfQuote = new FloatingStreamQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
 						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (strCurrency)
+						FundingLabel.Standard (aEDF[i].payCurrency()[0])
 					),
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
@@ -148,7 +146,7 @@ public class CrossOvernightFloatingStream {
 				}
 			);
 
-			edfQuote.setRate (adblQuote[i]);
+			edfQuote.setForwardRate (adblQuote[i]);
 
 			aSegmentSpec[i] = new LatentStateSegmentSpec (
 				aEDF[i],
@@ -315,7 +313,7 @@ public class CrossOvernightFloatingStream {
 		 * Construct the Array of EDF Instruments and their Quotes from the given set of parameters
 		 */
 
-		EDFComponent[] aEDFComp = EDFutureBuilder.GenerateEDPack (
+		SingleStreamComponent[] aEDFComp = IRFutureBuilder.GenerateFuturesPack (
 			dtSpot,
 			4,
 			strCurrency

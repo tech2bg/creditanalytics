@@ -110,7 +110,7 @@ public class IBOR {
 		String strCurrency = fri.currency();
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = DepositBuilder.CreateDeposit2 (
 				dtEffective,
 				dtEffective.addTenor (astrMaturityTenor[i]),
 				fri,
