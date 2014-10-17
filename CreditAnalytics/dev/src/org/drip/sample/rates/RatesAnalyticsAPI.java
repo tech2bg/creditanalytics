@@ -275,7 +275,7 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = DepositBuilder.CreateDeposit2 (
+			aCompCalib[i] = DepositBuilder.CreateDeposit (
 				dtCashEffective, // Effective
 				new JulianDate (adblMaturity[i]).addBusDays (2, "USD"), // Maturity
 				null, // FRI

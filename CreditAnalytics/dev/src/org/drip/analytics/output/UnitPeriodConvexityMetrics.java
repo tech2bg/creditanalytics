@@ -56,7 +56,7 @@ public class UnitPeriodConvexityMetrics {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) || _dblEndDate <=
+			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) || _dblEndDate <
 				_dblStartDate || null == (_convAdj = convAdj))
 			throw new java.lang.Exception ("UnitPeriodConvexityMetrics ctr: Invalid Inputs");
 	}

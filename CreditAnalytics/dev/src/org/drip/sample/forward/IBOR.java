@@ -97,7 +97,7 @@ public class IBOR {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final GenericDepositComponent[] DepositFromMaturityDays (
+	private static final SingleStreamComponent[] DepositFromMaturityDays (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final ForwardLabel fri)
@@ -105,12 +105,12 @@ public class IBOR {
 	{
 		if (null == astrMaturityTenor || 0 == astrMaturityTenor.length) return null;
 
-		GenericDepositComponent[] aDeposit = new GenericDepositComponent[astrMaturityTenor.length];
+		SingleStreamComponent[] aDeposit = new SingleStreamComponent[astrMaturityTenor.length];
 
 		String strCurrency = fri.currency();
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit2 (
+			aDeposit[i] = DepositBuilder.CreateDeposit (
 				dtEffective,
 				dtEffective.addTenor (astrMaturityTenor[i]),
 				fri,
@@ -396,7 +396,7 @@ public class IBOR {
 
 		JulianDate dtValue = dc.epoch();
 
-		GenericDepositComponent[] aDeposit = DepositFromMaturityDays (
+		SingleStreamComponent[] aDeposit = DepositFromMaturityDays (
 			dtValue,
 			astrDepositTenor,
 			fri

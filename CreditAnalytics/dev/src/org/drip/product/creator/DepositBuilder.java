@@ -41,45 +41,6 @@ package org.drip.product.creator;
 public class DepositBuilder {
 
 	/**
-	 * Create a Deposit product from effective date, tenor, IR curve name, and code.
-	 * 
-	 * @param dtEffective JulianDate specifying the effective date
-	 * @param strTenor String tenor
-	 * @param strIR IR curve name
-	 * @param strCode Product Code
-	 * 
-	 * @return Deposit Object
-	 */
-
-	public static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateDeposit2 (
-		final org.drip.analytics.date.JulianDate dtEffective,
-		final java.lang.String strTenor,
-		final java.lang.String strIR,
-		final java.lang.String strCode)
-	{
-		if (null == dtEffective || null == strTenor || strTenor.isEmpty() || null == strIR ||
-			strIR.isEmpty()) {
-			System.out.println ("Invalid DepositBuilder.CreateDeposit params!");
-
-			return null;
-		}
-
-		try {
-			org.drip.product.definition.CalibratableFixedIncomeComponent deposit = new
-				org.drip.product.rates.GenericDepositComponent (dtEffective, dtEffective.addTenor (strTenor),
-					null, strIR, "Act/360", strIR);
-
-			deposit.setPrimaryCode (strCode + "." + strTenor + "." + strIR);
-
-			return deposit;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
 	 * Create a Deposit product from effective and maturity dates, and the IR curve
 	 * 
 	 * @param dtEffective Effective date
@@ -118,24 +79,6 @@ public class DepositBuilder {
 	}
 
 	/**
-	 * Create the Deposit product from the effective date, tenor, and the IR curve name.
-	 * 
-	 * @param dtEffective JulianDate Effective
-	 * @param strTenor String tenor
-	 * @param strIR IR Curve Name
-	 * 
-	 * @return Deposit object
-	 */
-
-	public static final org.drip.product.definition.CalibratableFixedIncomeComponent CreateDeposit (
-		final org.drip.analytics.date.JulianDate dtEffective,
-		final java.lang.String strTenor,
-		final java.lang.String strIR)
-	{
-		return CreateDeposit2 (dtEffective, strTenor, strIR, "CD");
-	}
-
-	/**
 	 * Create a Deposit product from effective and maturity dates, and the Currency
 	 * 
 	 * @param dtEffective Effective date
@@ -157,21 +100,26 @@ public class DepositBuilder {
 
 		java.lang.String strTenor = friDeposit.tenor();
 
-		java.lang.String strCode = "DEPOSIT::" + strTenor + "::{" + dtEffective + "->" + dtMaturity + "}";
+		boolean bIsON = "ON".equalsIgnoreCase (strTenor);
+
+		java.lang.String strCode = "DEPOSIT::" + friDeposit.fullyQualifiedName() + "::{" + dtEffective + "->"
+			+ dtMaturity + "}";
 
 		try {
-			int iFreq = 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths (strTenor);
+			int iFreq = bIsON ? 360 : 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths
+				(strTenor);
 
 			org.drip.param.period.UnitCouponAccrualSetting ucas = new
 				org.drip.param.period.UnitCouponAccrualSetting (iFreq, "Act/360", false, "Act/360", false,
 					strCurrency, false);
 
 			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
-				org.drip.param.period.ComposableFloatingUnitSetting (strTenor,
-					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
-						friDeposit,
-							org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-								null, 0.);
+				org.drip.param.period.ComposableFloatingUnitSetting (strTenor, bIsON ?
+					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT :
+						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
+							friDeposit,
+								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+				null, 0.);
 
 			org.drip.param.period.CompositePeriodSetting cps = new
 				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null,

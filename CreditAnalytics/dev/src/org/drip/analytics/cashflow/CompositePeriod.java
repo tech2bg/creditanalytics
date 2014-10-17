@@ -1028,19 +1028,26 @@ public abstract class CompositePeriod {
 			for (org.drip.analytics.output.UnitPeriodMetrics upm : cpm.unitMetrics()) {
 				double dblDateAnchor = upm.endDate();
 
-				double dblForwardLoading = dblNotional * dblFX * upm.dcf() * dblSurvival * dblDF *
-					upm.convAdj().cumulative();
+				if (cpqs.containsBaseRate()) {
+					if (!prwc.addPredictorResponseWeight (dblDateAnchor, 1.)) return null;
 
-				if (!prwc.addPredictorResponseWeight (dblDateAnchor, dblForwardLoading)) return null;
+					if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblDateAnchor, 1.))
+						return null;
+				} else {
+					double dblForwardLoading = dblNotional * dblFX * upm.dcf() * dblSurvival * dblDF *
+						upm.convAdj().cumulative();
 
-				if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblDateAnchor, dblForwardLoading))
-					return null;
+					if (!prwc.addPredictorResponseWeight (dblDateAnchor, dblForwardLoading)) return null;
 
-				if (!prwc.updateValue (-1. * dblForwardLoading * dblBasis)) return null;
+					if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblDateAnchor, dblForwardLoading))
+						return null;
+
+					if (!prwc.updateValue (-1. * dblForwardLoading * dblBasis)) return null;
+				}
 			}
 		}
 
-		if (!prwc.updateValue (dblAccrued)) return null;
+		if (!prwc.updateValue (cpqs.containsBaseRate() ? dblBaseRate : dblAccrued)) return null;
 
 		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
 

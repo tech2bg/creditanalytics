@@ -193,7 +193,12 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		return _stream.value (valParams, pricerParams, csqs, quotingParams);
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = _stream.value
+			(valParams, pricerParams, csqs, quotingParams);
+
+		mapResult.put ("ForwardRate", mapResult.get ("Rate"));
+
+		return mapResult;
 	}
 
 	@Override public java.util.Set<java.lang.String> measureNames()

@@ -643,7 +643,7 @@ public class ProductTestSuite {
 			adblRate[i] = 0.02;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit2 (dt.addDays (2), new
+			aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dt.addDays (2), new
 				org.drip.analytics.date.JulianDate (adblDate[i]), null, "USD");
 		}
 
@@ -1095,7 +1095,7 @@ public class ProductTestSuite {
 		throws java.lang.Exception
 	{
 		org.drip.product.definition.CalibratableFixedIncomeComponent cash =
-			org.drip.product.creator.DepositBuilder.CreateDeposit2 (dt.addDays (2), dt.addDays (10), null,
+			org.drip.product.creator.DepositBuilder.CreateDeposit (dt.addDays (2), dt.addDays (10), null,
 				"USD");
 
 		org.drip.analytics.output.ComponentMeasures cashOut = cash.measures (new

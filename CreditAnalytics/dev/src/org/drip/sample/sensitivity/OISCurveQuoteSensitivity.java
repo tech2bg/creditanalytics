@@ -75,18 +75,21 @@ public class OISCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final GenericDepositComponent[] DepositInstrumentsFromMaturityDays (
+	private static final SingleStreamComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
-		final int[] aiDay,
-		final String strCurrency)
+		final String strCurrency,
+		final int[] aiDay)
 		throws Exception
 	{
-		GenericDepositComponent[] aDeposit = new GenericDepositComponent[aiDay.length];
+		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit2 (
+			aDeposit[i] = DepositBuilder.CreateDeposit (
 				dtEffective,
-				dtEffective.addBusDays (aiDay[i], strCurrency),
+				dtEffective.addBusDays (
+					aiDay[i],
+					strCurrency
+				),
 				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
 				strCurrency
 			);
@@ -95,7 +98,7 @@ public class OISCurveQuoteSensitivity {
 	}
 
 	private static final LatentStateStretchSpec DepositStretch (
-		final GenericDepositComponent[] aDeposit,
+		final SingleStreamComponent[] aDeposit,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -104,17 +107,22 @@ public class OISCurveQuoteSensitivity {
 		String strCurrency = aDeposit[0].payCurrency()[0];
 
 		for (int i = 0; i < aDeposit.length; ++i) {
-			DepositComponentQuoteSet depositQuote = new DepositComponentQuoteSet (
+			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
 				new LatentStateSpecification[] {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
 						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						FundingLabel.Standard (strCurrency)
+					),
+					new LatentStateSpecification (
+						LatentStateStatic.LATENT_STATE_FORWARD,
+						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
+						aDeposit[i].forwardLabel()[0]
 					)
 				}
 			);
 
-			depositQuote.setRate (adblQuote[i]);
+			depositQuote.set ("ForwardRate", adblQuote[i]);
 
 			aSegmentSpec[i] = new LatentStateSegmentSpec (
 				aDeposit[i],
@@ -451,10 +459,10 @@ public class OISCurveQuoteSensitivity {
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
 
-		GenericDepositComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
+		SingleStreamComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
-			new int[] {1, 2, 3},
-			strCurrency
+			strCurrency,
+			new int[] {1, 2, 3}
 		);
 
 		double[] adblDepositQuote = new double[] {
