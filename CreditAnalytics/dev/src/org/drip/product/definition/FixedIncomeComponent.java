@@ -147,7 +147,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 	 * @return The Product's coupon Nominal/Adjusted Coupon Measures
 	 */
 
-	public abstract org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
+	public abstract org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
@@ -190,7 +190,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 	 * @return List of the Product's Cash Flow Periods
 	 */
 
-	public abstract java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod();
+	public abstract java.util.List<org.drip.analytics.cashflow.CompositePeriod> cashFlowPeriod();
 
 	/**
 	 * Get the Product's cash settlement parameters

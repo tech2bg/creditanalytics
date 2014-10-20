@@ -553,7 +553,7 @@ public class CustomDiscountCurveReconciler {
 		 * Construct the Array of EDF Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aEDFComp = IRFutureBuilder.GenerateFuturesPack (
+		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.GenerateFuturesPack (
 			dtSpot,
 			8,
 			strCurrency

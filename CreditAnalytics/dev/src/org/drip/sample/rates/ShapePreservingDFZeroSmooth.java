@@ -106,7 +106,7 @@ public class ShapePreservingDFZeroSmooth {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
 				null,
@@ -389,7 +389,7 @@ public class ShapePreservingDFZeroSmooth {
 		 * Construct the Array of EDF Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aEDFComp = IRFutureBuilder.GenerateFuturesPack (
+		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.GenerateFuturesPack (
 			dtSpot,
 			8,
 			strCurrency

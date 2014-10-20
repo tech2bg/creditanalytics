@@ -792,7 +792,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		int iNumComp = aComp.length;
 
 		for (int i = 0; i < iNumComp; ++i)
-			dblCoupon += aComp[i].coupon (dblDate, null, csqs).compoundedAccrualRate();
+			dblCoupon += aComp[i].coupon (dblDate, null, csqs).rate();
 
 		return dblCoupon / dblNotional;
 	}

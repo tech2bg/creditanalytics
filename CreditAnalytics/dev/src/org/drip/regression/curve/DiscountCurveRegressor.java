@@ -128,9 +128,10 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						adblRate[i] = java.lang.Double.NaN;
 
 						try {
-							_aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit
-								(_dtStart.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i]),
-									null, _strCurrency);
+							_aCompCalib[i] =
+								org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit
+									(_dtStart.addDays (2), new org.drip.analytics.date.JulianDate
+										(adblDate[i]), null, _strCurrency);
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 
@@ -149,7 +150,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					org.drip.analytics.date.JulianDate dtEDFStart = _dtStart;
 
 					org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
-						org.drip.product.creator.IRFutureBuilder.GenerateFuturesPack (_dtStart, 8,
+						org.drip.product.creator.SingleStreamComponentBuilder.GenerateFuturesPack (_dtStart, 8,
 							_strCurrency);
 
 					for (int i = 0; i < 8; ++i) {

@@ -540,10 +540,10 @@ public class RatesClosesLoader {
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		org.drip.product.rates.GenericFixFloatComponent irs = (org.drip.product.rates.GenericFixFloatComponent) comp;
+		org.drip.product.rates.GenericFixFloatComponent irs =
+			(org.drip.product.rates.GenericFixFloatComponent) comp;
 
-		double dblFixedCoupon = irs.referenceStream().coupon (dtPrev.julian(), null,
-			null).compoundedAccrualRate();
+		double dblFixedCoupon = irs.referenceStream().coupon (dtPrev.julian(), null, null).rate();
 
 		boolean bApplyFixedCouponEOMAdj = "30/360".equalsIgnoreCase (_mapFixedDC.get (strCurrency));
 
@@ -558,7 +558,7 @@ public class RatesClosesLoader {
 
 		double dblProductFloatingRate = irs.derivedStream().coupon (dtPrev.julian(), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null,
-				null, null, null, null)).compoundedAccrualRate();
+				null, null, null, null)).rate();
 
 		double dblCurveFloatingRate = dcDatePrevQuotePrev.libor (dtPrev.julian(),
 			irs.forwardLabel()[0].tenor());
@@ -603,7 +603,7 @@ public class RatesClosesLoader {
 
 		double dblFloatingRateUsed = irs.derivedStream().coupon (dtPrev.julian(), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dcDatePrevQuotePrev, null, null, null, null,
-				null, lsfc)).compoundedAccrualRate();
+				null, lsfc)).rate();
 
 		double dblCleanFloatDV01WithFixing = calcMeasure (comp, dtPrev, dcDatePrevQuotePrev, "Fixing01",
 			strCurrency, lsfc);
@@ -935,7 +935,7 @@ public class RatesClosesLoader {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			aCalibComp[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dtEffective,
+			aCalibComp[i] = org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit (dtEffective,
 				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency), null, strCurrency);
 
 		return aCalibComp;

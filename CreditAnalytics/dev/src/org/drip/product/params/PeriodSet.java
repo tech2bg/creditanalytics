@@ -90,7 +90,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 
 	public double _dblFinalMaturity = java.lang.Double.NaN;
 
-	protected java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> _lsCouponPeriod = null;
+	protected java.util.List<org.drip.analytics.cashflow.CompositePeriod> _lsCouponPeriod = null;
 
 	/**
 	 * Construct PeriodSet from the effective date, day count, frequency, and the list of coupon periods
@@ -105,7 +105,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 		final double dblEffective,
 		final java.lang.String strDC,
 		final int iFreq,
-		final java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsCouponPeriod)
+		final java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod)
 	{
 		_iFreq = iFreq;
 		_strCouponDC = strDC;
@@ -120,7 +120,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEffective) || 0 == _iFreq)
 			return false;
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod fp : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.CompositePeriod fp : _lsCouponPeriod) {
 			if (null == fp || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity = fp.endDate()))
 				return false;
 		}
@@ -135,7 +135,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	 * @return List of Coupon Period
 	 */
 
-	public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> getPeriods()
+	public java.util.List<org.drip.analytics.cashflow.CompositePeriod> getPeriods()
 	{
 		return _lsCouponPeriod;
 	}
@@ -146,7 +146,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	 * @return The first Coupon period
 	 */
 
-	public org.drip.analytics.cashflow.GenericCouponPeriod getFirstPeriod()
+	public org.drip.analytics.cashflow.CompositePeriod getFirstPeriod()
 	{
 		return _lsCouponPeriod.get (0);
 	}
@@ -157,7 +157,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	 * @return The final Coupon period
 	 */
 
-	public org.drip.analytics.cashflow.GenericCouponPeriod getLastPeriod()
+	public org.drip.analytics.cashflow.CompositePeriod getLastPeriod()
 	{
 		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
 	}
@@ -181,7 +181,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 
 		int i = 0;
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _lsCouponPeriod) {
 			if (period.contains (dblDate)) return i;
 
 			++i;
@@ -199,7 +199,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	 * @return Period object corresponding to the input index
 	 */
 
-	public org.drip.analytics.cashflow.GenericCouponPeriod getPeriod (
+	public org.drip.analytics.cashflow.CompositePeriod getPeriod (
 		final int iIndex)
 	{
 		try {

@@ -402,7 +402,7 @@ public class BondManager {
 
 			try {
 				java.lang.String strRunName = bond.getTicker() + "  " + df2p.format (100. * bond.coupon
-					(valParams.valueDate(), valParams, null).compoundedAccrualRate()) + " " +
+					(valParams.valueDate(), valParams, null).rate()) + " " +
 						(org.drip.analytics.date.JulianDate.Year (bond.maturity().julian()) - 2000);
 
 				if (bond.isFloater()) {
@@ -474,7 +474,7 @@ public class BondManager {
 
 				try {
 					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. * bond.coupon
-						(valParams.valueDate(), valParams, null).compoundedAccrualRate()) + " " +
+						(valParams.valueDate(), valParams, null).rate()) + " " +
 							(org.drip.analytics.date.JulianDate.Year (bond.maturity().julian()) - 2000);
 
 					if (bond.isFloater())
@@ -531,8 +531,8 @@ public class BondManager {
 
 				try {
 					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. * bond.coupon
-						(dt.julian(), null, null).compoundedAccrualRate()) + " " +
-							(org.drip.analytics.date.JulianDate.Year (bond.maturity().julian()) - 2000);
+						(dt.julian(), null, null).rate()) + " " + (org.drip.analytics.date.JulianDate.Year
+							(bond.maturity().julian()) - 2000);
 
 					if (!s_mapBondMarks.containsKey (bond.getISIN()) && !s_mapBondMarks.containsKey
 						(bond.getCUSIP())) {

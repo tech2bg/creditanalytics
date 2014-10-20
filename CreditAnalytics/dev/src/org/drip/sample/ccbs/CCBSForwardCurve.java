@@ -1,11 +1,14 @@
 
 package org.drip.sample.ccbs;
 
+import java.util.List;
+
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.fx.*;
@@ -66,79 +69,108 @@ public class CCBSForwardCurve {
 		final String strPayCurrency,
 		final String strCouponCurrency,
 		final double dblNotional,
-		final String[] astrTenor,
+		final String[] astrMaturityTenor,
 		final int iTenorInMonths)
 		throws Exception
 	{
-		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrTenor.length];
+		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		for (int i = 0; i < astrTenor.length; ++i) {
+		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strPayCurrency,
+			true
+		);
 
-			/*
-			 * The Reference 6M Leg
-			 */
+		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
+			12 / iTenorInMonths,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strPayCurrency,
+			true
+		);
 
-			GenericStream fsReference = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					2,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strPayCurrency,
-					-1. * dblNotional,
-					null,
-					0.,
-					strPayCurrency,
-					strCouponCurrency,
-					ForwardLabel.Standard (strCouponCurrency + "-LIBOR-6M"),
-					null
+		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-6M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
+			iTenorInMonths + "M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		CompositePeriodSetting cpsReference = new CompositePeriodSetting (
+			2,
+			"6M",
+			strPayCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1. * dblNotional,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CompositePeriodSetting cpsDerived = new CompositePeriodSetting (
+			12 / iTenorInMonths,
+			iTenorInMonths + "M",
+			strPayCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1. * dblNotional,
+			null,
+			null,
+			null,
+			null
+		);
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			List<Double> lsReferenceStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			List<Double> lsDerivedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				iTenorInMonths + "M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			Stream referenceStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsReferenceStreamEdgeDate,
+					cpsReference,
+					ucasReference,
+					cfusReference
 				)
 			);
 
-			/*
-			 * The Derived Leg
-			 */
-
-			GenericStream fsDerived = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					12 / iTenorInMonths,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strPayCurrency,
-					dblNotional,
-					null,
-					0.,
-					strPayCurrency,
-					strCouponCurrency,
-					ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-					null
+			Stream derivedStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsDerivedStreamEdgeDate,
+					cpsDerived,
+					ucasDerived,
+					cfusDerived
 				)
 			);
 
@@ -147,12 +179,12 @@ public class CCBSForwardCurve {
 			 */
 
 			aFFC[i] = new FloatFloatComponent (
-				fsReference,
-				fsDerived,
+				referenceStream,
+				derivedStream,
 				new CashSettleParams (0, strPayCurrency, 0)
 			);
 
-			aFFC[i].setPrimaryCode (fsReference.name() + "||" + fsDerived.name());
+			aFFC[i].setPrimaryCode (referenceStream.name() + "||" + derivedStream.name());
 		}
 
 		return aFFC;

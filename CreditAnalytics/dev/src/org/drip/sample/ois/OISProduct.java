@@ -74,7 +74,7 @@ public class OISProduct {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],

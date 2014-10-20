@@ -161,7 +161,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return _fixReference.notional (dblDate1, dblDate2);
 	}
 
-	@Override public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
+	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -236,9 +236,16 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 			dtFloatReferenceFirstCoupon : dtFloatDerivedFirstCoupon;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> cashFlowPeriod()
 	{
-		return null;
+		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCP = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
+
+		lsCP.addAll (_fixReference.cashFlowPeriod());
+
+		lsCP.addAll (_floatDerived.cashFlowPeriod());
+
+		return lsCP;
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
@@ -676,7 +683,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 				if (null == dcFunding) return null;
 
-				for (org.drip.analytics.cashflow.GenericCouponPeriod p : cashFlowPeriod()) {
+				for (org.drip.analytics.cashflow.CompositePeriod p : cashFlowPeriod()) {
 					double dblPeriodPayDate = p.payDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;

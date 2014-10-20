@@ -135,7 +135,7 @@ public class GenericSingleStreamComponent extends org.drip.product.definition.Fi
 		return _stream.notional (dblDate1, dblDate2);
 	}
 
-	@Override public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
+	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -163,9 +163,9 @@ public class GenericSingleStreamComponent extends org.drip.product.definition.Fi
 		return _stream.firstCouponDate();
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> cashFlowPeriod()
 	{
-		return _stream.cashFlowPeriod();
+		return null;
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()

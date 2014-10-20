@@ -7,7 +7,7 @@ import org.drip.analytics.cashflow.GenericCouponPeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.LatentStateStatic;
-import org.drip.analytics.output.GenericCouponPeriodMetrics;
+import org.drip.analytics.output.CompositePeriodCouponMetrics;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
@@ -76,7 +76,7 @@ public class FedFundOvernightCompounding {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],
@@ -760,13 +760,13 @@ public class FedFundOvernightCompounding {
 
 		GenericCouponPeriod period = lsArithmeticFloatPeriods.get (0);
 
-		GenericCouponPeriodMetrics pcmArithmetic = floatStreamArithmetic.coupon (
+		CompositePeriodCouponMetrics pcmArithmetic = floatStreamArithmetic.coupon (
 			period.endDate(),
 			valParams,
 			mktParams
 		);
 
-		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + pcmArithmetic.compoundedAccrualRate());
+		System.out.println ("\tPeriod #1 Coupon Without Convexity Adjustment: " + pcmArithmetic.rate());
 
 		double dblOISVol = 0.3;
 		double dblUSDFundingVol = 0.3;
@@ -783,7 +783,7 @@ public class FedFundOvernightCompounding {
 				period.endDate(),
 				valParams,
 				mktParams
-			).compoundedAccrualRate()
+			).rate()
 		);
 	}
 }

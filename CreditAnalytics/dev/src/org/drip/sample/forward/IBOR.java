@@ -9,7 +9,7 @@ import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
-import org.drip.product.creator.DepositBuilder;
+import org.drip.product.creator.SingleStreamComponentBuilder;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.fra.FRAStandardComponent;
 import org.drip.product.rates.*;
@@ -110,7 +110,7 @@ public class IBOR {
 		String strCurrency = fri.currency();
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
 				dtEffective,
 				dtEffective.addTenor (astrMaturityTenor[i]),
 				fri,

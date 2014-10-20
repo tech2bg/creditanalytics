@@ -867,6 +867,27 @@ public abstract class CompositePeriod {
 	}
 
 	/**
+	 * Compute the Full Coupon DCF
+	 * 
+	 * @return The Full Coupon Accrual DCF
+	 * 
+	 * @throws java.lang.Exception Thrown if the Full Coupon DCF cannot be calculated
+	 */
+
+	public double couponDCF()
+		throws java.lang.Exception
+	{
+		int iNumPeriodUnit = _lsCUP.size();
+
+		double dblAccrualDCF = 0.;
+
+		for (int i = 0; i < iNumPeriodUnit; ++i)
+			dblAccrualDCF += _lsCUP.get (i).fullCouponDCF();
+
+		return dblAccrualDCF;
+	}
+
+	/**
 	 * Compute the Coupon Accrual Measures to the specified Accrual End Date
 	 * 
 	 * @param dblValueDate The Valuation Date

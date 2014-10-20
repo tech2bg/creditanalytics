@@ -99,9 +99,12 @@ public class ScenarioDiscountCurveBuilder {
 												"LIBOR", "3M"), null));
 
 					comp = new org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream, null);
-				} else
-					comp = new org.drip.product.rates.GenericDepositComponent (dtEffective, dtMaturity, null,
-						strCurrency, "Act/360", strCurrency);
+				} else {
+					comp = null;
+
+					/* comp = new org.drip.product.rates.GenericDepositComponent (dtEffective, dtMaturity, null,
+						strCurrency, "Act/360", strCurrency); */
+				}
 
 				lsCompDENSE.add (comp);
 

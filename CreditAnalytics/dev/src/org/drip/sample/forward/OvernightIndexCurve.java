@@ -11,7 +11,7 @@ import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
-import org.drip.product.creator.DepositBuilder;
+import org.drip.product.creator.SingleStreamComponentBuilder;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -71,7 +71,7 @@ public class OvernightIndexCurve {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = DepositBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],

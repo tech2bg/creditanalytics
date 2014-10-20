@@ -548,7 +548,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return _crValParams;
 	}
 
-	@Override public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
+	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -556,20 +556,16 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		try {
 			org.drip.analytics.cashflow.GenericCouponPeriod period = calcCurrentPeriod (dblAccrualEndDate);
 
-			double dblPeriodEndDate = period.endDate();
+			org.drip.analytics.output.UnitPeriodMetrics upm = new org.drip.analytics.output.UnitPeriodMetrics
+				(period.startDate(), period.endDate(), period.couponDCF(), period.fixedCoupon(), new
+					org.drip.analytics.output.ConvexityAdjustment());
 
-			double dblPeriodStartDate = period.startDate();
+			java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsUPM = new
+				java.util.ArrayList<org.drip.analytics.output.UnitPeriodMetrics>();
 
-			java.util.List<org.drip.analytics.output.ResetPeriodMetrics> lsRPM = new
-				java.util.ArrayList<org.drip.analytics.output.ResetPeriodMetrics>();
+			lsUPM.add (upm);
 
-			lsRPM.add (new org.drip.analytics.output.ResetPeriodMetrics (dblPeriodStartDate,
-				dblPeriodEndDate, dblPeriodStartDate, _dblCoupon, 1.));
-
-			return org.drip.analytics.output.GenericCouponPeriodMetrics.Create (dblPeriodStartDate,
-				dblPeriodEndDate, period.payDate(), notional (dblPeriodEndDate),
-					org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, lsRPM, 1., 1.,
-						1., null, creditLabel()[0], null, fundingLabel()[0], null);
+			return org.drip.analytics.output.CompositePeriodCouponMetrics.Create (lsUPM);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -941,12 +937,12 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 						if (null != aComp[i] && aComp[i] instanceof
 							org.drip.product.definition.CreditDefaultSwap) {
 							try {
-								org.drip.analytics.output.GenericCouponPeriodMetrics pcm = coupon
+								org.drip.analytics.output.CompositePeriodCouponMetrics cpcm = coupon
 									(valParams.valueDate(), valParams, csqs);
 
-								if (null == pcm) return null;
+								if (null == cpcm) return null;
 
-								adblRestorableCDSCoupon[i] = pcm.compoundedAccrualRate();
+								adblRestorableCDSCoupon[i] = cpcm.rate();
 
 								((org.drip.product.definition.CreditDefaultSwap) aComp[i]).resetCoupon
 									(dblFixCoupon);

@@ -643,8 +643,8 @@ public class ProductTestSuite {
 			adblRate[i] = 0.02;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = org.drip.product.creator.DepositBuilder.CreateDeposit (dt.addDays (2), new
-				org.drip.analytics.date.JulianDate (adblDate[i]), null, "USD");
+			aCompCalib[i] = org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit (dt.addDays
+				(2), new org.drip.analytics.date.JulianDate (adblDate[i]), null, "USD");
 		}
 
 		// Next 8 instruments - EDF calibration
@@ -660,7 +660,7 @@ public class ProductTestSuite {
 		adblCompCalibValue[14] = .0160;
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
-			org.drip.product.creator.IRFutureBuilder.GenerateFuturesPack (dt, 8, "USD");
+			org.drip.product.creator.SingleStreamComponentBuilder.GenerateFuturesPack (dt, 8, "USD");
 
 		for (int i = 0; i < 8; ++i) {
 			adblRate[i + 7] = 0.02;
@@ -1095,8 +1095,8 @@ public class ProductTestSuite {
 		throws java.lang.Exception
 	{
 		org.drip.product.definition.CalibratableFixedIncomeComponent cash =
-			org.drip.product.creator.DepositBuilder.CreateDeposit (dt.addDays (2), dt.addDays (10), null,
-				"USD");
+			org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit (dt.addDays (2), dt.addDays
+				(10), null, "USD");
 
 		org.drip.analytics.output.ComponentMeasures cashOut = cash.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);
@@ -1193,7 +1193,7 @@ public class ProductTestSuite {
 		throws java.lang.Exception
 	{
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
-			org.drip.product.creator.IRFutureBuilder.GenerateFuturesPack (dt, 1, "USD");
+			org.drip.product.creator.SingleStreamComponentBuilder.GenerateFuturesPack (dt, 1, "USD");
 		
 		org.drip.product.definition.CalibratableFixedIncomeComponent edf = aEDF[0];
 

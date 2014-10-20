@@ -50,13 +50,13 @@ public class DualStreamComponentBuilder {
 	 * @return The FixFloatComponent Instance
 	 */
 
-	public static final org.drip.product.rates.GenericFixFloatComponent MakeFixFloat (
-		final org.drip.product.rates.GenericStream fixReference,
-		final org.drip.product.rates.GenericStream floatDerived,
+	public static final org.drip.product.rates.FixFloatComponent MakeFixFloat (
+		final org.drip.product.rates.Stream fixReference,
+		final org.drip.product.rates.Stream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 	{
 		try {
-			return new org.drip.product.rates.GenericFixFloatComponent (fixReference, floatDerived, csp);
+			return new org.drip.product.rates.FixFloatComponent (fixReference, floatDerived, csp);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -75,8 +75,8 @@ public class DualStreamComponentBuilder {
 	 */
 
 	public static final org.drip.product.rates.FloatFloatComponent MakeFloatFloat (
-		final org.drip.product.rates.GenericStream floatReference,
-		final org.drip.product.rates.GenericStream floatDerived,
+		final org.drip.product.rates.Stream floatReference,
+		final org.drip.product.rates.Stream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 	{
 		try {
@@ -98,9 +98,9 @@ public class DualStreamComponentBuilder {
 	 * @return The DualStreamComponent Instance
 	 */
 
-	public static final org.drip.product.rates.GenericDualStreamComponent MakeDualStream (
-		final org.drip.product.rates.GenericStream streamReference,
-		final org.drip.product.rates.GenericStream streamDerived,
+	public static final org.drip.product.rates.DualStreamComponent MakeDualStream (
+		final org.drip.product.rates.Stream streamReference,
+		final org.drip.product.rates.Stream streamDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 	{
 		return null == streamReference || null == streamDerived ? null : MakeFloatFloat (streamReference,

@@ -47,11 +47,11 @@ package org.drip.product.rates;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FloatFloatComponent extends org.drip.product.rates.GenericDualStreamComponent {
+public class FloatFloatComponent extends org.drip.product.rates.DualStreamComponent {
 	private java.lang.String _strCode = "";
+	private org.drip.product.rates.Stream _floatDerived = null;
+	private org.drip.product.rates.Stream _floatReference = null;
 	private org.drip.param.valuation.CashSettleParams _csp = null;
-	private org.drip.product.rates.GenericStream _floatDerived = null;
-	private org.drip.product.rates.GenericStream _floatReference = null;
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
 		final org.drip.param.valuation.ValuationParams valParams,
@@ -73,8 +73,8 @@ public class FloatFloatComponent extends org.drip.product.rates.GenericDualStrea
 	 */
 
 	public FloatFloatComponent (
-		final org.drip.product.rates.GenericStream floatReference,
-		final org.drip.product.rates.GenericStream floatDerived,
+		final org.drip.product.rates.Stream floatReference,
+		final org.drip.product.rates.Stream floatDerived,
 		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
@@ -162,7 +162,7 @@ public class FloatFloatComponent extends org.drip.product.rates.GenericDualStrea
 		return _floatReference.notional (dblDate1, dblDate2);
 	}
 
-	@Override public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
+	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -197,12 +197,12 @@ public class FloatFloatComponent extends org.drip.product.rates.GenericDualStrea
 		return null;
 	}
 
-	@Override public org.drip.product.rates.GenericStream referenceStream()
+	@Override public org.drip.product.rates.Stream referenceStream()
 	{
 		return _floatReference;
 	}
 
-	@Override public org.drip.product.rates.GenericStream derivedStream()
+	@Override public org.drip.product.rates.Stream derivedStream()
 	{
 		return _floatDerived;
 	}
@@ -243,10 +243,16 @@ public class FloatFloatComponent extends org.drip.product.rates.GenericDualStrea
 			dtFloatReferenceFirstCoupon : dtFloatDerivedFirstCoupon;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> cashFlowPeriod()
 	{
-		return org.drip.analytics.support.AnalyticsHelper.MergePeriodLists
-			(_floatReference.cashFlowPeriod(), _floatDerived.cashFlowPeriod());
+		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCP = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
+
+		lsCP.addAll (_floatReference.cashFlowPeriod());
+
+		lsCP.addAll (_floatDerived.cashFlowPeriod());
+
+		return lsCP;
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()

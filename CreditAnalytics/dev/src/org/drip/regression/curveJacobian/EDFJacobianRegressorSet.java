@@ -82,7 +82,7 @@ public class EDFJacobianRegressorSet implements org.drip.regression.core.Regress
 					org.drip.analytics.date.JulianDate dtEDFStart = dtStart;
 
 					org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
-						org.drip.product.creator.IRFutureBuilder.GenerateFuturesPack (dtStart, 8, "USD");
+						org.drip.product.creator.SingleStreamComponentBuilder.GenerateFuturesPack (dtStart, 8, "USD");
 
 					for (int i = 0; i < NUM_DC_INSTR; ++i) {
 						adblRate[i] = 0.01;

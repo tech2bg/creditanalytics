@@ -161,7 +161,7 @@ public class GenericFixFloatComponent extends org.drip.product.rates.GenericDual
 		return _fixReference.notional (dblDate1, dblDate2);
 	}
 
-	@Override public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
+	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)

@@ -5752,8 +5752,7 @@ public class CreditAnalytics {
 		if (null == bond) throw new java.lang.Exception ("Cannot get Bond " + strBondId);
 
 		if ("Coupon".equalsIgnoreCase (strField))
-			return bond.coupon (org.drip.analytics.date.JulianDate.Today().julian(), null,
-				null).compoundedAccrualRate();
+			return bond.coupon (org.drip.analytics.date.JulianDate.Today().julian(), null, null).rate();
 
 		if ("CurrentCoupon".equalsIgnoreCase (strField)) return bond.getCurrentCoupon();
 

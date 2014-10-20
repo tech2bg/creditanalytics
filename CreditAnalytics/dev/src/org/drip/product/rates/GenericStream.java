@@ -363,13 +363,14 @@ public class GenericStream {
 	 * @return The Coupon Metrics for the period corresponding to the specified accrual end date
 	 */
 
-	public org.drip.analytics.output.GenericCouponPeriodMetrics coupon (
+	public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblAccrualEndDate) || null == csqs) return null;
 
+		org.drip.analytics.output.UnitPeriodMetrics upm = null;
 		org.drip.analytics.cashflow.GenericCouponPeriod currentPeriod = null;
 
 		org.drip.analytics.cashflow.GenericCouponPeriod cpLeft = _lsCouponPeriod.get (0);
@@ -387,7 +388,29 @@ public class GenericStream {
 			}
 		}
 
-		return null == currentPeriod ? null : currentPeriod.baseMetrics (valParams.valueDate(), csqs);
+		if (null == currentPeriod) return null;
+
+		org.drip.analytics.output.GenericCouponPeriodMetrics gcpm = currentPeriod.baseMetrics
+			(valParams.valueDate(), csqs);
+
+		if (null == gcpm) return null;
+
+		try {
+			upm = new org.drip.analytics.output.UnitPeriodMetrics
+				(currentPeriod.accrualStartDate(), currentPeriod.accrualEndDate(), currentPeriod.couponDCF(),
+					gcpm.compoundedAccrualRate(), new org.drip.analytics.output.ConvexityAdjustment());
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsUPM = new
+			java.util.ArrayList<org.drip.analytics.output.UnitPeriodMetrics>();
+
+		lsUPM.add (upm);
+
+		return org.drip.analytics.output.CompositePeriodCouponMetrics.Create (lsUPM);
 	}
 
 	/**

@@ -182,7 +182,8 @@ public class BondBasketAPI {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = DepositBuilder.CreateDeposit (dtCashEffective,
+			aCompCalib[i] = SingleStreamComponentBuilder.CreateDeposit (
+				dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
 				null,
 				strCurrency
