@@ -5,9 +5,14 @@ import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.CompositePeriodBuilder;
+import org.drip.analytics.support.CompositePeriodUtil;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.period.ComposableFloatingUnitSetting;
+import org.drip.param.period.CompositePeriodSetting;
+import org.drip.param.period.UnitCouponAccrualSetting;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -286,79 +291,115 @@ public class FRAStdCapFloor {
 	private static final FloatFloatComponent[] MakexM6MBasisSwap (
 		final JulianDate dtEffective,
 		final String strCurrency,
-		final String[] astrTenor,
+		final String[] astrMaturityTenor,
 		final int iTenorInMonths)
 		throws Exception
 	{
-		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrTenor.length];
+		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		for (int i = 0; i < astrTenor.length; ++i) {
+		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
 
-			/*
-			 * The Reference 6M Leg
-			 */
+		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
 
-			GenericStream fsReference = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					2,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					-1.,
-					null,
-					0.,
-					strCurrency,
-					strCurrency,
-					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
-					null
+		CompositePeriodSetting cpsReference = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
+			12 / iTenorInMonths,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
+			iTenorInMonths + "M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		CompositePeriodSetting cpsDerived = new CompositePeriodSetting (
+			12 / iTenorInMonths,
+			iTenorInMonths + "M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+
+			List<Double> lsReferenceStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			List<Double> lsDerivedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			Stream referenceStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsReferenceStreamEdgeDate,
+					cpsReference,
+					ucasReference,
+					cfusReference
 				)
 			);
 
-			/*
-			 * The Derived Leg
-			 */
-
-			GenericStream fsDerived = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					12 / iTenorInMonths,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					1.,
-					null,
-					0.,
-					strCurrency,
-					strCurrency,
-					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-					null
+			Stream derivedStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsDerivedStreamEdgeDate,
+					cpsDerived,
+					ucasDerived,
+					cfusDerived
 				)
 			);
 
@@ -367,9 +408,9 @@ public class FRAStdCapFloor {
 			 */
 
 			aFFC[i] = new FloatFloatComponent (
-				fsReference,
-				fsDerived,
-				new CashSettleParams (0, strCurrency, 0)
+				referenceStream,
+				derivedStream,
+				csp
 			);
 		}
 
@@ -538,7 +579,6 @@ public class FRAStdCapFloor {
 	}
 
 	private static final void SetVolCorrSurface (
-		final GenericStream floatstream,
 		final CurveSurfaceQuoteSet mktParams,
 		final ForwardLabel fri,
 		final double dblForwardVol,
@@ -597,38 +637,59 @@ public class FRAStdCapFloor {
 
 		JulianDate dtEffective = dtToday.addTenor (strTenor);
 
-		GenericStream floatStream = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				"5Y",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				4,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				0.,
-				strCurrency,
-				strCurrency,
-				fri,
-				null
+		UnitCouponAccrualSetting ucas = new UnitCouponAccrualSetting (
+			4,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfus = new ComposableFloatingUnitSetting (
+			strTenor,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			fri,
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		CompositePeriodSetting cps = new CompositePeriodSetting (
+			4,
+			strTenor,
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
+		Stream floatStream = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				CompositePeriodBuilder.EdgePair (
+					dtEffective,
+					dtEffective.addTenorAndAdjust (strTenor, strCurrency)
+				),
+				cps,
+				ucas,
+				cfus
 			)
 		);
 
 		FRAStandardCapFloor fraCap = new FRAStandardCapFloor (
-			new GenericSingleStreamComponent ("FRA_CAP", floatStream),
+			new SingleStreamComponent ("FRA_CAP", floatStream, csp),
 			strManifestMeasure,
 			true,
 			dblStrike,
@@ -638,7 +699,7 @@ public class FRAStdCapFloor {
 		);
 
 		FRAStandardCapFloor fraFloor = new FRAStandardCapFloor (
-			new GenericSingleStreamComponent ("FRA_FLOOR", floatStream),
+			new SingleStreamComponent ("FRA_FLOOR", floatStream, csp),
 			strManifestMeasure,
 			false,
 			dblStrike,
@@ -654,7 +715,6 @@ public class FRAStdCapFloor {
 		double dblForwardFundingCorr = 0.50;
 
 		SetVolCorrSurface (
-			floatStream,
 			mktParams,
 			fri,
 			dblForwardVol,

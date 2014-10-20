@@ -70,7 +70,7 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 
 		java.lang.String strFRACodePrefix = fri.fullyQualifiedName();
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : comp.cashFlowPeriod()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : comp.cashFlowPeriod()) {
 			double dblFRAStartDate = period.startDate();
 
 			org.drip.product.fra.FRAStandardComponent fra = new org.drip.product.fra.FRAStandardComponent

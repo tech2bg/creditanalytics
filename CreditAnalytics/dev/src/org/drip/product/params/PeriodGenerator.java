@@ -45,21 +45,10 @@ public class PeriodGenerator extends PeriodSet {
 	private static final boolean m_bBlog = false;
 
 	private boolean _bApplyAccEOMAdj = false;
-	private java.lang.String _strCalendar = "";
 	private java.lang.String _strCurrency = "";
 	private boolean _bPeriodsFromForward = false;
-	private double _dblFirstCouponDate = java.lang.Double.NaN;
-	private double _dblInterestAccrualStart = java.lang.Double.NaN;
-	private org.drip.state.identifier.CreditLabel _creditLabel = null;
-	private org.drip.state.identifier.ForwardLabel _forwardLabel = null;
 	private org.drip.analytics.daycount.DateAdjustParams _dapPay = null;
-	private org.drip.analytics.daycount.DateAdjustParams _dapReset = null;
-	private org.drip.analytics.daycount.DateAdjustParams _dapMaturity = null;
-	private org.drip.analytics.daycount.DateAdjustParams _dapEffective = null;
-	private org.drip.analytics.daycount.DateAdjustParams _dapPeriodEnd = null;
 	private org.drip.analytics.daycount.DateAdjustParams _dapAccrualEnd = null;
-	private org.drip.analytics.daycount.DateAdjustParams _dapPeriodStart = null;
-	private org.drip.analytics.daycount.DateAdjustParams _dapAccrualStart = null;
 
 	/**
 	 * Generate the coupon periods from the date rules and the date adjustment rules for the different
@@ -116,24 +105,13 @@ public class PeriodGenerator extends PeriodSet {
 		super (dblEffective, strCouponDC, iFreq, null);
 
 		_dapPay = dapPay;
-		_dapReset = dapReset;
-		_creditLabel = creditLabel;
-		_dapMaturity = dapMaturity;
 		_dblMaturity = dblMaturity;
-		_strCalendar = strCalendar;
 		_strCurrency = strCurrency;
-		_forwardLabel = forwardLabel;
 		_strAccrualDC = strAccrualDC;
-		_dapEffective = dapEffective;
-		_dapPeriodEnd = dapPeriodEnd;
 		_dapAccrualEnd = dapAccrualEnd;
-		_dapPeriodStart = dapPeriodStart;
 		_strMaturityType = strMaturityType;
-		_dapAccrualStart = dapAccrualStart;
 		_dblFinalMaturity = dblFinalMaturity;
-		_dblFirstCouponDate = dblFirstCouponDate;
 		_bPeriodsFromForward = bPeriodsFromForward;
-		_dblInterestAccrualStart = dblInterestAccrualStart;
 
 		if (strCouponDC.toUpperCase().contains ("EOM")) _bApplyCpnEOMAdj = true;
 
@@ -164,92 +142,53 @@ public class PeriodGenerator extends PeriodSet {
 			_dapPay = new org.drip.analytics.daycount.DateAdjustParams
 				(org.drip.analytics.daycount.Convention.DR_FOLL, "USD");
 
-		if (m_bBlog)
-			System.out.println ("Starting " + org.drip.analytics.date.JulianDate.fromJulian (_dblEffective) +
-				"->" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity) + " with freq " + _iFreq
-					+ " ...");
+		try {
+			org.drip.analytics.date.JulianDate dtEffective = new org.drip.analytics.date.JulianDate
+				(_dblEffective);
 
-		if (0 == _iFreq) {
-			if (null == (_lsCouponPeriod = org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset
-				(_dblEffective, _dblMaturity, java.lang.Double.NaN, _strCouponDC, _strCurrency, 1., null, 0.,
-					_strCurrency, _strCalendar, _forwardLabel, _creditLabel)))
-				return false;
-		} else {
-			if (_bPeriodsFromForward) {
-				if (null == (_lsCouponPeriod =
-					org.drip.analytics.support.PeriodBuilder.ForwardPeriodSingleReset (
-						_dblEffective, // Effective
-						_dblMaturity, // Maturity
-						java.lang.Double.NaN, // FX Fixing Date
-						_dapEffective, // Effective DAP
-						_dapMaturity, // Maturity DAP
-						_dapPeriodStart, // Period Start DAP
-						_dapPeriodEnd, // Period End DAP
-						_dapAccrualStart, // Accrual Start DAP
-						_dapAccrualEnd, // Accrual End DAP
-						_dapPay, // Pay DAP
-						_dapReset, // Reset DAP
-						_iFreq, // Coupon Freq
-						_strCouponDC, // Coupon Day Count
-						_bApplyCpnEOMAdj,
-						_strAccrualDC, // Accrual Day Count
-						_bApplyAccEOMAdj,
-						org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT,
-						true,
-						_strCalendar,
-						1., // Base Notional
-						null, // Notional Schedule
-						0., // Fixed Coupon/Float Spread 
-						_strCurrency,
-						_strCurrency,
-						_forwardLabel,
-						_creditLabel))
-						|| 0 == _lsCouponPeriod.size())
-						return false;
-			} else {
-				if (null == (_lsCouponPeriod =
-					org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (
-						_dblEffective, // Effective
-						_dblMaturity, // Maturity
-						java.lang.Double.NaN, // FX Fixing Date
-						_dapEffective, // Effective DAP
-						_dapMaturity, // Maturity DAP
-						_dapPeriodStart, // Period Start DAP
-						_dapPeriodEnd, // Period End DAP
-						_dapAccrualStart, // Accrual Start DAP
-						_dapAccrualEnd, // Accrual End DAP
-						_dapPay, // Pay DAP
-						_dapReset, // Reset DAP
-						_iFreq, // Coupon Freq
-						_strCouponDC, // Coupon Day Count
-						_bApplyCpnEOMAdj,
-						_strAccrualDC, // Accrual Day Count
-						_bApplyAccEOMAdj,
-						org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT,
-						true,
-						_strCalendar,
-						-1., // Base Notional
-						null, // Notional Schedule
-						0., // Fixed Coupon/Float Spread 
-						_strCurrency,
-						_strCurrency,
-						_forwardLabel,
-						_creditLabel))
-						|| 0 == _lsCouponPeriod.size())
-					return false;
-			}
+			org.drip.analytics.date.JulianDate dtMaturity = new org.drip.analytics.date.JulianDate
+				(_dblMaturity);
+
+			if (m_bBlog)
+				System.out.println ("Starting " + dtEffective + "->" + dtMaturity + " with freq " + _iFreq +
+					" ...");
+
+			org.drip.param.period.UnitCouponAccrualSetting ucas = new
+				org.drip.param.period.UnitCouponAccrualSetting (_iFreq, _strCouponDC, _bApplyCpnEOMAdj,
+					_strAccrualDC, _bApplyAccEOMAdj, _strCurrency, true);
+
+			java.lang.String strTenor = (12 / _iFreq) + "M";
+
+			org.drip.param.period.ComposableFixedUnitSetting cfus = new
+				org.drip.param.period.ComposableFixedUnitSetting (strTenor,
+					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null, 0.,
+						0., _strCurrency);
+
+			org.drip.param.period.CompositePeriodSetting cps = new
+				org.drip.param.period.CompositePeriodSetting (_iFreq, strTenor, _strCurrency, null,
+					org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
+						null, null, null, null);
+
+			java.util.List<java.lang.Double> lsStreamEdgeDate = _bPeriodsFromForward ?
+				org.drip.analytics.support.CompositePeriodBuilder.ForwardEdgeDates (dtEffective, dtMaturity,
+					strTenor, _dapAccrualEnd, org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB) :
+						org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dtEffective,
+							dtMaturity, strTenor, _dapAccrualEnd,
+								org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
+
+			org.drip.product.rates.Stream stream = new org.drip.product.rates.Stream
+				(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsStreamEdgeDate, cps,
+					ucas, cfus));
+
+			return null != stream && null != (_lsCouponPeriod = stream.cashFlowPeriod());
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
 		}
 
-		if (org.drip.quant.common.NumberUtil.IsValid (_dblFirstCouponDate))
-			_lsCouponPeriod.get (0).setPayDate (_dblFirstCouponDate);
-
-		if (org.drip.quant.common.NumberUtil.IsValid (_dblInterestAccrualStart))
-			_lsCouponPeriod.get (0).setAccrualStartDate (_dblInterestAccrualStart);
-
-		return true;
+		return false;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> getPeriods()
+	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> getPeriods()
 	{
 		return _lsCouponPeriod;
 	}

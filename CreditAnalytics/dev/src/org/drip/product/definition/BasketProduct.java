@@ -849,17 +849,17 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 	 * @return List of CouponPeriods
 	 */
 
-	public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> couponPeriod()
+	public java.util.List<org.drip.analytics.cashflow.CompositePeriod> couponPeriod()
 	{
-		java.util.Set<org.drip.analytics.cashflow.GenericCouponPeriod> setPeriod =
+		java.util.Set<org.drip.analytics.cashflow.CompositePeriod> setPeriod =
 			org.drip.analytics.support.AnalyticsHelper.AggregateComponentPeriods (components());
 
 		if (null == setPeriod || 0 == setPeriod.size()) return null;
 
-		java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsCouponPeriod = new
-			java.util.ArrayList<org.drip.analytics.cashflow.GenericCouponPeriod>();
+		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod p : setPeriod) {
+		for (org.drip.analytics.cashflow.CompositePeriod p : setPeriod) {
 			if (null != p) lsCouponPeriod.add (p);
 		}
 

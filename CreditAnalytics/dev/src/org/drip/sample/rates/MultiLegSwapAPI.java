@@ -283,95 +283,97 @@ public class MultiLegSwapAPI {
 		 * Create a sequence of Fixed Streams
 		 */
 
-		GenericStream[] aStream = new GenericStream[3];
+		Stream[] aFixedStream = new Stream[3];
 
-		aStream[0] = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				"3Y",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				2,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				"USD",
-				1.,
-				null,
-				0.03,
-				"USD",
-				"USD",
-				null,
-				null
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			"USD",
+			false
+		);
+
+		ComposableFixedUnitSetting cfusFixed3Y = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			0.03,
+			0.,
+			"USD"
+		);
+
+		ComposableFixedUnitSetting cfusFixed5Y = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			0.05,
+			0.,
+			"USD"
+		);
+
+		ComposableFixedUnitSetting cfusFixed7Y = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			0.07,
+			0.,
+			"USD"
+		);
+
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+			"USD",
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		aFixedStream[0] = new Stream (
+			CompositePeriodBuilder.FixedCompositeUnit (
+				CompositePeriodBuilder.RegularEdgeDates (
+					dtEffective,
+					"6M",
+					"3Y",
+					null
+				),
+				cpsFixed,
+				ucasFixed,
+				cfusFixed3Y
 			)
 		);
 
-		aStream[1] = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				"5Y",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				2,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				"USD",
-				1.,
-				null,
-				0.05,
-				"USD",
-				"USD",
-				null,
-				null
+		aFixedStream[1] = new Stream (
+			CompositePeriodBuilder.FixedCompositeUnit (
+				CompositePeriodBuilder.RegularEdgeDates (
+					dtEffective,
+					"6M",
+					"5Y",
+					null
+				),
+				cpsFixed,
+				ucasFixed,
+				cfusFixed5Y
 			)
 		);
 
-		aStream[2] = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				"7Y",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				2,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				"USD",
-				1.,
-				null,
-				0.07,
-				"USD",
-				"USD",
-				null,
-				null
+		aFixedStream[2] = new Stream (
+			CompositePeriodBuilder.FixedCompositeUnit (
+				CompositePeriodBuilder.RegularEdgeDates (
+					dtEffective,
+					"6M",
+					"7Y",
+					null
+				),
+				cpsFixed,
+				ucasFixed,
+				cfusFixed7Y
 			)
 		);
 
@@ -379,95 +381,100 @@ public class MultiLegSwapAPI {
 		 * Create a sequence of Float Streams
 		 */
 
-		GenericStream[] aFloatStream = new GenericStream[3];
+		Stream[] aFloatStream = new Stream[3];
 
-		aFloatStream[0] = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				"3Y",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				4,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				"USD",
-				-1.,
-				null,
-				0.03,
-				"USD",
-				"ABC",
-				ForwardLabel.Standard ("ABC-RI-3M"),
-				null
+		UnitCouponAccrualSetting ucasFloat = new UnitCouponAccrualSetting (
+			4,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			"USD",
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusFloat3Y = new ComposableFloatingUnitSetting (
+			"3M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard ("USD-LIBOR-3M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.03
+		);
+
+		ComposableFloatingUnitSetting cfusFloat5Y = new ComposableFloatingUnitSetting (
+			"3M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard ("USD-LIBOR-3M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.05
+		);
+
+		ComposableFloatingUnitSetting cfusFloat7Y = new ComposableFloatingUnitSetting (
+			"3M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard ("USD-LIBOR-3M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.07
+		);
+
+		CompositePeriodSetting cpsFloat = new CompositePeriodSetting (
+			4,
+			"3M",
+			"USD",
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		aFloatStream[0] = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				CompositePeriodBuilder.RegularEdgeDates (
+					dtEffective,
+					"6M",
+					"3Y",
+					null
+				),
+				cpsFloat,
+				ucasFloat,
+				cfusFloat3Y
 			)
 		);
 
-		aFloatStream[1] = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				"5Y",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				4,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				"USD",
-				-1.,
-				null,
-				0.05,
-				"USD",
-				"ABC",
-				ForwardLabel.Standard ("ABC-RI-3M"),
-				null
+		aFloatStream[1] = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				CompositePeriodBuilder.RegularEdgeDates (
+					dtEffective,
+					"6M",
+					"5Y",
+					null
+				),
+				cpsFloat,
+				ucasFloat,
+				cfusFloat5Y
 			)
 		);
 
-		aFloatStream[2] = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				"7Y",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				4,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				"USD",
-				-1.,
-				null,
-				0.07,
-				"USD",
-				"ABC",
-				ForwardLabel.Standard ("ABC-RI-3M"),
-				null
+		aFloatStream[2] = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				CompositePeriodBuilder.RegularEdgeDates (
+					dtEffective,
+					"6M",
+					"7Y",
+					null
+				),
+				cpsFloat,
+				ucasFloat,
+				cfusFloat7Y
 			)
 		);
 
@@ -475,7 +482,7 @@ public class MultiLegSwapAPI {
 		 * Create a Rates Basket instance containing the fixed and floating streams
 		 */
 
-		return new RatesBasket ("RATESBASKET", aStream, aFloatStream);
+		return new RatesBasket ("RATESBASKET", aFixedStream, aFloatStream);
 	}
 
 	/*

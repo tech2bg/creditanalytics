@@ -262,13 +262,34 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return maturity();
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> cashFlowPeriod()
 	{
 		try {
-			return org.drip.analytics.support.PeriodBuilder.SinglePeriodSingleReset (_dblEffectiveDate, new
-				org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor()).julian(),
-					java.lang.Double.NaN, _strDayCount, _strCalendar, _dblNotional, null, _dblStrike,
-						_strCurrency, _strCurrency, _fri, null);
+			java.lang.String strTenor = _fri.tenor();
+
+			int iFreq = 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths (strTenor);
+
+			org.drip.param.period.UnitCouponAccrualSetting ucas = new
+				org.drip.param.period.UnitCouponAccrualSetting (iFreq, _strDayCount, false, _strDayCount,
+					false, _strCurrency, false);
+
+			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
+				org.drip.param.period.ComposableFloatingUnitSetting (strTenor,
+					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null, _fri,
+						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, null,
+							0.);
+
+			org.drip.param.period.CompositePeriodSetting cps = new
+				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, _strCurrency, null,
+					org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+						_dblNotional, null, null, null, null);
+
+			org.drip.analytics.date.JulianDate dtEffective = new org.drip.analytics.date.JulianDate
+				(_dblEffectiveDate);
+
+			return org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
+				(org.drip.analytics.support.CompositePeriodBuilder.EdgePair (dtEffective,
+					dtEffective.addTenorAndAdjust (strTenor, _strCalendar)), cps, ucas, cfus);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
