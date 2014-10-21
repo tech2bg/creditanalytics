@@ -548,18 +548,15 @@ public class StaticBACurves {
 				org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 					(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
 						adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null,
-							null, 2, "Act/360", false, "Act/360", false,
-								org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCurrency,
-									-1., null, 0., strCurrency, strCurrency, null, null));
+							null, 2, "Act/360", false, "Act/360", false, true, strCurrency, -1., null, 0.,
+								strCurrency, strCurrency, null, null));
 
 				org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 					(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
 						adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null,
-							null, 4, "Act/360", false, "Act/360", false,
-								org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, strCurrency,
-									-1., null, 0., strCurrency, strCurrency,
-										org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
-											"3M"), null));
+							null, 4, "Act/360", false, "Act/360", false, true, strCurrency, -1., null, 0.,
+								strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create
+									(strCurrency, "LIBOR", "3M"), null));
 
 				aCompCalib[i + 15] = new org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream,
 					null);

@@ -5,9 +5,12 @@ import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.CompositePeriodBuilder;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.period.ComposableFloatingUnitSetting;
+import org.drip.param.period.UnitCouponAccrualSetting;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -285,13 +288,53 @@ public class FRAStdOptionVolAnalysis {
 	private static final FloatFloatComponent[] MakexM6MBasisSwap (
 		final JulianDate dtEffective,
 		final String strCurrency,
-		final String[] astrTenor,
+		final String[] astrMaturityTenor,
 		final int iTenorInMonths)
 		throws Exception
 	{
-		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrTenor.length];
+		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		for (int i = 0; i < astrTenor.length; ++i) {
+		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
+			12 / iTenorInMonths,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
+			iTenorInMonths + "M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 
 			/*
 			 * The Reference 6M Leg
@@ -300,7 +343,7 @@ public class FRAStdOptionVolAnalysis {
 			GenericStream fsReference = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
-					astrTenor[i],
+					astrMaturityTenor[i],
 					Double.NaN,
 					null,
 					null,
@@ -334,7 +377,7 @@ public class FRAStdOptionVolAnalysis {
 			GenericStream fsDerived = new GenericStream (
 				PeriodBuilder.RegularPeriodSingleReset (
 					dtEffective.julian(),
-					astrTenor[i],
+					astrMaturityTenor[i],
 					Double.NaN,
 					null,
 					null,

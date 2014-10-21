@@ -984,6 +984,64 @@ public abstract class CompositePeriod {
 	}
 
 	/**
+	 * Create a set of loss period measures
+	 * 
+	 * @param comp Component for which the measures are to be generated
+	 * @param valParams ValuationParams from which the periods are generated
+	 * @param pricerParams PricerParams that control the generation characteristics
+	 * @param dblWorkoutDate Double JulianDate representing the absolute end of all the generated periods
+	 * @param csqs Market Parameters
+	 *  
+	 * @return The Generated Loss Quadrature Metrics
+	 */
+
+	public java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> lossMetrics (
+		final org.drip.product.definition.CreditComponent comp,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final double dblWorkoutDate,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+	{
+		if (null == comp || null == valParams || null == pricerParams || null == csqs || null ==
+			csqs.creditCurve (comp.creditLabel()[0]) || !org.drip.quant.common.NumberUtil.IsValid
+				(dblWorkoutDate) || startDate() > dblWorkoutDate)
+			return null;
+
+		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (_strPayCurrency));
+
+		if (null == dc) return null;
+
+		int iDiscretizationScheme = pricerParams.discretizationScheme();
+
+		double dblEndDate = endDate();
+
+		java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> lsLQM = null;
+
+		double dblPeriodEndDate = dblEndDate < dblWorkoutDate ? dblEndDate : dblWorkoutDate;
+
+		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP == iDiscretizationScheme &&
+			(null == (lsLQM = org.drip.analytics.support.LossQuadratureGenerator.GenerateDayStepLossPeriods
+				(comp, valParams, this, dblPeriodEndDate, pricerParams.unitSize(), csqs)) || 0 ==
+					lsLQM.size()))
+				return null;
+
+		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_PERIOD_STEP == iDiscretizationScheme &&
+			(null == (lsLQM =
+				org.drip.analytics.support.LossQuadratureGenerator.GeneratePeriodUnitLossPeriods (comp,
+					valParams, this, dblPeriodEndDate, pricerParams.unitSize(), csqs)) || 0 ==
+						lsLQM.size()))
+			return null;
+
+		if (org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_FULL_COUPON == iDiscretizationScheme &&
+			(null == (lsLQM = org.drip.analytics.support.LossQuadratureGenerator.GenerateWholeLossPeriods
+				(comp, valParams, this, dblPeriodEndDate, csqs)) || 0 == lsLQM.size()))
+			return null;
+
+		return lsLQM;
+	}
+
+	/**
 	 * Generate the Forward Predictor/Response Constraint
 	 * 
 	 * @param dblValueDate The Valuation Date

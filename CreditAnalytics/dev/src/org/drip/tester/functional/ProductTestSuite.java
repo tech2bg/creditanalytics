@@ -726,17 +726,14 @@ public class ProductTestSuite {
 			org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 				(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
 					adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null, null,
-						2, "Act/360", false, "Act/360", false, 
-							org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, "USD", -1., null,
-								0., "USD", "USD", null, null));
+						2, "Act/360", false, "Act/360", false, true, "USD", -1., null, 0., "USD", "USD",
+							null, null));
 
 			org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 				(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
 					adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null, null,
-						4, "Act/360", false, "Act/360", false,
-							org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, "USD", -1., null,
-								0., "USD", "USD", org.drip.state.identifier.ForwardLabel.Create ("USD",
-									"LIBOR", "3M"), null));
+						4, "Act/360", false, "Act/360", false, true, "USD", -1., null, 0., "USD", "USD",
+							org.drip.state.identifier.ForwardLabel.Create ("USD", "LIBOR", "3M"), null));
 
 			aCompCalib[i + 15] = new org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream, null);
 		}
@@ -1294,17 +1291,15 @@ public class ProductTestSuite {
 		org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 			(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.addDays (2).julian(),
 				dt.addDays ((int)(365.25 * 9 + 2)).julian(), java.lang.Double.NaN, null, null, null, null,
-					null, null, null, null, 2, "Act/360", false, "Act/360", false,
-						org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, "USD", -1., null, 0.04,
-							"USD", "USD", null, null));
+					null, null, null, null, 2, "Act/360", false, "Act/360", false, true, "USD", -1., null,
+						0.04, "USD", "USD", null, null));
 
 		org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 			(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.addDays (2).julian(),
 				dt.addDays ((int)(365.25 * 9 + 2)).julian(), java.lang.Double.NaN, null, null, null, null,
-					null, null, null, null, 4, "Act/360", false, "Act/360", false,
-						org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true, "USD", -1., null, 0.,
-							"USD", "USD", org.drip.state.identifier.ForwardLabel.Create ("USD", "LIBOR",
-								"3M"), null));
+					null, null, null, null, 4, "Act/360", false, "Act/360", false, true, "USD", -1., null,
+						0., "USD", "USD", org.drip.state.identifier.ForwardLabel.Create ("USD", "LIBOR",
+							"3M"), null));
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent irs = new
 			org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream, null);

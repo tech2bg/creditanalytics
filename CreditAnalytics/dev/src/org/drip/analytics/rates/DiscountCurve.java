@@ -300,16 +300,13 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
 			(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dtStart.julian(), dblDate,
 				java.lang.Double.NaN, null, null, null, null, null, null, null, null, 2, "Act/360", false,
-					"Act/360", false, org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true,
-						currency(), -1., null, 0., currency(), currency(), null, null));
+					"Act/360", false, true, currency(), -1., null, 0., currency(), currency(), null, null));
 
 		org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
 			(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dtStart.julian(), dblDate,
 				java.lang.Double.NaN, null, null, null, null, null, null, null, null, 4, "Act/360", false,
-					"Act/360", false, org.drip.analytics.support.PeriodBuilder.NO_ADJUSTMENT, true,
-						currency(), -1., null, 0., currency(), currency(),
-							org.drip.state.identifier.ForwardLabel.Create (currency(), "LIBOR", "3M"),
-								null));
+					"Act/360", false, true, currency(), -1., null, 0., currency(), currency(),
+						org.drip.state.identifier.ForwardLabel.Create (currency(), "LIBOR", "3M"), null));
 
 		org.drip.product.rates.GenericFixFloatComponent irs = new org.drip.product.rates.GenericFixFloatComponent
 			(fixStream, floatStream, null);

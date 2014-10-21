@@ -8,6 +8,7 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
@@ -64,82 +65,122 @@ public class CrossFloatCrossFloat {
 		final int iTenorInMonthsDerived)
 		throws Exception
 	{
-		/*
-		 * The Reference Leg
-		 */
+		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
+			12 / iTenorInMonthsReference,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCouponCurrency,
+			false
+		);
 
-		GenericStream floatStreamReference = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				strMaturityTenor,
-				bFXMTM ? Double.NaN : dtEffective.julian(),
+		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
+			12 / iTenorInMonthsDerived,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCouponCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
+			iTenorInMonthsReference + "M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
+			iTenorInMonthsDerived + "M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		CompositePeriodSetting cpsReference = new CompositePeriodSetting (
+			12 / iTenorInMonthsReference,
+			iTenorInMonthsReference + "M",
+			strPayCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			bFXMTM ? null : new FixingSetting (
+				FixingSetting.FIXING_PRESET_STATIC,
 				null,
+				dtEffective.julian()
+			),
+			null
+		);
+
+		CompositePeriodSetting cpsDerived = new CompositePeriodSetting (
+			12 / iTenorInMonthsDerived,
+			iTenorInMonthsDerived + "M",
+			strPayCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			bFXMTM ? null : new FixingSetting (
+				FixingSetting.FIXING_PRESET_STATIC,
 				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				12 / iTenorInMonthsReference,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				strCouponCurrency,
-				-1.,
-				null,
-				0.,
-				strPayCurrency,
-				strCouponCurrency,
-				ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
-				null
+				dtEffective.julian()
+			),
+			null
+		);
+
+		List<Double> lsReferenceStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+			dtEffective,
+			iTenorInMonthsReference + "M",
+			strMaturityTenor,
+			null
+		);
+
+		List<Double> lsDerivedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+			dtEffective,
+			iTenorInMonthsDerived + "M",
+			strMaturityTenor,
+			null
+		);
+
+		Stream referenceStream = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				lsReferenceStreamEdgeDate,
+				cpsReference,
+				ucasReference,
+				cfusReference
 			)
 		);
 
-		/*
-		 * The Derived Leg
-		 */
-
-		GenericStream floatStreamDerived = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				strMaturityTenor,
-				bFXMTM ? Double.NaN : dtEffective.julian(),
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				12 / iTenorInMonthsDerived,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				strCouponCurrency,
-				1.,
-				null,
-				0.,
-				strPayCurrency,
-				strCouponCurrency,
-				ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
-				null
+		Stream derivedStream = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				lsDerivedStreamEdgeDate,
+				cpsDerived,
+				ucasDerived,
+				cfusDerived
 			)
 		);
 
-		/*
-		 * The float-float swap instance
-		 */
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strPayCurrency,
+			0
+		);
 
 		return new FloatFloatComponent (
-			floatStreamReference,
-			floatStreamDerived,
-			new CashSettleParams (0, strCouponCurrency, 0)
+			referenceStream,
+			derivedStream,
+			csp
 		);
 	}
 
@@ -171,7 +212,11 @@ public class CrossFloatCrossFloat {
 
 		JulianDate dtToday = JulianDate.Today();
 
-		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "EUR");
+		ValuationParams valParams = new ValuationParams (
+			dtToday,
+			dtToday,
+			"EUR"
+		);
 
 		DiscountCurve dcUSDFunding = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
