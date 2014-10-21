@@ -6,10 +6,12 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CompositePeriodBuilder;
+import org.drip.analytics.support.CompositePeriodUtil;
 import org.drip.analytics.support.PeriodBuilder;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.ComposableFloatingUnitSetting;
+import org.drip.param.period.CompositePeriodSetting;
 import org.drip.param.period.UnitCouponAccrualSetting;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
@@ -334,84 +336,75 @@ public class FRAStdOptionVolAnalysis {
 			0.
 		);
 
+		CompositePeriodSetting cpsReference = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CompositePeriodSetting cpsDerived = new CompositePeriodSetting (
+			12 / iTenorInMonths,
+			iTenorInMonths + "M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			List<Double> lsReferenceStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
 
-			/*
-			 * The Reference 6M Leg
-			 */
+			List<Double> lsDerivedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				iTenorInMonths + "M",
+				astrMaturityTenor[i],
+				null
+			);
 
-			GenericStream fsReference = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrMaturityTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					2,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					-1.,
-					null,
-					0.,
-					strCurrency,
-					strCurrency,
-					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
-					null
+			Stream referenceStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsReferenceStreamEdgeDate,
+					cpsReference,
+					ucasReference,
+					cfusReference
 				)
 			);
 
-			/*
-			 * The Derived Leg
-			 */
-
-			GenericStream fsDerived = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrMaturityTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					12 / iTenorInMonths,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					1.,
-					null,
-					0.,
-					strCurrency,
-					strCurrency,
-					ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-					null
+			Stream derivedStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsDerivedStreamEdgeDate,
+					cpsDerived,
+					ucasDerived,
+					cfusDerived
 				)
 			);
-
-			/*
-			 * The float-float swap instance
-			 */
 
 			aFFC[i] = new FloatFloatComponent (
-				fsReference,
-				fsDerived,
-				new CashSettleParams (0, strCurrency, 0)
+				referenceStream,
+				derivedStream,
+				csp
 			);
 		}
 
