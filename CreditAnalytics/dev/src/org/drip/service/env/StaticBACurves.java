@@ -540,26 +540,67 @@ public class StaticBACurves {
 		adblCompCalibValue[27] = .0407;
 		adblCompCalibValue[28] = .0409;
 		adblCompCalibValue[29] = .0409;
+		org.drip.param.period.CompositePeriodSetting cpsFixed = null;
+		org.drip.param.period.CompositePeriodSetting cpsFloating = null;
+		org.drip.param.period.UnitCouponAccrualSetting ucasFixed = null;
+		org.drip.param.period.ComposableFixedUnitSetting cfusFixed = null;
+		org.drip.param.period.UnitCouponAccrualSetting ucasFloating = null;
+		org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = null;
+
+		try {
+			ucasFloating = new org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false,
+				"Act/360", false, strCurrency, true);
+
+			ucasFixed = new org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360",
+				false, strCurrency, true);
+
+			cfusFloating = new org.drip.param.period.ComposableFloatingUnitSetting ("3M",
+				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
+					org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, null,
+							0.);
+
+			cfusFixed = new org.drip.param.period.ComposableFixedUnitSetting ("6M",
+				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null, 0., 0.,
+					strCurrency);
+
+			cpsFloating = new org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null,
+				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1., null,
+					null, null, null);
+
+			cpsFixed = new org.drip.param.period.CompositePeriodSetting (2, "6M", strCurrency, null,
+				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1., null,
+					null, null, null);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return false;
+		}
 
 		for (int i = 0; i < 15; ++i) {
 			astrCalibMeasure[i + 15] = "Rate";
 
 			try {
-				org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
-					(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
-						adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null,
-							null, 2, "Act/360", false, "Act/360", false, true, strCurrency, -1., null, 0.,
-								strCurrency, strCurrency, null, null));
+				java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
+					org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dt, new
+						org.drip.analytics.date.JulianDate (adblDate[i + 15]), "6M", null,
+							org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
 
-				org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
-					(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
-						adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null,
-							null, 4, "Act/360", false, "Act/360", false, true, strCurrency, -1., null, 0.,
-								strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create
-									(strCurrency, "LIBOR", "3M"), null));
+				java.util.List<java.lang.Double> lsFloatingStreamEdgeDate =
+					org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dt, new
+						org.drip.analytics.date.JulianDate (adblDate[i + 15]), "3M", null,
+							org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
 
-				aCompCalib[i + 15] = new org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream,
-					null);
+				org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
+					(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
+						(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+
+				org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
+					(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit
+						(lsFixedStreamEdgeDate, cpsFixed, ucasFixed, cfusFixed));
+
+				aCompCalib[i + 15] = new org.drip.product.rates.FixFloatComponent (fixedStream,
+					floatingStream, null);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

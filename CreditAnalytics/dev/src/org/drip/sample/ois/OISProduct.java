@@ -9,9 +9,14 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.period.ComposableFixedUnitSetting;
+import org.drip.param.period.ComposableFloatingUnitSetting;
+import org.drip.param.period.CompositePeriodSetting;
+import org.drip.param.period.UnitCouponAccrualSetting;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
+import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
 import org.drip.quant.common.*;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
@@ -222,69 +227,115 @@ public class OISProduct {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final GenericFixFloatComponent[] OvernightFundFromMaturityTenor (
+	private static final FixFloatComponent[] OvernightFundFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
 		final String strCurrency)
 		throws Exception
 	{
-		GenericFixFloatComponent[] aOIS = new GenericFixFloatComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
+
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			360,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			"ON",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
+			null,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			360,
+			"ON",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			GenericStream floatStream = new GenericStream (
-				PeriodBuilder.DailyPeriodDailyReset (
-					dtEffective.julian(),
-					dtEffective.addTenor (astrMaturityTenor[i]).julian(),
-					Double.NaN,
-					null,
-					null,
-					"Act/360",
-					strCurrency,
-					-1.,
-					null,
-					0.,
-					strCurrency,
-					strCurrency,
-					CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
-					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-					null
+			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+				"6M",
+				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+				null,
+				adblCoupon[i],
+				0.,
+				strCurrency
+			);
+
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.OvernightEdgeDates (
+				dtEffective,
+				dtEffective.addTenorAndAdjust (astrMaturityTenor[i], strCurrency),
+				strCurrency
+			);
+
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			Stream floatingStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsFloatingStreamEdgeDate,
+					cpsFloating,
+					ucasFloating,
+					cfusFloating
 				)
 			);
 
-			GenericStream fixStream = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrMaturityTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					2,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					1.,
-					null,
-					adblCoupon[i],
-					strCurrency,
-					strCurrency,
-					null,
-					null
+			Stream fixedStream = new Stream (
+				CompositePeriodBuilder.FixedCompositeUnit (
+					lsFixedStreamEdgeDate,
+					cpsFixed,
+					ucasFixed,
+					cfusFixed
 				)
 			);
 
-			GenericFixFloatComponent ois = new GenericFixFloatComponent (
-				fixStream,
-				floatStream,
+			FixFloatComponent ois = new FixFloatComponent (
+				fixedStream,
+				floatingStream,
 				new CashSettleParams (0, strCurrency, 0)
 			);
 
@@ -302,7 +353,7 @@ public class OISProduct {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final GenericFixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
+	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
@@ -310,74 +361,110 @@ public class OISProduct {
 		final String strCurrency)
 		throws Exception
 	{
-		GenericFixFloatComponent[] aOIS = new GenericFixFloatComponent[astrStartTenor.length];
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
+
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			360,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			"ON",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
+			null,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			360,
+			"ON",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
 
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
-			GenericStream floatStream = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrMaturityTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					4,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					-1.,
-					null,
-					0.,
-					strCurrency,
-					strCurrency,
-					OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-					null
+			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+				"6M",
+				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+				null,
+				adblCoupon[i],
+				0.,
+				strCurrency
+			);
+
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.OvernightEdgeDates (
+				dtEffective,
+				dtEffective.addTenorAndAdjust (astrMaturityTenor[i], strCurrency),
+				strCurrency
+			);
+
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			Stream floatingStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsFloatingStreamEdgeDate,
+					cpsFloating,
+					ucasFloating,
+					cfusFloating
 				)
 			);
 
-			GenericStream fixStream = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrMaturityTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					2,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					1.,
-					null,
-					adblCoupon[i],
-					strCurrency,
-					strCurrency,
-					null,
-					null
+			Stream fixedStream = new Stream (
+				CompositePeriodBuilder.FixedCompositeUnit (
+					lsFixedStreamEdgeDate,
+					cpsFixed,
+					ucasFixed,
+					cfusFixed
 				)
 			);
 
-			GenericFixFloatComponent ois = new GenericFixFloatComponent (
-				fixStream,
-				floatStream,
+			FixFloatComponent ois = new FixFloatComponent (
+				fixedStream,
+				floatingStream,
 				new CashSettleParams (0, strCurrency, 0)
 			);
 
@@ -474,7 +561,7 @@ public class OISProduct {
 
 	private static final LatentStateStretchSpec OISStretch (
 		final String strName,
-		final GenericFixFloatComponent[] aOIS,
+		final CalibratableFixedIncomeComponent[] aOIS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -562,7 +649,7 @@ public class OISProduct {
 			0.00074     //   1M
 		};
 
-		GenericFixFloatComponent[] aShortEndOISComp = bOvernightIndex ?
+		CalibratableFixedIncomeComponent[] aShortEndOISComp = bOvernightIndex ?
 			OvernightIndexFromMaturityTenor (
 				dtToday,
 				new java.lang.String[]
@@ -599,7 +686,7 @@ public class OISProduct {
 			-0.00014     //   5M x 1M
 		};
 
-		GenericFixFloatComponent[] aOISFutureComp = bOvernightIndex ?
+		CalibratableFixedIncomeComponent[] aOISFutureComp = bOvernightIndex ?
 			OvernightIndexFutureFromMaturityTenor (
 				dtToday,
 				new java.lang.String[] {"1M", "2M", "3M", "4M", "5M"},
@@ -648,7 +735,7 @@ public class OISProduct {
 			0.02038     //  30Y
 		};
 
-		GenericFixFloatComponent[] aLongEndOISComp = bOvernightIndex ?
+		CalibratableFixedIncomeComponent[] aLongEndOISComp = bOvernightIndex ?
 			OvernightIndexFromMaturityTenor (
 				dtToday,
 				new java.lang.String[]

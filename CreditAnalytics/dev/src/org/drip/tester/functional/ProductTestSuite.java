@@ -718,24 +718,61 @@ public class ProductTestSuite {
 		adblCompCalibValue[28] = .0409;
 		adblCompCalibValue[29] = .0409;
 
+		org.drip.param.period.UnitCouponAccrualSetting ucasFloating = new
+			org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false, "Act/360", false, "USD",
+				true);
+
+		org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
+			org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360", false, "USD",
+				true);
+
+		org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
+			org.drip.param.period.ComposableFloatingUnitSetting ("3M",
+				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
+					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-3M"),
+						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, null,
+							0.);
+
+		org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
+			org.drip.param.period.ComposableFixedUnitSetting ("6M",
+				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null, 0., 0.,
+					"USD");
+
+		org.drip.param.period.CompositePeriodSetting cpsFloating = new
+			org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null,
+				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1., null,
+					null, null, null);
+
+		org.drip.param.period.CompositePeriodSetting cpsFixed = new
+			org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null,
+				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1., null,
+					null, null, null);
+
 		for (int i = 0; i < 15; ++i) {
 			adblRate[i + 15] = 0.02;
 			adblRate[i + 15] = 0.05;
 			astrCalibMeasure[i + 15] = "Rate";
 
-			org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
-				(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
-					adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null, null,
-						2, "Act/360", false, "Act/360", false, true, "USD", -1., null, 0., "USD", "USD",
-							null, null));
+			java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
+				org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dt, new
+					org.drip.analytics.date.JulianDate (adblDate[i + 15]), "6M", null,
+						org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
 
-			org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
-				(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.julian(),
-					adblDate[i + 15], java.lang.Double.NaN, null, null, null, null, null, null, null, null,
-						4, "Act/360", false, "Act/360", false, true, "USD", -1., null, 0., "USD", "USD",
-							org.drip.state.identifier.ForwardLabel.Create ("USD", "LIBOR", "3M"), null));
+			java.util.List<java.lang.Double> lsFloatingStreamEdgeDate =
+				org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dt, new
+					org.drip.analytics.date.JulianDate (adblDate[i + 15]), "3M", null,
+						org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
 
-			aCompCalib[i + 15] = new org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream, null);
+			org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
+				(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
+					(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+
+			org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
+				(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsFixedStreamEdgeDate,
+					cpsFixed, ucasFixed, cfusFixed));
+
+			aCompCalib[i + 15] = new org.drip.product.rates.FixFloatComponent (fixedStream, floatingStream,
+				null);
 		}
 
 		mpc.addFixings (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),
@@ -1288,21 +1325,56 @@ public class ProductTestSuite {
 		final int iTestDetail)
 		throws java.lang.Exception
 	{
-		org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
-			(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.addDays (2).julian(),
-				dt.addDays ((int)(365.25 * 9 + 2)).julian(), java.lang.Double.NaN, null, null, null, null,
-					null, null, null, null, 2, "Act/360", false, "Act/360", false, true, "USD", -1., null,
-						0.04, "USD", "USD", null, null));
+		org.drip.param.period.UnitCouponAccrualSetting ucasFloating = new
+			org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false, "Act/360", false, "USD",
+				true);
 
-		org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
-			(org.drip.analytics.support.PeriodBuilder.BackwardPeriodSingleReset (dt.addDays (2).julian(),
-				dt.addDays ((int)(365.25 * 9 + 2)).julian(), java.lang.Double.NaN, null, null, null, null,
-					null, null, null, null, 4, "Act/360", false, "Act/360", false, true, "USD", -1., null,
-						0., "USD", "USD", org.drip.state.identifier.ForwardLabel.Create ("USD", "LIBOR",
-							"3M"), null));
+		org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
+			org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360", false, "USD",
+				true);
+
+		org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
+			org.drip.param.period.ComposableFloatingUnitSetting ("3M",
+				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
+					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-3M"),
+						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, null,
+							0.);
+
+		org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
+			org.drip.param.period.ComposableFixedUnitSetting ("6M",
+				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null, 0., 0.,
+					"USD");
+
+		org.drip.param.period.CompositePeriodSetting cpsFloating = new
+			org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null,
+				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1., null,
+					null, null, null);
+
+		org.drip.param.period.CompositePeriodSetting cpsFixed = new
+			org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null,
+				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1., null,
+					null, null, null);
+
+		java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
+			org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dt.addDays (2), dt.addDays
+				((int)(365.25 * 9 + 2)), "6M", null,
+					org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
+
+		java.util.List<java.lang.Double> lsFloatingStreamEdgeDate =
+			org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dt.addDays (2), dt.addDays
+				((int)(365.25 * 9 + 2)), "3M", null,
+					org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
+
+		org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
+			(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
+				(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+
+		org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
+			(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsFixedStreamEdgeDate,
+				cpsFixed, ucasFixed, cfusFixed));
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent irs = new
-			org.drip.product.rates.GenericFixFloatComponent (fixStream, floatStream, null);
+			org.drip.product.rates.FixFloatComponent (fixedStream, floatingStream, null);
 
 		org.drip.analytics.output.ComponentMeasures irsOut = irs.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);
