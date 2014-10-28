@@ -3,7 +3,7 @@ package org.drip.sample.ois;
 
 import java.util.*;
 
-import org.drip.analytics.cashflow.GenericCouponPeriod;
+import org.drip.analytics.cashflow.CompositePeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.LatentStateStatic;
@@ -12,6 +12,7 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
@@ -615,105 +616,130 @@ public class FedFundOvernightCompounding {
 
 		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
-		GenericStream floatStreamGeometric = new GenericStream (
-			PeriodBuilder.RegularPeriodDailyReset (
-				dtCustomOISStart.julian(),
-				"6M",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				2,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				0.,
-				strCurrency,
-				strCurrency,
-				CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				null
-			)
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			360,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
 		);
 
-		List<GenericCouponPeriod> lsArithmeticFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
-			dtCustomOISStart.julian(),
-			"6M",
-			Double.NaN,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			2,
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			360,
 			"Act/360",
 			false,
 			"Act/360",
-			false,
 			false,
 			strCurrency,
-			-1.,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			"ON",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
+			null,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			0.,
+			0.,
+			strCurrency
+		);
+
+		CompositePeriodSetting cpsFloatingGeometric = new CompositePeriodSetting (
+			360,
+			"ON",
 			strCurrency,
-			strCurrency,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
 			null
 		);
 
-		GenericStream floatStreamArithmetic = new GenericStream (
-			lsArithmeticFloatPeriods
+		CompositePeriodSetting cpsFloatingArithmetic = new CompositePeriodSetting (
+			360,
+			"ON",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+			-1.,
+			null,
+			null,
+			null,
+			null
 		);
 
-		GenericStream fixStream = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtCustomOISStart.julian(),
-				"4M",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				2,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				1.,
-				null,
-				0.,
-				strCurrency,
-				strCurrency,
-				null,
-				null
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.OvernightEdgeDates (
+			dtCustomOISStart,
+			dtCustomOISStart.addTenorAndAdjust ("4M", strCurrency),
+			strCurrency
+		);
+
+		List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.OvernightEdgeDates (
+			dtCustomOISStart,
+			dtCustomOISStart.addTenorAndAdjust ("4M", strCurrency),
+			strCurrency
+		);
+
+		Stream floatStreamGeometric = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				lsFloatingStreamEdgeDate,
+				cpsFloatingGeometric,
+				ucasFloating,
+				cfusFloating
 			)
 		);
 
-		GenericFixFloatComponent oisArithmetic = new GenericFixFloatComponent (
+		List<CompositePeriod> lsArithmeticFloatPeriods = CompositePeriodBuilder.FloatingCompositeUnit (
+			lsFloatingStreamEdgeDate,
+			cpsFloatingArithmetic,
+			ucasFloating,
+			cfusFloating
+		);
+
+		Stream floatStreamArithmetic = new Stream (lsArithmeticFloatPeriods);
+
+		Stream fixStream = new Stream (
+			CompositePeriodBuilder.FixedCompositeUnit (
+				lsFixedStreamEdgeDate,
+				cpsFixed,
+				ucasFixed,
+				cfusFixed
+			)
+		);
+
+		FixFloatComponent oisArithmetic = new FixFloatComponent (
 			fixStream,
 			floatStreamArithmetic,
 			new CashSettleParams (0, strCurrency, 0)
 		);
 
-		GenericFixFloatComponent oisGeometric = new GenericFixFloatComponent (
+		FixFloatComponent oisGeometric = new FixFloatComponent (
 			fixStream,
 			floatStreamGeometric,
 			new CashSettleParams (0, strCurrency, 0)
@@ -758,7 +784,7 @@ public class FedFundOvernightCompounding {
 		System.out.println ("\tMachine Calc Float Accrued DCF (Arithmetic Compounding): " +
 			Math.abs (mapOISGeometricOutput.get ("FloatAccrued") / mapOISGeometricOutput.get ("ResetRate")));
 
-		GenericCouponPeriod period = lsArithmeticFloatPeriods.get (0);
+		CompositePeriod period = lsArithmeticFloatPeriods.get (0);
 
 		CompositePeriodCouponMetrics pcmArithmetic = floatStreamArithmetic.coupon (
 			period.endDate(),

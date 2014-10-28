@@ -3,13 +3,14 @@ package org.drip.sample.ois;
 
 import java.util.*;
 
-import org.drip.analytics.cashflow.GenericCouponPeriod;
+import org.drip.analytics.cashflow.CompositePeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
@@ -574,7 +575,7 @@ public class OvernightArithmeticCompoundingConvexity {
 	}
 
 	private static final void VolCorrScenario (
-		final GenericStream[] aFloatStream,
+		final Stream[] aFloatStream,
 		final String strCurrency,
 		final ForwardLabel fri,
 		final double dblAccrualEndDate,
@@ -642,37 +643,53 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		List<GenericCouponPeriod> lsFloatPeriods = PeriodBuilder.RegularPeriodDailyReset (
-			dtCustomOISStart.julian(),
-			"6M",
-			Double.NaN,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			4,
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			360,
 			"Act/360",
 			false,
 			"Act/360",
-			false,
 			false,
 			strCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			"ON",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
+			null,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			360,
+			"ON",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
-			0.,
-			strCurrency,
-			strCurrency,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			null,
+			null,
 			null
 		);
 
-		GenericStream floatStream = new GenericStream (
-			lsFloatPeriods
+		List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.OvernightEdgeDates (
+			dtCustomOISStart,
+			dtCustomOISMaturity,
+			strCurrency
 		);
+
+		List<CompositePeriod> lsCP = CompositePeriodBuilder.FloatingCompositeUnit (
+			lsFloatingStreamEdgeDate,
+			cpsFloating,
+			ucasFloating,
+			cfusFloating
+		);
+
+		Stream floatStream = new Stream (lsCP);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
 			dc,
@@ -692,7 +709,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		GenericCouponPeriod period = lsFloatPeriods.get (1);
+		CompositePeriod period = lsCP.get (1);
 
 		double[] adblOISVol = new double [] {0.1, 0.3, 0.5};
 		double[] adblUSDFundingVol = new double [] {0.1, 0.3, 0.5};
@@ -714,7 +731,7 @@ public class OvernightArithmeticCompoundingConvexity {
 			for (double dblUSDFundingVol : adblUSDFundingVol) {
 				for (double dblUSDFundingUSDOISCorrelation : adblUSDFundingUSDOISCorrelation)
 					VolCorrScenario (
-						new GenericStream[] {floatStream},
+						new Stream[] {floatStream},
 						strCurrency,
 						fri,
 						period.endDate(),

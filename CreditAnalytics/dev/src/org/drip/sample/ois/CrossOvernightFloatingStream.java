@@ -3,6 +3,7 @@ package org.drip.sample.ois;
 
 import java.util.*;
 
+import org.drip.analytics.cashflow.CompositePeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.LatentStateStatic;
@@ -10,10 +11,7 @@ import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
-import org.drip.param.period.ComposableFixedUnitSetting;
-import org.drip.param.period.ComposableFloatingUnitSetting;
-import org.drip.param.period.CompositePeriodSetting;
-import org.drip.param.period.UnitCouponAccrualSetting;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
@@ -541,65 +539,75 @@ public class CrossOvernightFloatingStream {
 
 		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
 
-		GenericStream floatStreamGeometric = new GenericStream (
-			PeriodBuilder.RegularPeriodDailyReset (
-				dtCustomOISStart.julian(),
-				"6M",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				4,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				0.,
-				strCurrency,
-				strCurrency,
-				CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				null
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			360,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			"ON",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
+			null,
+			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		CompositePeriodSetting cpsFloatingGeometric = new CompositePeriodSetting (
+			360,
+			"ON",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CompositePeriodSetting cpsFloatingArithmetic = new CompositePeriodSetting (
+			360,
+			"ON",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.OvernightEdgeDates (
+			dtCustomOISStart,
+			dtCustomOISStart.addTenorAndAdjust ("6M", strCurrency),
+			strCurrency
+		);
+
+		Stream floatStreamGeometric = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				lsFloatingStreamEdgeDate,
+				cpsFloatingGeometric,
+				ucasFloating,
+				cfusFloating
 			)
 		);
 
-		GenericStream floatStreamArithmetic = new GenericStream (
-			PeriodBuilder.RegularPeriodDailyReset (
-				dtCustomOISStart.julian(),
-				"6M",
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				4,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				strCurrency,
-				-1.,
-				null,
-				0.,
-				strCurrency,
-				strCurrency,
-				CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-				null
-			)
+		List<CompositePeriod> lsArithmeticFloatPeriods = CompositePeriodBuilder.FloatingCompositeUnit (
+			lsFloatingStreamEdgeDate,
+			cpsFloatingArithmetic,
+			ucasFloating,
+			cfusFloating
 		);
+
+		Stream floatStreamArithmetic = new Stream (lsArithmeticFloatPeriods);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
 			dc,
@@ -631,13 +639,15 @@ public class CrossOvernightFloatingStream {
 			valParams,
 			null,
 			mktParams,
-			null);
+			null
+		);
 
 		Map<String, Double> mapArithmeticOutput = floatStreamArithmetic.value (
 			valParams,
 			null,
 			mktParams,
-			null);
+			null
+		);
 
 		System.out.println ("\n\t-----------------------------------");
 
