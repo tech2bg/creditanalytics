@@ -357,29 +357,60 @@ public class RatesClosesLoader {
 				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
 					strCurrency);
 
-			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsFixedCouponPeriod =
-				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
-					strMaturityTenor, java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap,
-						_mapFixedFrequency.get (strCurrency), strFixedDC, bApplyEOMAdjustmentFixed,
-							strFixedDC, bApplyEOMAdjustmentFixed, false, strCurrency, 1., null, dblCoupon,
-								strCurrency, strCurrency, null, null);
+			org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
+				org.drip.param.period.UnitCouponAccrualSetting (_mapFixedFrequency.get (strCurrency),
+					strFixedDC, bApplyEOMAdjustmentFixed, strFixedDC, bApplyEOMAdjustmentFixed, strCurrency,
+						false);
 
-			org.drip.product.rates.GenericStream fixStream = new org.drip.product.rates.GenericStream
-				(lsFixedCouponPeriod);
+			org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
+				org.drip.param.period.ComposableFixedUnitSetting (_mapFixedTenor.get (strCurrency),
+					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, dap,
+						dblCoupon, 0., strCurrency);
 
-			java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsFloatingCouponPeriod =
-				org.drip.analytics.support.PeriodBuilder.RegularPeriodSingleReset (dtEffective.julian(),
-					strMaturityTenor, java.lang.Double.NaN, dap, dap, dap, dap, dap, dap, dap, dap,
-						_mapFloatingFrequency.get (strCurrency), strFloatingDC, bApplyEOMAdjustmentFloating,
-							strFloatingDC, bApplyEOMAdjustmentFloating, false, strCurrency, -1., null, 0.,
-								strCurrency, strCurrency, org.drip.state.identifier.ForwardLabel.Create
-									(strCurrency, "LIBOR", _mapFloatingTenor.get (strCurrency)), null);
+			org.drip.param.period.CompositePeriodSetting cpsFixed = new
+				org.drip.param.period.CompositePeriodSetting (_mapFixedFrequency.get (strCurrency),
+					_mapFixedTenor.get (strCurrency), strCurrency, null,
+						org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+							1., null, null, null, null);
 
-			org.drip.product.rates.GenericStream floatStream = new org.drip.product.rates.GenericStream
-				(lsFloatingCouponPeriod);
+			java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
+				org.drip.analytics.support.CompositePeriodBuilder.OvernightEdgeDates (dtEffective,
+					dtMaturity, strCurrency);
 
-			org.drip.product.rates.GenericFixFloatComponent irs = new org.drip.product.rates.GenericFixFloatComponent
-				(fixStream, floatStream, new org.drip.param.valuation.CashSettleParams (0, strCurrency, 0));
+			org.drip.product.rates.Stream fixStream = new org.drip.product.rates.Stream
+				(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsFixedStreamEdgeDate,
+					cpsFixed, ucasFixed, cfusFixed));
+
+			org.drip.param.period.UnitCouponAccrualSetting ucasFloating = new
+				org.drip.param.period.UnitCouponAccrualSetting (_mapFloatingFrequency.get (strCurrency),
+					strFloatingDC, bApplyEOMAdjustmentFloating, strFloatingDC, bApplyEOMAdjustmentFloating,
+						strCurrency, false);
+
+			org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
+				org.drip.param.period.ComposableFloatingUnitSetting (_mapFloatingTenor.get (strCurrency),
+					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
+						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
+							_mapFloatingTenor.get (strCurrency)),
+								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+				null, 0.);
+
+			org.drip.param.period.CompositePeriodSetting cpsFloating = new
+				org.drip.param.period.CompositePeriodSetting (_mapFloatingFrequency.get (strCurrency),
+					_mapFloatingTenor.get (strCurrency), strCurrency, null,
+						org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+							-1., null, null, null, null);
+
+			java.util.List<java.lang.Double> lsFloatingStreamEdgeDate =
+				org.drip.analytics.support.CompositePeriodBuilder.OvernightEdgeDates (dtEffective,
+					dtMaturity, strCurrency);
+
+			org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
+				(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
+					(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+
+			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
+				(fixStream, floatingStream, new org.drip.param.valuation.CashSettleParams (0, strCurrency,
+					0));
 
 			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
 
@@ -444,10 +475,9 @@ public class RatesClosesLoader {
 			org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 				org.drip.param.period.ComposableFloatingUnitSetting ("ON",
 					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT, null,
-						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
-							_mapFloatingTenor.get (strCurrency)),
-								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-									null, 0.);
+						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", "ON"),
+							org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+								null, 0.);
 
 			org.drip.param.period.CompositePeriodSetting cpsFloating = new
 				org.drip.param.period.CompositePeriodSetting (_mapFloatingFrequency.get (strCurrency),
