@@ -6,14 +6,10 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.CompositePeriodBuilder;
-import org.drip.analytics.support.CompositePeriodUtil;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.period.ComposableFloatingUnitSetting;
-import org.drip.param.period.CompositePeriodSetting;
-import org.drip.param.period.UnitCouponAccrualSetting;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.SingleStreamComponentBuilder;
@@ -167,7 +163,7 @@ public class IBOR {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final GenericFixFloatComponent[] FixFloatSwap (
+	private static final FixFloatComponent[] FixFloatSwap (
 		final JulianDate dtEffective,
 		final ForwardLabel fri,
 		final String[] astrMaturityTenor)
@@ -177,88 +173,118 @@ public class IBOR {
 
 		String strCurrency = fri.currency();
 
-		GenericFixFloatComponent[] aFFC = new GenericFixFloatComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aFFC = new FixFloatComponent[astrMaturityTenor.length];
 
 		int iTenorInMonths = new Integer (fri.tenor().split ("M")[0]);
 
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			12 / iTenorInMonths,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true
+		);
+
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true
+		);
+
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			fri.tenor(),
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			fri,
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			0.,
+			0.,
+			strCurrency
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			12 / iTenorInMonths,
+			fri.tenor(),
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
 
-			/*
-			 * The Fixed Leg
-			 */
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				fri.tenor(),
+				astrMaturityTenor[i],
+				null
+			);
 
-			GenericStream fixStream = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrMaturityTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					4,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					1.,
-					null,
-					0.,
-					strCurrency,
-					strCurrency,
-					null,
-					null
+			Stream floatingStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsFloatingStreamEdgeDate,
+					cpsFloating,
+					ucasFloating,
+					cfusFloating
 				)
 			);
 
-			/*
-			 * The Derived Leg
-			 */
-
-			GenericStream fsDerived = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrMaturityTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					12 / iTenorInMonths,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					-1.,
-					null,
-					0.,
-					strCurrency,
-					strCurrency,
-					fri,
-					null
+			Stream fixedStream = new Stream (
+				CompositePeriodBuilder.FixedCompositeUnit (
+					lsFixedStreamEdgeDate,
+					cpsFixed,
+					ucasFixed,
+					cfusFixed
 				)
 			);
 
-			/*
-			 * The fix-float swap instance
-			 */
-
-			aFFC[i] = new GenericFixFloatComponent (
-				fixStream,
-				fsDerived,
-				new CashSettleParams (0, strCurrency, 0)
+			aFFC[i] = new FixFloatComponent (
+				fixedStream,
+				floatingStream,
+				csp
 			);
 		}
 
@@ -463,7 +489,7 @@ public class IBOR {
 			adblFRAQuote
 		);
 
-		GenericFixFloatComponent[] aFixFloat = FixFloatSwap (
+		FixFloatComponent[] aFixFloat = FixFloatSwap (
 			dtValue,
 			fri,
 			astrFixFloatTenor

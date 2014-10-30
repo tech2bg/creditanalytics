@@ -36,7 +36,7 @@ package org.drip.product.rates;
 
 public class FixFloatPayerReceiverOption extends org.drip.product.definition.FixedIncomeOptionComponent {
 	private boolean _bIsReceiver = false;
-	private org.drip.product.rates.GenericFixFloatComponent _stir = null;
+	private org.drip.product.rates.FixFloatComponent _stir = null;
 
 	/**
 	 * FixFloatPayerReceiverOption constructor
@@ -53,7 +53,7 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 	 */
 
 	public FixFloatPayerReceiverOption (
-		final org.drip.product.rates.GenericFixFloatComponent stir,
+		final org.drip.product.rates.FixFloatComponent stir,
 		final java.lang.String strManifestMeasure,
 		final boolean bIsReceiver,
 		final double dblStrike,
