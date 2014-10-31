@@ -1,11 +1,14 @@
 
 package org.drip.sample.sensitivity;
 
+import java.util.List;
+
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
@@ -182,79 +185,123 @@ public class DiscountCurveQuoteSensitivity {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final GenericFixFloatComponent[] SwapInstrumentsFromMaturityTenor (
+
+	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		GenericFixFloatComponent[] aIRS = new GenericFixFloatComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
+
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true
+		);
+
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true
+		);
+
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			0.,
+			0.,
+			strCurrency
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			GenericStream floatStream = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrMaturityTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					2,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					-1.,
-					null,
-					0.,
-					strCurrency,
-					strCurrency,
-					ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
-					null
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				astrMaturityTenor[i],
+				null
+			);
+
+			Stream floatingStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsFloatingStreamEdgeDate,
+					cpsFloating,
+					ucasFloating,
+					cfusFloating
 				)
 			);
 
-			GenericStream fixStream = new GenericStream (
-				PeriodBuilder.RegularPeriodSingleReset (
-					dtEffective.julian(),
-					astrMaturityTenor[i],
-					Double.NaN,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					null,
-					2,
-					"Act/360",
-					false,
-					"Act/360",
-					false,
-					false,
-					strCurrency,
-					1.,
-					null,
-					0.,
-					strCurrency,
-					strCurrency,
-					null,
-					null
+			Stream fixedStream = new Stream (
+				CompositePeriodBuilder.FixedCompositeUnit (
+					lsFixedStreamEdgeDate,
+					cpsFixed,
+					ucasFixed,
+					cfusFixed
 				)
 			);
 
-			GenericFixFloatComponent irs = new GenericFixFloatComponent (
-				fixStream,
-				floatStream,
-				new CashSettleParams (0, strCurrency, 0)
+			FixFloatComponent irs = new FixFloatComponent (
+				fixedStream,
+				floatingStream,
+				csp
 			);
 
 			irs.setPrimaryCode ("IRS." + astrMaturityTenor[i] + "." + strCurrency);
@@ -266,7 +313,7 @@ public class DiscountCurveQuoteSensitivity {
 	}
 
 	private static final LatentStateStretchSpec SwapStretch (
-		final GenericFixFloatComponent[] aIRS,
+		final FixFloatComponent[] aIRS,
 		final double[] adblQuote)
 		throws Exception
 	{
@@ -304,80 +351,123 @@ public class DiscountCurveQuoteSensitivity {
 		);
 	}
 
-	private static final GenericFixFloatComponent IRS (
+	private static final FixFloatComponent IRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
-		final String strTenor,
+		final String strMaturityTenor,
 		final double dblCoupon)
 		throws Exception
 	{
-		GenericStream fixStream = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				strTenor,
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				2,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				true,
-				strCurrency,
-				1.,
-				null,
-				dblCoupon,
-				strCurrency,
-				strCurrency,
-				null,
-				null
-			)
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			4,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true
 		);
 
-		GenericStream floatStream = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				strTenor,
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				4,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				true,
-				strCurrency,
-				-1.,
-				null,
-				0.,
-				strCurrency,
-				strCurrency,
-				ForwardLabel.Create (strCurrency, "LIBOR", "3M"),
-				null
-			)
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true
 		);
 
-		GenericFixFloatComponent irs = new GenericFixFloatComponent (
-			fixStream,
-			floatStream,
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			"3M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			dblCoupon,
+			0.,
+			strCurrency
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			4,
+			"3M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
 			null
 		);
 
-		irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
+		List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+			dtEffective,
+			"6M",
+			strMaturityTenor,
+			null
+		);
+
+		List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+			dtEffective,
+			"3M",
+			strMaturityTenor,
+			null
+		);
+
+		Stream floatingStream = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				lsFloatingStreamEdgeDate,
+				cpsFloating,
+				ucasFloating,
+				cfusFloating
+			)
+		);
+
+		Stream fixedStream = new Stream (
+			CompositePeriodBuilder.FixedCompositeUnit (
+				lsFixedStreamEdgeDate,
+				cpsFixed,
+				ucasFixed,
+				cfusFixed
+			)
+		);
+
+		FixFloatComponent irs = new FixFloatComponent (
+			fixedStream,
+			floatingStream,
+			csp
+		);
+
+		irs.setPrimaryCode ("IRS." + strMaturityTenor + "." + strCurrency);
 
 		return irs;
 	}
@@ -494,7 +584,7 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Array of SWAP Instruments and their Quotes from the given set of parameters
 		 */
 
-		GenericFixFloatComponent[] aSwap = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwap = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
 			new java.lang.String[] {

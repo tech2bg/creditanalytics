@@ -5,12 +5,13 @@ package org.drip.sample.bloomberg;
  * Credit Product imports
  */
 
-import org.drip.analytics.cashflow.GenericCouponPeriod;
+import java.util.List;
+
+import org.drip.analytics.cashflow.CompositePeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.analytics.support.PeriodBuilder;
+import org.drip.analytics.support.*;
 import org.drip.param.definition.*;
 import org.drip.param.market.MultiSidedQuote;
 import org.drip.param.valuation.*;
@@ -21,10 +22,10 @@ import org.drip.product.params.EmbeddedOptionSchedule;
  * Credit Analytics API imports
  */
 
-import org.drip.product.rates.GenericFixFloatComponent;
-import org.drip.product.rates.GenericStream;
+import org.drip.product.rates.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
+import org.drip.param.period.*;
 import org.drip.product.creator.*;
 import org.drip.product.credit.BondComponent;
 import org.drip.quant.common.FormatUtil;
@@ -65,83 +66,126 @@ import org.drip.state.identifier.ForwardLabel;
 public class YAS {
 	private static final String FIELD_SEPARATOR = "    ";
 
-	private static final GenericFixFloatComponent IRS (
+	private static final FixFloatComponent IRS (
 		final JulianDate dtEffective,
 		final String strCurrency,
-		final String strTenor,
+		final String strMaturityTenor,
 		final double dblCoupon)
 		throws Exception
 	{
-		GenericStream fixStream = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				strTenor,
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				2,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				true,
-				strCurrency,
-				1.,
-				null,
-				dblCoupon,
-				strCurrency,
-				strCurrency,
-				null,
-				null
-			)
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			4,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true
 		);
 
-		GenericStream floatStream = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				strTenor,
-				Double.NaN,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				4,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				true,
-				strCurrency,
-				-1.,
-				null,
-				0.,
-				strCurrency,
-				strCurrency,
-				ForwardLabel.Create (strCurrency, "LIBOR", "3M"),
-				null
-			)
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true
 		);
 
-		GenericFixFloatComponent irs = new GenericFixFloatComponent (
-			fixStream,
-			floatStream,
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			"3M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			dblCoupon,
+			0.,
+			strCurrency
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			4,
+			"3M",
+			strCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
 			null
 		);
 
-		irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+				strCurrency,
+				null,
+				CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+				1.,
+				null,
+				null,
+				null,
+				null
+			);
 
-		return irs;
-	}
+			CashSettleParams csp = new CashSettleParams (
+				0,
+				strCurrency,
+				0
+			);
+
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"6M",
+				strMaturityTenor,
+				null
+			);
+
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				"3M",
+				strMaturityTenor,
+				null
+			);
+
+			Stream floatingStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsFloatingStreamEdgeDate,
+					cpsFloating,
+					ucasFloating,
+					cfusFloating
+				)
+			);
+
+			Stream fixedStream = new Stream (
+				CompositePeriodBuilder.FixedCompositeUnit (
+					lsFixedStreamEdgeDate,
+					cpsFixed,
+					ucasFixed,
+					cfusFixed
+				)
+			);
+
+			FixFloatComponent irs = new FixFloatComponent (
+				fixedStream,
+				floatingStream,
+				csp
+			);
+
+			irs.setPrimaryCode ("IRS." + strMaturityTenor + "." + strCurrency);
+
+			return irs;
+		}
 
 	/*
 	 * Sample demonstrating building of rates curve from cash/future/swaps
@@ -454,10 +498,10 @@ public class YAS {
 
 		System.out.println ("\nCashflow\n--------");
 
-		for (GenericCouponPeriod p : bond.cashFlowPeriod())
+		for (CompositePeriod p : bond.cashFlowPeriod())
 			System.out.println (
-				JulianDate.fromJulian (p.accrualStartDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.accrualEndDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.startDate()) + FIELD_SEPARATOR +
+				JulianDate.fromJulian (p.endDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dc.df (p.payDate()), 1, 4, 1.) + FIELD_SEPARATOR

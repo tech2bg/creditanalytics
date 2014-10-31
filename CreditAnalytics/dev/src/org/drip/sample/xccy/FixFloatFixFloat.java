@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
@@ -53,90 +54,119 @@ import org.drip.state.identifier.*;
 
 public class FixFloatFixFloat {
 
-	private static final GenericFixFloatComponent MakeFixFloatSwap (
+	private static final FixFloatComponent MakeFixFloatSwap (
 		final JulianDate dtEffective,
 		final boolean bFXMTM,
 		final String strPayCurrency,
 		final String strCouponCurrency,
-		final String strTenor,
+		final String strMaturityTenor,
 		final int iTenorInMonths)
 		throws Exception
 	{
-		/*
-		 * The Fixed Leg
-		 */
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			12 / iTenorInMonths,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strPayCurrency,
+			false
+		);
 
-		GenericStream fixStream = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				strTenor,
-				bFXMTM ? Double.NaN : dtEffective.julian(),
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCouponCurrency,
+			false
+		);
+
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			iTenorInMonths + "M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			null,
+			0.
+		);
+
+		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+			"6M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			0.02,
+			0.,
+			strCouponCurrency
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			12 / iTenorInMonths,
+			iTenorInMonths + "M",
+			strPayCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			2,
+			"6M",
+			strPayCurrency,
+			null,
+			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			1.,
+			null,
+			null,
+			bFXMTM ? null : new FixingSetting (
+				FixingSetting.FIXING_PRESET_STATIC,
 				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				2,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				strCouponCurrency,
-				-1.,
-				null,
-				0.02,
-				strPayCurrency,
-				strCouponCurrency,
-				null,
-				null
+				dtEffective.julian()
+			),
+			null
+		);
+
+		List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+			dtEffective,
+			iTenorInMonths + "M",
+			strMaturityTenor,
+			null
+		);
+
+		List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+			dtEffective,
+			"6M",
+			strMaturityTenor,
+			null
+		);
+
+		Stream floatingStream = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				lsFloatingStreamEdgeDate,
+				cpsFloating,
+				ucasFloating,
+				cfusFloating
 			)
 		);
 
-		/*
-		 * The Derived Leg
-		 */
-
-		GenericStream floatStream = new GenericStream (
-			PeriodBuilder.RegularPeriodSingleReset (
-				dtEffective.julian(),
-				strTenor,
-				bFXMTM ? Double.NaN : dtEffective.julian(),
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				12 / iTenorInMonths,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				false,
-				strCouponCurrency,
-				1.,
-				null,
-				0.,
-				strPayCurrency,
-				strCouponCurrency,
-				ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonths + "M"),
-				null
+		Stream fixedStream = new Stream (
+			CompositePeriodBuilder.FixedCompositeUnit (
+				lsFixedStreamEdgeDate,
+				cpsFixed,
+				ucasFixed,
+				cfusFixed
 			)
 		);
 
-		/*
-		 * The fix-float swap instance
-		 */
-
-		GenericFixFloatComponent fixFloat = new GenericFixFloatComponent (
-			fixStream,
-			floatStream,
+		FixFloatComponent fixFloat = new FixFloatComponent (
+			fixedStream,
+			floatingStream,
 			new CashSettleParams (0, strPayCurrency, 0)
 		);
 
@@ -180,7 +210,7 @@ public class FixFloatFixFloat {
 
 		FXLabel fxLabel = FXLabel.Standard (CurrencyPair.FromCode ("USD/EUR"));
 
-		GenericFixFloatComponent fixFloatUSD = MakeFixFloatSwap (
+		FixFloatComponent fixFloatUSD = MakeFixFloatSwap (
 			dtToday,
 			false,
 			"USD",
@@ -189,7 +219,7 @@ public class FixFloatFixFloat {
 			3
 		);
 
-		GenericFixFloatComponent fixFloatEURMTM = MakeFixFloatSwap (
+		FixFloatComponent fixFloatEURMTM = MakeFixFloatSwap (
 			dtToday,
 			true,
 			"USD",
@@ -204,7 +234,7 @@ public class FixFloatFixFloat {
 			fixFloatEURMTM
 		);
 
-		GenericFixFloatComponent fixFloatEURNonMTM = MakeFixFloatSwap (
+		FixFloatComponent fixFloatEURNonMTM = MakeFixFloatSwap (
 			dtToday,
 			false,
 			"USD",
