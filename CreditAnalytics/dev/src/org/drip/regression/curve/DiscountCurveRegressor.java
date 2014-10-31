@@ -233,12 +233,12 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 
 						cpsFloating = new org.drip.param.period.CompositePeriodSetting (4, "3M",
 							_strCurrency, null,
-								org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 							-1., null, null, null, null);
 
 						cpsFixed = new org.drip.param.period.CompositePeriodSetting (2, "6M",
 							_strCurrency, null,
-								org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 							1., null, null, null, null);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();

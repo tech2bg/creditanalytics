@@ -145,11 +145,11 @@ public class IRSJacobianRegressorSet implements org.drip.regression.core.Regress
 								null, 0., 0., "USD");
 
 						cpsFloating = new org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null,
-							org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 							-1., null, null, null, null);
 
 						cpsFixed = new org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null,
-							org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 							1., null, null, null, null);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();

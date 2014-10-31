@@ -276,8 +276,8 @@ public class BondBuilder {
 				adt.length != adblPrincipal.length || null == dtEffective || 0 == iFreq)
 			return null;
 
-		java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> lsCouponPeriod = new
-			java.util.ArrayList<org.drip.analytics.cashflow.GenericCouponPeriod>();
+		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod = new
+			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
 
 		double dblTotalPrincipal = 0.;
 		double[] adblDate = new double[adt.length];
@@ -325,15 +325,7 @@ public class BondBuilder {
 			}
 
 			try {
-				org.drip.analytics.cashflow.ResetPeriodContainer rpc = new
-					org.drip.analytics.cashflow.ResetPeriodContainer
-						(org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
-
-				if (!rpc.appendResetPeriod (new org.drip.analytics.cashflow.GenericComposablePeriod
-					(dblPeriodStart, adblDate[i], dblPeriodStart, null)))
-					return null;
-
-				lsCouponPeriod.add (new org.drip.analytics.cashflow.GenericCouponPeriod (dblPeriodStart,
+				lsCouponPeriod.add (new org.drip.analytics.cashflow.CompositeFixedPeriod (dblPeriodStart,
 					adblDate[i], dblPeriodStart, adblDate[i], adblDate[i], rpc, java.lang.Double.NaN, iFreq,
 						1. / iFreq, "30/360", "30/360", false, false, "", dblTotalPrincipal,
 							org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate,

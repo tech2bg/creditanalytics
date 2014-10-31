@@ -370,7 +370,7 @@ public class RatesClosesLoader {
 			org.drip.param.period.CompositePeriodSetting cpsFixed = new
 				org.drip.param.period.CompositePeriodSetting (_mapFixedFrequency.get (strCurrency),
 					_mapFixedTenor.get (strCurrency), strCurrency, null,
-						org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+						org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 							1., null, null, null, null);
 
 			java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
@@ -397,7 +397,7 @@ public class RatesClosesLoader {
 			org.drip.param.period.CompositePeriodSetting cpsFloating = new
 				org.drip.param.period.CompositePeriodSetting (_mapFloatingFrequency.get (strCurrency),
 					_mapFloatingTenor.get (strCurrency), strCurrency, null,
-						org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+						org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 							-1., null, null, null, null);
 
 			java.util.List<java.lang.Double> lsFloatingStreamEdgeDate =
@@ -457,7 +457,7 @@ public class RatesClosesLoader {
 			org.drip.param.period.CompositePeriodSetting cpsFixed = new
 				org.drip.param.period.CompositePeriodSetting (_mapFixedFrequency.get (strCurrency),
 					_mapFixedTenor.get (strCurrency), strCurrency, null,
-						org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+						org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 							1., null, null, null, null);
 
 			java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
@@ -482,7 +482,7 @@ public class RatesClosesLoader {
 			org.drip.param.period.CompositePeriodSetting cpsFloating = new
 				org.drip.param.period.CompositePeriodSetting (_mapFloatingFrequency.get (strCurrency),
 					_mapFloatingTenor.get (strCurrency), strCurrency, null,
-						org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+						org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 							-1., null, null, null, null);
 
 			java.util.List<java.lang.Double> lsFloatingStreamEdgeDate =
@@ -507,7 +507,7 @@ public class RatesClosesLoader {
 	}
 
 	private static final double calcMeasure (
-		final org.drip.product.rates.GenericStream stream,
+		final org.drip.product.rates.Stream stream,
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final java.lang.String strMeasure,
@@ -597,8 +597,7 @@ public class RatesClosesLoader {
 		final java.lang.String strCurrency)
 		throws java.lang.Exception
 	{
-		org.drip.product.rates.GenericFixFloatComponent irs =
-			(org.drip.product.rates.GenericFixFloatComponent) comp;
+		org.drip.product.rates.FixFloatComponent irs = (org.drip.product.rates.FixFloatComponent) comp;
 
 		double dblFixedCoupon = irs.referenceStream().coupon (dtPrev.julian(), null, null).rate();
 
@@ -859,9 +858,8 @@ public class RatesClosesLoader {
 		org.drip.state.representation.LatentStateSpecification lssForward = null;
 		org.drip.state.representation.LatentStateSpecification lssDiscount = null;
 
-		if (comp instanceof org.drip.product.rates.GenericDualStreamComponent)
-			forwardLabel =((org.drip.product.rates.GenericDualStreamComponent)
-				comp).derivedStream().forwardLabel();
+		if (comp instanceof org.drip.product.rates.DualStreamComponent)
+			forwardLabel =((org.drip.product.rates.DualStreamComponent) comp).derivedStream().forwardLabel();
 		else {
 			org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp.forwardLabel();
 
@@ -886,8 +884,8 @@ public class RatesClosesLoader {
 				(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
 					org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						org.drip.state.identifier.FundingLabel.Standard (comp instanceof
-							org.drip.product.rates.GenericDualStreamComponent ?
-								((org.drip.product.rates.GenericDualStreamComponent)
+							org.drip.product.rates.DualStreamComponent ?
+								((org.drip.product.rates.DualStreamComponent)
 									comp).derivedStream().couponCurrency() : comp.payCurrency()[0]));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

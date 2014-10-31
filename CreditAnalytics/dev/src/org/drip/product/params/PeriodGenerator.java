@@ -166,7 +166,7 @@ public class PeriodGenerator extends PeriodSet {
 
 			org.drip.param.period.CompositePeriodSetting cps = new
 				org.drip.param.period.CompositePeriodSetting (_iFreq, strTenor, _strCurrency, null,
-					org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
+					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
 						null, null, null, null);
 
 			java.util.List<java.lang.Double> lsStreamEdgeDate = _bPeriodsFromForward ?

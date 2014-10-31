@@ -427,7 +427,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.param.period.CompositePeriodSetting cps = new org.drip.param.period.CompositePeriodSetting
 			(iFreq, (12 / iFreq) + "M", _strCouponCurrency, null,
-				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 					_dblNotional = dblNotional, null, _notlSchedule, null, null == _crValParams ? null :
 						org.drip.state.identifier.CreditLabel.Standard (_crValParams._strCC));
 

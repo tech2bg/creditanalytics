@@ -97,6 +97,18 @@ public class CompositePeriodBuilder {
 
 	public static final int REFERENCE_PERIOD_IN_ADVANCE = 1;
 
+	/**
+	 * Accrual Compounding Rule - Arithmetic
+	 */
+
+	public static final int ACCRUAL_COMPOUNDING_RULE_ARITHMETIC = 1;
+
+	/**
+	 * Accrual Compounding Rule - Geometric
+	 */
+
+	public static final int ACCRUAL_COMPOUNDING_RULE_GEOMETRIC = 2;
+
 	private static final double DAPAdjust (
 		final double dblDate,
 		final org.drip.analytics.daycount.DateAdjustParams dap)
@@ -110,6 +122,21 @@ public class CompositePeriodBuilder {
 		}
 
 		return dblDate;
+	}
+
+	/**
+	 * Verify if the Specified Accrual Compounding Rule is a Valid One
+	 * 
+	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
+	 * 
+	 * @return TRUE => The Accrual Compounding Rule is valid
+	 */
+
+	public static final boolean ValidateCompoundingRule (
+		final int iAccrualCompoundingRule)
+	{
+		return ACCRUAL_COMPOUNDING_RULE_ARITHMETIC == iAccrualCompoundingRule ||
+			ACCRUAL_COMPOUNDING_RULE_GEOMETRIC == iAccrualCompoundingRule;
 	}
 
 	/**

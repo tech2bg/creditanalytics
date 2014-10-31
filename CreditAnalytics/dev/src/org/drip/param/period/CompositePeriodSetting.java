@@ -78,7 +78,7 @@ public class CompositePeriodSetting {
 	{
 		if (0 >= (_iFreq = iFreq) || null == (_strTenor = strTenor) || _strTenor.isEmpty() || null ==
 			(_strPayCurrency = strPayCurrency) || _strPayCurrency.isEmpty() ||
-				!org.drip.analytics.support.CompositePeriodUtil.ValidateCompoundingRule
+				!org.drip.analytics.support.CompositePeriodBuilder.ValidateCompoundingRule
 					(_iAccrualCompoundingRule = iAccrualCompoundingRule) ||
 						!org.drip.quant.common.NumberUtil.IsValid (_dblBaseNotional = dblBaseNotional))
 			throw new java.lang.Exception ("CompositePeriodSetting ctr: Invalid Inputs");

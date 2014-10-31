@@ -74,19 +74,14 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 
 				private org.drip.analytics.date.JulianDate _dtStart = null;
 				private org.drip.analytics.rates.ExplicitBootDiscountCurve _dc = null;
-				private org.drip.analytics.date.JulianDate _dtPeriodStart = null;
 
-				private java.util.List<org.drip.analytics.cashflow.GenericCouponPeriod> _lsCouponPeriod = new
-					java.util.ArrayList<org.drip.analytics.cashflow.GenericCouponPeriod>();
+				private java.util.List<org.drip.analytics.cashflow.CompositePeriod> _lsCouponPeriod = new
+					java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
 
 				@Override public boolean preRegression()
 				{
 					if (null == (_dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2010,
 						org.drip.analytics.date.JulianDate.MAY, 12)))
-						return false;
-
-					if (null == (_dtPeriodStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2008,
-						org.drip.analytics.date.JulianDate.SEPTEMBER, 25)))
 						return false;
 
 					final int NUM_DC_NODES = 5;
@@ -105,25 +100,32 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 							org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD)))
 						return false;
 
-					for (int i = 0; i < NUM_PERIOD_NODES; ++i) {
-						double dblStart = _dtPeriodStart.julian();
+					try {
+						org.drip.param.period.UnitCouponAccrualSetting ucas = new
+							org.drip.param.period.UnitCouponAccrualSetting (2, "30/360", false, "30/360",
+								false, "ZAR", false);
 
-						org.drip.analytics.date.JulianDate dtEnd = _dtPeriodStart.addMonths (6);
+						org.drip.param.period.ComposableFixedUnitSetting cfus = new
+							org.drip.param.period.ComposableFixedUnitSetting ("6M",
+								org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+							null, s_dblZSpread, 0., "ZAR");
 
-						double dblEnd = dtEnd.julian();
+						org.drip.param.period.CompositePeriodSetting cps = new
+							org.drip.param.period.CompositePeriodSetting (2, "6M", "ZAR", null,
+								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+							1., null, null,null, null);
 
-						try {
-							_lsCouponPeriod.add (new org.drip.analytics.cashflow.GenericCouponPeriod (dblStart,
-								dblEnd, dblStart, dblEnd, dblEnd, null, java.lang.Double.NaN, 2, 0.5,
-									"30/360", "30/360", false, false, "ZAR", 1., null, s_dblZSpread, "ZAR",
-										"ZAR", null, null));
-						} catch (java.lang.Exception e) {
-							e.printStackTrace();
+						java.util.List<java.lang.Double> lsStreamEdgeDate =
+							org.drip.analytics.support.CompositePeriodBuilder.RegularEdgeDates (_dtStart,
+								"6M", (NUM_PERIOD_NODES * 6) + "M", null);
 
-							return false;
-						}
+						_lsCouponPeriod =
+							org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (
+								lsStreamEdgeDate, cps, ucas, cfus);
+					} catch (java.lang.Exception e) {
+						e.printStackTrace();
 
-						_dtPeriodStart = dtEnd;
+						return false;
 					}
 
 					return true;
@@ -133,8 +135,9 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				{
 					try {
 						if (null == (_zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (2,
-							"30/360", _dc.currency(), true, _lsCouponPeriod, _dtPeriodStart.julian(),
-								_dtStart.addDays (2).julian(), _dc, null, s_dblZSpread)))
+							"30/360", _dc.currency(), true, _lsCouponPeriod, _lsCouponPeriod.get
+								(_lsCouponPeriod.size() - 1).endDate(), _dtStart.addDays (2).julian(), _dc,
+									null, s_dblZSpread)))
 							return false;
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();

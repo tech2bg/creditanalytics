@@ -133,8 +133,8 @@ public class ScenarioForwardCurveBuilder {
 		try {
 			org.drip.state.identifier.ForwardLabel forwardLabel = null;
 
-			if (aCalibComp[0] instanceof org.drip.product.rates.GenericDualStreamComponent)
-				forwardLabel = ((org.drip.product.rates.GenericDualStreamComponent)
+			if (aCalibComp[0] instanceof org.drip.product.rates.DualStreamComponent)
+				forwardLabel = ((org.drip.product.rates.DualStreamComponent)
 					aCalibComp[0]).derivedStream().forwardLabel();
 			else {
 				org.drip.state.identifier.ForwardLabel[] aForwardLabel = aCalibComp[0].forwardLabel();

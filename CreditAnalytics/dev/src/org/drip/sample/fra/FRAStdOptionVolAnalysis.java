@@ -141,7 +141,7 @@ public class FRAStdOptionVolAnalysis {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -154,7 +154,7 @@ public class FRAStdOptionVolAnalysis {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -317,7 +317,8 @@ public class FRAStdOptionVolAnalysis {
 			aSwapComp,
 			adblSwapQuote,
 			astrSwapManifestMeasure,
-			true);
+			true
+		);
 	}
 
 	/*
@@ -380,7 +381,7 @@ public class FRAStdOptionVolAnalysis {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -393,7 +394,7 @@ public class FRAStdOptionVolAnalysis {
 			iTenorInMonths + "M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,

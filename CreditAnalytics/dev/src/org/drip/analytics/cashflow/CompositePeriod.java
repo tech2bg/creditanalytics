@@ -744,7 +744,7 @@ public abstract class CompositePeriod {
 		int iNumPeriodUnit = _lsCUP.size();
 
 		try {
-			if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			if (org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_iAccrualCompoundingRule) {
 				java.util.List<org.drip.analytics.output.ConvexityAdjustment> lsConvAdj =
 					periodWiseConvexityAdjustment (dblValueDate, csqs);
@@ -757,8 +757,8 @@ public abstract class CompositePeriod {
 					lsUPCM.add (new org.drip.analytics.output.UnitPeriodConvexityMetrics (cup.startDate(),
 						cup.endDate(), lsConvAdj.get (i)));
 				}
-			} else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-				_iAccrualCompoundingRule)
+			} else if (org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
+				== _iAccrualCompoundingRule)
 				lsUPCM.add (new org.drip.analytics.output.UnitPeriodConvexityMetrics (startDate(), endDate(),
 					terminalConvexityAdjustment (dblValueDate, csqs)));
 
@@ -791,7 +791,7 @@ public abstract class CompositePeriod {
 		int iNumPeriodUnit = _lsCUP.size();
 
 		try {
-			if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			if (org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_iAccrualCompoundingRule) {
 				java.util.List<org.drip.analytics.output.ConvexityAdjustment> lsConvAdj =
 					periodWiseConvexityAdjustment (dblValueDate, csqs);
@@ -804,8 +804,8 @@ public abstract class CompositePeriod {
 					lsUPM.add (new org.drip.analytics.output.UnitPeriodMetrics (cup.startDate(),
 						cup.endDate(), cup.fullCouponDCF(), cup.fullCouponRate (csqs), lsConvAdj.get (i)));
 				}
-			} else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-				_iAccrualCompoundingRule) {
+			} else if (org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
+				== _iAccrualCompoundingRule) {
 				double dblDCF = 0.;
 				double dblRate = 1.;
 
@@ -910,7 +910,7 @@ public abstract class CompositePeriod {
 
 			double dblResetDate = java.lang.Double.NaN;
 
-			if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
+			if (org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC ==
 				_iAccrualCompoundingRule) {
 				java.util.List<org.drip.analytics.output.ConvexityAdjustment> lsConvAdj =
 					periodWiseConvexityAdjustment (dblValueDate, csqs);
@@ -937,8 +937,8 @@ public abstract class CompositePeriod {
 							cup.endDate(), cup.fullCouponDCF(), cup.fullCouponRate (csqs), lsConvAdj.get
 								(i)));
 				}
-			} else if (org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC ==
-				_iAccrualCompoundingRule) {
+			} else if (org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
+				== _iAccrualCompoundingRule) {
 				double dblAccrualDCF = 0.;
 				double dblAccrualRate = 1.;
 

@@ -609,7 +609,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
-	private org.drip.analytics.cashflow.GenericCouponPeriod calcCurrentPeriod (
+	private org.drip.analytics.cashflow.CompositePeriod calcCurrentPeriod (
 		final double dblDate)
 	{
 		if (java.lang.Double.isNaN (dblDate)) return null;
@@ -1145,11 +1145,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		try {
-			org.drip.analytics.cashflow.GenericCouponPeriod period = calcCurrentPeriod (dblAccrualEndDate);
+			org.drip.analytics.cashflow.CompositePeriod period = calcCurrentPeriod (dblAccrualEndDate);
 
 			org.drip.analytics.output.UnitPeriodMetrics upm = new org.drip.analytics.output.UnitPeriodMetrics
-				(period.startDate(), period.endDate(), period.couponDCF(), period.fixedCoupon(), new
-					org.drip.analytics.output.ConvexityAdjustment());
+				(period.startDate(), period.endDate(), period.couponDCF(), period.couponMetrics
+					(valParams.valueDate(), csqs).rate(), new
+						org.drip.analytics.output.ConvexityAdjustment());
 
 			java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsUPM = new
 				java.util.ArrayList<org.drip.analytics.output.UnitPeriodMetrics>();
@@ -1251,7 +1252,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLP = new
 			java.util.ArrayList<org.drip.analytics.cashflow.LossQuadratureMetrics>();
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
 			if (null == period) continue;
 
 			java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLPSub = period.lossMetrics
@@ -1283,7 +1284,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLP = new
 			java.util.ArrayList<org.drip.analytics.cashflow.LossQuadratureMetrics>();
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
 			if (null == period || period.endDate() < valParams.valueDate()) continue;
 
 			if (period.startDate() > wi.date()) break;
@@ -1532,11 +1533,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			_periodParams._dblMaturity)
 			return null;
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
 			if (period.payDate() < dblValue) continue;
 
 			try {
-				return new org.drip.analytics.date.JulianDate (period.rpc().resetPeriods().get (0).fixing());
+				return new org.drip.analytics.date.JulianDate
+					(((org.drip.analytics.cashflow.ComposableUnitFloatingPeriod) (period.periods().get
+						(0))).referenceIndexPeriod().fixingDate());
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
 
@@ -1557,7 +1560,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			if (0 == iIndex) return null;
 			
-			org.drip.analytics.cashflow.GenericCouponPeriod period = _periodParams.getPeriod (iIndex - 1);
+			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.getPeriod (iIndex - 1);
 
 			if (null == period) return null;
 
@@ -1578,7 +1581,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		int iIndex = _periodParams.getPeriodIndex (dt.julian());
 
-		org.drip.analytics.cashflow.GenericCouponPeriod period = _periodParams.getPeriod (iIndex - 1);
+		org.drip.analytics.cashflow.CompositePeriod period = _periodParams.getPeriod (iIndex - 1);
 
 		if (null == period)
 			throw new java.lang.Exception
@@ -1602,7 +1605,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		try {
 			int iIndex = _periodParams.getPeriodIndex (dt.julian());
 			
-			org.drip.analytics.cashflow.GenericCouponPeriod period = _periodParams.getPeriod (iIndex);
+			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.getPeriod (iIndex);
 
 			if (null == period) return null;
 
@@ -1621,7 +1624,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		try {
 			int iIndex = _periodParams.getPeriodIndex (dt.julian());
 			
-			org.drip.analytics.cashflow.GenericCouponPeriod period = _periodParams.getPeriod (iIndex + 1);
+			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.getPeriod (iIndex + 1);
 
 			if (null == period) return null;
 
@@ -1732,7 +1735,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		int iIndex = _periodParams.getPeriodIndex (dt.julian());
 
-		org.drip.analytics.cashflow.GenericCouponPeriod period = _periodParams.getPeriod (iIndex + 1);
+		org.drip.analytics.cashflow.CompositePeriod period = _periodParams.getPeriod (iIndex + 1);
 
 		if (null == period)
 			throw new java.lang.Exception ("BondComponent::calcNextCouponRate => Cannot find next period!");
@@ -1760,7 +1763,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				" greater than maturity " + org.drip.analytics.date.JulianDate.fromJulian
 					(_periodParams._dblMaturity));
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
 			if (period.payDate() < dblDate) continue;
 
 			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (period.endDate(), new
@@ -1843,13 +1846,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception
 				("Cannot create shifted ZC in BondComponent::calcPriceFromBumpedZC");
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
 			if (period.payDate() < valParams.valueDate()) continue;
 
 			if (java.lang.Double.isNaN (dblScalingNotional))
 				dblScalingNotional = notional (period.startDate());
 
-			double dblAccrualEndDate = period.accrualEndDate();
+			double dblAccrualEndDate = period.endDate();
 
 			double dblNotionalEndDate = period.endDate();
 
@@ -1923,13 +1926,13 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception
 				("Cannot create shifted DC in BondComponent::calcPriceFromBumpedDC");
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
 			if (period.payDate() < valParams.valueDate()) continue;
 
 			if (java.lang.Double.isNaN (dblScalingNotional)) dblScalingNotional = notional
 				(period.startDate());
 
-			double dblAccrualEndDate = period.accrualEndDate();
+			double dblAccrualEndDate = period.endDate();
 
 			double dblNotionalEndDate = period.endDate();
 
@@ -2032,10 +2035,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
 			false, s_iDiscretizationScheme, false);
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
 			if (period.payDate() < valParams.valueDate()) continue;
 
-			double dblAccrualEndDate = period.accrualEndDate();
+			double dblAccrualEndDate = period.endDate();
 
 			double dblNotionalEndDate = period.endDate();
 
@@ -6551,9 +6554,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		double dblDuration = 0.;
 		boolean bFirstPeriod = true;
 		boolean bTerminateCouponFlow = false;
-		org.drip.analytics.cashflow.GenericCouponPeriod periodRef = null;
+		org.drip.analytics.cashflow.CompositePeriod periodRef = null;
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
 			if (period.payDate() < valParams.valueDate()) continue;
 
 			if (bFirstPeriod) {
@@ -6565,7 +6568,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			periodRef = period;
 
-			double dblAccrualEndDate = period.accrualEndDate();
+			double dblAccrualEndDate = period.endDate();
 
 			double dblNotionalEndDate = period.endDate();
 
@@ -6590,7 +6593,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			if (null == strCalendar || strCalendar.isEmpty()) strCalendar = getRedemptionCurrency();
 
 			org.drip.analytics.daycount.ActActDCParams aap = new org.drip.analytics.daycount.ActActDCParams
-				(iFrequency, period.accrualStartDate(), period.accrualEndDate());
+				(iFrequency, period.startDate(), period.endDate());
 
 			if (null != quotingParams) {
 				strDC = quotingParams.yieldDayCount();
@@ -6603,7 +6606,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				if (null == (aap = quotingParams.yieldAAP()))
 					aap = new org.drip.analytics.daycount.ActActDCParams (quotingParams.yieldFreq(),
-						period.accrualStartDate(), period.accrualEndDate());
+						period.startDate(), period.endDate());
 			} else if (null != _mktConv && null != _mktConv._quotingParams) {
 				strDC = _mktConv._quotingParams.yieldDayCount();
 
@@ -6615,8 +6618,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				if (null == (aap = _mktConv._quotingParams.yieldAAP()))
 					aap = new org.drip.analytics.daycount.ActActDCParams
-						(_mktConv._quotingParams.yieldFreq(), period.accrualStartDate(),
-							period.accrualEndDate());
+						(_mktConv._quotingParams.yieldFreq(), period.startDate(), period.endDate());
 			}
 
 			double dblYearFract = org.drip.analytics.daycount.Convention.YearFraction (valParams.valueDate(),
@@ -6656,8 +6658,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == strCalendar || strCalendar.isEmpty()) strCalendar = getRedemptionCurrency();
 
 		if (null != periodRef)
-			aap = new org.drip.analytics.daycount.ActActDCParams (iFrequency, periodRef.accrualStartDate(),
-				periodRef.accrualEndDate());
+			aap = new org.drip.analytics.daycount.ActActDCParams (iFrequency, periodRef.startDate(),
+				periodRef.endDate());
 
 		if (null != quotingParams) {
 			strDC = quotingParams.yieldDayCount();
@@ -6670,7 +6672,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			if (null != periodRef)
 				aap = new org.drip.analytics.daycount.ActActDCParams (quotingParams.yieldFreq(),
-					periodRef.accrualStartDate(), periodRef.accrualEndDate());
+					periodRef.startDate(), periodRef.endDate());
 		} else if (null != _mktConv && null != _mktConv._quotingParams) {
 			strDC = _mktConv._quotingParams.yieldDayCount();
 
@@ -6682,7 +6684,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			if (null != periodRef)
 				aap = new org.drip.analytics.daycount.ActActDCParams (_mktConv._quotingParams.yieldFreq(),
-					periodRef.accrualStartDate(), periodRef.accrualEndDate());
+					periodRef.startDate(), periodRef.endDate());
 		}
 
 		double dblYearFractWorkout = org.drip.analytics.daycount.Convention.YearFraction
@@ -8692,11 +8694,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		boolean bFirstPeriod = true;
 		boolean bTerminateCouponFlow = false;
 		double dblScalingNotional = java.lang.Double.NaN;
-		org.drip.analytics.cashflow.GenericCouponPeriod periodRef = null;
+		org.drip.analytics.cashflow.CompositePeriod periodRef = null;
 
 		if (null != _notlParams && _notlParams._bPriceOffOriginalNotional) dblScalingNotional = 1.;
 
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
 			if (period.payDate() < valParams.valueDate()) continue;
 
 			if (bFirstPeriod) {
@@ -8708,7 +8710,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			periodRef = period;
 
-			double dblAccrualEndDate = period.accrualEndDate();
+			double dblAccrualEndDate = period.endDate();
 
 			if (s_bBlog)
 				System.out.println ("Unadjusted Accrual End: " + new org.drip.analytics.date.JulianDate
@@ -8745,7 +8747,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			if (null == strCalendar || strCalendar.isEmpty()) strCalendar = getRedemptionCurrency();
 
 			org.drip.analytics.daycount.ActActDCParams aap = new org.drip.analytics.daycount.ActActDCParams
-				(iFrequency, period.accrualStartDate(), period.accrualEndDate());
+				(iFrequency, period.startDate(), period.endDate());
 
 			if (null != quotingParams) {
 				strDC = quotingParams.yieldDayCount();
@@ -8758,7 +8760,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				if (null == (aap = quotingParams.yieldAAP()))
 					aap = new org.drip.analytics.daycount.ActActDCParams (quotingParams.yieldFreq(),
-						period.accrualStartDate(), period.accrualEndDate());
+						period.startDate(), period.endDate());
 			} else if (null != _mktConv && null != _mktConv._quotingParams) {
 				strDC = _mktConv._quotingParams.yieldDayCount();
 
@@ -8770,8 +8772,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				if (null == (aap = _mktConv._quotingParams.yieldAAP()))
 					aap = new org.drip.analytics.daycount.ActActDCParams
-						(_mktConv._quotingParams.yieldFreq(), period.accrualStartDate(),
-							period.accrualEndDate());
+						(_mktConv._quotingParams.yieldFreq(), period.startDate(), period.endDate());
 			}
 
 			double dblYearFract = org.drip.analytics.daycount.Convention.YearFraction (valParams.valueDate(),
@@ -8853,8 +8854,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == strCalendar || strCalendar.isEmpty()) strCalendar = getRedemptionCurrency();
 
 		if (null != periodRef)
-			aap = new org.drip.analytics.daycount.ActActDCParams (iFrequency, periodRef.accrualStartDate(),
-				periodRef.accrualEndDate());
+			aap = new org.drip.analytics.daycount.ActActDCParams (iFrequency, periodRef.startDate(),
+				periodRef.endDate());
 
 		if (null != quotingParams) {
 			strDC = quotingParams.yieldDayCount();
@@ -8867,7 +8868,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			if (null != periodRef)
 				aap = new org.drip.analytics.daycount.ActActDCParams (quotingParams.yieldFreq(),
-					periodRef.accrualStartDate(), periodRef.accrualEndDate());
+					periodRef.startDate(), periodRef.endDate());
 		} else if (null != _mktConv && null != _mktConv._quotingParams) {
 			strDC = _mktConv._quotingParams.yieldDayCount();
 
@@ -8879,7 +8880,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			if (null != periodRef)
 				aap = new org.drip.analytics.daycount.ActActDCParams (_mktConv._quotingParams.yieldFreq(),
-					periodRef.accrualStartDate(), periodRef.accrualEndDate());
+					periodRef.startDate(), periodRef.endDate());
 		}
 
 		double dblYearFractCashPay = org.drip.analytics.daycount.Convention.YearFraction
@@ -12632,9 +12633,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	@Override public void showPeriods()
 		throws java.lang.Exception
 	{
-		for (org.drip.analytics.cashflow.GenericCouponPeriod period : _periodParams.getPeriods())
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods())
 			System.out.println ("\t" + org.drip.analytics.date.JulianDate.fromJulian (period.startDate()) +
 				"->" + org.drip.analytics.date.JulianDate.fromJulian (period.endDate()) + "    " +
-					period.accrualDCF (period.accrualEndDate()));
+					period.accrualDCF (period.endDate()));
 	}
 }

@@ -74,8 +74,8 @@ public class IBOR {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aCalibComp[i] instanceof GenericDualStreamComponent ?
-							((GenericDualStreamComponent) aCalibComp[i]).derivedStream().forwardLabel() : aCalibComp[i].forwardLabel()[0]
+						aCalibComp[i] instanceof DualStreamComponent ? ((DualStreamComponent)
+							aCalibComp[i]).derivedStream().forwardLabel() : aCalibComp[i].forwardLabel()[0]
 					)
 				}
 			);
@@ -221,7 +221,7 @@ public class IBOR {
 			fri.tenor(),
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -234,7 +234,7 @@ public class IBOR {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -356,7 +356,7 @@ public class IBOR {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -369,7 +369,7 @@ public class IBOR {
 			iTenorInMonths + "M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,

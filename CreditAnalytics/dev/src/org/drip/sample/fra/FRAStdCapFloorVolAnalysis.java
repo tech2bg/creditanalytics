@@ -141,7 +141,7 @@ public class FRAStdCapFloorVolAnalysis {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -154,7 +154,7 @@ public class FRAStdCapFloorVolAnalysis {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -302,7 +302,8 @@ public class FRAStdCapFloorVolAnalysis {
 			dtSpot,
 			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
 			adblSwapQuote,
-			strCurrency);
+			strCurrency
+		);
 
 		/*
 		 * Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
@@ -361,7 +362,7 @@ public class FRAStdCapFloorVolAnalysis {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -394,7 +395,7 @@ public class FRAStdCapFloorVolAnalysis {
 			iTenorInMonths + "M",
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -502,7 +503,8 @@ public class FRAStdCapFloorVolAnalysis {
 			aFFC,
 			"DerivedParBasisSpread",
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 	}
 
 	private static final Map<String, ForwardCurve> MakeFC (
@@ -696,7 +698,7 @@ public class FRAStdCapFloorVolAnalysis {
 			strTenor,
 			strCurrency,
 			null,
-			CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,

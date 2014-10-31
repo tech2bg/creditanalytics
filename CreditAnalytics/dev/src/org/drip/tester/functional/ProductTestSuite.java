@@ -740,12 +740,12 @@ public class ProductTestSuite {
 
 		org.drip.param.period.CompositePeriodSetting cpsFloating = new
 			org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null,
-				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1., null,
+				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1., null,
 					null, null, null);
 
 		org.drip.param.period.CompositePeriodSetting cpsFixed = new
 			org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null,
-				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1., null,
+				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1., null,
 					null, null, null);
 
 		for (int i = 0; i < 15; ++i) {
@@ -1347,12 +1347,12 @@ public class ProductTestSuite {
 
 		org.drip.param.period.CompositePeriodSetting cpsFloating = new
 			org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null,
-				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1., null,
+				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1., null,
 					null, null, null);
 
 		org.drip.param.period.CompositePeriodSetting cpsFixed = new
 			org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null,
-				org.drip.analytics.support.CompositePeriodUtil.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1., null,
+				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1., null,
 					null, null, null);
 
 		java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
