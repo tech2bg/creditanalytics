@@ -57,6 +57,24 @@ public class AnalyticsHelper {
 		java.util.HashMap<java.lang.Integer, java.lang.String>();
 
 	/**
+	 * Tenor Comparator - Left Tenor Greater than Right
+	 */
+
+	public static int LEFT_TENOR_GREATER = 1;
+
+	/**
+	 * Tenor Comparator - Left Tenor Lesser than Right
+	 */
+
+	public static int LEFT_TENOR_LESSER = 2;
+
+	/**
+	 * Tenor Comparator - Left Tenor Matches Right
+	 */
+
+	public static int LEFT_TENOR_EQUALS = 4;
+
+	/**
 	 * Initialize IR switcher and Bloomberg day count maps
 	 */
 
@@ -470,6 +488,31 @@ public class AnalyticsHelper {
 		if ('y' == chTenor || 'Y' == chTenor) return iTimeUnit;
 
 		throw new java.lang.Exception ("AnalyticsHelper::TenorToDays => Unknown tenor format " + strTenor);
+	}
+
+	/**
+	 * Compare the Left and the Right Tenors
+	 * 
+	 * @param strTenorLeft Left Tenor
+	 * @param strTenorRight Right Tenor
+	 * 
+	 * @return Results of the Comparison
+	 * 
+	 * @throws java.lang.Exception Thrown if the Comparison cannot be done
+	 */
+
+	public static final int TenorCompare (
+		final java.lang.String strTenorLeft,
+		final java.lang.String strTenorRight)
+		throws java.lang.Exception
+	{
+		int iLeftTenorDays = TenorToDays (strTenorLeft);
+
+		int iRightTenorDays = TenorToDays (strTenorRight);
+
+		if (iLeftTenorDays == iRightTenorDays) return LEFT_TENOR_EQUALS;
+
+		return iLeftTenorDays > iRightTenorDays ? LEFT_TENOR_GREATER : LEFT_TENOR_LESSER;
 	}
 
 	/**

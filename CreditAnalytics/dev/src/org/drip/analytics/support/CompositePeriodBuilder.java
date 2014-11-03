@@ -282,6 +282,29 @@ public class CompositePeriodBuilder {
 			strMaturityTenor || strMaturityTenor.isEmpty())
 			return null;
 
+		java.util.List<java.lang.Double> lsEdgeDate = new java.util.ArrayList<java.lang.Double>();
+
+		int iPeriodMaturityTenorComparison = -1;
+
+		try {
+			iPeriodMaturityTenorComparison = org.drip.analytics.support.AnalyticsHelper.TenorCompare
+				(strPeriodTenor, strMaturityTenor);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		if (org.drip.analytics.support.AnalyticsHelper.LEFT_TENOR_EQUALS == iPeriodMaturityTenorComparison ||
+			org.drip.analytics.support.AnalyticsHelper.LEFT_TENOR_GREATER == iPeriodMaturityTenorComparison)
+		{
+			lsEdgeDate.add (dtEffective.julian());
+
+			lsEdgeDate.add (dtEffective.addTenor (strMaturityTenor).julian());
+
+			return lsEdgeDate;
+		}
+
 		int iPeriodTenorMonth = -1;
 		int iMaturityTenorMonth = -1;
 
@@ -296,14 +319,10 @@ public class CompositePeriodBuilder {
 			return null;
 		}
 
-		if (iPeriodTenorMonth > iMaturityTenorMonth) return null;
-
-		java.util.List<java.lang.Double> lsEdgeDate = new java.util.ArrayList<java.lang.Double>();
-
 		org.drip.analytics.date.JulianDate dtEdge = dtEffective;
 		int iNumPeriod = iMaturityTenorMonth / iPeriodTenorMonth;
 
-		lsEdgeDate.add (dtEffective.julian());
+		lsEdgeDate.add (dtEdge.julian());
 
 		for (int i = 0; i < iNumPeriod - 1; ++i) {
 			dtEdge = dtEdge.addTenor (strPeriodTenor);

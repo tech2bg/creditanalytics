@@ -79,7 +79,8 @@ public class TreasuryCurveAPI {
 				dt, 						// Effective
 				dt.addYears (iNumYears),	// Maturity
 				null,						// Principal Schedule
-				null);
+				null
+			);
 	}
 
 	/*

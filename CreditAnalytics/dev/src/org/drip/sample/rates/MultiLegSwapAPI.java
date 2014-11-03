@@ -59,31 +59,31 @@ import org.drip.state.identifier.*;
 public class MultiLegSwapAPI {
 
 	/*
-	 * Sample demonstrating building of rates curve from cash/future/swaps
+	 * Sample demonstrating building of rates curve from deposit/future/swaps
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
 	private static DiscountCurve BuildRatesCurveFromInstruments (
 		final JulianDate dtStart,
-		final String[] astrCashTenor,
-		final double[] adblCashRate,
+		final String[] astrDepositTenor,
+		final double[] adblDepositRate,
 		final String[] astrIRSTenor,
 		final double[] adblIRSRate,
 		final double dblBump,
 		final String strCurrency)
 		throws Exception
 	{
-		int iNumDCInstruments = astrCashTenor.length + adblIRSRate.length;
+		int iNumDCInstruments = astrDepositTenor.length + adblIRSRate.length;
 		double adblDate[] = new double[iNumDCInstruments];
 		double adblRate[] = new double[iNumDCInstruments];
 		String astrCalibMeasure[] = new String[iNumDCInstruments];
 		double adblCompCalibValue[] = new double[iNumDCInstruments];
 		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[iNumDCInstruments];
 
-		// Cash Calibration
+		// Deposit Calibration
 
-		UnitCouponAccrualSetting ucas = new UnitCouponAccrualSetting (
+		UnitCouponAccrualSetting ucasDeposit = new UnitCouponAccrualSetting (
 			4,
 			"Act/360",
 			false,
@@ -93,7 +93,7 @@ public class MultiLegSwapAPI {
 			false
 		);
 
-		ComposableFloatingUnitSetting cfus = new ComposableFloatingUnitSetting (
+		ComposableFloatingUnitSetting cfusDeposit = new ComposableFloatingUnitSetting (
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
@@ -103,7 +103,7 @@ public class MultiLegSwapAPI {
 			0.
 		);
 
-		CompositePeriodSetting cps = new CompositePeriodSetting (
+		CompositePeriodSetting cpsDeposit = new CompositePeriodSetting (
 			4,
 			"3M",
 			strCurrency,
@@ -122,28 +122,28 @@ public class MultiLegSwapAPI {
 			0
 		);
 
-		for (int i = 0; i < astrCashTenor.length; ++i) {
+		for (int i = 0; i < astrDepositTenor.length; ++i) {
 			astrCalibMeasure[i] = "Rate";
 			adblRate[i] = java.lang.Double.NaN;
-			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
+			adblCompCalibValue[i] = adblDepositRate[i] + dblBump;
 
 			aCompCalib[i] = new SingleStreamComponent (
-				"DEPOSIT_" + astrCashTenor[i],
+				"DEPOSIT_" + astrDepositTenor[i],
 				new Stream (
 					CompositePeriodBuilder.FloatingCompositeUnit (
 						CompositePeriodBuilder.EdgePair (
 							dtStart,
-							new JulianDate (adblDate[i] = dtStart.addTenor (astrCashTenor[i]).julian())
+							new JulianDate (adblDate[i] = dtStart.addTenor (astrDepositTenor[i]).julian())
 						),
-						cps,
-						ucas,
-						cfus
+						cpsDeposit,
+						ucasDeposit,
+						cfusDeposit
 					)
 				),
 				csp
 			);
 
-			aCompCalib[i].setPrimaryCode (astrCashTenor[i]);
+			aCompCalib[i].setPrimaryCode (astrDepositTenor[i]);
 		}
 
 		// IRS Calibration
@@ -170,7 +170,7 @@ public class MultiLegSwapAPI {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -214,9 +214,9 @@ public class MultiLegSwapAPI {
 		);
 
 		for (int i = 0; i < astrIRSTenor.length; ++i) {
-			astrCalibMeasure[i + astrCashTenor.length] = "Rate";
-			adblRate[i + astrCashTenor.length] = java.lang.Double.NaN;
-			adblCompCalibValue[i + astrCashTenor.length] = adblIRSRate[i] + dblBump;
+			astrCalibMeasure[i + astrDepositTenor.length] = "Rate";
+			adblRate[i + astrDepositTenor.length] = java.lang.Double.NaN;
+			adblCompCalibValue[i + astrDepositTenor.length] = adblIRSRate[i] + dblBump;
 
 			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtStart,
@@ -258,15 +258,22 @@ public class MultiLegSwapAPI {
 
 			irs.setPrimaryCode ("IRS." + astrIRSTenor[i] + "." + strCurrency);
 
-			aCompCalib[i + astrCashTenor.length] = irs;
+			aCompCalib[i + astrDepositTenor.length] = irs;
 		}
 
 		/*
 		 * Build the IR curve from the components, their calibration measures, and their calibration quotes.
 		 */
 
-		return ScenarioDiscountCurveBuilder.NonlinearBuild (dtStart, strCurrency,
-			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD, aCompCalib, adblCompCalibValue, astrCalibMeasure, null);
+		return ScenarioDiscountCurveBuilder.NonlinearBuild (
+			dtStart,
+			strCurrency,
+			DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
+			aCompCalib,
+			adblCompCalibValue,
+			astrCalibMeasure,
+			null
+		);
 	}
 
 	/*

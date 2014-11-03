@@ -807,7 +807,7 @@ public abstract class CompositePeriod {
 			} else if (org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 				== _iAccrualCompoundingRule) {
 				double dblDCF = 0.;
-				double dblRate = 1.;
+				double dblUnitAccrual = 1.;
 
 				for (int i = 0; i < iNumPeriodUnit; ++i) {
 					org.drip.analytics.cashflow.ComposableUnitPeriod cup = _lsCUP.get (i);
@@ -816,11 +816,11 @@ public abstract class CompositePeriod {
 
 					dblDCF += dblPeriodDCF;
 
-					dblRate *= (1. + cup.fullCouponRate (csqs) * dblPeriodDCF);
+					dblUnitAccrual *= (1. + cup.fullCouponRate (csqs) * dblPeriodDCF);
 				}
 
 				lsUPM.add (new org.drip.analytics.output.UnitPeriodMetrics (startDate(), endDate(), dblDCF,
-					(dblRate - 1.) / dblDCF, terminalConvexityAdjustment (dblValueDate, csqs)));
+					(dblUnitAccrual - 1.) / dblDCF, terminalConvexityAdjustment (dblValueDate, csqs)));
 			}
 
 			return org.drip.analytics.output.CompositePeriodCouponMetrics.Create (lsUPM);
@@ -931,7 +931,7 @@ public abstract class CompositePeriod {
 						lsUPM.add (new org.drip.analytics.output.UnitPeriodMetrics (cup.startDate(),
 							dblValueDate, cup.accrualDCF (dblValueDate), cup.fullCouponRate (csqs),
 								lsConvAdj.get (i)));
-					} else if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_LEFT_OF_SEGMENT ==
+					} else if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_RIGHT_OF_SEGMENT ==
 						iDateLocation)
 						lsUPM.add (new org.drip.analytics.output.UnitPeriodMetrics (cup.startDate(),
 							cup.endDate(), cup.fullCouponDCF(), cup.fullCouponRate (csqs), lsConvAdj.get
@@ -940,7 +940,7 @@ public abstract class CompositePeriod {
 			} else if (org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 				== _iAccrualCompoundingRule) {
 				double dblAccrualDCF = 0.;
-				double dblAccrualRate = 1.;
+				double dblUnitAccrual = 1.;
 
 				for (int i = 0; i < iNumPeriodUnit; ++i) {
 					org.drip.analytics.cashflow.ComposableUnitPeriod cup = _lsCUP.get (i);
@@ -953,24 +953,24 @@ public abstract class CompositePeriod {
 
 						dblAccrualDCF += dblPeriodAccrualDCF;
 
-						dblAccrualRate *= (1. + cup.fullCouponRate (csqs) * dblPeriodAccrualDCF);
+						dblUnitAccrual *= (1. + cup.fullCouponRate (csqs) * dblPeriodAccrualDCF);
 
 						if (cup instanceof org.drip.analytics.cashflow.ComposableUnitFloatingPeriod)
 							dblResetDate = ((org.drip.analytics.cashflow.ComposableUnitFloatingPeriod)
 								cup).referenceIndexPeriod().fixingDate();
-					} else if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_LEFT_OF_SEGMENT ==
+					} else if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_RIGHT_OF_SEGMENT ==
 						iDateLocation) {
 						double dblPeriodDCF = cup.fullCouponDCF();
 
 						dblAccrualDCF += dblPeriodDCF;
 
-						dblAccrualRate *= (1. + cup.fullCouponRate (csqs) * dblPeriodDCF);
+						dblUnitAccrual *= (1. + cup.fullCouponRate (csqs) * dblPeriodDCF);
 					}
 				}
 
 				if (0. < dblAccrualDCF)
 					lsUPM.add (new org.drip.analytics.output.UnitPeriodMetrics (startDate(), dblValueDate,
-						dblAccrualDCF, (dblAccrualRate - 1.) / dblAccrualDCF, terminalConvexityAdjustment
+						dblAccrualDCF, (dblUnitAccrual - 1.) / dblAccrualDCF, terminalConvexityAdjustment
 							(dblValueDate, csqs)));
 			}
 
