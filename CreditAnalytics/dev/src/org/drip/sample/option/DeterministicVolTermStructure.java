@@ -117,7 +117,8 @@ public class DeterministicVolTermStructure {
 				"USD",
 				null,
 				astrMaturityTenor,
-				adblImpliedCallVolatility);
+				adblImpliedCallVolatility
+			);
 
 		VolatilityTermStructure tsCallVolatilityQuarticPoly =
 			ScenarioDeterministicVolatilityBuilder.QuarticPolynomialTermStructure (
@@ -126,7 +127,8 @@ public class DeterministicVolTermStructure {
 				"USD",
 				null,
 				astrMaturityTenor,
-				adblImpliedCallVolatility);
+				adblImpliedCallVolatility
+			);
 
 		VolatilityTermStructure tsCallVolatilityKaklisPandelis =
 			ScenarioDeterministicVolatilityBuilder.KaklisPandelisTermStructure (
@@ -135,7 +137,8 @@ public class DeterministicVolTermStructure {
 				"USD",
 				null,
 				astrMaturityTenor,
-				adblImpliedCallVolatility);
+				adblImpliedCallVolatility
+			);
 
 		VolatilityTermStructure tsCallVolatilityKLKHyperbolic =
 			ScenarioDeterministicVolatilityBuilder.KLKHyperbolicTermStructure (
@@ -145,7 +148,8 @@ public class DeterministicVolTermStructure {
 				null,
 				astrMaturityTenor,
 				adblImpliedCallVolatility,
-				1.);
+				1.
+			);
 
 		VolatilityTermStructure tsCallVolatilityKLKRationalLinear =
 			ScenarioDeterministicVolatilityBuilder.KLKRationalLinearTermStructure (
@@ -155,7 +159,8 @@ public class DeterministicVolTermStructure {
 				null,
 				astrMaturityTenor,
 				adblImpliedCallVolatility,
-				1.);
+				1.
+			);
 
 		VolatilityTermStructure tsCallVolatilityKLKRationalQuadratic =
 			ScenarioDeterministicVolatilityBuilder.KLKRationalQuadraticTermStructure (
@@ -165,9 +170,14 @@ public class DeterministicVolTermStructure {
 				null,
 				astrMaturityTenor,
 				adblImpliedCallVolatility,
-				0.0001);
+				0.0001
+			);
 
-		OnGrid (tsCallVolatilityKLKHyperbolic, astrMaturityTenor, adblImpliedCallVolatility);
+		OnGrid (
+			tsCallVolatilityKLKHyperbolic,
+			astrMaturityTenor,
+			adblImpliedCallVolatility
+		);
 
 		String[] astrOffGridTenor = new String[] {"18M", "30M", "42M", "54M", "06Y", "09Y"};
 
@@ -180,6 +190,7 @@ public class DeterministicVolTermStructure {
 				tsCallVolatilityKLKHyperbolic,
 				tsCallVolatilityKLKRationalLinear,
 				tsCallVolatilityKLKRationalQuadratic},
-			astrOffGridTenor);
+			astrOffGridTenor
+		);
 	}
 }

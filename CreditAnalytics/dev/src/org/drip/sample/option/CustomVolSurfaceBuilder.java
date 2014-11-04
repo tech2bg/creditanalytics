@@ -53,7 +53,8 @@ public class CustomVolSurfaceBuilder {
 			new PolynomialFunctionSetParams (4),
 			SegmentInelasticDesignControl.Create (2, 2),
 			null,
-			null);
+			null
+		);
 	}
 
 	private static final SegmentCustomBuilderControl QuarticPolySCBC()
@@ -64,7 +65,8 @@ public class CustomVolSurfaceBuilder {
 			new PolynomialFunctionSetParams (5),
 			SegmentInelasticDesignControl.Create (2, 2),
 			null,
-			null);
+			null
+		);
 	}
 
 	private static final SegmentCustomBuilderControl KaklisPandelisSCBC()
@@ -75,7 +77,8 @@ public class CustomVolSurfaceBuilder {
 			new KaklisPandelisSetParams (2),
 			SegmentInelasticDesignControl.Create (2, 2),
 			null,
-			null);
+			null
+		);
 	}
 
 	private static final SegmentCustomBuilderControl KLKHyperbolicSCBC(
@@ -87,7 +90,8 @@ public class CustomVolSurfaceBuilder {
 			new ExponentialTensionSetParams (dblTension),
 			SegmentInelasticDesignControl.Create (2, 2),
 			null,
-			null);
+			null
+		);
 	}
 
 	private static final SegmentCustomBuilderControl KLKRationalLinearSCBC(
@@ -99,7 +103,8 @@ public class CustomVolSurfaceBuilder {
 			new ExponentialTensionSetParams (dblTension),
 			SegmentInelasticDesignControl.Create (2, 2),
 			null,
-			null);
+			null
+		);
 	}
 
 	private static final SegmentCustomBuilderControl KLKRationalQuadraticSCBC(
@@ -111,7 +116,8 @@ public class CustomVolSurfaceBuilder {
 			new ExponentialTensionSetParams (dblTension),
 			SegmentInelasticDesignControl.Create (2, 2),
 			null,
-			null);
+			null
+		);
 	}
 
 	private static final void EvaluateSplineSurface (
@@ -173,7 +179,8 @@ public class CustomVolSurfaceBuilder {
 				astrMaturityTenorCalib,
 				aadblImpliedVolatility),
 			adblStrikeATMFactorCalc,
-			astrMaturityTenorCalc);
+			astrMaturityTenorCalc
+		);
 
 		EvaluateSplineSurface (
 			ScenarioMarketSurfaceBuilder.QuarticPolynomialWireSurface (
@@ -185,7 +192,8 @@ public class CustomVolSurfaceBuilder {
 				astrMaturityTenorCalib,
 				aadblImpliedVolatility),
 			adblStrikeATMFactorCalc,
-			astrMaturityTenorCalc);
+			astrMaturityTenorCalc
+		);
 
 		EvaluateSplineSurface (
 			ScenarioMarketSurfaceBuilder.KaklisPandelisWireSurface (
@@ -197,7 +205,8 @@ public class CustomVolSurfaceBuilder {
 				astrMaturityTenorCalib,
 				aadblImpliedVolatility),
 			adblStrikeATMFactorCalc,
-			astrMaturityTenorCalc);
+			astrMaturityTenorCalc
+		);
 
 		EvaluateSplineSurface (
 			ScenarioMarketSurfaceBuilder.KLKHyperbolicWireSurface (
@@ -210,7 +219,8 @@ public class CustomVolSurfaceBuilder {
 				aadblImpliedVolatility,
 				1.),
 			adblStrikeATMFactorCalc,
-			astrMaturityTenorCalc);
+			astrMaturityTenorCalc
+		);
 
 		EvaluateSplineSurface (
 			ScenarioMarketSurfaceBuilder.KLKRationalLinearWireSurface (
@@ -223,7 +233,8 @@ public class CustomVolSurfaceBuilder {
 				aadblImpliedVolatility,
 				1.),
 			adblStrikeATMFactorCalc,
-			astrMaturityTenorCalc);
+			astrMaturityTenorCalc
+		);
 
 		EvaluateSplineSurface (
 			ScenarioMarketSurfaceBuilder.KLKRationalQuadraticWireSurface (
@@ -236,7 +247,8 @@ public class CustomVolSurfaceBuilder {
 				aadblImpliedVolatility,
 				1.),
 			adblStrikeATMFactorCalc,
-			astrMaturityTenorCalc);
+			astrMaturityTenorCalc
+		);
 
 		EvaluateSplineSurface (
 			ScenarioMarketSurfaceBuilder.CustomWireSurface (
@@ -250,7 +262,8 @@ public class CustomVolSurfaceBuilder {
 				CubicPolySCBC(),
 				QuarticPolySCBC()),
 			adblStrikeATMFactorCalc,
-			astrMaturityTenorCalc);
+			astrMaturityTenorCalc
+		);
 
 		EvaluateSplineSurface (
 			ScenarioMarketSurfaceBuilder.CustomWireSurface (
@@ -264,7 +277,8 @@ public class CustomVolSurfaceBuilder {
 				KaklisPandelisSCBC(),
 				KLKHyperbolicSCBC (2.)),
 			adblStrikeATMFactorCalc,
-			astrMaturityTenorCalc);
+			astrMaturityTenorCalc
+		);
 
 		EvaluateSplineSurface (
 			ScenarioMarketSurfaceBuilder.CustomWireSurface (
@@ -278,6 +292,7 @@ public class CustomVolSurfaceBuilder {
 				KLKRationalLinearSCBC (3.),
 				KLKRationalQuadraticSCBC (1.)),
 			adblStrikeATMFactorCalc,
-			astrMaturityTenorCalc);
+			astrMaturityTenorCalc
+		);
 	}
 }

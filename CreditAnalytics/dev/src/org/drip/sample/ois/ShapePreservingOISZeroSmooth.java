@@ -183,7 +183,7 @@ public class ShapePreservingOISZeroSmooth {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			false
 		);
 
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
@@ -193,43 +193,7 @@ public class ShapePreservingOISZeroSmooth {
 			"Act/360",
 			false,
 			strCurrency,
-			true
-		);
-
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"ON",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
-			null,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
-			0.
-		);
-
-		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			4,
-			"3M",
-			strCurrency,
-			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-			1.,
-			null,
-			null,
-			null,
-			null
+			false
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -239,52 +203,98 @@ public class ShapePreservingOISZeroSmooth {
 		);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			java.lang.String strFixedTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
+				astrMaturityTenor[i],
+				"6M"
+			) ? astrMaturityTenor[i] : "6M";
+
+			java.lang.String strFloatingTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
+				astrMaturityTenor[i],
+				"3M"
+			) ? astrMaturityTenor[i] : "3M";
+
+			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+				"ON",
+				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
+				null,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+				null,
+				0.
+			);
+
 			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-					"6M",
-					CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-					null,
-					adblCoupon[i],
-					0.,
-					strCurrency
-				);
+				strFixedTenor,
+				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+				null,
+				adblCoupon[i],
+				0.,
+				strCurrency
+			);
 
-				List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-					dtEffective,
-					"6M",
-					astrMaturityTenor[i],
-					null
-				);
+			CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+				4,
+				strFloatingTenor,
+				strCurrency,
+				null,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+				-1.,
+				null,
+				null,
+				null,
+				null
+			);
 
-				List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-					dtEffective,
-					"3M",
-					astrMaturityTenor[i],
-					null
-				);
+			CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+				2,
+				strFixedTenor,
+				strCurrency,
+				null,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+				1.,
+				null,
+				null,
+				null,
+				null
+			);
 
-				Stream floatingStream = new Stream (
-					CompositePeriodBuilder.FloatingCompositeUnit (
-						lsFloatingStreamEdgeDate,
-						cpsFloating,
-						ucasFloating,
-						cfusFloating
-					)
-				);
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				strFixedTenor,
+				astrMaturityTenor[i],
+				null
+			);
 
-				Stream fixedStream = new Stream (
-					CompositePeriodBuilder.FixedCompositeUnit (
-						lsFixedStreamEdgeDate,
-						cpsFixed,
-						ucasFixed,
-						cfusFixed
-					)
-				);
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				strFloatingTenor,
+				astrMaturityTenor[i],
+				null
+			);
 
-				FixFloatComponent ois = new FixFloatComponent (
-					fixedStream,
-					floatingStream,
-					csp
-				);
+			Stream floatingStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsFloatingStreamEdgeDate,
+					cpsFloating,
+					ucasFloating,
+					cfusFloating
+				)
+			);
+
+			Stream fixedStream = new Stream (
+				CompositePeriodBuilder.FixedCompositeUnit (
+					lsFixedStreamEdgeDate,
+					cpsFixed,
+					ucasFixed,
+					cfusFixed
+				)
+			);
+
+			FixFloatComponent ois = new FixFloatComponent (
+				fixedStream,
+				floatingStream,
+				csp
+			);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
 
@@ -317,7 +327,7 @@ public class ShapePreservingOISZeroSmooth {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			false
 		);
 
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
@@ -327,7 +337,7 @@ public class ShapePreservingOISZeroSmooth {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			false
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (

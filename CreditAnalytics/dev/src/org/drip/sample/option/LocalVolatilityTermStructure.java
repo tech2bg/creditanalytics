@@ -54,7 +54,8 @@ public class LocalVolatilityTermStructure {
 			new PolynomialFunctionSetParams (4),
 			SegmentInelasticDesignControl.Create (2, 2),
 			null,
-			null);
+			null
+		);
 	}
 
 	private static final void EvaluateLocalVolSurface (
