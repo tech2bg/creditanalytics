@@ -82,12 +82,12 @@ import org.drip.state.identifier.ForwardLabel;
 public class ForwardCurveDerivedBasis {
 
 	/*
-	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
 		final int iNumFutures,
@@ -286,16 +286,17 @@ public class ForwardCurveDerivedBasis {
 		throws Exception
 	{
 		/*
-		 * Construct the array of cash instruments and their quotes.
+		 * Construct the array of Deposit instruments and their quotes.
 		 */
 
-		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			new int[] {},
 			0,
-			strCurrency);
+			strCurrency
+		);
 
-		double[] adblCashQuote = new double[] {}; // Futures
+		double[] adblDepositQuote = new double[] {}; // Futures
 
 		/*
 		 * Construct the array of Swap instruments and their quotes.
@@ -327,9 +328,14 @@ public class ForwardCurveDerivedBasis {
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
-			new double[] {0.00092, 0.0009875, 0.00122, 0.00223, 0.00383, 0.00827, 0.01245, 0.01605, 0.02597},
-			strCurrency);
+			new java.lang.String[] {
+				"9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"
+			},
+			new double[] {
+				0.0009875, 0.00122, 0.00223, 0.00383, 0.00827, 0.01245, 0.01605, 0.02597
+			},
+			strCurrency
+		);
 
 		/*
 		 * Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
@@ -338,13 +344,13 @@ public class ForwardCurveDerivedBasis {
 		return ScenarioDiscountCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SHAPE_TEMPLATE",
 			new ValuationParams (dtSpot, dtSpot, "USD"),
-			aCashComp,
-			adblCashQuote,
+			aDepositComp,
+			adblDepositQuote,
 			null,
 			aSwapComp,
 			adblSwapQuote,
 			astrSwapManifestMeasure,
-			true
+			false
 		);
 	}
 
@@ -385,7 +391,7 @@ public class ForwardCurveDerivedBasis {
 
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -395,7 +401,7 @@ public class ForwardCurveDerivedBasis {
 
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -544,11 +550,20 @@ public class ForwardCurveDerivedBasis {
 		 * Construct the 6M-xM float-float basis swap.
 		 */
 
-		FloatFloatComponent[] aFFC = MakexM6MBasisSwap (dtSpot, strCurrency, astrxM6MFwdTenor, iTenorInMonths);
+		FloatFloatComponent[] aFFC = MakexM6MBasisSwap (
+			dtSpot,
+			strCurrency,
+			astrxM6MFwdTenor,
+			iTenorInMonths
+		);
 
 		String strBasisTenor = iTenorInMonths + "M";
 
-		ValuationParams valParams = new ValuationParams (dtSpot, dtSpot, strCurrency);
+		ValuationParams valParams = new ValuationParams (
+			dtSpot,
+			dtSpot,
+			strCurrency
+		);
 
 		/*
 		 * Calculate the starting forward rate off of the discount curve.
@@ -580,7 +595,8 @@ public class ForwardCurveDerivedBasis {
 			aFFC,
 			"DerivedParBasisSpread",
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 
 		mapForward.put (" QUARTIC_FWD" + strBasisTenor, fcxMQuartic);
 

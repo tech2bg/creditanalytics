@@ -81,7 +81,6 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class FloatFloatForwardCurve {
 
-
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
@@ -275,7 +274,8 @@ public class FloatFloatForwardCurve {
 			dtSpot,
 			new int[] {},
 			0,
-			strCurrency);
+			strCurrency
+		);
 
 		double[] adblDepositQuote = new double[] {}; // Futures
 

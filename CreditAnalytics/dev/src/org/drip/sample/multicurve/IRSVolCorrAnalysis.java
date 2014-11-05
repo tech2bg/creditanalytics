@@ -55,12 +55,12 @@ import org.drip.state.identifier.*;
 public class IRSVolCorrAnalysis {
 
 	/*
-	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
 		final int iNumFutures,
@@ -126,7 +126,7 @@ public class IRSVolCorrAnalysis {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -239,22 +239,30 @@ public class IRSVolCorrAnalysis {
 		throws Exception
 	{
 		/*
-		 * Construct the array of cash instruments and their quotes.
+		 * Construct the array of Deposit instruments and their quotes.
 		 */
 
-		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
 			0,
-			strCurrency);
+			strCurrency
+		);
 
-		double[] adblCashQuote = new double[] {
-			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850}; // Cash
-			// 0.01612, 0.01580, 0.01589, 0.01598}; // Futures
+		double[] adblDepositQuote = new double[] {
+			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850
+		};
 
-		String[] astrCashManifestMeasure = new String[] {
-			"Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate"}; // Cash
-			// "Rate", "Rate", "Rate", "Rate"}; // Futures
+		String[] astrDepositManifestMeasure = new String[] {
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate"
+		};
 
 		/*
 		 * Construct the array of Swap instruments and their quotes.
@@ -300,7 +308,8 @@ public class IRSVolCorrAnalysis {
 			dtSpot,
 			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
 			adblSwapQuote,
-			strCurrency);
+			strCurrency
+		);
 
 		/*
 		 * Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
@@ -309,13 +318,13 @@ public class IRSVolCorrAnalysis {
 		return ScenarioDiscountCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SHAPE_TEMPLATE",
 			new ValuationParams (dtSpot, dtSpot, "USD"),
-			aCashComp,
-			adblCashQuote,
-			astrCashManifestMeasure,
+			aDepositComp,
+			adblDepositQuote,
+			astrDepositManifestMeasure,
 			aSwapComp,
 			adblSwapQuote,
 			astrSwapManifestMeasure,
-			true
+			false
 		);
 	}
 
@@ -356,7 +365,7 @@ public class IRSVolCorrAnalysis {
 
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -366,7 +375,7 @@ public class IRSVolCorrAnalysis {
 
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -496,7 +505,8 @@ public class IRSVolCorrAnalysis {
 			aFFC,
 			"DerivedParBasisSpread",
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 	}
 
 	private static final Map<String, ForwardCurve> MakeFC (
@@ -619,8 +629,10 @@ public class IRSVolCorrAnalysis {
 	{
 		JulianDate dtMaturity = dtEffective.addTenor (strMaturityTenor);
 
+		int iTenorInMonths = AnalyticsHelper.TenorToMonths (fri.tenor());
+
 		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			4,
+			12 / iTenorInMonths,
 			"Act/360",
 			false,
 			"Act/360",
@@ -641,7 +653,7 @@ public class IRSVolCorrAnalysis {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			fri.tenor(),
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			fri,
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -659,8 +671,8 @@ public class IRSVolCorrAnalysis {
 		);
 
 		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			2,
-			"6M",
+			12 / iTenorInMonths,
+			fri.tenor(),
 			strCurrency,
 			null,
 			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,

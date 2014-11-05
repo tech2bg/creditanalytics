@@ -161,7 +161,7 @@ public class OISCurveQuoteSensitivity {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			false
 		);
 
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
@@ -171,7 +171,151 @@ public class OISCurveQuoteSensitivity {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			false
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			java.lang.String strFixedTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
+				astrMaturityTenor[i],
+				"6M"
+			) ? astrMaturityTenor[i] : "6M";
+
+			java.lang.String strFloatingTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
+				astrMaturityTenor[i],
+				"3M"
+			) ? astrMaturityTenor[i] : "3M";
+
+			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+				"ON",
+				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
+				null,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+				null,
+				0.
+			);
+
+			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+				strFixedTenor,
+				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+				null,
+				adblCoupon[i],
+				0.,
+				strCurrency
+			);
+
+			CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+				4,
+				strFloatingTenor,
+				strCurrency,
+				null,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+				-1.,
+				null,
+				null,
+				null,
+				null
+			);
+
+			CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+				2,
+				strFixedTenor,
+				strCurrency,
+				null,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+				1.,
+				null,
+				null,
+				null,
+				null
+			);
+
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				strFixedTenor,
+				astrMaturityTenor[i],
+				null
+			);
+
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				strFloatingTenor,
+				astrMaturityTenor[i],
+				null
+			);
+
+			Stream floatingStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsFloatingStreamEdgeDate,
+					cpsFloating,
+					ucasFloating,
+					cfusFloating
+				)
+			);
+
+			Stream fixedStream = new Stream (
+				CompositePeriodBuilder.FixedCompositeUnit (
+					lsFixedStreamEdgeDate,
+					cpsFixed,
+					ucasFixed,
+					cfusFixed
+				)
+			);
+
+			FixFloatComponent ois = new FixFloatComponent (
+				fixedStream,
+				floatingStream,
+				csp
+			);
+
+			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
+
+			aOIS[i] = ois;
+		}
+
+		return aOIS;
+	}
+
+	/*
+	 * Construct the Array of Overnight Index Future Instruments from the given set of parameters
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
+		final JulianDate dtSpot,
+		final String[] astrStartTenor,
+		final String[] astrMaturityTenor,
+		final double[] adblCoupon,
+		final String strCurrency)
+		throws Exception
+	{
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
+
+		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+			360,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
+		);
+
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			2,
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			false
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -216,7 +360,9 @@ public class OISCurveQuoteSensitivity {
 			0
 		);
 
-		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+		for (int i = 0; i < astrStartTenor.length; ++i) {
+			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
+
 			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
 				"6M",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
@@ -228,14 +374,14 @@ public class OISCurveQuoteSensitivity {
 
 			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtEffective,
-				"3M",
+				"6M",
 				astrMaturityTenor[i],
 				null
 			);
 
 			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtEffective,
-				"6M",
+				"3M",
 				astrMaturityTenor[i],
 				null
 			);
@@ -262,136 +408,6 @@ public class OISCurveQuoteSensitivity {
 				fixedStream,
 				floatingStream,
 				csp
-			);
-
-			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
-
-			aOIS[i] = ois;
-		}
-
-		return aOIS;
-	}
-
-	/*
-	 * Construct the Array of Overnight Index Future Instruments from the given set of parameters
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-
-	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
-		final JulianDate dtSpot,
-		final String[] astrStartTenor,
-		final String[] astrMaturityTenor,
-		final double[] adblCoupon,
-		final String strCurrency)
-		throws Exception
-	{
-		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
-
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			360,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
-		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"ON",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
-			null,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
-			0.
-		);
-
-		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			360,
-			"ON",
-			strCurrency,
-			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		for (int i = 0; i < astrStartTenor.length; ++i) {
-			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
-
-			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-				"6M",
-				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-				null,
-				adblCoupon[i],
-				0.,
-				strCurrency
-			);
-
-			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.OvernightEdgeDates (
-				dtEffective,
-				dtEffective.addTenorAndAdjust (astrMaturityTenor[i], strCurrency),
-				strCurrency
-			);
-
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			);
-
-			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsFloatingStreamEdgeDate,
-					cpsFloating,
-					ucasFloating,
-					cfusFloating
-				)
-			);
-
-			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeUnit (
-					lsFixedStreamEdgeDate,
-					cpsFixed,
-					ucasFixed,
-					cfusFixed
-				)
-			);
-
-			FixFloatComponent ois = new FixFloatComponent (
-				fixedStream,
-				floatingStream,
-				new CashSettleParams (0, strCurrency, 0)
 			);
 
 			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
@@ -479,7 +495,9 @@ public class OISCurveQuoteSensitivity {
 		SingleStreamComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			strCurrency,
-			new int[] {1, 2, 3}
+			new int[] {
+				1, 2, 3
+			}
 		);
 
 		double[] adblDepositQuote = new double[] {
@@ -509,8 +527,9 @@ public class OISCurveQuoteSensitivity {
 
 		FixFloatComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[]
-				{"1W", "2W", "3W", "1M"},
+			new java.lang.String[] {
+				"1W", "2W", "3W", "1M"
+			},
 			adblShortEndOISQuote,
 			strCurrency
 		);
@@ -539,8 +558,12 @@ public class OISCurveQuoteSensitivity {
 
 		FixFloatComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[] {"1M", "2M", "3M", "4M", "5M"},
-			new java.lang.String[] {"1M", "1M", "1M", "1M", "1M"},
+			new java.lang.String[] {
+				"1M", "2M", "3M", "4M", "5M"
+			},
+			new java.lang.String[] {
+				"1M", "1M", "1M", "1M", "1M"
+			},
 			adblOISFutureQuote,
 			strCurrency
 		);
@@ -582,8 +605,9 @@ public class OISCurveQuoteSensitivity {
 
 		FixFloatComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[]
-				{"15M", "18M", "21M", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
+			new java.lang.String[] {
+				"15M", "18M", "21M", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+			},
 			adblLongEndOISQuote,
 			strCurrency
 		);
@@ -620,7 +644,8 @@ public class OISCurveQuoteSensitivity {
 				new ExponentialTensionSetParams (2.),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				new org.drip.spline.params.PreceedingManifestSensitivityControl (true, 1, null)),
+				new org.drip.spline.params.PreceedingManifestSensitivityControl (true, 1, null)
+			),
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
@@ -643,7 +668,13 @@ public class OISCurveQuoteSensitivity {
 				new ExponentialTensionSetParams (2.),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				new org.drip.spline.params.PreceedingManifestSensitivityControl (true, 1, null)));
+				new org.drip.spline.params.PreceedingManifestSensitivityControl (
+					true,
+					1,
+					null
+				)
+			)
+		);
 
 		/*
 		 * Set up the Short End OIS Segment Control parameters with the following details:
@@ -661,7 +692,13 @@ public class OISCurveQuoteSensitivity {
 				new ExponentialTensionSetParams (2.),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				new org.drip.spline.params.PreceedingManifestSensitivityControl (true, 1, null)));
+				new org.drip.spline.params.PreceedingManifestSensitivityControl (
+					true,
+					1,
+					null
+				)
+			)
+		);
 
 		/*
 		 * Set up the Long End OIS Segment Control parameters with the following details:
@@ -679,7 +716,13 @@ public class OISCurveQuoteSensitivity {
 				new ExponentialTensionSetParams (2.),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				new org.drip.spline.params.PreceedingManifestSensitivityControl (true, 1, null)));
+				new org.drip.spline.params.PreceedingManifestSensitivityControl (
+					true,
+					1,
+					null
+				)
+			)
+		);
 
 		ValuationParams valParams = new ValuationParams (dtSpot, dtSpot, strCurrency);
 
@@ -747,7 +790,7 @@ public class OISCurveQuoteSensitivity {
 			System.out.println ("\t[" + aOISFutureComp[i].maturity() + "] = " +
 				FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.));
+						null, "SwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.));
 
 		/*
 		 * Cross-Comparison of the Long End OIS Calibration Instrument "Rate" metric across the different curve
