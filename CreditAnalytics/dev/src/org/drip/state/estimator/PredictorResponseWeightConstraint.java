@@ -46,7 +46,7 @@ package org.drip.state.estimator;
  */
 
 public class PredictorResponseWeightConstraint {
-	private java.util.Set<org.drip.state.identifier.LatentStateLabel> _setLSL = null;
+	private java.util.HashSet<org.drip.state.identifier.LatentStateLabel> _setLSL = null;
 
 	private org.drip.state.estimator.PredictorResponseRelationSetup _prrsCalib = new
 		org.drip.state.estimator.PredictorResponseRelationSetup();
@@ -263,6 +263,14 @@ public class PredictorResponseWeightConstraint {
 			if (!_mapPRRSSens.containsKey (strKey)) _mapPRRSSens.put (strKey, me.getValue());
 		}
 
+		java.util.Set<org.drip.state.identifier.LatentStateLabel> lsLSL = prwcOther.mergeLabelSet();
+
+		if (null == lsLSL || 0 == lsLSL.size()) return true;
+
+		for (org.drip.state.identifier.LatentStateLabel lsl : lsLSL) {
+			if (!addMergeLabel (lsl)) return false;
+		}
+
 		return true;
 	}
 
@@ -298,6 +306,15 @@ public class PredictorResponseWeightConstraint {
 		}
 
 		System.out.println ("\t" + strComment + " Constraint: " + _prrsCalib.getValue());
+
+		if (null != _setLSL) {
+			java.lang.String strLabels = "\t" + strComment + " Labels:";
+
+			for (org.drip.state.identifier.LatentStateLabel lsl : _setLSL)
+				strLabels += " " + lsl.fullyQualifiedName();
+
+			System.out.println (strLabels);
+		}
 
 		System.out.flush();
 	}

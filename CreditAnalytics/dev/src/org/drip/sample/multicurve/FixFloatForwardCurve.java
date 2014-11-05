@@ -127,7 +127,7 @@ public class FixFloatForwardCurve {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -248,16 +248,17 @@ public class FixFloatForwardCurve {
 			dtSpot,
 			new int[] {},
 			0,
-			strCurrency);
+			strCurrency
+		);
 
-		double[] adblDepositQuote = new double[] {}; // Futures
+		double[] adblDepositQuote = new double[] {};
 
 		/*
 		 * Construct the array of Swap instruments and their quotes.
 		 */
 
 		double[] adblSwapQuote = new double[] {
-			0.00092 + dblBump,     //  6M
+			// 0.00092 + dblBump,     //  6M
 			0.0009875 + dblBump,   //  9M
 			0.00122 + dblBump,     //  1Y
 			0.00223 + dblBump,     // 18M
@@ -269,7 +270,7 @@ public class FixFloatForwardCurve {
 		};
 
 		String[] astrSwapManifestMeasure = new String[] {
-			"SwapRate",     //  6M
+			// "SwapRate",     //  6M
 			"SwapRate",		//  9M
 			"SwapRate",     //  1Y
 			"SwapRate",     // 18M
@@ -282,9 +283,11 @@ public class FixFloatForwardCurve {
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
+			// new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
+			new java.lang.String[] {"9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
 			adblSwapQuote,
-			strCurrency);
+			strCurrency
+		);
 
 		/*
 		 * Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
@@ -299,7 +302,8 @@ public class FixFloatForwardCurve {
 			aSwapComp,
 			adblSwapQuote,
 			astrSwapManifestMeasure,
-			true);
+			true
+		);
 	}
 
 	/*
@@ -340,9 +344,9 @@ public class FixFloatForwardCurve {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths),
+			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.

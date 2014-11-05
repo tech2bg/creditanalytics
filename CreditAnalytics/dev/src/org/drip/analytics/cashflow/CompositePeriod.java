@@ -858,7 +858,7 @@ public abstract class CompositePeriod {
 
 			if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_INSIDE_SEGMENT == iDateLocation)
 				dblAccrualDCF += cup.accrualDCF (dblValueDate);
-			else if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_LEFT_OF_SEGMENT ==
+			else if (org.drip.analytics.cashflow.ComposableUnitFixedPeriod.NODE_RIGHT_OF_SEGMENT ==
 				iDateLocation)
 				dblAccrualDCF += cup.fullCouponDCF();
 		}
@@ -1106,12 +1106,37 @@ public abstract class CompositePeriod {
 
 		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel();
 
-		if (null == forwardLabel || !forwardLabel.match (pqs.forwardLabel())) {
+		if (null == forwardLabel) {
 			for (org.drip.analytics.output.UnitPeriodMetrics upm : cpm.unitMetrics()) {
 				if (!prwc.updateValue (-1. * dblNotional * dblFX * upm.dcf() * (dblBaseRate + dblBasis) *
 					dblSurvival * dblDF * upm.convAdj().cumulative()))
 					return null;
 			}
+
+			if (!prwc.updateValue (dblAccrued)) return null;
+		} else if (!forwardLabel.match (pqs.forwardLabel())) {
+			java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsUPM = cpm.unitMetrics();
+
+			org.drip.analytics.rates.ForwardRateEstimator fre = csqs.forwardCurve (forwardLabel);
+
+			for (int i = 0; i < lsUPM.size(); ++i) {
+				org.drip.analytics.output.UnitPeriodMetrics upm = lsUPM.get (i);
+
+				try {
+					dblBaseRate = null != fre ? fre.forward (_lsCUP.get (i).endDate()) : csqs.fundingCurve
+						(fundingLabel()).libor (_lsCUP.get (i).startDate(), forwardLabel.tenor());
+
+					if (!prwc.updateValue (-1. * dblNotional * dblFX * upm.dcf() * (dblBaseRate + dblBasis) *
+						dblSurvival * dblDF * upm.convAdj().cumulative()))
+						return null;
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+			}
+
+			if (!prwc.updateValue (dblAccrued)) return null;
 		} else {
 			for (org.drip.analytics.output.UnitPeriodMetrics upm : cpm.unitMetrics()) {
 				double dblDateAnchor = upm.endDate();
@@ -1133,9 +1158,9 @@ public abstract class CompositePeriod {
 					if (!prwc.updateValue (-1. * dblForwardLoading * dblBasis)) return null;
 				}
 			}
-		}
 
-		if (!prwc.updateValue (cpqs.containsBaseRate() ? dblBaseRate : dblAccrued)) return null;
+			if (!prwc.updateValue (cpqs.containsBaseRate() ? dblBaseRate : dblAccrued)) return null;
+		}
 
 		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
 
@@ -1329,6 +1354,8 @@ public abstract class CompositePeriod {
 		}
 
 		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
+
+		if (!prwc.addMergeLabel (forwardLabel)) return null;
 
 		return prwc;
 	}

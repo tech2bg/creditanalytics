@@ -154,7 +154,7 @@ public class FloatFloatForwardCurve {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -284,7 +284,7 @@ public class FloatFloatForwardCurve {
 		 */
 
 		double[] adblSwapQuote = new double[] {
-			0.00092 + dblBump,     //  6M
+			// 0.00092 + dblBump,     //  6M
 			0.0009875 + dblBump,   //  9M
 			0.00122 + dblBump,     //  1Y
 			0.00223 + dblBump,     // 18M
@@ -296,7 +296,7 @@ public class FloatFloatForwardCurve {
 		};
 
 		String[] astrSwapManifestMeasure = new String[] {
-			"SwapRate",     //  6M
+			// "SwapRate",     //  6M
 			"SwapRate",		//  9M
 			"SwapRate",     //  1Y
 			"SwapRate",     // 18M
@@ -309,9 +309,11 @@ public class FloatFloatForwardCurve {
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
+			// new java.lang.String[] {"6M", "9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
+			new java.lang.String[] {"9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"},
 			adblSwapQuote,
-			strCurrency);
+			strCurrency
+		);
 
 		/*
 		 * Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
@@ -326,7 +328,7 @@ public class FloatFloatForwardCurve {
 			aSwapComp,
 			adblSwapQuote,
 			astrSwapManifestMeasure,
-			true
+			false
 		);
 	}
 
@@ -367,7 +369,7 @@ public class FloatFloatForwardCurve {
 
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -377,7 +379,7 @@ public class FloatFloatForwardCurve {
 
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -569,7 +571,8 @@ public class FloatFloatForwardCurve {
 			aFFC,
 			strManifestMeasure,
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 
 		mapForward.put (" QUARTIC_FWD" + strBasisTenor, fcxMQuartic);
 
@@ -596,7 +599,8 @@ public class FloatFloatForwardCurve {
 			aFFC,
 			strManifestMeasure,
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 
 		mapForward.put ("KLKHYPER_FWD" + strBasisTenor, fcxMKLKHyper);
 
