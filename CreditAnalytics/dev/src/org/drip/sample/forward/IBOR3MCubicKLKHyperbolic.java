@@ -71,8 +71,12 @@ public class IBOR3MCubicKLKHyperbolic {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 			new ExponentialTensionSetParams (1.),
 			SegmentInelasticDesignControl.Create (2, 2),
-			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-			null);
+			new ResponseScalingShapeControl (
+				true,
+				new QuadraticRationalShapeControl (0.)
+			),
+			null
+		);
 
 		/*
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
@@ -201,7 +205,8 @@ public class IBOR3MCubicKLKHyperbolic {
 			adblSyntheticFloatFloatQuote,
 			"DerivedParBasisSpread",
 			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---",
-			true);
+			true
+		);
 
 		IBOR.ForwardJack (
 			dtValue,

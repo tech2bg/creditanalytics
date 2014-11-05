@@ -71,8 +71,12 @@ public class IBOR12MCubicKLKHyperbolic {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_KLK_HYPERBOLIC_TENSION,
 			new ExponentialTensionSetParams (1.),
 			SegmentInelasticDesignControl.Create (2, 2),
-			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-			null);
+			new ResponseScalingShapeControl (
+				true,
+				new QuadraticRationalShapeControl (0.)
+			),
+			null
+		);
 
 		/*
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
@@ -176,9 +180,10 @@ public class IBOR12MCubicKLKHyperbolic {
 			dtValue,
 			strCurrency,
 			"6M",
-			true);
+			true
+		);
 
-		IBOR.CustomIBORBuilderSample (
+		ForwardCurve fc12M = IBOR.CustomIBORBuilderSample (
 			dcEONIA,
 			fc6M,
 			fri,
@@ -199,13 +204,14 @@ public class IBOR12MCubicKLKHyperbolic {
 			adblSyntheticFloatFloatQuote,
 			"ReferenceParBasisSpread",
 			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE ---",
-			true);
+			true
+		);
 
-		/* IBOR.ForwardJack (
+		IBOR.ForwardJack (
 			dtValue,
 			"---- VANILLA CUBIC KLK HYPERBOLIC TENSION B-SPLINE FORWARD CURVE SENSITIVITY ---",
-			fc,
+			fc12M,
 			"DerivedParBasisSpread"
-		); */
+		);
 	}
 }

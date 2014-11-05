@@ -77,7 +77,8 @@ public class FRAMkt {
 		ForwardCurve fcEURIBOR6M = IBOR6MQuarticPolyVanilla.Make6MForward (
 			dtToday,
 			strCurrency,
-			strTenor);
+			strTenor
+		);
 
 		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
 

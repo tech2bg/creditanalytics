@@ -184,7 +184,7 @@ public class IBOR {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			false
 		);
 
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
@@ -194,7 +194,7 @@ public class IBOR {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			false
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -205,15 +205,6 @@ public class IBOR {
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
-		);
-
-		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			0.,
-			0.,
-			strCurrency
 		);
 
 		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
@@ -229,19 +220,6 @@ public class IBOR {
 			null
 		);
 
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
 		CashSettleParams csp = new CashSettleParams (
 			0,
 			strCurrency,
@@ -249,11 +227,41 @@ public class IBOR {
 		);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
+			int iTenorCompare = AnalyticsHelper.TenorCompare (
 				astrMaturityTenor[i],
+				"6M"
+			);
+
+			String strFixedTenor = AnalyticsHelper.LEFT_TENOR_LESSER == iTenorCompare ? astrMaturityTenor[i] : "6M";
+
+			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+				strFixedTenor,
+				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+				null,
+				0.,
+				0.,
+				strCurrency
+			);
+
+			CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+				2,
+				strFixedTenor,
+				strCurrency,
+				null,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+				1.,
+				null,
+				null,
+				null,
 				null
+			);
+
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.BackwardEdgeDates (
+				dtEffective,
+				dtEffective.addTenor (astrMaturityTenor[i]),
+				"6M",
+				null,
+				CompositePeriodBuilder.SHORT_STUB
 			);
 
 			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
@@ -286,6 +294,8 @@ public class IBOR {
 				floatingStream,
 				csp
 			);
+
+			aFFC[i].setPrimaryCode ("FixFloat:" + astrMaturityTenor[i]);
 		}
 
 		return aFFC;
@@ -333,7 +343,7 @@ public class IBOR {
 
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -343,7 +353,7 @@ public class IBOR {
 
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -564,7 +574,11 @@ public class IBOR {
 			null
 		);
 
-		ValuationParams valParams = new ValuationParams (dtValue, dtValue, fri.currency());
+		ValuationParams valParams = new ValuationParams (
+			dtValue,
+			dtValue,
+			fri.currency()
+		);
 
 		/*
 		 * Set the discount curve based component market parameters.
@@ -586,7 +600,8 @@ public class IBOR {
 			null,
 			mktParams,
 			null,
-			null == adblDepositQuote || 0 == adblDepositQuote.length ? adblFRAQuote[0] : adblDepositQuote[0]);
+			null == adblDepositQuote || 0 == adblDepositQuote.length ? adblFRAQuote[0] : adblDepositQuote[0]
+		);
 
 		/*
 		 * Set the discount curve + cubic polynomial forward curve based component market parameters.

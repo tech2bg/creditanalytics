@@ -303,7 +303,6 @@ public class ForwardCurveDerivedBasis {
 		 */
 
 		double[] adblSwapQuote = new double[] {
-			0.00092 + dblBump,     //  6M
 			0.0009875 + dblBump,   //  9M
 			0.00122 + dblBump,     //  1Y
 			0.00223 + dblBump,     // 18M
@@ -315,7 +314,6 @@ public class ForwardCurveDerivedBasis {
 		};
 
 		String[] astrSwapManifestMeasure = new String[] {
-			"SwapRate",     //  6M
 			"SwapRate",		//  9M
 			"SwapRate",     //  1Y
 			"SwapRate",     // 18M
@@ -569,7 +567,10 @@ public class ForwardCurveDerivedBasis {
 		 * Calculate the starting forward rate off of the discount curve.
 		 */
 
-		double dblStartingFwd = dc.forward (dtSpot.julian(), dtSpot.addTenor (strBasisTenor).julian());
+		double dblStartingFwd = dc.forward (
+			dtSpot.julian(),
+			dtSpot.addTenor (strBasisTenor).julian()
+		);
 
 		/*
 		 * Set the discount curve based component market parameters.
@@ -670,7 +671,11 @@ public class ForwardCurveDerivedBasis {
 		 * Construct the Discount Curve using its instruments and quotes
 		 */
 
-		DiscountCurve dc = MakeDC (dtToday, strCurrency, 0.);
+		DiscountCurve dc = MakeDC (
+			dtToday,
+			strCurrency,
+			0.
+		);
 
 		System.out.println ("\n------------------------------------------------------------");
 
@@ -685,8 +690,9 @@ public class ForwardCurveDerivedBasis {
 			strCurrency,
 			dc,
 			1,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
-			// new String[] {"1Y"},
+			new String[] {
+				"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+			},
 			new double[] {
 				0.00551,    //  1Y
 				0.00387,    //  2Y
@@ -704,8 +710,8 @@ public class ForwardCurveDerivedBasis {
 				0.00079,    // 20Y
 				0.00069,    // 25Y
 				0.00062     // 30Y
-				}
-			);
+			}
+		);
 
 		/*
 		 * Build and run the sampling for the 3M-6M Tenor Basis Swap from its instruments and quotes.
@@ -720,7 +726,9 @@ public class ForwardCurveDerivedBasis {
 			strCurrency,
 			dc,
 			3,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
+			new String[] {
+				"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+			},
 			new double[] {
 				0.00186,    //  1Y
 				0.00127,    //  2Y
@@ -738,8 +746,8 @@ public class ForwardCurveDerivedBasis {
 				0.00022,    // 20Y
 				0.00020,    // 25Y
 				0.00018     // 30Y
-				}
-			);
+			}
+		);
 
 		/*
 		 * Build and run the sampling for the 12M-6M Tenor Basis Swap from its instruments and quotes.
@@ -754,8 +762,9 @@ public class ForwardCurveDerivedBasis {
 			strCurrency,
 			dc,
 			12,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y",
-				"35Y", "40Y"}, // Extrapolated
+			new String[] {
+				"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "35Y", "40Y"
+			}, // Extrapolated
 			new double[] {
 				-0.00212,    //  1Y
 				-0.00152,    //  2Y
@@ -775,8 +784,8 @@ public class ForwardCurveDerivedBasis {
 				-0.00022,    // 30Y
 				-0.00022,    // 35Y Extrapolated
 				-0.00022,    // 40Y Extrapolated
-				}
-			);
+			}
+		);
 
 		System.out.println ("\n--------------------------------------------------------------------------------------------------------------------------------------------");
 

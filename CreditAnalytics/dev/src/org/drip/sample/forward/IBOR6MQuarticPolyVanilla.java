@@ -62,8 +62,12 @@ public class IBOR6MQuarticPolyVanilla {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (5),
 			SegmentInelasticDesignControl.Create (2, 2),
-			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-			null);
+			new ResponseScalingShapeControl (
+				true,
+				new QuadraticRationalShapeControl (0.)
+			),
+			null
+		);
 
 		/*
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
@@ -206,7 +210,8 @@ public class IBOR6MQuarticPolyVanilla {
 			null,
 			"DerivedParBasisSpread",
 			"---- EURIBOR 6M VANILLA QUARTIC POLYNOMIAL FORWARD CURVE ---",
-			true);
+			true
+		);
 
 		IBOR.ForwardJack (
 			dtValue,

@@ -63,8 +63,11 @@ public class IBOR6MCubicPolyVanilla {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (4),
 			SegmentInelasticDesignControl.Create (2, 2),
-			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-			null);
+			new ResponseScalingShapeControl (
+				true, new QuadraticRationalShapeControl (0.)
+			),
+			null
+		);
 
 		/*
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
@@ -207,15 +210,16 @@ public class IBOR6MCubicPolyVanilla {
 			null,
 			"DerivedParBasisSpread",
 			"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
-			bPrintMetric);
+			bPrintMetric
+		);
 
-		/* if (bPrintMetric)
+		if (bPrintMetric)
 			IBOR.ForwardJack (
 				dtValue,
 				"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
 				fc,
 				"DerivedParBasisSpread"
-			); */
+			);
 
 		return fc;
 	}

@@ -180,7 +180,8 @@ public class IBOR3MCubicPolyVanilla {
 			adblSyntheticFloatFloatQuote,
 			"DerivedParBasisSpread",
 			"---- VANILLA CUBIC POLYNOMIAL FORWARD CURVE ---",
-			bPrintMetric);
+			bPrintMetric
+		);
 
 		return fc;
 	}
@@ -209,14 +210,19 @@ public class IBOR3MCubicPolyVanilla {
 			dtValue,
 			strCurrency,
 			"6M",
-			true);
+			true
+		);
 
 		SegmentCustomBuilderControl scbcCubic = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (4),
 			SegmentInelasticDesignControl.Create (2, 2),
-			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-			null);
+			new ResponseScalingShapeControl (
+				true,
+				new QuadraticRationalShapeControl (0.)
+			),
+			null
+		);
 
 		ForwardCurve fc = Make3MForward (
 			strTenor,
@@ -225,7 +231,8 @@ public class IBOR3MCubicPolyVanilla {
 			dcEONIA,
 			fc6M,
 			scbcCubic,
-			true);
+			true
+		);
 
 		IBOR.ForwardJack (
 			dtValue,

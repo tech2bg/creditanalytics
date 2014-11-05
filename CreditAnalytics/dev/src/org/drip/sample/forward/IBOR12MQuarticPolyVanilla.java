@@ -71,8 +71,12 @@ public class IBOR12MQuarticPolyVanilla {
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
 			new PolynomialFunctionSetParams (5),
 			SegmentInelasticDesignControl.Create (2, 2),
-			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-			null);
+			new ResponseScalingShapeControl (
+				true,
+				new QuadraticRationalShapeControl (0.)
+			),
+			null
+		);
 
 		/*
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
@@ -121,20 +125,20 @@ public class IBOR12MQuarticPolyVanilla {
 		 */
 
 		double[] adblFloatFloatQuote = new double[] {
-			0.002070,	//  3Y
-			0.001640,	//  4Y
-			0.001510,	//  5Y
-			0.001390,	//  6Y
-			0.001300,	//  7Y
-			0.001230,	//  8Y
-			0.001180,	//  9Y
-			0.001130,	// 10Y
-			0.001090,	// 11Y
-			0.001060,	// 12Y
-			0.000930,	// 15Y
-			0.000800,	// 20Y
-			0.000720,	// 25Y
-			0.000660	// 30Y
+			-0.002070,	//  3Y
+			-0.001640,	//  4Y
+			-0.001510,	//  5Y
+			-0.001390,	//  6Y
+			-0.001300,	//  7Y
+			-0.001230,	//  8Y
+			-0.001180,	//  9Y
+			-0.001130,	// 10Y
+			-0.001090,	// 11Y
+			-0.001060,	// 12Y
+			-0.000930,	// 15Y
+			-0.000800,	// 20Y
+			-0.000720,	// 25Y
+			-0.000660	// 30Y
 		};
 
 		String[] astrFloatFloatTenor = new String[] {
@@ -166,19 +170,20 @@ public class IBOR12MQuarticPolyVanilla {
 		};
 
 		double[] adblSyntheticFloatFloatQuote = new double[] {
-			0.000660,
-			0.000660,
-			0.000660,
-			0.000660
+			-0.000660,
+			-0.000660,
+			-0.000660,
+			-0.000660
 		};
 
 		ForwardCurve fc6M = IBOR6MCubicPolyVanilla.Make6MForward (
 			dtValue,
 			strCurrency,
 			"6M",
-			true);
+			true
+		);
 
-		ForwardCurve fc = IBOR.CustomIBORBuilderSample (
+		ForwardCurve fc12M = IBOR.CustomIBORBuilderSample (
 			dcEONIA,
 			fc6M,
 			fri,
@@ -199,12 +204,13 @@ public class IBOR12MQuarticPolyVanilla {
 			adblSyntheticFloatFloatQuote,
 			"ReferenceParBasisSpread",
 			"---- VANILLA QUARTIC POLYNOMIAL FORWARD CURVE ---",
-			true);
+			true
+		);
 
 		IBOR.ForwardJack (
 			dtValue,
 			"---- VANILLA QUARTIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
-			fc,
+			fc12M,
 			"DerivedParBasisSpread"
 		);
 	}
