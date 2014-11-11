@@ -83,7 +83,8 @@ public class FRAMktVolAnalysis {
 			new ExponentialTensionSetParams (1.),
 			SegmentInelasticDesignControl.Create (2, 2),
 			null,
-			null);
+			null
+		);
 
 		for (int i = 0; i < adblTime.length; ++i) {
 			if (0 != i) aSCBC[i - 1] = scbc;
@@ -100,7 +101,8 @@ public class FRAMktVolAnalysis {
 			aSCBC,
 			null,
 			BoundarySettings.NaturalStandard(),
-			MultiSegmentSequence.CALIBRATE).toAU();
+			MultiSegmentSequence.CALIBRATE
+		).toAU();
 	}
 
 	public static final FRAMktConvexityCorrection FRAMktMetric (
@@ -159,7 +161,8 @@ public class FRAMktVolAnalysis {
 		return new FRAMktConvexityCorrection (
 			mapFRAOutput.get ("shiftedlognormalparmarketfra"),
 			mapFRAOutput.get ("parstandardfra"),
-			mapFRAOutput.get ("shiftedlognormalconvexitycorrection"));
+			mapFRAOutput.get ("shiftedlognormalconvexitycorrection")
+		);
 	}
 
 	public static final void main (
@@ -185,7 +188,8 @@ public class FRAMktVolAnalysis {
 		ForwardCurve fcEURIBOR6M = IBOR6MQuarticPolyVanilla.Make6MForward (
 			dtToday,
 			strCurrency,
-			strTenor);
+			strTenor
+		);
 
 		String[] astrForwardStartTenor = {
 			"6M", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y"
@@ -207,7 +211,8 @@ public class FRAMktVolAnalysis {
 				0.1789,	// 7Y
 				0.1655,	// 8Y
 				0.1574	// 9Y
-			});
+			}
+		);
 
 		AbstractUnivariate auEONIAVolTS = auATMVolTS;
 		AbstractUnivariate auEURIBOR6MVolTS = auATMVolTS;
@@ -232,13 +237,15 @@ public class FRAMktVolAnalysis {
 				strForwardStartTenor,
 				auEONIAVolTS,
 				auEURIBOR6MVolTS,
-				dblEONIAEURIBOR6MCorrelation);
+				dblEONIAEURIBOR6MCorrelation
+			);
 
 			System.out.println (
 				"\t " + strForwardStartTenor + " => " +
 				FormatUtil.FormatDouble (fraMktMetric._dblParMktFwd, 1, 3, 100.) + "% | " +
 				FormatUtil.FormatDouble (fraMktMetric._dblParStdFwd, 1, 3, 100.) + "% | " +
-				FormatUtil.FormatDouble (fraMktMetric._dblConvexityCorrection, 1, 2, 10000.));
+				FormatUtil.FormatDouble (fraMktMetric._dblConvexityCorrection, 1, 2, 10000.)
+			);
 		}
 	}
 }

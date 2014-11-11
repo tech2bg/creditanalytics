@@ -163,7 +163,8 @@ public class CCBSStretchBuilder {
 		final double[] adblSwapRate,
 		final boolean bBasisOnDerivedLeg)
 	{
-		if (null == aCCSP || null == mktParams || null == adblReferenceComponentBasis || null == adblSwapRate)
+		if (null == aCCSP || null == mktParams || null == adblReferenceComponentBasis || null ==
+			adblSwapRate)
 			return null;
 
 		int iNumCCSP = aCCSP.length;
@@ -178,23 +179,28 @@ public class CCBSStretchBuilder {
 		for (int i = 0; i < iNumCCSP; ++i) {
 			if (null == aCCSP[i]) return null;
 
-			org.drip.product.definition.CalibratableFixedIncomeComponent comp = aCCSP[i].derivedComponent();
+			org.drip.product.definition.CalibratableFixedIncomeComponent compDerived =
+				aCCSP[i].derivedComponent();
 
+			org.drip.product.definition.CalibratableFixedIncomeComponent compReference =
+				aCCSP[i].referenceComponent();
+
+			double dblFX = 1.;
 			org.drip.product.calib.ProductQuoteSet pqs = null;
 			org.drip.state.identifier.ForwardLabel forwardLabel = null;
 			org.drip.state.identifier.FundingLabel fundingLabel = null;
 
-			if (comp instanceof org.drip.product.rates.DualStreamComponent) {
+			if (compDerived instanceof org.drip.product.rates.DualStreamComponent) {
 				org.drip.product.rates.Stream streamDerived = ((org.drip.product.rates.DualStreamComponent)
-					comp).derivedStream();
+					compDerived).derivedStream();
 
 				forwardLabel = streamDerived.forwardLabel();
 
 				fundingLabel = streamDerived.fundingLabel();
 			} else {
-				org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp.forwardLabel();
+				org.drip.state.identifier.ForwardLabel[] aForwardLabel = compDerived.forwardLabel();
 
-				org.drip.state.identifier.FundingLabel[] aFundingLabel = comp.fundingLabel();
+				org.drip.state.identifier.FundingLabel[] aFundingLabel = compDerived.fundingLabel();
 
 				if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
 
@@ -202,8 +208,8 @@ public class CCBSStretchBuilder {
 			}
 
 			try { 
-				pqs = comp.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[] {new
-					org.drip.state.representation.LatentStateSpecification
+				pqs = compDerived.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[]
+					{new org.drip.state.representation.LatentStateSpecification
 						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
 							org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 								fundingLabel), new org.drip.state.representation.LatentStateSpecification
@@ -216,33 +222,38 @@ public class CCBSStretchBuilder {
 				return null;
 			}
 
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = aCCSP[i].value
+			java.lang.String strDerivedCurrency = compDerived.payCurrency()[0];
+
+			java.lang.String strReferenceCurrency = compReference.payCurrency()[0];
+
+			if (!strDerivedCurrency.equalsIgnoreCase (strReferenceCurrency)) {
+				org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve
+					(org.drip.state.identifier.FXLabel.Standard (strDerivedCurrency + "/" +
+						strReferenceCurrency));
+
+				if (null == auFX) return null;
+
+				try {
+					dblFX = auFX.evaluate (compDerived.effective().julian());
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+			}
+
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = compReference.value
 				(valParams, null, mktParams, null);
 
-			org.drip.product.definition.CalibratableFixedIncomeComponent rcReference =
-				aCCSP[i].referenceComponent();
-
-			java.lang.String strReferenceComponentName = rcReference.name();
-
-			java.lang.String strReferenceComponentPV = strReferenceComponentName + "[PV]";
-			java.lang.String strReferenceComponentReferenceLegCleanDV01 = strReferenceComponentName +
-				"[ReferenceCleanDV01]";
-			java.lang.String strReferenceComponentDerivedLegCleanDV01 = strReferenceComponentName +
-				"[DerivedCleanDV01]";
-
-			if (null == mapOP || !mapOP.containsKey (strReferenceComponentPV) || !mapOP.containsKey
-				(strReferenceComponentReferenceLegCleanDV01) || !mapOP.containsKey
-					(strReferenceComponentDerivedLegCleanDV01))
+			if (null == mapOP || !mapOP.containsKey ("PV") || !mapOP.containsKey ("ReferenceCleanDV01"))
 				return null;
 
-			if (!pqs.set ("SwapRate", adblSwapRate[i]) || !pqs.set ("PV", -1. * (mapOP.get
-				(strReferenceComponentPV) + 10000. * (bBasisOnDerivedLeg ? mapOP.get
-					(strReferenceComponentDerivedLegCleanDV01) : mapOP.get
-						(strReferenceComponentReferenceLegCleanDV01)) * adblReferenceComponentBasis[i])))
+			if (!pqs.set ("SwapRate", adblSwapRate[i]) || !pqs.set ("PV", -1. * dblFX * (mapOP.get ("PV") +
+				10000. * mapOP.get ("ReferenceCleanDV01") * adblReferenceComponentBasis[i])))
 				return null;
 
 			try {
-				aSegmentSpec[i] = new org.drip.state.inference.LatentStateSegmentSpec (comp, pqs);
+				aSegmentSpec[i] = new org.drip.state.inference.LatentStateSegmentSpec (compDerived, pqs);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

@@ -75,11 +75,19 @@ public class DomesticCollateralForeignForexVolCorr {
 			dtToday,
 			strDomesticCurrency,
 			new CollateralizationParams ("OVERNIGHT_INDEX", strDomesticCurrency),
-			dblDomesticCollateralRate);
+			dblDomesticCollateralRate
+		);
 
-		AbstractUnivariate auFX = new ExponentialDecay (dtToday.julian(), dblCollateralizedFXRate / 365.25);
+		AbstractUnivariate auFX = new ExponentialDecay (
+			dtToday.julian(),
+			dblCollateralizedFXRate / 365.25
+		);
 
-		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strDomesticCurrency);
+		ValuationParams valParams = new ValuationParams (
+			dtToday,
+			dtToday,
+			strDomesticCurrency
+		);
 
 		DiscountCurve dcCcyForeignCollatDomestic = new ForeignCollateralizedDiscountCurve (
 			strForeignCurrency,
@@ -87,26 +95,40 @@ public class DomesticCollateralForeignForexVolCorr {
 			auFX,
 			new FlatUnivariate (0.),
 			new FlatUnivariate (0.),
-			new FlatUnivariate (0.));
+			new FlatUnivariate (0.)
+		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (null, null, null, null, null, null, null);
 
-		mktParams.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strDomesticCurrency, dcCcyForeignCollatDomestic);
+		mktParams.setPayCurrencyCollateralCurrencyCurve (
+			strForeignCurrency,
+			strDomesticCurrency,
+			dcCcyForeignCollatDomestic
+		);
 
-		mktParams.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strDomesticCurrency, dcCcyDomesticCollatDomestic);
+		mktParams.setPayCurrencyCollateralCurrencyCurve (
+			strDomesticCurrency,
+			strDomesticCurrency,
+			dcCcyDomesticCollatDomestic
+		);
 
-		mktParams.setFXCurve (FXLabel.Standard (cp), auFX);
+		mktParams.setFXCurve (
+			FXLabel.Standard (cp),
+			auFX
+		);
 
 		DomesticCollateralizedForeignForward dcff = new DomesticCollateralizedForeignForward (
 			cp,
 			dblFXFwdStrike,
-			dtToday.addTenor (strMaturity));
+			dtToday.addTenor (strMaturity)
+		);
 
 		CaseInsensitiveTreeMap<Double> mapBaseValue = dcff.value (
 			new ValuationParams (dtToday, dtToday, strDomesticCurrency),
 			null,
 			mktParams,
-			null);
+			null
+		);
 
 		double dblBaselinePrice = mapBaseValue.get ("Price");
 
@@ -141,13 +163,18 @@ public class DomesticCollateralForeignForexVolCorr {
 						new FlatUnivariate (dblFXVolatility),
 						new FlatUnivariate (dblFXForeignRatesCorrelation));
 
-					mktParams.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strDomesticCurrency, dcCcyForeignCollatDomestic);
+					mktParams.setPayCurrencyCollateralCurrencyCurve (
+						strForeignCurrency,
+						strDomesticCurrency,
+						dcCcyForeignCollatDomestic
+					);
 
 					CaseInsensitiveTreeMap<Double> mapDCFF = dcff.value (
 						valParams,
 						null,
 						mktParams,
-						null);
+						null
+					);
 
 					double dblPrice = mapDCFF.get ("Price");
 
@@ -160,7 +187,8 @@ public class DomesticCollateralForeignForexVolCorr {
 						org.drip.quant.common.FormatUtil.FormatDouble (dblPrice, 2, 2, 100.) + " | " +
 						org.drip.quant.common.FormatUtil.FormatDouble (dblPrice - dblBaselinePrice, 1, 2, 100.) + " | " +
 						org.drip.quant.common.FormatUtil.FormatDouble (dblParForward, 1, 4, 1.) + " | " +
-						org.drip.quant.common.FormatUtil.FormatDouble (dblParForward - dblBaselineParForward, 1, 4, 1.));
+						org.drip.quant.common.FormatUtil.FormatDouble (dblParForward - dblBaselineParForward, 1, 4, 1.)
+					);
 				}
 			}
 		}

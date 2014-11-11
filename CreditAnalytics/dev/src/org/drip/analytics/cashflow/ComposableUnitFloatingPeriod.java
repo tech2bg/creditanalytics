@@ -101,7 +101,8 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 
 		if (null == dcFunding)
 			throw new java.lang.Exception
-				("ComposableUnitFloatingPeriod::referenceRate => Cannot locate Funding Curve");
+				("ComposableUnitFloatingPeriod::referenceRate => Cannot locate Funding Curve " +
+					forwardLabel.currency());
 
 		double dblReferencePeriodStartDate = _refIndexPeriod.startDate();
 

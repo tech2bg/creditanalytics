@@ -81,8 +81,8 @@ public class CCBSDiscountCurve {
 			false,
 			"Act/360",
 			false,
-			strPayCurrency,
-			true
+			strCouponCurrency,
+			false
 		);
 
 		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
@@ -91,13 +91,13 @@ public class CCBSDiscountCurve {
 			false,
 			"Act/360",
 			false,
-			strPayCurrency,
-			true
+			strCouponCurrency,
+			false
 		);
 
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -107,7 +107,7 @@ public class CCBSDiscountCurve {
 
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -124,7 +124,8 @@ public class CCBSDiscountCurve {
 			-1. * dblNotional,
 			null,
 			null,
-			null,
+			strPayCurrency.equalsIgnoreCase (strCouponCurrency) ? null :
+				new FixingSetting (FixingSetting.FIXING_PRESET_STATIC, null, dtEffective.julian()),
 			null
 		);
 
@@ -137,7 +138,8 @@ public class CCBSDiscountCurve {
 			1. * dblNotional,
 			null,
 			null,
-			null,
+			strPayCurrency.equalsIgnoreCase (strCouponCurrency) ? null :
+				new FixingSetting (FixingSetting.FIXING_PRESET_STATIC, null, dtEffective.julian()),
 			null
 		);
 
@@ -221,7 +223,7 @@ public class CCBSDiscountCurve {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			"3M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -348,7 +350,7 @@ public class CCBSDiscountCurve {
 	{
 		FloatFloatComponent[] aFFCReference = MakexM6MBasisSwap (
 			dtValue,
-			strDerivedCurrency,
+			strReferenceCurrency,
 			strReferenceCurrency,
 			1.,
 			astrTenor,
@@ -410,8 +412,8 @@ public class CCBSDiscountCurve {
 	{
 		ComponentPair[] aCCSP = MakeCCSP (
 			dtValue,
-			strDerivedCurrency,
 			strReferenceCurrency,
+			strDerivedCurrency,
 			astrTenor,
 			3
 		);
@@ -426,11 +428,22 @@ public class CCBSDiscountCurve {
 
 		FXLabel fxLabel = FXLabel.Standard (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency));
 
-		mktParams.setFXCurve (fxLabel, new FlatUnivariate (dblRefDerFX));
+		mktParams.setFXCurve (
+			fxLabel,
+			new FlatUnivariate (dblRefDerFX)
+		);
 
-		mktParams.setFixing (aCCSP[0].effective(), fxLabel, dblRefDerFX);
+		mktParams.setFixing (
+			aCCSP[0].effective(),
+			fxLabel,
+			dblRefDerFX
+		);
 
-		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
+		ValuationParams valParams = new ValuationParams (
+			dtValue,
+			dtValue,
+			strReferenceCurrency
+		);
 
 		LinearLatentStateCalibrator llsc = new LinearLatentStateCalibrator (
 			scbc,

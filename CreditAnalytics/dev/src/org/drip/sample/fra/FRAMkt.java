@@ -108,7 +108,11 @@ public class FRAMkt {
 			null
 		);
 
-		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
+		ValuationParams valParams = new ValuationParams (
+			dtToday,
+			dtToday,
+			strCurrency
+		);
 
 		mktParams.setForwardCurveVolSurface (
 			fri,

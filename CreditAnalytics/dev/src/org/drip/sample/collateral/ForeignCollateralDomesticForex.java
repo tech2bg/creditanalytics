@@ -80,9 +80,13 @@ public class ForeignCollateralDomesticForex {
 			dtToday,
 			strForeignCurrency,
 			new CollateralizationParams ("OVERNIGHT_INDEX", strForeignCurrency),
-			dblForeignCollateralRate);
+			dblForeignCollateralRate
+		);
 
-		AbstractUnivariate auFX = new ExponentialDecay (dtToday.julian(), dblCollateralizedFXRate / 365.25);
+		AbstractUnivariate auFX = new ExponentialDecay (
+			dtToday.julian(),
+			dblCollateralizedFXRate / 365.25
+		);
 
 		DiscountCurve dcCcyDomesticCollatForeign = new ForeignCollateralizedDiscountCurve (
 			strDomesticCurrency,
@@ -90,26 +94,40 @@ public class ForeignCollateralDomesticForex {
 			auFX,
 			new FlatUnivariate (dblForeignRatesVolatility),
 			new FlatUnivariate (dblFXVolatility),
-			new FlatUnivariate (dblFXForeignRatesCorrelation));
+			new FlatUnivariate (dblFXForeignRatesCorrelation)
+		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (null, null, null, null, null, null, null);
 
-		mktParams.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strForeignCurrency, dcCcyDomesticCollatForeign);
+		mktParams.setPayCurrencyCollateralCurrencyCurve (
+			strDomesticCurrency,
+			strForeignCurrency,
+			dcCcyDomesticCollatForeign
+		);
 
-		mktParams.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strForeignCurrency, dcCcyForeignCollatForeign);
+		mktParams.setPayCurrencyCollateralCurrencyCurve (
+			strForeignCurrency,
+			strForeignCurrency,
+			dcCcyForeignCollatForeign
+		);
 
-		mktParams.setFXCurve (FXLabel.Standard (cp), auFX);
+		mktParams.setFXCurve (
+			FXLabel.Standard (cp),
+			auFX
+		);
 
 		ForeignCollateralizedDomesticForward fcff = new ForeignCollateralizedDomesticForward (
 			cp,
 			dblFXFwdStrike,
-			dtToday.addTenor (strMaturity));
+			dtToday.addTenor (strMaturity)
+		);
 
 		CaseInsensitiveTreeMap<Double> mapFCFF = fcff.value (
 			new ValuationParams (dtToday, dtToday, strDomesticCurrency),
 			null,
 			mktParams,
-			null);
+			null
+		);
 
 		for (Map.Entry<String, Double> me : mapFCFF.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());

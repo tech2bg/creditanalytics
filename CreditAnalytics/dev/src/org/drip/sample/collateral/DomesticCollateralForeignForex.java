@@ -80,7 +80,8 @@ public class DomesticCollateralForeignForex {
 			dtToday,
 			strForeignCurrency,
 			new CollateralizationParams ("OVERNIGHT_INDEX", strForeignCurrency),
-			dblForeignCollateralRate);
+			dblForeignCollateralRate
+		);
 
 		AbstractUnivariate auFX = new ExponentialDecay (dtToday.julian(), dblCollateralizedFXRate / 365.25);
 
@@ -90,26 +91,40 @@ public class DomesticCollateralForeignForex {
 			auFX,
 			new FlatUnivariate (dblForeignRatesVolatility),
 			new FlatUnivariate (dblFXVolatility),
-			new FlatUnivariate (dblFXForeignRatesCorrelation));
+			new FlatUnivariate (dblFXForeignRatesCorrelation)
+		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (null, null, null, null, null, null, null);
 
-		mktParams.setPayCurrencyCollateralCurrencyCurve (strForeignCurrency, strDomesticCurrency, dcCcyForeignCollatDomestic);
+		mktParams.setPayCurrencyCollateralCurrencyCurve (
+			strForeignCurrency,
+			strDomesticCurrency,
+			dcCcyForeignCollatDomestic
+		);
 
-		mktParams.setPayCurrencyCollateralCurrencyCurve (strDomesticCurrency, strDomesticCurrency, dcCcyDomesticCollatDomestic);
+		mktParams.setPayCurrencyCollateralCurrencyCurve (
+			strDomesticCurrency,
+			strDomesticCurrency,
+			dcCcyDomesticCollatDomestic
+		);
 
-		mktParams.setFXCurve (FXLabel.Standard (cp), auFX);
+		mktParams.setFXCurve (
+			FXLabel.Standard (cp),
+			auFX
+		);
 
 		DomesticCollateralizedForeignForward dcff = new DomesticCollateralizedForeignForward (
 			cp,
 			dblFXFwdStrike,
-			dtToday.addTenor (strMaturity));
+			dtToday.addTenor (strMaturity)
+		);
 
 		CaseInsensitiveTreeMap<Double> mapDCFF = dcff.value (
 			new ValuationParams (dtToday, dtToday, strDomesticCurrency),
 			null,
 			mktParams,
-			null);
+			null
+		);
 
 		for (Map.Entry<String, Double> me : mapDCFF.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());

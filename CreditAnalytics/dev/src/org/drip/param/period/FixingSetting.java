@@ -69,7 +69,7 @@ public class FixingSetting {
 	public static final boolean ValidateType (
 		final int iType)
 	{
-		return FIXING_COMPOSITE_PERIOD_START == iType || FIXING_COMPOSITE_PERIOD_END == iType &&
+		return FIXING_COMPOSITE_PERIOD_START == iType || FIXING_COMPOSITE_PERIOD_END == iType ||
 			FIXING_PRESET_STATIC == iType;
 	}
 

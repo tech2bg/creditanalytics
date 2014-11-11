@@ -81,7 +81,7 @@ public class CCBSForwardCurve {
 			false,
 			"Act/360",
 			false,
-			strPayCurrency,
+			strCouponCurrency,
 			true
 		);
 
@@ -91,13 +91,13 @@ public class CCBSForwardCurve {
 			false,
 			"Act/360",
 			false,
-			strPayCurrency,
+			strCouponCurrency,
 			true
 		);
 
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -107,7 +107,7 @@ public class CCBSForwardCurve {
 
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -124,7 +124,8 @@ public class CCBSForwardCurve {
 			-1. * dblNotional,
 			null,
 			null,
-			null,
+			strPayCurrency.equalsIgnoreCase (strCouponCurrency) ? null :
+				new FixingSetting (FixingSetting.FIXING_PRESET_STATIC, null, dtEffective.julian()),
 			null
 		);
 
@@ -137,7 +138,8 @@ public class CCBSForwardCurve {
 			1. * dblNotional,
 			null,
 			null,
-			null,
+			strPayCurrency.equalsIgnoreCase (strCouponCurrency) ? null :
+				new FixingSetting (FixingSetting.FIXING_PRESET_STATIC, null, dtEffective.julian()),
 			null
 		);
 
@@ -266,11 +268,22 @@ public class CCBSForwardCurve {
 
 		FXLabel fxLabelBase = FXLabel.Standard (CurrencyPair.FromCode (strDerivedCurrency + "/" + strReferenceCurrency));
 
-		mktParams.setFXCurve (fxLabelBase, new FlatUnivariate (dblRefDerFX));
+		mktParams.setFXCurve (
+			fxLabelBase,
+			new FlatUnivariate (dblRefDerFX)
+		);
 
-		mktParams.setFixing (aCCSP[0].effective(), fxLabelBase, dblRefDerFX);
+		mktParams.setFixing (
+			aCCSP[0].effective(),
+			fxLabelBase,
+			dblRefDerFX
+		);
 
-		ValuationParams valParams = new ValuationParams (dtValue, dtValue, strReferenceCurrency);
+		ValuationParams valParams = new ValuationParams (
+			dtValue,
+			dtValue,
+			strReferenceCurrency
+		);
 
 		LinearLatentStateCalibrator llsc = new LinearLatentStateCalibrator (
 			scbc,
@@ -295,9 +308,21 @@ public class CCBSForwardCurve {
 			ForwardLabel.Standard (strDerivedCurrency + "-LIBOR-3M"),
 			valParams,
 			null,
-			MarketParamsBuilder.Create (dcDerived, fc6MDerived, null, null, null, null, null, null),
+			MarketParamsBuilder.Create (
+				dcDerived,
+				fc6MDerived,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null
+			),
 			null,
-			dcDerived.forward (dtValue.julian(), dtValue.addTenor ("3M").julian())
+			dcDerived.forward (
+				dtValue.julian(),
+				dtValue.addTenor ("3M").julian()
+			)
 		);
 
 		CurveSurfaceQuoteSet mktParamsDerived = MarketParamsBuilder.Create
@@ -319,7 +344,12 @@ public class CCBSForwardCurve {
 		for (int i = 0; i < aCCSP.length; ++i) {
 			CalibratableFixedIncomeComponent rc = aCCSP[i].derivedComponent();
 
-			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (valParams, null, mktParams, null);
+			CaseInsensitiveTreeMap<Double> mapOP = aCCSP[i].value (
+				valParams,
+				null,
+				mktParams,
+				null
+			);
 
 			System.out.println ("\t[" + rc.effective() + " - " + rc.maturity() + "] = " +
 				FormatUtil.FormatDouble (mapOP.get (bBasisOnDerivedLeg ? "ReferenceCompDerivedBasis" : "ReferenceCompReferenceBasis"), 1, 3, 1.) +

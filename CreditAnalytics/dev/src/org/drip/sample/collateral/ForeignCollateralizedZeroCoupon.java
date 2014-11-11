@@ -61,7 +61,8 @@ public class ForeignCollateralizedZeroCoupon {
 			auFX,
 			new FlatUnivariate (dblForeignRatesVolatility),
 			new FlatUnivariate (dblFXVolatility),
-			new FlatUnivariate (dblFXForeignRatesCorrelation));
+			new FlatUnivariate (dblFXForeignRatesCorrelation)
+		);
 
 		double dblPrice = dcCcyDomesticCollatForeign.df (dtMaturity);
 
@@ -70,7 +71,8 @@ public class ForeignCollateralizedZeroCoupon {
 			org.drip.quant.common.FormatUtil.FormatDouble (dblFXVolatility, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblFXForeignRatesCorrelation, 2, 0, 100.) + "%] =" +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblPrice, 1, 2, 100.) + " | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblPrice - dblBaselinePrice, 2, 0, 100.));
+			org.drip.quant.common.FormatUtil.FormatDouble (dblPrice - dblBaselinePrice, 2, 0, 100.)
+		);
 
 		return dblPrice;
 	}
@@ -99,9 +101,13 @@ public class ForeignCollateralizedZeroCoupon {
 			dtToday,
 			strForeignCurrency,
 			new CollateralizationParams ("OVERNIGHT_INDEX", strForeignCurrency),
-			dblForeignCollateralRate);
+			dblForeignCollateralRate
+		);
 
-		AbstractUnivariate auFX = new ExponentialDecay (dtToday.julian(), dblCollateralizedFXRate / 365.25);
+		AbstractUnivariate auFX = new ExponentialDecay (
+			dtToday.julian(),
+			dblCollateralizedFXRate / 365.25
+		);
 
 		double dblBaselinePrice = ZeroCouponVolCorr (
 			strDomesticCurrency,
@@ -111,7 +117,8 @@ public class ForeignCollateralizedZeroCoupon {
 			0.,
 			0.,
 			dtZeroCouponMaturity,
-			0.);
+			0.
+		);
 
 		double[] adblForeignRatesVol = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
 		double[] adblFXVol = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
@@ -138,7 +145,8 @@ public class ForeignCollateralizedZeroCoupon {
 						dblFXVol,
 						dblForeignRatesFXCorr,
 						dtZeroCouponMaturity,
-						dblBaselinePrice);
+						dblBaselinePrice
+					);
 			}
 		}
 	}

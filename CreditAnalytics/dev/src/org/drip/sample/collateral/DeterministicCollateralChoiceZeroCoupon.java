@@ -8,8 +8,7 @@ import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
-import org.drip.state.curve.DeterministicCollateralChoiceDiscountCurve;
-import org.drip.state.curve.ForeignCollateralizedDiscountCurve;
+import org.drip.state.curve.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -73,13 +72,15 @@ public class DeterministicCollateralChoiceZeroCoupon {
 			dtToday,
 			strDomesticCurrency,
 			new CollateralizationParams ("OVERNIGHT_INDEX", strDomesticCurrency),
-			dblDomesticCollateralRate);
+			dblDomesticCollateralRate
+		);
 
 		DiscountCurve dcCcyForeignCollatForeign = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
 			strForeignCurrency,
 			new CollateralizationParams ("OVERNIGHT_INDEX", strForeignCurrency),
-			dblForeignCollateralRate);
+			dblForeignCollateralRate
+		);
 
 		AbstractUnivariate auFX = new ExponentialDecay (dtToday.julian(), dblCollateralizedFXRate / 365.25);
 
@@ -89,12 +90,14 @@ public class DeterministicCollateralChoiceZeroCoupon {
 			auFX,
 			new FlatUnivariate (dblForeignRatesVolatility),
 			new FlatUnivariate (dblFXVolatility),
-			new FlatUnivariate (dblFXForeignRatesCorrelation));
+			new FlatUnivariate (dblFXForeignRatesCorrelation)
+		);
 
 		DeterministicCollateralChoiceDiscountCurve dccdc = new DeterministicCollateralChoiceDiscountCurve (
 			dcCcyDomesticCollatDomestic,
 			new org.drip.state.curve.ForeignCollateralizedDiscountCurve[] {dcCcyDomesticCollatForeign},
-			iDiscreteCollateralizationIncrement);
+			iDiscreteCollateralizationIncrement
+		);
 
 		double dblStart = dtToday.julian() + iDiscreteCollateralizationIncrement;
 
@@ -121,10 +124,12 @@ public class DeterministicCollateralChoiceZeroCoupon {
 
 			double dblChoiceCollateralDF = dccdc.df (dblDate);
 
-			System.out.println (new JulianDate (dblDate) + " => " +
+			System.out.println (
+				new JulianDate (dblDate) + " => " +
 				FormatUtil.FormatDouble (dblDomesticCollateralDF, 2, 2, 100.) + " | " +
 				FormatUtil.FormatDouble (dblForeignCollateralDF, 2, 2, 100.) + " | " +
-				FormatUtil.FormatDouble (dblChoiceCollateralDF, 2, 2, 100.));
+				FormatUtil.FormatDouble (dblChoiceCollateralDF, 2, 2, 100.)
+			);
 		}
 	}
 }

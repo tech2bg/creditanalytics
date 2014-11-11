@@ -47,7 +47,6 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class CAD3M6MUSD3M6M {
 	private static final double _dblFXCADUSD = 0.9168;
-	// private static final double _dblFXCADUSD = 1.;
 
 	private static final int[] s_aiUSDOISDepositMaturityDays = new int[] {
 		1,
