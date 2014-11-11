@@ -56,19 +56,19 @@ import org.drip.state.identifier.*;
 public class FRAStd {
 
 	/*
-	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
-		final int iNumFutures,
+		final int iNumFuture,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
+		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFuture];
 
 		for (int i = 0; i < aiDay.length; ++i)
 			aCalibComp[i] = SingleStreamComponentBuilder.CreateDeposit (
@@ -80,11 +80,11 @@ public class FRAStd {
 
 		CalibratableFixedIncomeComponent[] aEDF = SingleStreamComponentBuilder.GenerateFuturesPack (
 			dtEffective,
-			iNumFutures,
+			iNumFuture,
 			strCurrency
 		);
 
-		for (int i = aiDay.length; i < aiDay.length + iNumFutures; ++i)
+		for (int i = aiDay.length; i < aiDay.length + iNumFuture; ++i)
 			aCalibComp[i] = aEDF[i - aiDay.length];
 
 		return aCalibComp;
@@ -127,7 +127,7 @@ public class FRAStd {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -240,22 +240,32 @@ public class FRAStd {
 		throws Exception
 	{
 		/*
-		 * Construct the array of cash instruments and their quotes.
+		 * Construct the array of Deposit instruments and their quotes.
 		 */
 
-		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
-			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
+			new int[] {
+				1, 2, 3, 7, 14, 21, 30, 60
+			},
 			0,
-			strCurrency);
+			strCurrency
+		);
 
-		double[] adblCashQuote = new double[] {
-			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850}; // Cash
-			// 0.01612, 0.01580, 0.01589, 0.01598}; // Futures
+		double[] adblDepositQuote = new double[] {
+			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850
+		};
 
-		String[] astrCashManifestMeasure = new String[] {
-			"Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate"}; // Cash
-			// "Rate", "Rate", "Rate", "Rate"}; // Futures
+		String[] astrDepositManifestMeasure = new String[] {
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate"
+		};
 
 		/*
 		 * Construct the array of Swap instruments and their quotes.
@@ -299,7 +309,9 @@ public class FRAStd {
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			},
 			adblSwapQuote,
 			strCurrency
 		);
@@ -311,13 +323,13 @@ public class FRAStd {
 		return ScenarioDiscountCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SHAPE_TEMPLATE",
 			new ValuationParams (dtSpot, dtSpot, "USD"),
-			aCashComp,
-			adblCashQuote,
-			astrCashManifestMeasure,
+			aDepositComp,
+			adblDepositQuote,
+			astrDepositManifestMeasure,
 			aSwapComp,
 			adblSwapQuote,
 			astrSwapManifestMeasure,
-			true
+			false
 		);
 	}
 
@@ -358,7 +370,7 @@ public class FRAStd {
 
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -368,7 +380,7 @@ public class FRAStd {
 
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -464,17 +476,29 @@ public class FRAStd {
 		 * Construct the 6M-xM float-float basis swap.
 		 */
 
-		FloatFloatComponent[] aFFC = MakexM6MBasisSwap (dtSpot, strCurrency, astrxM6MFwdTenor, iTenorInMonths);
+		FloatFloatComponent[] aFFC = MakexM6MBasisSwap (
+			dtSpot,
+			strCurrency,
+			astrxM6MFwdTenor,
+			iTenorInMonths
+		);
 
 		String strBasisTenor = iTenorInMonths + "M";
 
-		ValuationParams valParams = new ValuationParams (dtSpot, dtSpot, strCurrency);
+		ValuationParams valParams = new ValuationParams (
+			dtSpot,
+			dtSpot,
+			strCurrency
+		);
 
 		/*
 		 * Calculate the starting forward rate off of the discount curve.
 		 */
 
-		double dblStartingFwd = dc.forward (dtSpot.julian(), dtSpot.addTenor (strBasisTenor).julian());
+		double dblStartingFwd = dc.forward (
+			dtSpot.julian(),
+			dtSpot.addTenor (strBasisTenor).julian()
+		);
 
 		/*
 		 * Set the discount curve based component market parameters.

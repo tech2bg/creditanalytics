@@ -56,19 +56,19 @@ import org.drip.state.identifier.*;
 public class FRAStdOption {
 
 	/*
-	 * Construct the Array of Cash Instruments from the given set of parameters
+	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] CashInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
-		final int iNumFutures,
+		final int iNumFuture,
 		final String strCurrency)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
+		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFuture];
 
 		for (int i = 0; i < aiDay.length; ++i)
 			aCalibComp[i] = SingleStreamComponentBuilder.CreateDeposit (
@@ -80,11 +80,11 @@ public class FRAStdOption {
 
 		CalibratableFixedIncomeComponent[] aEDF = SingleStreamComponentBuilder.GenerateFuturesPack (
 			dtEffective,
-			iNumFutures,
+			iNumFuture,
 			strCurrency
 		);
 
-		for (int i = aiDay.length; i < aiDay.length + iNumFutures; ++i)
+		for (int i = aiDay.length; i < aiDay.length + iNumFuture; ++i)
 			aCalibComp[i] = aEDF[i - aiDay.length];
 
 		return aCalibComp;
@@ -127,7 +127,7 @@ public class FRAStdOption {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -240,22 +240,32 @@ public class FRAStdOption {
 		throws Exception
 	{
 		/*
-		 * Construct the array of cash instruments and their quotes.
+		 * Construct the array of Deposit instruments and their quotes.
 		 */
 
-		CalibratableFixedIncomeComponent[] aCashComp = CashInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
-			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
+			new int[] {
+				1, 2, 3, 7, 14, 21, 30, 60
+			},
 			0,
-			strCurrency);
+			strCurrency
+		);
 
-		double[] adblCashQuote = new double[] {
-			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850}; // Cash
-			// 0.01612, 0.01580, 0.01589, 0.01598}; // Futures
+		double[] adblDepositQuote = new double[] {
+			0.01200, 0.01200, 0.01200, 0.01450, 0.01550, 0.01600, 0.01660, 0.01850
+		};
 
-		String[] astrCashManifestMeasure = new String[] {
-			"Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate", "Rate"}; // Cash
-			// "Rate", "Rate", "Rate", "Rate"}; // Futures
+		String[] astrDepositManifestMeasure = new String[] {
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate",
+			"ForwardRate"
+		};
 
 		/*
 		 * Construct the array of Swap instruments and their quotes.
@@ -299,9 +309,12 @@ public class FRAStdOption {
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			},
 			adblSwapQuote,
-			strCurrency);
+			strCurrency
+		);
 
 		/*
 		 * Construct a shape preserving and smoothing KLK Hyperbolic Spline from the cash/swap instruments.
@@ -310,13 +323,14 @@ public class FRAStdOption {
 		return ScenarioDiscountCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SHAPE_TEMPLATE",
 			new ValuationParams (dtSpot, dtSpot, "USD"),
-			aCashComp,
-			adblCashQuote,
-			astrCashManifestMeasure,
+			aDepositComp,
+			adblDepositQuote,
+			astrDepositManifestMeasure,
 			aSwapComp,
 			adblSwapQuote,
 			astrSwapManifestMeasure,
-			true);
+			false
+		);
 	}
 
 	/*
@@ -356,7 +370,7 @@ public class FRAStdOption {
 
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -366,7 +380,7 @@ public class FRAStdOption {
 
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -462,17 +476,29 @@ public class FRAStdOption {
 		 * Construct the 6M-xM float-float basis swap.
 		 */
 
-		FloatFloatComponent[] aFFC = MakexM6MBasisSwap (dtSpot, strCurrency, astrxM6MFwdTenor, iTenorInMonths);
+		FloatFloatComponent[] aFFC = MakexM6MBasisSwap (
+			dtSpot,
+			strCurrency,
+			astrxM6MFwdTenor,
+			iTenorInMonths
+		);
 
 		String strBasisTenor = iTenorInMonths + "M";
 
-		ValuationParams valParams = new ValuationParams (dtSpot, dtSpot, strCurrency);
+		ValuationParams valParams = new ValuationParams (
+			dtSpot,
+			dtSpot,
+			strCurrency
+		);
 
 		/*
 		 * Calculate the starting forward rate off of the discount curve.
 		 */
 
-		double dblStartingFwd = dc.forward (dtSpot.julian(), dtSpot.addTenor (strBasisTenor).julian());
+		double dblStartingFwd = dc.forward (
+			dtSpot.julian(),
+			dtSpot.addTenor (strBasisTenor).julian()
+		);
 
 		/*
 		 * Set the discount curve based component market parameters.
@@ -496,7 +522,8 @@ public class FRAStdOption {
 			aFFC,
 			"DerivedParBasisSpread",
 			adblxM6MBasisSwapQuote,
-			dblStartingFwd);
+			dblStartingFwd
+		);
 	}
 
 	private static final Map<String, ForwardCurve> MakeFC (
@@ -516,7 +543,9 @@ public class FRAStdOption {
 			strCurrency,
 			dc,
 			1,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
+			new String[] {
+				"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+			},
 			new double[] {
 				0.00551,    //  1Y
 				0.00387,    //  2Y
@@ -534,8 +563,8 @@ public class FRAStdOption {
 				0.00079,    // 20Y
 				0.00069,    // 25Y
 				0.00062     // 30Y
-				}
-			);
+			}
+		);
 
 		mapFC.put ("1M", fc1M);
 
@@ -548,7 +577,9 @@ public class FRAStdOption {
 			strCurrency,
 			dc,
 			3,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
+			new String[] {
+				"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+			},
 			new double[] {
 				0.00186,    //  1Y
 				0.00127,    //  2Y
@@ -566,8 +597,8 @@ public class FRAStdOption {
 				0.00022,    // 20Y
 				0.00020,    // 25Y
 				0.00018     // 30Y
-				}
-			);
+			}
+		);
 
 		mapFC.put ("3M", fc3M);
 
@@ -580,8 +611,9 @@ public class FRAStdOption {
 			strCurrency,
 			dc,
 			12,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y",
-				"35Y", "40Y"}, // Extrapolated
+			new String[] {
+				"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "35Y", "40Y"
+			}, // Extrapolated
 			new double[] {
 				-0.00212,    //  1Y
 				-0.00152,    //  2Y
@@ -601,8 +633,8 @@ public class FRAStdOption {
 				-0.00022,    // 30Y
 				-0.00022,    // 35Y Extrapolated
 				-0.00022,    // 40Y Extrapolated
-				}
-			);
+			}
+		);
 
 		mapFC.put ("12M", fc12M);
 
@@ -679,7 +711,12 @@ public class FRAStdOption {
 			)
 		);
 
-		Map<String, Double> mapFRAOutput = fra.value (valParams, null, mktParams, null);
+		Map<String, Double> mapFRAOutput = fra.value (
+			valParams,
+			null,
+			mktParams,
+			null
+		);
 
 		double dblStrike = 1.01 * mapFRAOutput.get (strManifestMeasure);
 
@@ -690,9 +727,15 @@ public class FRAStdOption {
 			dblStrike,
 			1.,
 			strCurrency,
-			strCurrency);
+			strCurrency
+		);
 
-		Map<String, Double> mapFRACapletOutput = fraCaplet.value (valParams, null, mktParams, null);
+		Map<String, Double> mapFRACapletOutput = fraCaplet.value (
+			valParams,
+			null,
+			mktParams,
+			null
+		);
 
 		for (Map.Entry<String, Double> me : mapFRACapletOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
@@ -708,7 +751,8 @@ public class FRAStdOption {
 			dblStrike,
 			1.,
 			strCurrency,
-			strCurrency);
+			strCurrency
+		);
 
 		Map<String, Double> mapFRAFloorletOutput = fraFloorlet.value (valParams, null, mktParams, null);
 
