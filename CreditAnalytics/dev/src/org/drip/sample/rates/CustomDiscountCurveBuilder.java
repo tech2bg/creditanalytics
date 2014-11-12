@@ -421,7 +421,9 @@ public class CustomDiscountCurveBuilder {
 		SingleStreamComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			strCurrency,
-			new int[] {1, 2, 7, 14, 30, 60}
+			new int[] {
+				1, 2, 7, 14, 30, 60
+			}
 		);
 
 		double[] adblDepositQuote = new double[] {
@@ -467,8 +469,9 @@ public class CustomDiscountCurveBuilder {
 		FixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
-			new java.lang.String[]
-				{"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"}
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			}
 		);
 
 		double[] adblSwapQuote = new double[] {
@@ -500,7 +503,8 @@ public class CustomDiscountCurveBuilder {
 				new PolynomialFunctionSetParams (4),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				null),
+				null
+			),
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,

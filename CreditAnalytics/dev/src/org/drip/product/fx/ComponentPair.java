@@ -37,6 +37,7 @@ package org.drip.product.fx;
 
 public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	private java.lang.String _strName = "";
+	private org.drip.param.period.FixingSetting _fxFixingSetting = null;
 	private org.drip.product.definition.CalibratableFixedIncomeComponent _rcDerived = null;
 	private org.drip.product.definition.CalibratableFixedIncomeComponent _rcReference = null;
 
@@ -46,6 +47,7 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	 * @param strName The ComponentPair Instance Name
 	 * @param rcReference The Reference Component
 	 * @param rcDerived The Derived Component
+	 * @param fxFixingSetting FX Fixing Setting
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
@@ -53,12 +55,15 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	public ComponentPair (
 		final java.lang.String strName,
 		final org.drip.product.definition.CalibratableFixedIncomeComponent rcReference,
-		final org.drip.product.definition.CalibratableFixedIncomeComponent rcDerived)
+		final org.drip.product.definition.CalibratableFixedIncomeComponent rcDerived,
+		final org.drip.param.period.FixingSetting fxFixingSetting)
 		throws java.lang.Exception
 	{
 		if (null == (_strName = strName) || _strName.isEmpty() || null == (_rcDerived = rcDerived) || null ==
 			(_rcReference = rcReference))
 			throw new java.lang.Exception ("ComponentPair ctr: Invalid Inputs!");
+
+		_fxFixingSetting = fxFixingSetting;
 	}
 
 	/**
@@ -84,6 +89,17 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	}
 
 	/**
+	 * Retrieve the FX Fixing Setting
+	 * 
+	 * @return The FX Fixing Setting
+	 */
+
+	public org.drip.param.period.FixingSetting fxFixingSetting()
+	{
+		return _fxFixingSetting;
+	}
+
+	/**
 	 * Retrieve the FX Code
 	 * 
 	 * @return The FX Code
@@ -97,6 +113,91 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 		return strDerivedComponentCouponCurrency.equalsIgnoreCase (strReferenceComponentCouponCurrency) ?
 			null : strReferenceComponentCouponCurrency + "/" + strDerivedComponentCouponCurrency;
+	}
+
+	/**
+	 * Generate the Derived Funding/Forward Merged Latent State Segment Specification
+	 * 
+	 * @param valParams Valuation Parameters
+	 * @param mktParams Market Parameters
+	 * @param dblReferenceComponentBasis The Reference Component Basis
+	 * @param dblSwapRate The Swap Rate
+	 * 
+	 * @return The Derived Discount Curve Latent State Segment Specification
+	 */
+
+	public org.drip.state.inference.LatentStateSegmentSpec fundingForwardSegmentSpec (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
+		final double dblReferenceComponentBasis,
+		final double dblSwapRate)
+	{
+		double dblFX = 1.;
+		org.drip.product.calib.ProductQuoteSet pqs = null;
+		org.drip.state.identifier.ForwardLabel forwardLabel = null;
+		org.drip.state.identifier.FundingLabel fundingLabel = null;
+
+		org.drip.product.definition.CalibratableFixedIncomeComponent compDerived = derivedComponent();
+
+		org.drip.product.definition.CalibratableFixedIncomeComponent compReference = referenceComponent();
+
+		if (compDerived instanceof org.drip.product.rates.DualStreamComponent) {
+			org.drip.product.rates.Stream streamDerived = ((org.drip.product.rates.DualStreamComponent)
+				compDerived).derivedStream();
+
+			forwardLabel = streamDerived.forwardLabel();
+
+			fundingLabel = streamDerived.fundingLabel();
+		} else {
+			org.drip.state.identifier.ForwardLabel[] aForwardLabel = compDerived.forwardLabel();
+
+			org.drip.state.identifier.FundingLabel[] aFundingLabel = compDerived.fundingLabel();
+
+			if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
+
+			if (null != aFundingLabel && 0 != aFundingLabel.length) fundingLabel = aFundingLabel[0];
+		}
+
+		try { 
+			pqs = compDerived.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[]
+				{new org.drip.state.representation.LatentStateSpecification
+					(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
+						org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
+							fundingLabel), new org.drip.state.representation.LatentStateSpecification
+								(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
+									org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
+										forwardLabel)});
+
+			if (null != _fxFixingSetting) {
+				org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve (fxLabel()[0]);
+
+				if (null == auFX) return null;
+
+				dblFX = auFX.evaluate (_fxFixingSetting.staticDate());
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = compReference.value
+			(valParams, null, mktParams, null);
+
+		if (null == mapOP || !mapOP.containsKey ("PV") || !mapOP.containsKey ("ReferenceCleanDV01"))
+			return null;
+
+		if (!pqs.set ("SwapRate", dblSwapRate) || !pqs.set ("PV", -1. * dblFX * (mapOP.get ("PV") + 10000. *
+			mapOP.get ("ReferenceCleanDV01") * dblReferenceComponentBasis)))
+			return null;
+
+		try {
+			return new org.drip.state.inference.LatentStateSegmentSpec (compDerived, pqs);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	@Override public java.lang.String name()

@@ -224,7 +224,8 @@ public class CCBSForwardCurve {
 			aCCSP[i] = new ComponentPair (
 				strDerivedCurrency + strReferenceCurrency + "_" + astrTenor[i],
 				aFFCReference[i],
-				aFFCDerived[i]
+				aFFCDerived[i],
+				null
 			);
 
 		return aCCSP;

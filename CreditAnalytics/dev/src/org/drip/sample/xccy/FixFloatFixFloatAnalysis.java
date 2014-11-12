@@ -313,7 +313,8 @@ public class FixFloatFixFloatAnalysis {
 		ComponentPair cpMTM = new ComponentPair (
 			"FFFF_MTM",
 			fixFloatUSD,
-			fixFloatEURMTM
+			fixFloatEURMTM,
+			null
 		);
 
 		FixFloatComponent fixFloatEURNonMTM = MakeFixFloatSwap (
@@ -328,7 +329,8 @@ public class FixFloatFixFloatAnalysis {
 		ComponentPair cpNonMTM = new ComponentPair (
 			"FFFF_Non_MTM",
 			fixFloatUSD,
-			fixFloatEURNonMTM
+			fixFloatEURNonMTM,
+			null
 		);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();

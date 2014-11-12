@@ -269,4 +269,56 @@ public class CCBSStretchBuilder {
 
 		return null;
 	}
+
+	/**
+	 * Construct an instance of LatentStateStretchSpec for the Construction of the Discount Curve from the
+	 * 	specified Inputs
+	 * 
+	 * @param strName Stretch Name
+	 * @param aCCSP Array of Calibration Cross Currency Swap Pair Instances
+	 * @param valParams The Valuation Parameters
+	 * @param mktParams The Basket Market Parameters to imply the Market Quote Measure
+	 * @param adblReferenceComponentBasis Array of the Reference Component Reference Leg Basis Spread
+	 * @param adblSwapRate Array of the IRS Calibration Swap Rates
+	 * @param bBasisOnDerivedLeg TRUE => Apply the Basis on the Derived Leg (FALSE => Reference Leg)
+	 * 
+	 * return Instance of LatentStateStretchSpec
+	 */
+
+	public static final org.drip.state.inference.LatentStateStretchSpec DiscountStretch2 (
+		final java.lang.String strName,
+		final org.drip.product.fx.ComponentPair[] aCCSP,
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
+		final double[] adblReferenceComponentBasis,
+		final double[] adblSwapRate,
+		final boolean bBasisOnDerivedLeg)
+	{
+		if (null == aCCSP || null == mktParams || null == adblReferenceComponentBasis || null ==
+			adblSwapRate)
+			return null;
+
+		int iNumCCSP = aCCSP.length;
+
+		if (0 == iNumCCSP || adblReferenceComponentBasis.length != iNumCCSP || adblSwapRate.length !=
+			iNumCCSP)
+			return null;
+
+		org.drip.state.inference.LatentStateSegmentSpec[] aSegmentSpec = new
+			org.drip.state.inference.LatentStateSegmentSpec[iNumCCSP];
+
+		for (int i = 0; i < iNumCCSP; ++i) {
+			if (null == (aSegmentSpec[i] = aCCSP[i].fundingForwardSegmentSpec (valParams, mktParams,
+				adblReferenceComponentBasis[i], adblSwapRate[i])))
+				return null;
+		}
+
+		try {
+			return new org.drip.state.inference.LatentStateStretchSpec (strName, aSegmentSpec);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }

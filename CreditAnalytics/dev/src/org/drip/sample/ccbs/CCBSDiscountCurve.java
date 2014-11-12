@@ -366,7 +366,7 @@ public class CCBSDiscountCurve {
 		ComponentPair[] aCCSP = new ComponentPair[astrTenor.length];
 
 		for (int i = 0; i < aCCSP.length; ++i)
-			aCCSP[i] = new ComponentPair ("EURUSD_" + astrTenor[i], aFFCReference[i], aIRS[i]);
+			aCCSP[i] = new ComponentPair ("EURUSD_" + astrTenor[i], aFFCReference[i], aIRS[i], null);
 
 		return aCCSP;
 	}
@@ -453,7 +453,7 @@ public class CCBSDiscountCurve {
 			null
 		);
 
-		LatentStateStretchSpec stretchSpec = CCBSStretchBuilder.DiscountStretch (
+		LatentStateStretchSpec stretchSpec = CCBSStretchBuilder.DiscountStretch2 (
 			"FIXFLOAT",
 			aCCSP,
 			valParams,

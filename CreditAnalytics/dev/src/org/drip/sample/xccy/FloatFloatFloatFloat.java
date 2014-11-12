@@ -89,7 +89,7 @@ public class FloatFloatFloatFloat {
 
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			iTenorInMonthsReference + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -99,7 +99,7 @@ public class FloatFloatFloatFloat {
 
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonthsDerived + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -272,7 +272,8 @@ public class FloatFloatFloatFloat {
 		ComponentPair cpMTM = new ComponentPair (
 			"FFFF_MTM",
 			floatFloatReference,
-			floatFloatDerivedMTM
+			floatFloatDerivedMTM,
+			null
 		);
 
 		FloatFloatComponent floatFloatDerivedNonMTM = MakeFloatFloatSwap (
@@ -292,7 +293,8 @@ public class FloatFloatFloatFloat {
 		ComponentPair cpNonMTM = new ComponentPair (
 			"FFFF_NonMTM",
 			floatFloatReference,
-			floatFloatDerivedNonMTM
+			floatFloatDerivedNonMTM,
+			null
 		);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
