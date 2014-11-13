@@ -948,7 +948,7 @@ public class BondManager {
 				org.drip.product.credit.BondComponent bond = BuildBondFromResultSet (rs, mpc);
 
 				if (null == bond || bond.getMarketConvention()._dblFirstSettle >=
-					bond.getPeriodSet()._dblMaturity)
+					bond.getPeriodSet().maturity())
 					continue;
 
 				s_mapBonds.put (bond.getIdentifierSet()._strCUSIP, bond);
@@ -961,7 +961,7 @@ public class BondManager {
 				if (null == mapMatBond)
 					mapMatBond = new java.util.TreeMap<java.lang.Double, java.lang.String>();
 
-				mapMatBond.put (bond.getPeriodSet()._dblMaturity, bond.getIdentifierSet()._strCUSIP);
+				mapMatBond.put (bond.getPeriodSet().maturity(), bond.getIdentifierSet()._strCUSIP);
 
 				s_mapTickerMatCUSIP.put (bond.getIdentifierSet()._strTicker, mapMatBond);
 
@@ -973,7 +973,7 @@ public class BondManager {
 					System.out.println ("Loaded Bond[" + iNumBonds + "] = " +
 						bond.getIdentifierSet()._strTicker + " " +
 							org.drip.analytics.date.JulianDate.fromJulian
-								(bond.getPeriodSet()._dblMaturity));
+								(bond.getPeriodSet().maturity()));
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -1644,7 +1644,7 @@ public class BondManager {
 				org.drip.product.credit.BondComponent bond = BuildBondFromResultSet (rs, mpc);
 
 				if (null == bond || bond.getMarketConvention()._dblFirstSettle >=
-					bond.getPeriodSet()._dblMaturity)
+					bond.getPeriodSet().maturity())
 					continue;
 
 				bw.write ("\t\torg.drip.product.credit.Bond bond" + bond.getISIN() +

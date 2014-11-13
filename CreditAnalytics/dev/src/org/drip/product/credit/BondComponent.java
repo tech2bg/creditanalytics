@@ -139,7 +139,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		try {
 			dblExerciseYield = calcYieldFromPrice (valParams, csqs, quotingParams,
-				_periodParams._dblMaturity, 1., dblPrice);
+				_periodParams.maturity(), 1., dblPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 
@@ -170,7 +170,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		try {
 			if (-1 == iExercise)
-				return new org.drip.param.valuation.WorkoutInfo (_periodParams._dblMaturity,
+				return new org.drip.param.valuation.WorkoutInfo (_periodParams.maturity(),
 					dblExerciseYield, 1., org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 
 			return new org.drip.param.valuation.WorkoutInfo (adblEOSDates[iExercise], dblExerciseYield,
@@ -196,7 +196,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		try {
 			dblExerciseYield = calcYieldFromPrice (valParams, csqs, quotingParams,
-				_periodParams._dblMaturity, 1., dblPrice);
+				_periodParams.maturity(), 1., dblPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 
@@ -227,7 +227,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		try {
 			if (-1 == iExercise)
-				return new org.drip.param.valuation.WorkoutInfo (_periodParams._dblMaturity,
+				return new org.drip.param.valuation.WorkoutInfo (_periodParams.maturity(),
 					dblExerciseYield, 1., org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 
 			return new org.drip.param.valuation.WorkoutInfo (adblEOSDates[iExercise], dblExerciseYield,
@@ -249,8 +249,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		try {
 			if (null == _eosCall && null == _eosPut)
-				return new org.drip.param.valuation.WorkoutInfo (_periodParams._dblMaturity,
-					calcYieldFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+				return new org.drip.param.valuation.WorkoutInfo (_periodParams.maturity(),
+					calcYieldFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 						dblPrice), 1., org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 
 			if (null == _eosCall && null != _eosPut)
@@ -484,15 +484,15 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		try {
 			double dblCashPayDF = dcFunding.df (dblCashPayDate);
 
-			dblCreditRisklessParPV = dcFunding.df (_periodParams._dblMaturity) * notional
-				(_periodParams._dblMaturity) * dblWorkoutFactor;
+			dblCreditRisklessParPV = dcFunding.df (_periodParams.maturity()) * notional
+				(_periodParams.maturity()) * dblWorkoutFactor;
 
 			org.drip.state.identifier.CreditLabel[] aLSLCreditCurve = creditLabel();
 
 			if (null != aLSLCreditCurve && 0 < aLSLCreditCurve.length && null != csqs.creditCurve
 				(aLSLCreditCurve[0]) && null != pricerParams)
 				dblCreditRiskyParPV = dblCreditRisklessParPV * csqs.creditCurve (aLSLCreditCurve[0]).survival
-					(_periodParams._dblMaturity);
+					(_periodParams.maturity());
 
 			org.drip.analytics.output.BondCouponMeasures bcmCreditRisklessDirty = new
 				org.drip.analytics.output.BondCouponMeasures (dblCreditRisklessDirtyDV01,
@@ -801,7 +801,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				if (null != dcGovvie) {
 					try {
 						adblSecTSYSpread[i] = dcGovvie.libor (valParams.valueDate(),
-							_periodParams._dblMaturity);
+							_periodParams.maturity());
 					} catch (java.lang.Exception e) {
 						if (!s_bSuppressErrors) e.printStackTrace();
 					}
@@ -1200,7 +1200,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	@Override public org.drip.analytics.date.JulianDate effective()
 	{
 		try {
-			return new org.drip.analytics.date.JulianDate (_periodParams._dblEffective);
+			return new org.drip.analytics.date.JulianDate (_periodParams.effective());
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
@@ -1211,7 +1211,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	@Override public org.drip.analytics.date.JulianDate maturity()
 	{
 		try {
-			return new org.drip.analytics.date.JulianDate (_periodParams._dblMaturity);
+			return new org.drip.analytics.date.JulianDate (_periodParams.maturity());
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
@@ -1405,7 +1405,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				("BondComponent::isTradable => Null valParams in BondComponent::isTradeable!");
 
 		return !_cfteParams._bHasBeenExercised && !_cfteParams._bIsDefaulted && valParams.valueDate() <
-			_periodParams._dblMaturity;
+			_periodParams.maturity();
 	}
 
 	@Override public org.drip.product.params.EmbeddedOptionSchedule getEmbeddedCallSchedule()
@@ -1429,21 +1429,21 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	{
 		if (null == _periodParams) return "";
 
-		return _periodParams._strCouponDC;
+		return _periodParams.couponDC();
 	}
 
 	@Override public java.lang.String getAccrualDC()
 	{
 		if (null == _periodParams) return "";
 
-		return _periodParams._strAccrualDC;
+		return _periodParams.accrualDC();
 	}
 
 	@Override public java.lang.String getMaturityType()
 	{
 		if (null == _periodParams) return "";
 
-		return _periodParams._strMaturityType;
+		return _periodParams.maturityType();
 	}
 
 	@Override public int getCouponFreq()
@@ -1458,7 +1458,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == _periodParams) return null;
 
 		try {
-			return new org.drip.analytics.date.JulianDate (_periodParams._dblFinalMaturity);
+			return new org.drip.analytics.date.JulianDate (_periodParams.finalMaturity());
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
@@ -1530,7 +1530,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblValue)
 	{
 		if (null == _fltParams || java.lang.Double.isNaN (dblValue) || dblValue >=
-			_periodParams._dblMaturity)
+			_periodParams.maturity())
 			return null;
 
 		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
@@ -1758,10 +1758,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		org.drip.analytics.date.JulianDate dt = new org.drip.analytics.date.JulianDate (dblDate);
 
-		if (dblDate >= _periodParams._dblMaturity)
+		if (dblDate >= _periodParams.maturity())
 			throw new java.lang.Exception ("BondComponent::calcAccrued => Val date " + dt +
 				" greater than maturity " + org.drip.analytics.date.JulianDate.fromJulian
-					(_periodParams._dblMaturity));
+					(_periodParams.maturity()));
 
 		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
 			if (period.payDate() < dblDate) continue;
@@ -1835,7 +1835,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		try {
 			zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (_periodParams.freq(),
-				_periodParams._strCouponDC, getCouponCurrency(), _periodParams.couponEOMAdjustment(),
+				_periodParams.couponDC(), getCouponCurrency(), _periodParams.couponEOMAdjustment(),
 					_periodParams.getPeriods(), dblWorkoutDate, dblCashPayDate, dcBase, null == quotingParams
 						? (null == _mktConv ? null : _mktConv._quotingParams) : quotingParams, dblZCBump);
 		} catch (java.lang.Exception e) {
@@ -2153,7 +2153,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcASWFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -2168,7 +2168,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromBondBasisToOptimalExercise => " +
 				"Cannot calc ASW from Bond Basis to Optimal Exercise for bonds w emb option");
 
-		return calcASWFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -2193,7 +2193,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcASWFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -2208,7 +2208,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromCreditBasisToOptimalExercise => " +
 				"Cannot calc ASW from Credit Basis to Optimal Exercise for bonds w emb option");
 
-		return calcASWFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -2233,7 +2233,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcASWFromDiscountMargin (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcASWFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblDiscountMargin);
 	}
 
@@ -2248,7 +2248,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromDiscountMarginToOptimalExercise => " +
 				"Cannot calc ASW from Discount Margin to optimal exercise for bonds w emb option");
 
-		return calcASWFromDiscountMargin (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcASWFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblDiscountMargin);
 	}
 
@@ -2273,7 +2273,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcASWFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -2288,7 +2288,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromGSpreadToOptimalExercise => " +
 				"Cannot calc ASW from G Spread to optimal exercise for bonds w emb option");
 
-		return calcASWFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -2313,7 +2313,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcASWFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -2328,7 +2328,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromISpreadToOptimalExercise => " +
 				"Cannot calc ASW from I Spread to optimal exercise for bonds w emb option");
 
-		return calcASWFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -2353,7 +2353,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcASWFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1., dblOAS);
+		return calcASWFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1., dblOAS);
 	}
 
 	@Override public double calcASWFromOASToOptimalExercise (
@@ -2367,7 +2367,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromOASToOptimalExercise => " +
 				"Cannot calc ASW from OAS to optimal exercise for bonds w emb option");
 
-		return calcASWFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1., dblOAS);
+		return calcASWFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1., dblOAS);
 	}
 
 	@Override public double calcASWFromPECS (
@@ -2391,7 +2391,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcASWFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -2406,7 +2406,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromPECSToOptimalExercise => " +
 				"Cannot calc ASW from PECS to optimal exercise for bonds w emb option");
 
-		return calcASWFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -2446,7 +2446,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcASWFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1., dblPrice);
+		return calcASWFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1., dblPrice);
 	}
 
 	@Override public double calcASWFromPriceToOptimalExercise (
@@ -2487,7 +2487,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcASWFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -2502,7 +2502,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromTSYSpreadToOptimalExercise => " +
 				"Cannot calc ASW from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcASWFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -2527,7 +2527,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcASWFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -2542,7 +2542,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromYieldToOptimalExercise => " +
 				"Cannot calc ASW from Yield to optimal exercise for bonds w emb option");
 
-		return calcASWFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -2567,7 +2567,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcASWFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -2582,7 +2582,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromYieldSpreadToOptimalExercise => " +
 				"Cannot calc ASW from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcASWFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -2607,7 +2607,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcASWFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -2622,7 +2622,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcASWFromZSpreadToOptimalExercise => " +
 				"Cannot calc ASW from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcASWFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcASWFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -2647,7 +2647,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -2662,7 +2662,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcBondBasisFromASWToOptimalExercise => " +
 				"Cannot calc Bond Basis from ASW to optimal exercise for bonds w emb option");
 
-		return calcBondBasisFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -2687,7 +2687,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcBondBasisFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -2702,7 +2702,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcBondBasisFromCreditBasisToOptimalExercise => "
 				+ "Cannot calc Bond Basis from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcBondBasisFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcBondBasisFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -2728,7 +2728,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcBondBasisFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcBondBasisFromDiscountMarginToOptimalExercise (
@@ -2743,7 +2743,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ "=> Cant calc Bond Basis from Discount Margin to optimal exercise for bonds w emb option");
 
 		return calcBondBasisFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcBondBasisFromGSpread (
@@ -2767,7 +2767,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -2782,7 +2782,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcBondBasisFromGSpreadToOptimalExercise => " +
 				"Cant calc Bond Basis from G Spread to optimal exercise for bonds w emb option");
 
-		return calcBondBasisFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -2807,7 +2807,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -2822,7 +2822,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcBondBasisFromISpreadToOptimalExercise => " +
 				"Cant calc Bond Basis from I Spread to optimal exercise for bonds w emb option");
 
-		return calcBondBasisFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -2847,7 +2847,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -2862,7 +2862,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcBondBasisFromOASToOptimalExercise => " +
 				"Cant calc Bond Basis from OAS to optimal exercise for bonds w emb option");
 
-		return calcBondBasisFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -2887,7 +2887,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -2902,7 +2902,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcBondBasisFromPECSToOptimalExercise => " +
 				"Cant calc Bond Basis from PECS to optimal exercise for bonds w emb option");
 
-		return calcBondBasisFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -2927,7 +2927,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -2970,7 +2970,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcBondBasisFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblTSYSpread);
 	}
 
@@ -2985,7 +2985,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcBondBasisFromTSYSpreadToOptimalExercise => " +
 				"Cant calc Bond Basis from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcBondBasisFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcBondBasisFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblTSYSpread);
 	}
 
@@ -3013,7 +3013,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -3028,7 +3028,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcBondBasisFromYieldToOptimalExercise => " +
 				"Cant calc Bond Basis from Yield to optimal exercise for bonds w emb option");
 
-		return calcBondBasisFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -3053,7 +3053,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcBondBasisFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -3068,7 +3068,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcBondBasisFromYieldSpreadToOptimalExercise " +
 				"=> Cant calc Bond Basis from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcBondBasisFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcBondBasisFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -3093,7 +3093,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcBondBasisFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -3108,7 +3108,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcBondBasisFromZSpreadToOptimalExercise => " +
 				"Cant calc Bond Basis from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcBondBasisFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcBondBasisFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -3133,7 +3133,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -3148,7 +3148,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromASWToOptimalExercise => " +
 				"Cant calc Convexity from ASW to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -3173,7 +3173,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcConvexityFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -3188,7 +3188,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromBondBasisToOptimalExercise => " +
 				"Cant calc Convexity from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcConvexityFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -3213,7 +3213,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcConvexityFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -3228,7 +3228,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromCreditBasisToOptimalExercise => "
 				+ "Cant calc Convexity from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcConvexityFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -3254,7 +3254,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcConvexityFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcConvexityFromDiscountMarginToOptimalExercise (
@@ -3269,7 +3269,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ "=> Cant calc Convexity from Discount Margin to optimal exercise for bonds w emb option");
 
 		return calcDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcConvexityFromGSpread (
@@ -3293,7 +3293,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -3308,7 +3308,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromGSpreadToOptimalExercise => " +
 				"Cant calc Convexity from G Spread to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -3333,7 +3333,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -3348,7 +3348,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromISpreadToOptimalExercise => " +
 				"Cant calc Convexity from I Spread to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -3373,7 +3373,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -3388,7 +3388,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromOASToOptimalExercise => " +
 				"Cant calc Convexity from OAS to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -3413,7 +3413,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -3428,7 +3428,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromPECSToOptimalExercise => " +
 				"Cant calc Convexity from PECS to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -3465,7 +3465,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -3480,7 +3480,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromPriceToOptimalExercise => " +
 				"Cant calc Convexity from Price to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -3505,7 +3505,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcConvexityFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblTSYSpread);
 	}
 
@@ -3520,7 +3520,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromTSYSpreadToOptimalExercise => " +
 				"Cant calc Convexity from TSY Sprd to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcConvexityFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblTSYSpread);
 	}
 
@@ -3545,7 +3545,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -3560,7 +3560,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromYieldToOptimalExercise => " +
 				"Cant calc Convexity from Yield to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -3585,7 +3585,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcConvexityFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -3600,7 +3600,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromYieldSpreadToOptimalExercise => "
 				+ "Cant calc Convexity from Yld Sprd to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcConvexityFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -3625,7 +3625,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -3640,7 +3640,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromZSpreadToOptimalExercise => " +
 				"Cant calc Convexity from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcConvexityFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -3665,7 +3665,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcCreditBasisFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcCreditBasisFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -3680,7 +3680,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcCreditBasisFromASWToOptimalExercise => " +
 				"Cannot calc Credit Basis from ASW to optimal exercise for bonds w emb option");
 
-		return calcCreditBasisFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcCreditBasisFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -3705,7 +3705,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcCreditBasisFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcCreditBasisFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -3720,7 +3720,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcCreditBasisFromBondBasisToOptimalExercise " +
 				"=> Cant calc Credit Basis from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcCreditBasisFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcCreditBasisFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -3746,7 +3746,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcCreditBasisFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcCreditBasisFromDiscountMarginToOptimalExercise (
@@ -3762,7 +3762,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Credit Basis from Discnt Margin to optimal exercise for bonds w emb option");
 
 		return calcCreditBasisFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcCreditBasisFromGSpread (
@@ -3786,7 +3786,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcCreditBasisFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcCreditBasisFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblGSpread);
 	}
 
@@ -3801,7 +3801,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcCreditBasisFromGSpreadToOptimalExercise => " +
 				"Cant calc Credit Basis from G Spread to optimal exercise for bonds w emb option");
 
-		return calcCreditBasisFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcCreditBasisFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblGSpread);
 	}
 
@@ -3826,7 +3826,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcCreditBasisFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcCreditBasisFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblISpread);
 	}
 
@@ -3841,7 +3841,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcCreditBasisFromISpreadToOptimalExercise => " +
 				"Cant calc Credit Basis from I Spread to optimal exercise for bonds w emb option");
 
-		return calcCreditBasisFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcCreditBasisFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblISpread);
 	}
 
@@ -3866,7 +3866,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcCreditBasisFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcCreditBasisFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -3881,7 +3881,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcCreditBasisFromOASToOptimalExercise => " +
 				"Cant calc Credit Basis from OAS to optimal exercise for bonds w emb option");
 
-		return calcCreditBasisFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcCreditBasisFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -3906,7 +3906,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcCreditBasisFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcCreditBasisFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -3921,7 +3921,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcCreditBasisFromPECSToOptimalExercise => " +
 				"Cant calc Credit Basis from PECS to optimal exercise for bonds w emb option");
 
-		return calcCreditBasisFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcCreditBasisFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -3945,7 +3945,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcCreditBasisFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcCreditBasisFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -3988,7 +3988,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcCreditBasisFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcCreditBasisFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblTSYSpread);
 	}
 
@@ -4003,7 +4003,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcCreditBasisFromTSYSpreadToOptimalExercise => "
 				+ "Cant calc Credit Basis from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcCreditBasisFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcCreditBasisFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblTSYSpread);
 	}
 
@@ -4028,7 +4028,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcCreditBasisFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcCreditBasisFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -4043,7 +4043,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcCreditBasisFromYieldToOptimalExercise => " +
 				"Cant calc Credit Basis from Yield to optimal exercise for bonds w emb option");
 
-		return calcCreditBasisFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcCreditBasisFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -4069,7 +4069,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcCreditBasisFromYieldSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYieldSpread);
+			_periodParams.maturity(), 1., dblYieldSpread);
 	}
 
 	@Override public double calcCreditBasisFromYieldSpreadToOptimalExercise (
@@ -4084,7 +4084,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ "=> Cant calc Credit Basis from Yield Spread to optimal exercise for bonds w emb option");
 
 		return calcCreditBasisFromYieldSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYieldSpread);
+			_periodParams.maturity(), 1., dblYieldSpread);
 	}
 
 	@Override public double calcCreditBasisFromZSpread (
@@ -4108,7 +4108,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcCreditBasisFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcCreditBasisFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblZSpread);
 	}
 
@@ -4123,7 +4123,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcCreditBasisFromZSpreadToOptimalExercise => " +
 				"Cant calc Credit Basis from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcCreditBasisFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcCreditBasisFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblZSpread);
 	}
 
@@ -4148,7 +4148,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDiscountMarginFromASW (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblASW);
 	}
 
@@ -4163,7 +4163,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromASWToOptimalExercise => " +
 				"Cant calc Discount Margin from ASW to optimal exercise for bonds w emb option");
 
-		return calcDiscountMarginFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDiscountMarginFromASW (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblASW);
 	}
 
@@ -4189,7 +4189,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcDiscountMarginFromBondBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblBondBasis);
+			_periodParams.maturity(), 1., dblBondBasis);
 	}
 
 	@Override public double calcDiscountMarginFromBondBasisToOptimalExercise (
@@ -4204,7 +4204,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ "=> Cant calc Discount Margin from Bond Basis to optimal exercise for bonds w emb option");
 
 		return calcDiscountMarginFromBondBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblBondBasis);
+			_periodParams.maturity(), 1., dblBondBasis);
 	}
 
 	@Override public double calcDiscountMarginFromCreditBasis (
@@ -4229,7 +4229,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcDiscountMarginFromCreditBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblCreditBasis);
+			_periodParams.maturity(), 1., dblCreditBasis);
 	}
 
 	@Override public double calcDiscountMarginFromCreditBasisToOptimalExercise (
@@ -4245,7 +4245,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Discount Margin from Crdit Basis to optimal exercise for bonds w emb option");
 
 		return calcDiscountMarginFromCreditBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblCreditBasis);
+			_periodParams.maturity(), 1., dblCreditBasis);
 	}
 
 	@Override public double calcDiscountMarginFromGSpread (
@@ -4270,7 +4270,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcDiscountMarginFromGSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblGSpread);
+			_periodParams.maturity(), 1., dblGSpread);
 	}
 
 	@Override public double calcDiscountMarginFromGSpreadToOptimalExercise (
@@ -4285,7 +4285,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ " => Cant calc Discount Margin from G Spread to optimal exercise for bonds w emb option");
 
 		return calcDiscountMarginFromGSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblGSpread);
+			_periodParams.maturity(), 1., dblGSpread);
 	}
 
 	@Override public double calcDiscountMarginFromISpread (
@@ -4310,7 +4310,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcDiscountMarginFromISpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblISpread);
+			_periodParams.maturity(), 1., dblISpread);
 	}
 
 	@Override public double calcDiscountMarginFromISpreadToOptimalExercise (
@@ -4325,7 +4325,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				"=> Cant calc Discount Margin from I Spread to optimal exercise for bonds w emb option");
 
 		return calcDiscountMarginFromISpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblISpread);
+			_periodParams.maturity(), 1., dblISpread);
 	}
 
 	@Override public double calcDiscountMarginFromOAS (
@@ -4349,7 +4349,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDiscountMarginFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblOAS);
 	}
 
@@ -4364,7 +4364,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromOASToOptimalExercise => " +
 				"Cant calc Discount Margin from OAS to optimal exercise for bonds w emb option");
 
-		return calcDiscountMarginFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDiscountMarginFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblOAS);
 	}
 
@@ -4389,7 +4389,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDiscountMarginFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblPECS);
 	}
 
@@ -4404,7 +4404,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromPECSToOptimalExercise => " +
 				"Cant calc Discount Margin from PECS to optimal exercise for bonds w emb option");
 
-		return calcDiscountMarginFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDiscountMarginFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblPECS);
 	}
 
@@ -4429,7 +4429,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDiscountMarginFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblPrice);
 	}
 
@@ -4473,7 +4473,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcDiscountMarginFromTSYSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblTSYSpread);
+			_periodParams.maturity(), 1., dblTSYSpread);
 	}
 
 	@Override public double calcDiscountMarginFromTSYSpreadToOptimalExercise (
@@ -4488,7 +4488,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ "=> Cant calc Discount Margin from TSY Spread to optimal exercise for bonds w emb option");
 
 		return calcDiscountMarginFromTSYSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblTSYSpread);
+			_periodParams.maturity(), 1., dblTSYSpread);
 	}
 
 	@Override public double calcDiscountMarginFromYield (
@@ -4523,7 +4523,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDiscountMarginFromYield (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYield);
 	}
 
@@ -4538,7 +4538,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYieldToOptimalExercise =>" +
 				" Cant calc Discount Margin from Yield to optimal exercise for bonds w emb option");
 
-		return calcDiscountMarginFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDiscountMarginFromYield (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYield);
 	}
 
@@ -4564,7 +4564,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcDiscountMarginFromYieldSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYieldSpread);
+			_periodParams.maturity(), 1., dblYieldSpread);
 	}
 
 	@Override public double calcDiscountMarginFromYieldSpreadToOptimalExercise (
@@ -4580,7 +4580,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Discount Margin from Yield Sprd to optimal exercise for bonds w emb option");
 
 		return calcDiscountMarginFromYieldSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYieldSpread);
+			_periodParams.maturity(), 1., dblYieldSpread);
 	}
 
 	@Override public double calcDiscountMarginFromZSpread (
@@ -4605,7 +4605,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcDiscountMarginFromZSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblZSpread);
+			_periodParams.maturity(), 1., dblZSpread);
 	}
 
 	@Override public double calcDiscountMarginFromZSpreadToOptimalExercise (
@@ -4620,7 +4620,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ " Cant calc Discount Margin from Z Spread to optimal exercise for bonds w emb option");
 
 		return calcDiscountMarginFromZSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblZSpread);
+			_periodParams.maturity(), 1., dblZSpread);
 	}
 
 	@Override public double calcDurationFromASW (
@@ -4644,7 +4644,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcDurationFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -4659,7 +4659,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromASWToOptimalExercise => " +
 				"Cant calc Duration from ASW to optimal exercise for bonds w emb option");
 
-		return calcDurationFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -4684,7 +4684,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcDurationFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDurationFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -4699,7 +4699,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromBondBasisToOptimalExercise => " +
 				"Cant calc Duration from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcDurationFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDurationFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -4724,7 +4724,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcDurationFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDurationFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -4739,7 +4739,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromCreditBasisToOptimalExercise => "
 				+ "Cant calc Duration from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcDurationFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDurationFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -4765,7 +4765,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcDurationFromDiscountMarginToOptimalExercise (
@@ -4780,7 +4780,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ "=> Cant calc Duration from Discount Margin to optimal exercise for bonds w emb option");
 
 		return calcDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcDurationFromGSpread (
@@ -4804,7 +4804,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcDurationFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -4819,7 +4819,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromGSpreadToOptimalExercise => " +
 				"Cant calc Duration from G Spread to optimal exercise for bonds w emb option");
 
-		return calcDurationFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -4844,7 +4844,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcDurationFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -4859,7 +4859,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromISpreadToOptimalExercise => " +
 				"Cant calc Duration from I Spread to optimal exercise for bonds w emb option");
 
-		return calcDurationFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -4884,7 +4884,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcDurationFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -4899,7 +4899,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromOASToOptimalExercise => " +
 				"Cant calc Duration from OAS to optimal exercise for bonds w emb option");
 
-		return calcDurationFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -4924,7 +4924,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcDurationFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -4939,7 +4939,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromPECSToOptimalExercise => " +
 				"Cant calc Duration from PECS to optimal exercise for bonds w emb option");
 
-		return calcDurationFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -4963,7 +4963,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcDurationFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -4978,7 +4978,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromPriceToOptimalExercise => " +
 				"Cant calc Duration from Price to optimal exercise for bonds w emb option");
 
-		return calcDurationFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -5003,7 +5003,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcDurationFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDurationFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblTSYSpread);
 	}
 
@@ -5018,7 +5018,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromTSYSpreadToOptimalExercise => " +
 				"Cant calc Duration from TSY Sprd to optimal exercise for bonds w emb option");
 
-		return calcDurationFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDurationFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblTSYSpread);
 	}
 
@@ -5043,7 +5043,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcDurationFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -5058,7 +5058,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromYieldToOptimalExercise => " +
 				"Cant calc Duration from Yield to optimal exercise for bonds w emb option");
 
-		return calcDurationFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -5083,7 +5083,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcDurationFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDurationFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -5098,7 +5098,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromYieldSpreadToOptimalExercise => "
 				+ "Cant calc Duration from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcDurationFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcDurationFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -5123,7 +5123,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcDurationFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -5138,7 +5138,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDurationFromZSpreadToOptimalExercise => " +
 				"Cant calc Duration from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcDurationFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcDurationFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -5163,7 +5163,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -5178,7 +5178,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromASWToOptimalExercise => " +
 				"Cant calc G Spread from ASW to optimal exercise for bonds w emb option");
 
-		return calcGSpreadFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -5203,7 +5203,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -5218,7 +5218,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromBondBasisToOptimalExercise => " +
 				"Cant calc G Spread from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcGSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -5243,7 +5243,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcGSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -5258,7 +5258,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromCreditBasisToOptimalExercise => " +
 				"Cant calc G Spread from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcGSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcGSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -5284,7 +5284,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcGSpreadFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcGSpreadFromDiscountMarginToOptimalExercise (
@@ -5299,7 +5299,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ " Cant calc G Spread from Discount Margin to optimal exercise for bonds w emb option");
 
 		return calcGSpreadFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcGSpreadFromISpread (
@@ -5323,7 +5323,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -5338,7 +5338,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromISpreadToOptimalExercise => " +
 				"Cant calc G Spread from I Spread to optimal exercise for bonds w emb option");
 
-		return calcGSpreadFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -5363,7 +5363,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -5378,7 +5378,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromOASToOptimalExercise => " +
 				"Cant calc G Spread from OAS to optimal exercise for bonds w emb option");
 
-		return calcGSpreadFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -5403,7 +5403,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -5418,7 +5418,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromPECSToOptimalExercise => " +
 				"Cant calc G Spread from PECS to optimal exercise for bonds w emb option");
 
-		return calcGSpreadFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -5443,7 +5443,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -5485,7 +5485,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -5500,7 +5500,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromTSYSpreadToOptimalExercise => " +
 				"Cant calc G Spread from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcGSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -5535,7 +5535,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -5550,7 +5550,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromYieldToOptimalExercise => " +
 				"Cant calc G Spread from Yield to optimal exercise for bonds w emb option");
 
-		return calcGSpreadFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -5575,7 +5575,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcGSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -5590,7 +5590,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromYieldSpreadToOptimalExercise => " +
 				"Cant calc G Spread from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcGSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcGSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -5615,7 +5615,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcGSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -5630,7 +5630,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcGSpreadFromZSpreadToOptimalExercise => " +
 				"Cant calc G Spread from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcGSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcGSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -5655,7 +5655,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -5670,7 +5670,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromASWToOptimalExercise => " +
 				"Cant calc I Spread from ASW to optimal exercise for bonds w emb option");
 
-		return calcISpreadFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -5695,7 +5695,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -5710,7 +5710,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromBondBasisToOptimalExercise => " +
 				"Cant calc I Spread from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcISpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -5735,7 +5735,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcISpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -5750,7 +5750,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromCreditBasisToOptimalExercise => " +
 				"Cant calc I Spread from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcISpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcISpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -5776,7 +5776,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcISpreadFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcISpreadFromDiscountMarginToOptimalExercise (
@@ -5791,7 +5791,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ " Cant calc I Spread from Discount Margin to optimal exercise for bonds w emb option");
 
 		return calcISpreadFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcISpreadFromGSpread (
@@ -5815,7 +5815,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -5830,7 +5830,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromGSpreadToOptimalExercise => " +
 				"Cant calc I Spread from G Spread to optimal exercise for bonds w emb option");
 
-		return calcISpreadFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -5855,7 +5855,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -5870,7 +5870,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromOASToOptimalExercise => " +
 				"Cant calc I Spread from OAS to optimal exercise for bonds w emb option");
 
-		return calcISpreadFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -5895,7 +5895,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -5910,7 +5910,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromPECSToOptimalExercise => " +
 				"Cant calc I Spread from PECS to optimal exercise for bonds w emb option");
 
-		return calcISpreadFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -5935,7 +5935,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -5977,7 +5977,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -5992,7 +5992,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromTSYSpreadToOptimalExercise => " +
 				"Cant calc I Spread from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcISpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -6025,7 +6025,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -6040,7 +6040,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromYieldToOptimalExercise => " +
 				"Cant calc I Spread from Yield to optimal exercise for bonds w emb option");
 
-		return calcISpreadFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -6065,7 +6065,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcISpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -6080,7 +6080,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromYieldSpreadToOptimalExercise => " +
 				"Cant calc I Spread from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcISpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcISpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -6105,7 +6105,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcISpreadFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -6120,7 +6120,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcISpreadFromZSpreadToOptimalExercise => " +
 				"Cant calc I Spread from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcISpreadFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcISpreadFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -6145,7 +6145,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcMacaulayDurationFromASW (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblASW);
 	}
 
@@ -6161,7 +6161,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				("BondComponent::calcMacaulayDurationFromASWToOptimalExercise => " +
 					"Cant calc Macaulay Duration from ASW to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcMacaulayDurationFromASW (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblASW);
 	}
 
@@ -6187,7 +6187,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcMacaulayDurationFromBondBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblBondBasis);
+			_periodParams.maturity(), 1., dblBondBasis);
 	}
 
 	@Override public double calcMacaulayDurationFromBondBasisToOptimalExercise (
@@ -6203,7 +6203,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Macaulay Duration from Bnd Basis to optimal exercise for bonds w emb option");
 
 		return calcMacaulayDurationFromBondBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblBondBasis);
+			_periodParams.maturity(), 1., dblBondBasis);
 	}
 
 	@Override public double calcMacaulayDurationFromCreditBasis (
@@ -6228,7 +6228,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcMacaulayDurationFromCreditBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblCreditBasis);
+			_periodParams.maturity(), 1., dblCreditBasis);
 	}
 
 	@Override public double calcMacaulayDurationFromCreditBasisToOptimalExercise (
@@ -6244,7 +6244,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Macaulay Duration from Crd Basis to optimal exercise for bonds w emb option");
 
 		return calcMacaulayDurationFromCreditBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblCreditBasis);
+			_periodParams.maturity(), 1., dblCreditBasis);
 	}
 
 	@Override public double calcMacaulayDurationFromDiscountMargin (
@@ -6269,7 +6269,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcMacaulayDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcMacaulayDurationFromDiscountMarginToOptimalExercise (
@@ -6285,7 +6285,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Macaulay Duration from Disc Marg to optimal exercise for bonds w emb option");
 
 		return calcMacaulayDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcMacaulayDurationFromGSpread (
@@ -6310,7 +6310,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcMacaulayDurationFromGSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblGSpread);
+			_periodParams.maturity(), 1., dblGSpread);
 	}
 
 	@Override public double calcMacaulayDurationFromGSpreadToOptimalExercise (
@@ -6326,7 +6326,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Macaulay Duration from G Spread to optimal exercise for bonds w emb option");
 
 		return calcMacaulayDurationFromGSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblGSpread);
+			_periodParams.maturity(), 1., dblGSpread);
 	}
 
 	@Override public double calcMacaulayDurationFromISpread (
@@ -6351,7 +6351,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcMacaulayDurationFromISpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblISpread);
+			_periodParams.maturity(), 1., dblISpread);
 	}
 
 	@Override public double calcMacaulayDurationFromISpreadToOptimalExercise (
@@ -6367,7 +6367,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Macaulay Duration from I Spread to optimal exercise for bonds w emb option");
 
 		return calcMacaulayDurationFromISpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblISpread);
+			_periodParams.maturity(), 1., dblISpread);
 	}
 
 	@Override public double calcMacaulayDurationFromOAS (
@@ -6391,7 +6391,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcMacaulayDurationFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblOAS);
 	}
 
@@ -6407,7 +6407,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				("BondComponent::calcMacaulayDurationFromOASToOptimalExercise => " +
 					"Cant calc Macaulay Duration from OAS to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcMacaulayDurationFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblOAS);
 	}
 
@@ -6432,7 +6432,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcMacaulayDurationFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblPECS);
 	}
 
@@ -6448,7 +6448,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				("BondComponent::calcMacaulayDurationFromPECSToOptimalExercise => " +
 					"Cant calc Macaulay Duration from PECS to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcMacaulayDurationFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblPECS);
 	}
 
@@ -6474,7 +6474,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcMacaulayDurationFromPrice (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblPrice);
+			_periodParams.maturity(), 1., dblPrice);
 	}
 
 	@Override public double calcMacaulayDurationFromPriceToOptimalExercise (
@@ -6517,7 +6517,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcMacaulayDurationFromTSYSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblTSYSpread);
+			_periodParams.maturity(), 1., dblTSYSpread);
 	}
 
 	@Override public double calcMacaulayDurationFromTSYSpreadToOptimalExercise (
@@ -6533,7 +6533,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Macaulay Duration from TSY Sprd to optimal exercise for bonds w emb option");
 
 		return calcMacaulayDurationFromTSYSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblTSYSpread);
+			_periodParams.maturity(), 1., dblTSYSpread);
 	}
 
 	@Override public double calcMacaulayDurationFromYield (
@@ -6586,7 +6586,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				throw new java.lang.Exception ("BondComponent::calcMacaulayDurationFromYield => No PCM");
 
 			int iFrequency = _periodParams.freq();
-			java.lang.String strDC = _periodParams._strCouponDC;
+			java.lang.String strDC = _periodParams.couponDC();
 			boolean bApplyCpnEOMAdj = _periodParams.couponEOMAdjustment();
 
 			java.lang.String strCalendar = getCouponCurrency();
@@ -6650,7 +6650,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		}
 
 		int iFrequency = _periodParams.freq();
-		java.lang.String strDC = _periodParams._strCouponDC;
+		java.lang.String strDC = _periodParams.couponDC();
 		org.drip.analytics.daycount.ActActDCParams aap = null;
 		boolean bApplyCpnEOMAdj = _periodParams.couponEOMAdjustment();
 
@@ -6707,7 +6707,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcMacaulayDurationFromYield (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYield);
+			_periodParams.maturity(), 1., dblYield);
 	}
 
 	@Override public double calcMacaulayDurationFromYieldToOptimalExercise (
@@ -6722,7 +6722,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ " Cant calc Macaulay Duration from Yield to optimal exercise for bonds w emb option");
 
 		return calcMacaulayDurationFromYield (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYield);
+			_periodParams.maturity(), 1., dblYield);
 	}
 
 	@Override public double calcMacaulayDurationFromYieldSpread (
@@ -6747,7 +6747,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcMacaulayDurationFromYieldSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYieldSpread);
+			_periodParams.maturity(), 1., dblYieldSpread);
 	}
 
 	@Override public double calcMacaulayDurationFromYieldSpreadToOptimalExercise (
@@ -6763,7 +6763,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Macaulay Duration from Yld Sprd to optimal exercise for bonds w emb option");
 
 		return calcMacaulayDurationFromYieldSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYieldSpread);
+			_periodParams.maturity(), 1., dblYieldSpread);
 	}
 
 	@Override public double calcMacaulayDurationFromZSpread (
@@ -6788,7 +6788,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcMacaulayDurationFromZSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblZSpread);
+			_periodParams.maturity(), 1., dblZSpread);
 	}
 
 	@Override public double calcMacaulayDurationFromZSpreadToOptimalExercise (
@@ -6804,7 +6804,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Macaulay Duration from Z Spread to optimal exercise for bonds w emb option");
 
 		return calcMacaulayDurationFromZSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblZSpread);
+			_periodParams.maturity(), 1., dblZSpread);
 	}
 
 	@Override public double calcModifiedDurationFromASW (
@@ -6828,7 +6828,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcModifiedDurationFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcModifiedDurationFromASW (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblASW);
 	}
 
@@ -6844,7 +6844,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				("BondComponent::calcModifiedDurationFromASWToOptimalExercise => " +
 					"Cant calc Modified Duration from ASW to optimal exercise for bonds w emb option");
 
-		return calcModifiedDurationFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcModifiedDurationFromASW (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblASW);
 	}
 
@@ -6870,7 +6870,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcModifiedDurationFromBondBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblBondBasis);
+			_periodParams.maturity(), 1., dblBondBasis);
 	}
 
 	@Override public double calcModifiedDurationFromBondBasisToOptimalExercise (
@@ -6886,7 +6886,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Modified Duration from Bnd Basis to optimal exercise for bonds w emb option");
 
 		return calcModifiedDurationFromBondBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblBondBasis);
+			_periodParams.maturity(), 1., dblBondBasis);
 	}
 
 	@Override public double calcModifiedDurationFromCreditBasis (
@@ -6911,7 +6911,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcModifiedDurationFromCreditBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblCreditBasis);
+			_periodParams.maturity(), 1., dblCreditBasis);
 	}
 
 	@Override public double calcModifiedDurationFromCreditBasisToOptimalExercise (
@@ -6927,7 +6927,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Modified Duration from Crd Basis to optimal exercise for bonds w emb option");
 
 		return calcModifiedDurationFromCreditBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblCreditBasis);
+			_periodParams.maturity(), 1., dblCreditBasis);
 	}
 
 	@Override public double calcModifiedDurationFromDiscountMargin (
@@ -6952,7 +6952,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcModifiedDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcModifiedDurationFromDiscountMarginToOptimalExercise (
@@ -6968,7 +6968,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Modified Duration from Disc Marg to optimal exercise for bonds w emb option");
 
 		return calcModifiedDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcModifiedDurationFromGSpread (
@@ -6993,7 +6993,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcModifiedDurationFromGSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblGSpread);
+			_periodParams.maturity(), 1., dblGSpread);
 	}
 
 	@Override public double calcModifiedDurationFromGSpreadToOptimalExercise (
@@ -7009,7 +7009,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Modified Duration from G Spread to optimal exercise for bonds w emb option");
 
 		return calcModifiedDurationFromGSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblGSpread);
+			_periodParams.maturity(), 1., dblGSpread);
 	}
 
 	@Override public double calcModifiedDurationFromISpread (
@@ -7034,7 +7034,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcModifiedDurationFromISpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblISpread);
+			_periodParams.maturity(), 1., dblISpread);
 	}
 
 	@Override public double calcModifiedDurationFromISpreadToOptimalExercise (
@@ -7050,7 +7050,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Modified Duration from I Spread to optimal exercise for bonds w emb option");
 
 		return calcModifiedDurationFromISpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblISpread);
+			_periodParams.maturity(), 1., dblISpread);
 	}
 
 	@Override public double calcModifiedDurationFromOAS (
@@ -7074,7 +7074,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcModifiedDurationFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcModifiedDurationFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblOAS);
 	}
 
@@ -7090,7 +7090,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				("BondComponent::calcModifiedDurationFromOASToOptimalExercise => " +
 					"Cant calc Modified Duration from OAS to optimal exercise for bonds w emb option");
 
-		return calcModifiedDurationFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcModifiedDurationFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblOAS);
 	}
 
@@ -7115,7 +7115,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcModifiedDurationFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcModifiedDurationFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblPECS);
 	}
 
@@ -7131,7 +7131,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				("BondComponent::calcModifiedDurationFromPECSToOptimalExercise => " +
 					"Cant calc Modified Duration from PECS to optimal exercise for bonds w emb option");
 
-		return calcModifiedDurationFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcModifiedDurationFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblPECS);
 	}
 
@@ -7162,7 +7162,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcModifiedDurationFromPrice (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblPrice);
+			_periodParams.maturity(), 1., dblPrice);
 	}
 
 	@Override public double calcModifiedDurationFromPriceToOptimalExercise (
@@ -7205,7 +7205,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcModifiedDurationFromTSYSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblTSYSpread);
+			_periodParams.maturity(), 1., dblTSYSpread);
 	}
 
 	@Override public double calcModifiedDurationFromTSYSpreadToOptimalExercise (
@@ -7221,7 +7221,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Modified Duration from TSY Sprd to optimal exercise for bonds w emb option");
 
 		return calcModifiedDurationFromTSYSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblTSYSpread);
+			_periodParams.maturity(), 1., dblTSYSpread);
 	}
 
 	@Override public double calcModifiedDurationFromYield (
@@ -7246,7 +7246,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcModifiedDurationFromYield (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYield);
+			_periodParams.maturity(), 1., dblYield);
 	}
 
 	@Override public double calcModifiedDurationFromYieldToOptimalExercise (
@@ -7261,7 +7261,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ " Cant calc Modified Duration from Yield to optimal exercise for bonds w emb option");
 
 		return calcModifiedDurationFromYield (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYield);
+			_periodParams.maturity(), 1., dblYield);
 	}
 
 	@Override public double calcModifiedDurationFromYieldSpread (
@@ -7286,7 +7286,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcModifiedDurationFromYieldSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYieldSpread);
+			_periodParams.maturity(), 1., dblYieldSpread);
 	}
 
 	@Override public double calcModifiedDurationFromYieldSpreadToOptimalExercise (
@@ -7302,7 +7302,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Modified Duration from Yld Sprd to optimal exercise for bonds w emb option");
 
 		return calcModifiedDurationFromYieldSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblYieldSpread);
+			_periodParams.maturity(), 1., dblYieldSpread);
 	}
 
 	@Override public double calcModifiedDurationFromZSpread (
@@ -7327,7 +7327,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcModifiedDurationFromZSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblZSpread);
+			_periodParams.maturity(), 1., dblZSpread);
 	}
 
 	@Override public double calcModifiedDurationFromZSpreadToOptimalExercise (
@@ -7343,7 +7343,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Modified Duration from Z Spread to optimal exercise for bonds w emb option");
 
 		return calcModifiedDurationFromZSpread (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblZSpread);
+			_periodParams.maturity(), 1., dblZSpread);
 	}
 
 	@Override public double calcOASFromASW (
@@ -7367,7 +7367,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcOASFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1., dblASW);
+		return calcOASFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1., dblASW);
 	}
 
 	@Override public double calcOASFromASWToOptimalExercise (
@@ -7381,7 +7381,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromASWToOptimalExercise => " +
 				"Cant calc OAS from ASW to optimal exercise for bonds w emb option");
 
-		return calcOASFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1., dblASW);
+		return calcOASFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1., dblASW);
 	}
 
 	@Override public double calcOASFromBondBasis (
@@ -7405,7 +7405,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcOASFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -7420,7 +7420,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromBondBasisToOptimalExercise => " +
 				"Cant calc OAS from Bnd Basis to optimal exercise for bonds w emb option");
 
-		return calcOASFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -7445,7 +7445,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcOASFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -7460,7 +7460,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromCreditBasisToOptimalExercise => " +
 				"Cant calc OAS from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcOASFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -7485,7 +7485,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcOASFromDiscountMargin (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcOASFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblDiscountMargin);
 	}
 
@@ -7500,7 +7500,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromDiscountMarginToOptimalExercise => " +
 				"Cant calc OAS from Discount Margin to optimal exercise for bonds w emb option");
 
-		return calcOASFromDiscountMargin (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcOASFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblDiscountMargin);
 	}
 
@@ -7525,7 +7525,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcOASFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -7540,7 +7540,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromGSpreadToOptimalExercise => " +
 				"Cant calc OAS from G Spread to optimal exercise for bonds w emb option");
 
-		return calcOASFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -7565,7 +7565,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcOASFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -7580,7 +7580,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromISpreadToOptimalExercise => " +
 				"Cant calc OAS from I Spread to optimal exercise for bonds w emb option");
 
-		return calcOASFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -7605,7 +7605,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcOASFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -7620,7 +7620,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromPECSToOptimalExercise => " +
 				"Cant calc OAS from PECS to optimal exercise for bonds w emb option");
 
-		return calcOASFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -7648,7 +7648,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcOASFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -7690,7 +7690,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcOASFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -7705,7 +7705,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromTSYSpreadToOptimalExercise => " +
 				"Cant calc OAS from TSY Sprd to optimal exercise for bonds w emb option");
 
-		return calcOASFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -7730,7 +7730,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcOASFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -7745,7 +7745,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromYieldToOptimalExercise => " +
 				"Cant calc OAS from Yield to optimal exercise for bonds w emb option");
 
-		return calcOASFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -7770,7 +7770,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcOASFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -7785,7 +7785,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromYieldSpreadToOptimalExercise => " +
 				"Cant calc OAS from Yield Sprd to optimal exercise for bonds w emb option");
 
-		return calcOASFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -7810,7 +7810,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcOASFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -7825,7 +7825,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcOASFromZSpreadToOptimalExercise => " +
 				"Cant calc OAS from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcOASFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcOASFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -7850,7 +7850,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcPECSFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1., dblASW);
+		return calcPECSFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1., dblASW);
 	}
 
 	@Override public double calcPECSFromASWToOptimalExercise (
@@ -7864,7 +7864,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromASWToOptimalExercise => " +
 				"Cant calc PECS from ASW to optimal exercise for bonds w emb option");
 
-		return calcPECSFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1., dblASW);
+		return calcPECSFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1., dblASW);
 	}
 
 	@Override public double calcPECSFromBondBasis (
@@ -7888,7 +7888,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcPECSFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -7903,7 +7903,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromBondBasisToOptimalExercise => " +
 				"Cant calc PECS from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcPECSFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -7928,7 +7928,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcPECSFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -7943,7 +7943,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromCreditBasisToOptimalExercise => " +
 				"Cant calc PECS from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcPECSFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -7968,7 +7968,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcPECSFromDiscountMargin (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcPECSFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblDiscountMargin);
 	}
 
@@ -7983,7 +7983,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromDiscountMarginToOptimalExercise => " +
 				"Cant calc PECS from Discount Margin to optimal exercise for bonds w emb option");
 
-		return calcPECSFromDiscountMargin (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcPECSFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblDiscountMargin);
 	}
 
@@ -8008,7 +8008,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcPECSFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -8023,7 +8023,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromGSpreadToOptimalExercise => " +
 				"Cant calc PECS from G Spread to optimal exercise for bonds w emb option");
 
-		return calcPECSFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -8048,7 +8048,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcPECSFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -8063,7 +8063,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromISpreadToOptimalExercise => " +
 				"Cant calc PECS from I Spread to optimal exercise for bonds w emb option");
 
-		return calcPECSFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -8088,7 +8088,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcPECSFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1., dblOAS);
+		return calcPECSFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1., dblOAS);
 	}
 
 	@Override public double calcPECSFromOASToOptimalExercise (
@@ -8102,7 +8102,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromOASToOptimalExercise => " +
 				"Cant calc PECS from OAS to optimal exercise for bonds w emb option");
 
-		return calcPECSFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1., dblOAS);
+		return calcPECSFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1., dblOAS);
 	}
 
 	@Override public double calcPECSFromPrice (
@@ -8125,7 +8125,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcPECSFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -8167,7 +8167,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcPECSFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -8182,7 +8182,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromTSYSpreadToOptimalExercise => " +
 				"Cant calc PECS from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcPECSFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -8207,7 +8207,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcPECSFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -8222,7 +8222,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromYieldToOptimalExercise => " +
 				"Cant calc PECS from Yield to optimal exercise for bonds w emb option");
 
-		return calcPECSFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -8247,7 +8247,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcPECSFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -8262,7 +8262,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromYieldSpreadToOptimalExercise => " +
 				"Cant calc PECS from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcPECSFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -8287,7 +8287,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcPECSFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -8302,7 +8302,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPECSFromZSpreadToOptimalExercise => " +
 				"Cant calc PECS from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcPECSFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPECSFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -8342,7 +8342,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcPriceFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -8357,7 +8357,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromASWToOptimalExercise => " +
 				"Cant calc Price from ASW to optimal exercise for bonds w emb option");
 
-		return calcPriceFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -8382,7 +8382,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcPriceFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -8397,7 +8397,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromBondBasisToOptimalExercise => " +
 				"Cant calc Price from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcPriceFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -8421,7 +8421,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcPriceFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -8436,7 +8436,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromCreditBasisToOptimalExercise => " +
 				"Cant calc Price from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcPriceFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -8461,7 +8461,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcPriceFromDiscountMargin (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcPriceFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblDiscountMargin);
 	}
 
@@ -8476,7 +8476,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromDiscountMarginToOptimalExercise => "
 				+ "Cant calc Price from Discount Margin to optimal exercise for bonds w emb option");
 
-		return calcPriceFromDiscountMargin (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcPriceFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblDiscountMargin);
 	}
 
@@ -8501,7 +8501,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcPriceFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -8516,7 +8516,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromGSpreadToOptimalExercise => " +
 				"Cant calc Price from G Spread to optimal exercise for bonds w emb option");
 
-		return calcPriceFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -8541,7 +8541,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcPriceFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -8556,7 +8556,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromISpreadToOptimalExercise => " +
 				"Cant calc Price from I Spread to optimal exercise for bonds w emb option");
 
-		return calcPriceFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -8579,7 +8579,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcPriceFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -8594,7 +8594,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromOASToOptimalExercise => " +
 				"Cant calc Price from OAS to optimal exercise for bonds w emb option");
 
-		return calcPriceFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -8617,7 +8617,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcPriceFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -8632,7 +8632,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromPECSToOptimalExercise => " +
 				"Cant calc Price from PECS to optimal exercise for bonds w emb option");
 
-		return calcPriceFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -8657,7 +8657,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcPriceFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -8672,7 +8672,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromTSYSpreadToOptimalExercise => " +
 				"Cant calc Price from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcPriceFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblTSYSpread);
 	}
 
@@ -8740,7 +8740,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			double dblPeriodCoupon = pcm.rate();
 
 			int iFrequency = _periodParams.freq();
-			java.lang.String strDC = _periodParams._strCouponDC;
+			java.lang.String strDC = _periodParams.couponDC();
 			boolean bApplyCpnEOMAdj = _periodParams.couponEOMAdjustment();
 
 			java.lang.String strCalendar = getCouponCurrency();
@@ -8846,7 +8846,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		}
 
 		int iFrequency = _periodParams.freq();
-		java.lang.String strDC = _periodParams._strCouponDC;
+		java.lang.String strDC = _periodParams.couponDC();
 		org.drip.analytics.daycount.ActActDCParams aap = null;
 		boolean bApplyCpnEOMAdj = _periodParams.couponEOMAdjustment();
 
@@ -8922,7 +8922,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcPriceFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -8937,7 +8937,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromYieldToOptimalExercise => " +
 				"Cannot calc exercise px from yld for bonds w emb option");
 
-		return calcPriceFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -8962,7 +8962,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcPriceFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -8977,7 +8977,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromYieldSpreadToOptimalExercise => " +
 				"Cant calc Price from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcPriceFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -9001,7 +9001,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcPriceFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -9016,7 +9016,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcPriceFromZSpreadToOptimalExercise => " +
 				"Cant calc Price from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcPriceFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcPriceFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -9041,7 +9041,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -9056,7 +9056,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcTSYSpreadFromASWToOptimalExercise => " +
 				"Cant calc TSY Spread from ASW to optimal exercise for bonds w emb option");
 
-		return calcTSYSpreadFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -9081,7 +9081,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcTSYSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -9096,7 +9096,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcTSYSpreadFromBondBasisToOptimalExercise => " +
 				"Cant calc TSY Spread from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcTSYSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcTSYSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -9121,7 +9121,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcTSYSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -9136,7 +9136,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcTSYSpreadFromCreditBasisToOptimalExercise => "
 				+ "Cant calc TSY Spread from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcTSYSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcTSYSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -9162,7 +9162,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcTSYSpreadFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcTSYSpreadFromDiscountMarginToOptimalExercise (
@@ -9177,7 +9177,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ "=> Cant calc TSY Spread from Discount Margin to optimal exercise for bonds w emb option");
 
 		return calcTSYSpreadFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcTSYSpreadFromGSpread (
@@ -9201,7 +9201,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -9216,7 +9216,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcTSYSpreadFromGSpreadToOptimalExercise => " +
 				"Cant calc TSY Spread from G Spread to optimal exercise for bonds w emb option");
 
-		return calcTSYSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -9241,7 +9241,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -9256,7 +9256,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcTSYSpreadFromISpreadToOptimalExercise => " +
 				"Cant calc TSY Spread from I Spread to optimal exercise for bonds w emb option");
 
-		return calcTSYSpreadFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -9281,7 +9281,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -9296,7 +9296,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcTSYSpreadFromOASToOptimalExercise => " +
 				"Cant calc TSY Spread from OAS to optimal exercise for bonds w emb option");
 
-		return calcTSYSpreadFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -9321,7 +9321,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -9336,7 +9336,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcTSYSpreadFromPECSToOptimalExercise => " +
 				"Cant calc TSY Spread from PECS to optimal exercise for bonds w emb option");
 
-		return calcTSYSpreadFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -9361,7 +9361,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -9408,7 +9408,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -9423,7 +9423,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcTSYSpreadFromYieldToOptimalExercise => " +
 				"Cant calc TSY Spread from Yield to optimal exercise for bonds w emb option");
 
-		return calcTSYSpreadFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -9448,7 +9448,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcTSYSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -9463,7 +9463,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcTSYSpreadFromYieldSpreadToOptimalExercise => "
 				+ "Cant calc TSY Spread from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcTSYSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcTSYSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -9488,7 +9488,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcTSYSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -9503,7 +9503,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcTSYSpreadFromZSpreadToOptimalExercise => " +
 				"Cant calc TSY Spread from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcTSYSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcTSYSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -9528,7 +9528,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcYieldFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -9543,7 +9543,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromASWToOptimalExercise => " +
 				"Cant calc Yield from ASW to optimal exercise for bonds w emb option");
 
-		return calcYieldFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -9572,7 +9572,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcYieldFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -9587,7 +9587,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromBondBasisToOptimalExercise => " +
 				"Cant calc Yield from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcYieldFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -9612,7 +9612,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcYieldFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -9627,7 +9627,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromCreditBasisToOptimalExercise => " +
 				"Cant calc Yield from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcYieldFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -9665,7 +9665,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcYieldFromDiscountMargin (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblDiscountMargin);
 	}
 
@@ -9680,7 +9680,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromDiscountMarginToOptimalExercise => "
 				+ "Cant calc Yield from Discount Margin to optimal exercise for bonds w emb option");
 
-		return calcYieldFromDiscountMargin (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblDiscountMargin);
 	}
 
@@ -9713,7 +9713,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcYieldFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -9728,7 +9728,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromGSpreadToOptimalExercise => " +
 				"Cant calc Yield from G Spread to optimal exercise for bonds w emb option");
 
-		return calcYieldFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -9761,7 +9761,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcYieldFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -9776,7 +9776,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromISpreadToOptimalExercise => " +
 				"Cant calc Yield from I Spread to optimal exercise for bonds w emb option");
 
-		return calcYieldFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -9801,7 +9801,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcYieldFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -9816,7 +9816,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromOASToOptimalExercise => " +
 				"Cant calc Yield from OAS to optimal exercise for bonds w emb option");
 
-		return calcYieldFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -9841,7 +9841,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcYieldFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -9856,7 +9856,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromPECSToOptimalExercise => " +
 				"Cant calc Yield from PECS to optimal exercise for bonds w emb option");
 
-		return calcYieldFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -9880,7 +9880,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcYieldFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -9924,7 +9924,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcYieldFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -9939,7 +9939,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromTSYSpreadToOptimalExercise => " +
 				"Cant calc Yield from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcYieldFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -9968,7 +9968,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcYieldFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -9983,7 +9983,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromYieldSpreadToOptimalExercise => " +
 				"Cant calc Yield from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcYieldFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -10012,7 +10012,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcYieldFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -10027,7 +10027,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldFromZSpreadToOptimalExercise => " +
 				"Cant calc Yield from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcYieldFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -10052,7 +10052,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcYield01FromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -10067,7 +10067,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromASWToOptimalExercise => " +
 				"Cant calc Yield from ASW to optimal exercise for bonds w emb option");
 
-		return calcYield01FromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -10092,7 +10092,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcYieldFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -10107,7 +10107,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromBondBasisToOptimalExercise => " +
 				"Cant calc Yield01 from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcYield01FromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -10132,7 +10132,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcYield01FromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblCreditBasis);
 	}
 
@@ -10147,7 +10147,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromCreditBasisToOptimalExercise => " +
 				"Cant calc Yield01 from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcYield01FromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYield01FromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -10173,7 +10173,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcYield01FromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcYield01FromDiscountMarginToOptimalExercise (
@@ -10188,7 +10188,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ " Cant calc Yield01 from Discount Margin to optimal exercise for bonds w emb option");
 
 		return calcYield01FromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcYield01FromGSpread (
@@ -10212,7 +10212,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcYield01FromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -10227,7 +10227,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromGSpreadToOptimalExercise => " +
 				"Cant calc Yield01 from G Spread to optimal exercise for bonds w emb option");
 
-		return calcYield01FromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -10252,7 +10252,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcYield01FromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -10267,7 +10267,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromISpreadToOptimalExercise => " +
 				"Cant calc Yield01 from I Spread to optimal exercise for bonds w emb option");
 
-		return calcYield01FromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -10292,7 +10292,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcYield01FromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -10307,7 +10307,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromOASToOptimalExercise => " +
 				"Cant calc Yield01 from OAS to optimal exercise for bonds w emb option");
 
-		return calcYield01FromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -10332,7 +10332,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcYield01FromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -10347,7 +10347,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromPECSToOptimalExercise => " +
 				"Cant calc Yield01 from PECS to optimal exercise for bonds w emb option");
 
-		return calcYield01FromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -10372,7 +10372,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcYield01FromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -10414,7 +10414,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcYield01FromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -10429,7 +10429,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromTSYSpreadToOptimalExercise => " +
 				"Cant calc Yield01 from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcYield01FromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -10457,7 +10457,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcYield01FromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -10472,7 +10472,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromYieldToOptimalExercise => " +
 				"Cant calc Yield01 from Yield to optimal exercise for bonds w emb option");
 
-		return calcYield01FromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -10497,7 +10497,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcYield01FromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -10512,7 +10512,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromYieldSpreadToOptimalExercise => " +
 				"Cant calc Yield01 from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcYield01FromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -10537,7 +10537,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcYield01FromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -10552,7 +10552,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYield01FromZSpreadToOptimalExercise => " +
 				"Cant calc Yield01 from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcYield01FromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYield01FromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblZSpread);
 	}
 
@@ -10577,7 +10577,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcYieldSpreadFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldSpreadFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -10592,7 +10592,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldSpreadFromASWToOptimalExercise => " +
 				"Cant calc Yield Spread from ASW to optimal exercise for bonds w emb option");
 
-		return calcYieldSpreadFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldSpreadFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -10617,7 +10617,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcYieldSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -10632,7 +10632,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldSpreadFromBondBasisToOptimalExercise => "
 				+ "Cant calc Yield Spread from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcYieldSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -10658,7 +10658,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcYieldSpreadFromCreditBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblCreditBasis);
+			_periodParams.maturity(), 1., dblCreditBasis);
 	}
 
 	@Override public double calcYieldSpreadFromCreditBasisToOptimalExercise (
@@ -10673,7 +10673,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				+ "=> Cant calc Yield Spread from Credit Basis to optimal exercise for bonds w emb option");
 
 		return calcYieldSpreadFromCreditBasis (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblCreditBasis);
+			_periodParams.maturity(), 1., dblCreditBasis);
 	}
 
 	@Override public double calcYieldSpreadFromDiscountMargin (
@@ -10698,7 +10698,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcYieldSpreadFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcYieldSpreadFromDiscountMarginToOptimalExercise (
@@ -10714,7 +10714,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Yield Spread from Disc Margin to optimal exercise for bonds w emb option");
 
 		return calcYieldSpreadFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcYieldSpreadFromGSpread (
@@ -10738,7 +10738,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcYieldSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblGSpread);
 	}
 
@@ -10753,7 +10753,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldSpreadFromGSpreadToOptimalExercise => " +
 				"Cant calc Yield Spread from G Spread to optimal exercise for bonds w emb option");
 
-		return calcYieldSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblGSpread);
 	}
 
@@ -10778,7 +10778,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcYieldSpreadFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldSpreadFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblISpread);
 	}
 
@@ -10793,7 +10793,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldSpreadFromISpreadToOptimalExercise => " +
 				"Cant calc Yield Spread from I Spread to optimal exercise for bonds w emb option");
 
-		return calcYieldSpreadFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldSpreadFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblISpread);
 	}
 
@@ -10818,7 +10818,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcYieldSpreadFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldSpreadFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -10833,7 +10833,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldSpreadFromOASToOptimalExercise => " +
 				"Cant calc Yield Spread from OAS to optimal exercise for bonds w emb option");
 
-		return calcYieldSpreadFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldSpreadFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -10858,7 +10858,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcYieldSpreadFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldSpreadFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -10873,7 +10873,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldSpreadFromPECSToOptimalExercise => " +
 				"Cant calc Yield Spread from PECS to optimal exercise for bonds w emb option");
 
-		return calcYieldSpreadFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldSpreadFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -10898,7 +10898,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcYieldSpreadFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldSpreadFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -10941,7 +10941,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcYieldSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblPrice);
 	}
 
@@ -10956,7 +10956,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldSpreadFromTSYSpreadToOptimalExercise => "
 				+ "Cant calc Yield Spread from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcYieldSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblPrice);
 	}
 
@@ -10984,7 +10984,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcYieldSpreadFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldSpreadFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -10999,7 +10999,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldSpreadFromYieldToOptimalExercise => " +
 				"Cant calc Yield Spread from Yield to optimal exercise for bonds w emb option");
 
-		return calcYieldSpreadFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcYieldSpreadFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -11024,7 +11024,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcYieldSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblZSpread);
 	}
 
@@ -11039,7 +11039,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcYieldSpreadFromZSpreadToOptimalExercise => " +
 				"Cant calc Yield Spread from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcYieldSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcYieldSpreadFromZSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblZSpread);
 	}
 
@@ -11064,7 +11064,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -11079,7 +11079,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcZSpreadFromASWToOptimalExercise => " +
 				"Cant calc Z Spread from ASW to optimal exercise for bonds w emb option");
 
-		return calcZSpreadFromASW (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblASW);
 	}
 
@@ -11104,7 +11104,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblBondBasis);
 	}
 
@@ -11119,7 +11119,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcZSpreadFromBondBasisToOptimalExercise => "
 				+ "Cant calc Z Spread from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcZSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcZSpreadFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblBondBasis);
 	}
 
@@ -11144,7 +11144,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcZSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -11159,7 +11159,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcZSpreadFromCreditBasisToOptimalExercise => " +
 				"Cant calc Z Spread from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcZSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcZSpreadFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblCreditBasis);
 	}
 
@@ -11185,7 +11185,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		return calcZSpreadFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcZSpreadFromDiscountMarginToOptimalExercise (
@@ -11201,7 +11201,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"Cant calc Z Spread from Discount Margin to optimal exercise for bonds w emb option");
 
 		return calcZSpreadFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams._dblMaturity, 1., dblDiscountMargin);
+			_periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double calcZSpreadFromGSpread (
@@ -11225,7 +11225,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -11240,7 +11240,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcZSpreadFromGSpreadToOptimalExercise => " +
 				"Cant calc Z Spread from G Spread to optimal exercise for bonds w emb option");
 
-		return calcZSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblGSpread);
 	}
 
@@ -11265,7 +11265,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -11280,7 +11280,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcZSpreadFromISpreadToOptimalExercise => " +
 				"Cant calc Z Spread from I Spread to optimal exercise for bonds w emb option");
 
-		return calcZSpreadFromISpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblISpread);
 	}
 
@@ -11305,7 +11305,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -11320,7 +11320,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcZSpreadFromOASToOptimalExercise => " +
 				"Cant calc Z Spread from OAS to optimal exercise for bonds w emb option");
 
-		return calcZSpreadFromOAS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblOAS);
 	}
 
@@ -11345,7 +11345,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -11360,7 +11360,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcZSpreadFromPECSToOptimalExercise => " +
 				"Cant calc Z Spread from PECS to optimal exercise for bonds w emb option");
 
-		return calcZSpreadFromPECS (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPECS);
 	}
 
@@ -11384,7 +11384,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromPrice (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -11426,7 +11426,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -11441,7 +11441,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcZSpreadFromTSYSpreadToOptimalExercise => " +
 				"Cant calc Z Spread from TSY Spread to optimal exercise for bonds w emb option");
 
-		return calcZSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblPrice);
 	}
 
@@ -11466,7 +11466,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYield);
 	}
 
@@ -11481,7 +11481,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcZSpreadFromYieldToOptimalExercise => " +
 				"Cant calc Z Spread from Yield to optimal exercise for bonds w emb option");
 
-		return calcZSpreadFromYield (valParams, csqs, quotingParams, _periodParams._dblMaturity, 1.,
+		return calcZSpreadFromYield (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
 			dblYieldSpread);
 	}
 
@@ -11506,7 +11506,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcZSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcZSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
@@ -11521,7 +11521,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcZSpreadFromYieldSpreadToOptimalExercise => " +
 				"Cant calc Z Spread from Yield Spread to optimal exercise for bonds w emb option");
 
-		return calcZSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams._dblMaturity,
+		return calcZSpreadFromYieldSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
 			1., dblYieldSpread);
 	}
 
