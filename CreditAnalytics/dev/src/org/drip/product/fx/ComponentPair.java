@@ -116,6 +116,81 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	}
 
 	/**
+	 * Generate the Derived Forward Latent State Segment Specification
+	 * 
+	 * @param valParams Valuation Parameters
+	 * @param mktParams Market Parameters
+	 * @param dblReferenceComponentBasis The Reference Component Basis
+	 * @param bBasisOnDerivedLeg TRUE => Apply the Basis on the Derived Leg (FALSE => Reference Leg)
+	 * 
+	 * @return The Derived Forward Latent State Segment Specification
+	 */
+
+	public org.drip.state.inference.LatentStateSegmentSpec derivedForwardSpec (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
+		final double dblReferenceComponentBasis,
+		final boolean bBasisOnDerivedLeg)
+	{
+		org.drip.product.calib.ProductQuoteSet pqs = null;
+		org.drip.state.identifier.ForwardLabel forwardLabel = null;
+
+		org.drip.product.definition.CalibratableFixedIncomeComponent comp = derivedComponent();
+
+		if (comp instanceof org.drip.product.rates.DualStreamComponent)
+			forwardLabel = ((org.drip.product.rates.DualStreamComponent)
+				comp).derivedStream().forwardLabel();
+		else {
+			org.drip.state.identifier.ForwardLabel[] aForwardLabel =  comp.forwardLabel();
+
+			if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
+		}
+
+		try { 
+			pqs = comp.calibQuoteSet (new org.drip.state.representation.LatentStateSpecification[] {new
+				org.drip.state.representation.LatentStateSpecification
+					(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
+						org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
+							forwardLabel)});
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = value (valParams, null,
+			mktParams, null);
+
+		org.drip.product.definition.CalibratableFixedIncomeComponent rcReference = referenceComponent();
+
+		java.lang.String strReferenceComponentName = rcReference.name();
+
+		java.lang.String strReferenceComponentPV = strReferenceComponentName + "[PV]";
+		java.lang.String strReferenceComponentReferenceLegCleanDV01 = strReferenceComponentName +
+			"[ReferenceCleanDV01]";
+		java.lang.String strReferenceComponentDerivedLegCleanDV01 = strReferenceComponentName +
+			"[DerivedCleanDV01]";
+
+		if (null == mapOP || !mapOP.containsKey (strReferenceComponentPV) || !mapOP.containsKey
+			(strReferenceComponentReferenceLegCleanDV01) || !mapOP.containsKey
+				(strReferenceComponentDerivedLegCleanDV01))
+			return null;
+
+		if (!pqs.set ("PV", -1. * (mapOP.get (strReferenceComponentPV) + 10000. * (bBasisOnDerivedLeg ?
+			mapOP.get (strReferenceComponentDerivedLegCleanDV01) : mapOP.get
+				(strReferenceComponentReferenceLegCleanDV01)) * dblReferenceComponentBasis)))
+			return null;
+
+		try {
+			return new org.drip.state.inference.LatentStateSegmentSpec (comp, pqs);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
 	 * Generate the Derived Funding/Forward Merged Latent State Segment Specification
 	 * 
 	 * @param valParams Valuation Parameters
@@ -123,10 +198,10 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	 * @param dblReferenceComponentBasis The Reference Component Basis
 	 * @param dblSwapRate The Swap Rate
 	 * 
-	 * @return The Derived Discount Curve Latent State Segment Specification
+	 * @return The Derived Forward/Funding Latent State Segment Specification
 	 */
 
-	public org.drip.state.inference.LatentStateSegmentSpec fundingForwardSegmentSpec (
+	public org.drip.state.inference.LatentStateSegmentSpec derivedFundingForwardSpec (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
 		final double dblReferenceComponentBasis,

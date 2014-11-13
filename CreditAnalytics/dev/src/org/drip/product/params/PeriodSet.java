@@ -41,18 +41,8 @@ package org.drip.product.params;
  */
 
 public class PeriodSet implements org.drip.product.params.Validatable {
-
-	/**
-	 * Coupon Frequency
-	 */
-
-	public int _iFreq = 2;
-
-	/**
-	 * Apply Coupon end-of-month adjustment
-	 */
-
-	public boolean _bApplyCpnEOMAdj = false;
+	private int _iFreq = 2;
+	private boolean _bApplyCpnEOMAdj = false;
 
 	/**
 	 * Coupon day count
@@ -208,5 +198,42 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Retrieve the Frequency
+	 * 
+	 * @return The Frequency
+	 */
+
+	public int freq()
+	{
+		return _iFreq;
+	}
+
+	/**
+	 * Retrieve the Coupon EOM Adjustment
+	 * 
+	 * @return The Coupon EOM Adjustment
+	 */
+
+	public boolean couponEOMAdjustment()
+	{
+		return _bApplyCpnEOMAdj;
+	}
+
+	/**
+	 * Set the Coupon EOM Adjustment
+	 * 
+	 * @param bApplyCpnEOMAdj The COupon EOM Adjustment Flag
+	 * 
+	 * @return TRUE => The Coupon EOM Adjustment Successfully Set
+	 */
+
+	public boolean setCouponEOMAdjustment (
+		final boolean bApplyCpnEOMAdj)
+	{
+		_bApplyCpnEOMAdj = bApplyCpnEOMAdj;
+		return true;
 	}
 }

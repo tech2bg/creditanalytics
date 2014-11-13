@@ -453,7 +453,7 @@ public class CCBSDiscountCurve {
 			null
 		);
 
-		LatentStateStretchSpec stretchSpec = CCBSStretchBuilder.DiscountStretch2 (
+		LatentStateStretchSpec stretchSpec = CCBSStretchBuilder.DiscountStretch (
 			"FIXFLOAT",
 			aCCSP,
 			valParams,

@@ -273,7 +273,7 @@ public class YAS {
 				"",						 	// Empty Credit Curve
 				dblCoupon,					// Bond Coupon
 				2, 							// Frequency
-				"Act/Act",					// Day Count
+				"Act/360",					// Day Count
 				dt, 						// Effective
 				dt.addTenor (strTenor),		// Maturity
 				null,						// Principal Schedule

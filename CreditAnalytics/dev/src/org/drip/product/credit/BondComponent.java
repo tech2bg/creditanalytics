@@ -302,8 +302,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				if (null != fc) return fc.forward (period.payDate());
 
-				if (period.startDate() < dblValue && 0 != _periodParams._iFreq)
-					return dc.libor (dblValue, (12 / _periodParams._iFreq) + "M");
+				if (period.startDate() < dblValue && 0 != _periodParams.freq())
+					return dc.libor (dblValue, (12 / _periodParams.freq()) + "M");
 
 				return dc.libor (period.startDate(), period.endDate());
 			}
@@ -314,7 +314,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		double dblRateRefEndDate = dblValue + LOCAL_FORWARD_RATE_WIDTH;
 
-		if (0 != _periodParams._iFreq) dblRateRefEndDate = dblValue + 365.25 / _periodParams._iFreq;
+		if (0 != _periodParams.freq()) dblRateRefEndDate = dblValue + 365.25 / _periodParams.freq();
 
 		double dblIndexRate = dc.libor (dblValue, dblRateRefEndDate);
 
@@ -616,7 +616,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		try {
 			int iIndex = _periodParams.getPeriodIndex (dblDate);
-			
+
 			return _periodParams.getPeriod (iIndex);
 		} catch (java.lang.Exception e) {
 		}
@@ -1450,7 +1450,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	{
 		if (null == _periodParams) return -1;
 
-		return _periodParams._iFreq;
+		return _periodParams.freq();
 	}
 
 	@Override public org.drip.analytics.date.JulianDate getFinalMaturity()
@@ -1834,8 +1834,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null != _notlParams && _notlParams._bPriceOffOriginalNotional) dblScalingNotional = 1.;
 
 		try {
-			zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (_periodParams._iFreq,
-				_periodParams._strCouponDC, getCouponCurrency(), _periodParams._bApplyCpnEOMAdj,
+			zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (_periodParams.freq(),
+				_periodParams._strCouponDC, getCouponCurrency(), _periodParams.couponEOMAdjustment(),
 					_periodParams.getPeriods(), dblWorkoutDate, dblCashPayDate, dcBase, null == quotingParams
 						? (null == _mktConv ? null : _mktConv._quotingParams) : quotingParams, dblZCBump);
 		} catch (java.lang.Exception e) {
@@ -4511,8 +4511,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
 
 		return null == _fltParams ? dblYield - dcFunding.libor (valParams.valueDate(), ((int) (12. / (0 ==
-			_periodParams._iFreq ? 2 : _periodParams._iFreq))) + "M") : dblYield - getIndexRate
-				(valParams.valueDate(), csqs, calcCurrentPeriod (valParams.valueDate()));
+			_periodParams.freq() ? 2 : _periodParams.freq()))) + "M") : dblYield - getIndexRate
+				(valParams.valueDate(), csqs, (org.drip.analytics.cashflow.CompositeFloatingPeriod)
+					calcCurrentPeriod (valParams.valueDate()));
 	}
 
 	@Override public double calcDiscountMarginFromYield (
@@ -6584,9 +6585,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			if (null == pcm)
 				throw new java.lang.Exception ("BondComponent::calcMacaulayDurationFromYield => No PCM");
 
-			int iFrequency = _periodParams._iFreq;
+			int iFrequency = _periodParams.freq();
 			java.lang.String strDC = _periodParams._strCouponDC;
-			boolean bApplyCpnEOMAdj = _periodParams._bApplyCpnEOMAdj;
+			boolean bApplyCpnEOMAdj = _periodParams.couponEOMAdjustment();
 
 			java.lang.String strCalendar = getCouponCurrency();
 
@@ -6648,10 +6649,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			if (bTerminateCouponFlow) break;
 		}
 
-		int iFrequency = _periodParams._iFreq;
+		int iFrequency = _periodParams.freq();
 		java.lang.String strDC = _periodParams._strCouponDC;
 		org.drip.analytics.daycount.ActActDCParams aap = null;
-		boolean bApplyCpnEOMAdj = _periodParams._bApplyCpnEOMAdj;
+		boolean bApplyCpnEOMAdj = _periodParams.couponEOMAdjustment();
 
 		java.lang.String strCalendar = getCouponCurrency();
 
@@ -8738,9 +8739,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			double dblPeriodCoupon = pcm.rate();
 
-			int iFrequency = _periodParams._iFreq;
+			int iFrequency = _periodParams.freq();
 			java.lang.String strDC = _periodParams._strCouponDC;
-			boolean bApplyCpnEOMAdj = _periodParams._bApplyCpnEOMAdj;
+			boolean bApplyCpnEOMAdj = _periodParams.couponEOMAdjustment();
 
 			java.lang.String strCalendar = getCouponCurrency();
 
@@ -8844,10 +8845,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			dblCashPayDate = valParams.cashPayDate();
 		}
 
-		int iFrequency = _periodParams._iFreq;
+		int iFrequency = _periodParams.freq();
 		java.lang.String strDC = _periodParams._strCouponDC;
 		org.drip.analytics.daycount.ActActDCParams aap = null;
-		boolean bApplyCpnEOMAdj = _periodParams._bApplyCpnEOMAdj;
+		boolean bApplyCpnEOMAdj = _periodParams.couponEOMAdjustment();
 
 		java.lang.String strCalendar = getCouponCurrency();
 
@@ -9652,8 +9653,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		double dblValueDate = valParams.valueDate();
 
 		return null == _fltParams ? dblDiscountMargin + dcFunding.libor (dblValueDate, ((int) (12. / (0 ==
-			_periodParams._iFreq ? 2 : _periodParams._iFreq))) + "M") : dblDiscountMargin - getIndexRate
-				(dblValueDate, csqs, calcCurrentPeriod (dblValueDate));
+			_periodParams.freq() ? 2 : _periodParams.freq()))) + "M") : dblDiscountMargin - getIndexRate
+				(dblValueDate, csqs, (org.drip.analytics.cashflow.CompositeFloatingPeriod) calcCurrentPeriod
+					(dblValueDate));
 	}
 
 	@Override public double calcYieldFromDiscountMargin (

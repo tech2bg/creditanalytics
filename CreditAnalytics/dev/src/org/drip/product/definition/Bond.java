@@ -44,7 +44,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Bond Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPrice Price
 	 * 
 	 * @return The Optimal Work-out Information
@@ -53,7 +53,7 @@ public abstract class Bond extends CreditComponent {
 	public abstract org.drip.param.valuation.WorkoutInfo calcExerciseYieldFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice);
 
 	/**

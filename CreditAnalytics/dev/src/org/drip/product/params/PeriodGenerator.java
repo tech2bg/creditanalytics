@@ -47,6 +47,7 @@ public class PeriodGenerator extends PeriodSet {
 	private boolean _bApplyAccEOMAdj = false;
 	private java.lang.String _strCurrency = "";
 	private boolean _bPeriodsFromForward = false;
+	private double _dblCoupon = java.lang.Double.NaN;
 	private org.drip.analytics.daycount.DateAdjustParams _dapPay = null;
 	private org.drip.analytics.daycount.DateAdjustParams _dapAccrualEnd = null;
 
@@ -60,6 +61,7 @@ public class PeriodGenerator extends PeriodSet {
 	 * @param dblFirstCouponDate First Coupon Date
 	 * @param dblInterestAccrualStart Interest Accrual Start Date
 	 * @param iFreq Coupon Frequency
+	 * @param dblCoupon Coupon Rate
 	 * @param strCouponDC Coupon day count convention
 	 * @param strAccrualDC Accrual day count convention
 	 * @param dapPay Pay Date Adjustment Parameters
@@ -85,6 +87,7 @@ public class PeriodGenerator extends PeriodSet {
 		final double dblFirstCouponDate,
 		final double dblInterestAccrualStart,
 		final int iFreq,
+		final double dblCoupon,
 		final java.lang.String strCouponDC,
 		final java.lang.String strAccrualDC,
 		final org.drip.analytics.daycount.DateAdjustParams dapPay,
@@ -105,6 +108,7 @@ public class PeriodGenerator extends PeriodSet {
 		super (dblEffective, strCouponDC, iFreq, null);
 
 		_dapPay = dapPay;
+		_dblCoupon = dblCoupon;
 		_dblMaturity = dblMaturity;
 		_strCurrency = strCurrency;
 		_strAccrualDC = strAccrualDC;
@@ -113,7 +117,7 @@ public class PeriodGenerator extends PeriodSet {
 		_dblFinalMaturity = dblFinalMaturity;
 		_bPeriodsFromForward = bPeriodsFromForward;
 
-		if (strCouponDC.toUpperCase().contains ("EOM")) _bApplyCpnEOMAdj = true;
+		if (strCouponDC.toUpperCase().contains ("EOM")) setCouponEOMAdjustment (true);
 
 		int iCouponDCIndex = strCouponDC.indexOf (" NON");
 
@@ -150,22 +154,22 @@ public class PeriodGenerator extends PeriodSet {
 				(_dblMaturity);
 
 			if (m_bBlog)
-				System.out.println ("Starting " + dtEffective + "->" + dtMaturity + " with freq " + _iFreq +
+				System.out.println ("Starting " + dtEffective + "->" + dtMaturity + " with freq " + freq() +
 					" ...");
 
 			org.drip.param.period.UnitCouponAccrualSetting ucas = new
-				org.drip.param.period.UnitCouponAccrualSetting (_iFreq, _strCouponDC, _bApplyCpnEOMAdj,
+				org.drip.param.period.UnitCouponAccrualSetting (freq(), _strCouponDC, couponEOMAdjustment(),
 					_strAccrualDC, _bApplyAccEOMAdj, _strCurrency, true);
 
-			java.lang.String strTenor = (12 / _iFreq) + "M";
+			java.lang.String strTenor = (12 / freq()) + "M";
 
 			org.drip.param.period.ComposableFixedUnitSetting cfus = new
 				org.drip.param.period.ComposableFixedUnitSetting (strTenor,
-					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null, 0.,
-						0., _strCurrency);
+					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
+						_dblCoupon, 0., _strCurrency);
 
 			org.drip.param.period.CompositePeriodSetting cps = new
-				org.drip.param.period.CompositePeriodSetting (_iFreq, strTenor, _strCurrency, null,
+				org.drip.param.period.CompositePeriodSetting (freq(), strTenor, _strCurrency, null,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
 						null, null, null, null);
 

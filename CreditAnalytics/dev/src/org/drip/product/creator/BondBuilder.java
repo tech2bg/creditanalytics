@@ -172,10 +172,10 @@ public class BondBuilder {
 												new org.drip.product.params.PeriodGenerator
 													(dtMaturity.julian(), dtEffective.julian(),
 														java.lang.Double.NaN, java.lang.Double.NaN,
-															dtEffective.julian(), iFreq, strDayCount,
-																strDayCount, null, null, null, null, null,
-																	null, null, null, "", false, strCurrency,
-																		strCurrency, null,
+															dtEffective.julian(), iFreq, dblCoupon,
+																strDayCount, strDayCount, null, null, null,
+																	null, null, null, null, null, "", false,
+																		strCurrency, strCurrency, null,
 																			!org.drip.quant.common.StringUtil.IsEmpty
 			(strCreditCurveName) ? org.drip.state.identifier.CreditLabel.Standard (strCreditCurveName) :
 				null), new org.drip.product.params.NotionalSetting (fsPrincipalOutstanding, 100.,
@@ -231,11 +231,12 @@ public class BondBuilder {
 													false), new org.drip.product.params.PeriodGenerator
 														(dtMaturity.julian(), dtEffective.julian(),
 															java.lang.Double.NaN, java.lang.Double.NaN,
-																dtEffective.julian(), iFreq, strDayCount,
-																	strDayCount, null, null, null, null,
-																		null, null, null, null, "", false,
-																			strCurrency, strCurrency,
-																				org.drip.state.identifier.ForwardLabel.Standard
+																dtEffective.julian(), iFreq, dblSpread,
+																	strDayCount, strDayCount, null, null,
+																		null, null, null, null, null, null,
+																			"", false, strCurrency,
+																				strCurrency,
+																					org.drip.state.identifier.ForwardLabel.Standard
 			(strRateIndex), null == strCreditCurveName || strCreditCurveName.isEmpty() ? null :
 				org.drip.state.identifier.CreditLabel.Standard (strCreditCurveName)), new
 					org.drip.product.params.NotionalSetting (fsPrincipalOutstanding, 100.,
@@ -325,11 +326,21 @@ public class BondBuilder {
 			}
 
 			try {
-				lsCouponPeriod.add (new org.drip.analytics.cashflow.CompositeFixedPeriod (dblPeriodStart,
-					adblDate[i], dblPeriodStart, adblDate[i], adblDate[i], rpc, java.lang.Double.NaN, iFreq,
-						1. / iFreq, "30/360", "30/360", false, false, "", dblTotalPrincipal,
-							org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate,
-								adblCouponFactor), 1., strCurrency, strCurrency, null, null));
+				java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> lsCUP = new
+					java.util.ArrayList<org.drip.analytics.cashflow.ComposableUnitPeriod>();
+
+				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFixedPeriod (dblPeriodStart,
+					adblDate[i], new org.drip.param.period.UnitCouponAccrualSetting (iFreq, "30/360", false,
+						"30/360", false, strCurrency, true), new
+							org.drip.param.period.ComposableFixedUnitSetting ((12 / iFreq) + "M",
+								org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+									null, adblCouponAmount[i], 0., strCurrency)));
+
+				lsCouponPeriod.add (new org.drip.analytics.cashflow.CompositeFixedPeriod (new
+					org.drip.param.period.CompositePeriodSetting (iFreq, (12 / iFreq) + "M", strCurrency,
+						null,
+							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+					adblPrincipal[i], null, null, null, null), lsCUP));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

@@ -113,9 +113,9 @@ public class StaticBACurves {
 
 		try {
 			periodParams = new org.drip.product.params.PeriodGenerator (dt.addYears (iNumYears).julian(),
-				dt.julian(), java.lang.Double.NaN, dt.julian(), dt.julian(), 2, "30/360", "30/360", null,
-					null, null, null, null, null, null, null, "", false, strCurrency, strCurrency, null,
-						null);
+				dt.julian(), java.lang.Double.NaN, dt.julian(), dt.julian(), 2, dblCoupon, "30/360",
+					"30/360", null, null, null, null, null, null, null, null, "", false, strCurrency,
+						strCurrency, null, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

@@ -186,7 +186,7 @@ public class ProductTestSuite {
 		org.drip.product.params.PeriodGenerator periodParams = new
 			org.drip.product.params.PeriodGenerator (dtMaturity.julian(),
 				dtEffective.julian(), java.lang.Double.NaN, java.lang.Double.NaN, java.lang.Double.NaN, 2,
-					"30/360", "30/360", null, null, null, null, null, null, null, null, "", false,
+					dblCoupon, "30/360", "30/360", null, null, null, null, null, null, null, null, "", false,
 						strCurrency, strCurrency, null, org.drip.state.identifier.CreditLabel.Standard
 							("IBM"));
 
@@ -305,8 +305,8 @@ public class ProductTestSuite {
 
 		org.drip.product.params.PeriodGenerator periodParams = new
 			org.drip.product.params.PeriodGenerator (dt.addYears (iNumYears).julian(),
-				dt.julian(), java.lang.Double.NaN, dt.julian(), dt.julian(), 2, "30/360", "30/360",
-					null, null, null, null, null, null, null, null, "", false, "USD", "USD", null,
+				dt.julian(), java.lang.Double.NaN, dt.julian(), dt.julian(), 2, dblCoupon, "30/360",
+					"30/360", null, null, null, null, null, null, null, null, "", false, "USD", "USD", null,
 						org.drip.state.identifier.CreditLabel.Standard ("IBM"));
 
 		if (!periodParams.validate()) {
@@ -2344,8 +2344,8 @@ public class ProductTestSuite {
 			org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"), 0.0402);
 
 		org.drip.product.params.PeriodGenerator bpgp = new org.drip.product.params.PeriodGenerator (dblStart
-			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, "30/360", "30/360", null,
-				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD",
+			+ 3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, 0.01, "30/360", "30/360",
+				null, null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD",
 					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),
 						org.drip.state.identifier.CreditLabel.Standard ("IBM"));
 
