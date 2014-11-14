@@ -58,6 +58,132 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	private java.util.List<org.drip.analytics.cashflow.CompositePeriod> _lsCouponPeriod = null;
 
 	/**
+	 * Construct and Instance of PeriodSet from the specified Parameters
+	 * 
+	 * @param dblMaturity Maturity Date
+	 * @param dblEffective Effective Date
+	 * @param dblFinalMaturity Final Maturity Date
+	 * @param dblFirstCouponDate First Coupon Date
+	 * @param dblInterestAccrualStart Interest Accrual Start Date
+	 * @param iFreq Coupon Frequency
+	 * @param dblCoupon Coupon Rate
+	 * @param strCouponDC Coupon day count convention
+	 * @param strAccrualDC Accrual day count convention
+	 * @param dapPay Pay Date Adjustment Parameters
+	 * @param dapReset Reset Date Adjustment Parameters
+	 * @param dapMaturity Maturity Date Adjustment Parameters
+	 * @param dapEffective Effective Date Adjustment Parameters
+	 * @param dapPeriodEnd Period End Date Adjustment Parameters
+	 * @param dapAccrualEnd Accrual Date Adjustment Parameters
+	 * @param dapPeriodStart Period Start Date Adjustment Parameters
+	 * @param dapAccrualStart Accrual Start  Date Adjustment Parameters
+	 * @param strMaturityType Maturity Type
+	 * @param bPeriodsFromForward Generate Periods forward (True) or Backward (False)
+	 * @param strCalendar Optional Holiday Calendar for accrual calculations
+	 * @param strCurrency Coupon Currency
+	 * @param forwardLabel The Forward Label
+	 * @param creditLabel The Credit Label
+	 * 
+	 * @return PeriodSet Instance
+	 */
+
+	public static final PeriodSet Create (
+		final double dblMaturity,
+		final double dblEffective,
+		final double dblFinalMaturity,
+		final double dblFirstCouponDate,
+		final double dblInterestAccrualStart,
+		final int iFreq,
+		final double dblCoupon,
+		final java.lang.String strCouponDC,
+		final java.lang.String strAccrualDC,
+		final org.drip.analytics.daycount.DateAdjustParams dapPay,
+		final org.drip.analytics.daycount.DateAdjustParams dapReset,
+		final org.drip.analytics.daycount.DateAdjustParams dapMaturity,
+		final org.drip.analytics.daycount.DateAdjustParams dapEffective,
+		final org.drip.analytics.daycount.DateAdjustParams dapPeriodEnd,
+		final org.drip.analytics.daycount.DateAdjustParams dapAccrualEnd,
+		final org.drip.analytics.daycount.DateAdjustParams dapPeriodStart,
+		final org.drip.analytics.daycount.DateAdjustParams dapAccrualStart,
+		final java.lang.String strMaturityType,
+		final boolean bPeriodsFromForward,
+		final java.lang.String strCalendar,
+		final java.lang.String strCurrency,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.CreditLabel creditLabel)
+	{
+		PeriodSet ps = new PeriodSet (dblEffective, strCouponDC, iFreq, null);
+
+		if (!ps.setDAPPay (dapPay) || !ps.setCoupon (dblCoupon) || !ps.setMaturity (dblMaturity) ||
+			!ps.setCurrency (strCurrency) ||!ps.setDAPAccrual (dapAccrualEnd) || !ps.setMaturityType
+				(strMaturityType) || !ps.setFinalMaturity (dblFinalMaturity) || !ps.setPeriodsFromForward
+					(bPeriodsFromForward) || !ps.setAccrualDC (strAccrualDC))
+			return null;
+
+		boolean bCouponEOMAdj = null == strCouponDC ? false : strCouponDC.toUpperCase().contains ("EOM");
+
+		if (!ps.setCouponEOMAdjustment (bCouponEOMAdj)) return null;
+
+		int iCouponDCIndex = null == strCouponDC ? -1 : strCouponDC.indexOf (" NON");
+
+		java.lang.String strCouponDCAdj = -1 != iCouponDCIndex ? strCouponDC.substring (0, iCouponDCIndex) :
+			strCouponDC;
+
+		if (!ps.setCouponDC (strCouponDCAdj)) return null;
+
+		boolean bAccrualEOMAdj = null == strAccrualDC ? false : strAccrualDC.toUpperCase().contains ("EOM");
+
+		if (!ps.setAccrualEOMAdjustment (bAccrualEOMAdj)) return null;
+
+		int iAccrualDCIndex = null == strAccrualDC ? -1 : strAccrualDC.indexOf (" NON");
+
+		java.lang.String strAccrualDCAdj = -1 != iAccrualDCIndex ? strAccrualDC.substring (0,
+			iAccrualDCIndex) : strAccrualDC;
+
+		if (!ps.setAccrualDC (strAccrualDCAdj)) return null;
+
+		try {
+			org.drip.analytics.date.JulianDate dtEffective = new org.drip.analytics.date.JulianDate
+				(dblEffective);
+
+			org.drip.analytics.date.JulianDate dtMaturity = new org.drip.analytics.date.JulianDate
+				(dblMaturity);
+
+			org.drip.param.period.UnitCouponAccrualSetting ucas = new
+				org.drip.param.period.UnitCouponAccrualSetting (iFreq, strCouponDCAdj, bCouponEOMAdj,
+					strAccrualDCAdj, bAccrualEOMAdj, strCurrency, true);
+
+			java.lang.String strTenor = (12 / iFreq) + "M";
+
+			org.drip.param.period.ComposableFixedUnitSetting cfus = new
+				org.drip.param.period.ComposableFixedUnitSetting (strTenor,
+					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
+						dblCoupon, 0., strCurrency);
+
+			org.drip.param.period.CompositePeriodSetting cps = new
+				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null,
+					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
+						null, null, null, null);
+
+			java.util.List<java.lang.Double> lsStreamEdgeDate = bPeriodsFromForward ?
+				org.drip.analytics.support.CompositePeriodBuilder.ForwardEdgeDates (dtEffective, dtMaturity,
+					strTenor, dapAccrualEnd, org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB) :
+						org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dtEffective,
+							dtMaturity, strTenor, dapAccrualEnd,
+								org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
+
+			java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod =
+				org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsStreamEdgeDate, cps,
+					ucas, cfus);
+
+			return new PeriodSet (dblEffective, strCouponDCAdj, iFreq, lsCouponPeriod);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	/**
 	 * Construct PeriodSet from the effective date, day count, frequency, and the list of coupon periods
 	 * 
 	 * @param dblEffective Effective Date
@@ -100,7 +226,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	 * @return List of Coupon Period
 	 */
 
-	public java.util.List<org.drip.analytics.cashflow.CompositePeriod> getPeriods()
+	public java.util.List<org.drip.analytics.cashflow.CompositePeriod> periods()
 	{
 		return _lsCouponPeriod;
 	}
@@ -111,7 +237,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	 * @return The first Coupon period
 	 */
 
-	public org.drip.analytics.cashflow.CompositePeriod getFirstPeriod()
+	public org.drip.analytics.cashflow.CompositePeriod firstPeriod()
 	{
 		return _lsCouponPeriod.get (0);
 	}
@@ -122,7 +248,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	 * @return The final Coupon period
 	 */
 
-	public org.drip.analytics.cashflow.CompositePeriod getLastPeriod()
+	public org.drip.analytics.cashflow.CompositePeriod lastPeriod()
 	{
 		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
 	}
@@ -137,12 +263,12 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	 * @throws java.lang.Exception Thrown if the input date not in the period set range
 	 */
 
-	public int getPeriodIndex (
+	public int periodIndex (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("PeriodSet::getPeriodIndex => Input date is NaN!");
+			throw new java.lang.Exception ("PeriodSet::periodIndex => Input date is NaN!");
 
 		int i = 0;
 
@@ -152,8 +278,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 			++i;
 		}
 
-		throw new java.lang.Exception
-			("PeriodSet::getPeriodIndex => Input date not in the period set range!");
+		throw new java.lang.Exception ("PeriodSet::periodIndex => Input date not in the period set range!");
 	}
 	
 	/**
@@ -164,7 +289,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	 * @return Period object corresponding to the input index
 	 */
 
-	public org.drip.analytics.cashflow.CompositePeriod getPeriod (
+	public org.drip.analytics.cashflow.CompositePeriod period (
 		final int iIndex)
 	{
 		try {
@@ -396,17 +521,6 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	{
 		_dblFinalMaturity = dblFinalMaturity;
 		return true;
-	}
-
-	/**
-	 * Retrieve the List of Coupon Periods
-	 * 
-	 * @return The List of Coupon Periods
-	 */
-
-	public java.util.List<org.drip.analytics.cashflow.CompositePeriod> couponPeriodList()
-	{
-		return _lsCouponPeriod;
 	}
 
 	/**

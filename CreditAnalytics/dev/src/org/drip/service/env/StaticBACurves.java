@@ -109,10 +109,10 @@ public class StaticBACurves {
 
 		bondTSY.setTerminationSetting (cfteParams);
 
-		org.drip.product.params.PeriodGenerator periodParams = null;
+		org.drip.product.params.PeriodSet periodParams = null;
 
 		try {
-			periodParams = new org.drip.product.params.PeriodGenerator (dt.addYears (iNumYears).julian(),
+			periodParams = org.drip.product.params.PeriodSet.Create (dt.addYears (iNumYears).julian(),
 				dt.julian(), java.lang.Double.NaN, dt.julian(), dt.julian(), 2, dblCoupon, "30/360",
 					"30/360", null, null, null, null, null, null, null, null, "", false, strCurrency,
 						strCurrency, null, null);

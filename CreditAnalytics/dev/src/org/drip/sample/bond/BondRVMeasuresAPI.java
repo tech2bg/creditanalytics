@@ -438,12 +438,15 @@ public class BondRVMeasuresAPI {
 			   "8Y",    "9Y",   "10Y",   "11Y",   "12Y",   "15Y",   "20Y",   "25Y",   "30Y",   "40Y",   "50Y"};
 		double[] adblIRSRate = new double[]  {0.00367, 0.00533, 0.00843, 0.01238, 0.01609, 0.01926, 0.02191,
 			0.02406, 0.02588, 0.02741, 0.02870, 0.02982, 0.03208, 0.03372, 0.03445, 0.03484, 0.03501, 0.03484};
-		String[] astrTSYTenor = new String[] {   "1M",    "3M",    "6M",    "1Y",    "2Y",    "3Y",    "5Y",    "7Y",
-				"10Y",  "30Y"};
-		final double[] adblTSYCoupon = new double[] {0.0000, 0.0000, 0.0000, 0.0000, 0.00375, 0.00500, 0.0100, 0.01375,
-			0.01375, 0.02875};
-		double[] adblTSYYield = new double[] {0.00018, 0.00058, 0.00104, 0.00160, 0.00397, 0.00696, 0.01421, 0.01955,
-			0.02529, 0.03568};
+		String[] astrTSYTenor = new String[] {
+			"1Y", "2Y", "3Y", "5Y", "7Y", "10Y",  "30Y"
+		};
+		final double[] adblTSYCoupon = new double[] {
+			0.0000, 0.00375, 0.00500, 0.0100, 0.01375, 0.01375, 0.02875
+		};
+		double[] adblTSYYield = new double[] {
+			0.00160, 0.00397, 0.00696, 0.01421, 0.01955, 0.02529, 0.03568
+		};
 
 		DiscountCurve dc = BuildRatesCurveFromInstruments (dtCurve, astrCashTenor, adblCashRate, astrIRSTenor, adblIRSRate, 0., "USD");
 

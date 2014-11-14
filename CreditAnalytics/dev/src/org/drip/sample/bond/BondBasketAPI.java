@@ -412,10 +412,12 @@ public class BondBasketAPI {
 		 * Construct the set of Treasury instruments (in the case on-the-run set)
 		 */
 
-		String[] astrTSYTenor = new String[] {   "1M",    "3M",    "6M",    "1Y",    "2Y",    "3Y",    "5Y",    "7Y",
-				"10Y",  "30Y"};
-		final double[] adblTSYCoupon = new double[] {0.0000, 0.0000, 0.0000, 0.0000, 0.00375, 0.00500, 0.0100, 0.01375,
-			0.01375, 0.02875};
+		String[] astrTSYTenor = new String[] {
+			"1Y", "2Y", "3Y", "5Y", "7Y", "10Y", "30Y"
+		};
+		final double[] adblTSYCoupon = new double[] {
+			0.0000, 0.00375, 0.00500, 0.0100, 0.01375, 0.01375, 0.02875
+		};
 
 		Bond[] aTSYBond = CreateOnTheRunTSYBondSet (dtCurve, astrTSYTenor, adblTSYCoupon);
 
@@ -423,8 +425,9 @@ public class BondBasketAPI {
 		 * Build the Treasury Curve from the Treasury instruments and their yields
 		 */
 
-		double[] adblTSYYield = new double[] {0.00018, 0.00058, 0.00104, 0.00160, 0.00397, 0.00696, 0.01421, 0.01955,
-			0.02529, 0.03568};
+		double[] adblTSYYield = new double[] {
+			0.00160, 0.00397, 0.00696, 0.01421, 0.01955, 0.02529, 0.03568
+		};
 
 		DiscountCurve dcTSY = BuildOnTheRunTSYDiscountCurve (dtCurve, aTSYBond, adblTSYYield);
 

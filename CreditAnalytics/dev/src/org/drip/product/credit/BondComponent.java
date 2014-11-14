@@ -357,7 +357,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		double dblCreditRisklessParPV = java.lang.Double.NaN;
 
 		try {
-			for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
+			for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
 				if (null == period || period.payDate() < valParams.valueDate()) continue;
 
 				double dblPeriodStartDate = period.startDate() > valParams.valueDate() ? period.startDate() :
@@ -615,9 +615,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (java.lang.Double.isNaN (dblDate)) return null;
 
 		try {
-			int iIndex = _periodParams.getPeriodIndex (dblDate);
+			int iIndex = _periodParams.periodIndex (dblDate);
 
-			return _periodParams.getPeriod (iIndex);
+			return _periodParams.period (iIndex);
 		} catch (java.lang.Exception e) {
 		}
 
@@ -1222,7 +1222,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	@Override public org.drip.analytics.date.JulianDate firstCouponDate()
 	{
 		try {
-			return new org.drip.analytics.date.JulianDate (_periodParams.getPeriods().get (0).endDate());
+			return new org.drip.analytics.date.JulianDate (_periodParams.periods().get (0).endDate());
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
@@ -1234,7 +1234,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	{
 		if (null == _periodParams) return null;
 
-		return _periodParams.getPeriods();
+		return _periodParams.periods();
 	}
 
 	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
@@ -1252,7 +1252,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLP = new
 			java.util.ArrayList<org.drip.analytics.cashflow.LossQuadratureMetrics>();
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
 			if (null == period) continue;
 
 			java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLPSub = period.lossMetrics
@@ -1284,7 +1284,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> sLP = new
 			java.util.ArrayList<org.drip.analytics.cashflow.LossQuadratureMetrics>();
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
 			if (null == period || period.endDate() < valParams.valueDate()) continue;
 
 			if (period.startDate() > wi.date()) break;
@@ -1506,7 +1506,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (java.lang.Double.isNaN (dblDate))
 			throw new java.lang.Exception ("BondComponent::inFirstCouponPeriod => Input date is NaN");
 
-		return _periodParams.getFirstPeriod().contains (dblDate);
+		return _periodParams.firstPeriod().contains (dblDate);
 	}
 
 	@Override public boolean inLastCouponPeriod (
@@ -1516,7 +1516,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (java.lang.Double.isNaN (dblDate))
 			throw new java.lang.Exception ("BondComponent::inLastCouponPeriod => Input date is NaN");
 
-		return _periodParams.getLastPeriod().contains (dblDate);
+		return _periodParams.lastPeriod().contains (dblDate);
 	}
 
 	@Override public java.lang.String getFloatCouponConvention()
@@ -1533,7 +1533,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			_periodParams.maturity())
 			return null;
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
 			if (period.payDate() < dblValue) continue;
 
 			try {
@@ -1556,11 +1556,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt) return null;
 
 		try {
-			int iIndex = _periodParams.getPeriodIndex (dt.julian());
+			int iIndex = _periodParams.periodIndex (dt.julian());
 
 			if (0 == iIndex) return null;
 			
-			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.getPeriod (iIndex - 1);
+			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.period (iIndex - 1);
 
 			if (null == period) return null;
 
@@ -1579,9 +1579,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt || null == csqs)
 			throw new java.lang.Exception ("BondComponent::calcPreviousCouponRate => Null val/mkt params!");
 
-		int iIndex = _periodParams.getPeriodIndex (dt.julian());
+		int iIndex = _periodParams.periodIndex (dt.julian());
 
-		org.drip.analytics.cashflow.CompositePeriod period = _periodParams.getPeriod (iIndex - 1);
+		org.drip.analytics.cashflow.CompositePeriod period = _periodParams.period (iIndex - 1);
 
 		if (null == period)
 			throw new java.lang.Exception
@@ -1603,9 +1603,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt) return null;
 
 		try {
-			int iIndex = _periodParams.getPeriodIndex (dt.julian());
+			int iIndex = _periodParams.periodIndex (dt.julian());
 			
-			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.getPeriod (iIndex);
+			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.period (iIndex);
 
 			if (null == period) return null;
 
@@ -1622,9 +1622,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt) return null;
 
 		try {
-			int iIndex = _periodParams.getPeriodIndex (dt.julian());
+			int iIndex = _periodParams.periodIndex (dt.julian());
 			
-			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.getPeriod (iIndex + 1);
+			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.period (iIndex + 1);
 
 			if (null == period) return null;
 
@@ -1733,9 +1733,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			return pcm.rate();
 		}
 
-		int iIndex = _periodParams.getPeriodIndex (dt.julian());
+		int iIndex = _periodParams.periodIndex (dt.julian());
 
-		org.drip.analytics.cashflow.CompositePeriod period = _periodParams.getPeriod (iIndex + 1);
+		org.drip.analytics.cashflow.CompositePeriod period = _periodParams.period (iIndex + 1);
 
 		if (null == period)
 			throw new java.lang.Exception ("BondComponent::calcNextCouponRate => Cannot find next period!");
@@ -1763,7 +1763,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				" greater than maturity " + org.drip.analytics.date.JulianDate.fromJulian
 					(_periodParams.maturity()));
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
 			if (period.payDate() < dblDate) continue;
 
 			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (period.endDate(), new
@@ -1836,8 +1836,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		try {
 			zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (_periodParams.freq(),
 				_periodParams.couponDC(), getCouponCurrency(), _periodParams.couponEOMAdjustment(),
-					_periodParams.getPeriods(), dblWorkoutDate, dblCashPayDate, dcBase, null == quotingParams
-						? (null == _mktConv ? null : _mktConv._quotingParams) : quotingParams, dblZCBump);
+					_periodParams.periods(), dblWorkoutDate, dblCashPayDate, dcBase, null == quotingParams ?
+						(null == _mktConv ? null : _mktConv._quotingParams) : quotingParams, dblZCBump);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
@@ -1846,7 +1846,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception
 				("Cannot create shifted ZC in BondComponent::calcPriceFromBumpedZC");
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
 			if (period.payDate() < valParams.valueDate()) continue;
 
 			if (java.lang.Double.isNaN (dblScalingNotional))
@@ -1926,7 +1926,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception
 				("Cannot create shifted DC in BondComponent::calcPriceFromBumpedDC");
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
 			if (period.payDate() < valParams.valueDate()) continue;
 
 			if (java.lang.Double.isNaN (dblScalingNotional)) dblScalingNotional = notional
@@ -2035,7 +2035,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
 			false, s_iDiscretizationScheme, false);
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
 			if (period.payDate() < valParams.valueDate()) continue;
 
 			double dblAccrualEndDate = period.endDate();
@@ -6557,7 +6557,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		boolean bTerminateCouponFlow = false;
 		org.drip.analytics.cashflow.CompositePeriod periodRef = null;
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
 			if (period.payDate() < valParams.valueDate()) continue;
 
 			if (bFirstPeriod) {
@@ -8699,7 +8699,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null != _notlParams && _notlParams._bPriceOffOriginalNotional) dblScalingNotional = 1.;
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
 			if (period.payDate() < valParams.valueDate()) continue;
 
 			if (bFirstPeriod) {
@@ -12635,7 +12635,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	@Override public void showPeriods()
 		throws java.lang.Exception
 	{
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.getPeriods())
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods())
 			System.out.println ("\t" + org.drip.analytics.date.JulianDate.fromJulian (period.startDate()) +
 				"->" + org.drip.analytics.date.JulianDate.fromJulian (period.endDate()) + "    " +
 					period.accrualDCF (period.endDate()));

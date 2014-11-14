@@ -667,7 +667,7 @@ public class BondManager {
 
 		if (s_bBlog) System.out.println ("Working on making " + idParams._strCUSIP);
 
-		org.drip.product.params.PeriodGenerator periodParams = bpb.getPeriodGenParams();
+		org.drip.product.params.PeriodSet periodParams = bpb.getPeriodGenParams();
 
 		if (null == periodParams) return null;
 

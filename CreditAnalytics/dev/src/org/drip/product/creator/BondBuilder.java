@@ -169,7 +169,7 @@ public class BondBuilder {
 									strCurrency), new org.drip.product.params.CreditSetting (30,
 										java.lang.Double.NaN, true, strCreditCurveName, true), new
 											org.drip.product.params.TerminationSetting (false, false, false),
-												new org.drip.product.params.PeriodGenerator
+												org.drip.product.params.PeriodSet.Create
 													(dtMaturity.julian(), dtEffective.julian(),
 														java.lang.Double.NaN, java.lang.Double.NaN,
 															dtEffective.julian(), iFreq, dblCoupon,
@@ -228,7 +228,7 @@ public class BondBuilder {
 										strCurrency, strCurrency), new org.drip.product.params.CreditSetting
 											(30, java.lang.Double.NaN, true, strCreditCurveName, true), new
 												org.drip.product.params.TerminationSetting (false, false,
-													false), new org.drip.product.params.PeriodGenerator
+													false), org.drip.product.params.PeriodSet.Create
 														(dtMaturity.julian(), dtEffective.julian(),
 															java.lang.Double.NaN, java.lang.Double.NaN,
 																dtEffective.julian(), iFreq, dblSpread,
