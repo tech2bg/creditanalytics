@@ -1295,7 +1295,7 @@ public class CreditAnalyticsTestSuite {
 
 		if (s_bBondAnalDisplay) {
 			try {
-				System.out.println (strISIN + "    " + bond.getTicker() + " " +
+				System.out.println (strISIN + "    " + bond.ticker() + " " +
 					org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 						(org.drip.analytics.date.JulianDate.Today().julian(), valParams,
 							org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).rate(), 2, 3, 100.) +
@@ -1493,7 +1493,7 @@ public class CreditAnalyticsTestSuite {
 					e.printStackTrace();
 				}
 
-				org.drip.param.valuation.WorkoutInfo wi = aBond[i].calcExerciseYieldFromPrice
+				org.drip.param.valuation.WorkoutInfo wi = aBond[i].exerciseYieldFromPrice
 					(org.drip.param.valuation.ValuationParams.CreateValParams
 						(org.drip.analytics.date.JulianDate.Today(), 0, "",
 							org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null, 1.);
@@ -1632,8 +1632,8 @@ public class CreditAnalyticsTestSuite {
 		for (java.lang.String strISIN : lsstrISIN) {
 			org.drip.product.definition.Bond bond = org.drip.service.api.CreditAnalytics.GetBond (strISIN);
 
-			if (null != bond && !bond.hasVariableCoupon() && !bond.hasBeenExercised() && !bond.hasDefaulted()
-				&& bond.maturity().julian() > dtToday.julian()) {
+			if (null != bond && !bond.variableCoupon() && !bond.exercised() && !bond.defaulted() &&
+				bond.maturity().julian() > dtToday.julian()) {
 				try {
 					++iNumBonds;
 					double dblPECSFromPrice = java.lang.Double.NaN;
@@ -1672,7 +1672,7 @@ public class CreditAnalyticsTestSuite {
 						(strISIN, dtToday, dc, cc);
 
 					if (s_bTickerAnalDisplay)
-						System.out.println (strISIN + "    " + bond.getTicker() + " " +
+						System.out.println (strISIN + "    " + bond.ticker() + " " +
 							org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 								(org.drip.analytics.date.JulianDate.Today().julian(), null,
 									org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).rate(), 2, 3,
@@ -1711,7 +1711,7 @@ public class CreditAnalyticsTestSuite {
 					(strISIN, "OutstandingAmount");
 
 				if (s_bTickerNotionalDisplay)
-					System.out.println (strISIN + "    " + bond.getTicker() + " " +
+					System.out.println (strISIN + "    " + bond.ticker() + " " +
 						org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
 							(org.drip.analytics.date.JulianDate.Today().julian(), null,
 								org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).rate(), 2, 3,

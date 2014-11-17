@@ -95,8 +95,7 @@ public class BondBuilder {
 			ccyParams || !ccyParams.validate() || (null != fltParams && !fltParams.validate()) || null ==
 				mktConv || !mktConv.validate() || null == irValParams || !irValParams.validate() || null ==
 					crValParams || !crValParams.validate() || null == cfteParams || !cfteParams.validate() ||
-						null == periodParams || !periodParams.validate() || null == notlParams ||
-							!notlParams.validate())
+						null == periodParams || null == notlParams || !notlParams.validate())
 			return null;
 
 		org.drip.product.credit.BondComponent bond = new org.drip.product.credit.BondComponent();
@@ -282,6 +281,7 @@ public class BondBuilder {
 
 		double dblTotalPrincipal = 0.;
 		double[] adblDate = new double[adt.length];
+		org.drip.product.params.PeriodSet bfpgp = null;
 		double[] adblCouponFactor = new double[adt.length];
 		double[] adblNormalizedPrincipal = new double[adt.length];
 		double[] adblCurrentCumulativePayDown = new double[adt.length];
@@ -350,10 +350,11 @@ public class BondBuilder {
 			dblPeriodStart = adblDate[i];
 		}
 
-		org.drip.product.params.PeriodSet bfpgp = new org.drip.product.params.PeriodSet (lsCouponPeriod);
-
-		if (!bfpgp.validate()) {
-			System.out.println ("Could not validate bfpgp!");
+		try {
+			bfpgp = new org.drip.product.params.PeriodSet (lsCouponPeriod, java.lang.Double.NaN,
+				"MATURITY_TYPE_REGULAR");
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
 
 			return null;
 		}

@@ -294,12 +294,12 @@ public class BondManager {
 			if (null == me.getValue()) continue;
 
 			org.drip.product.params.EmbeddedOptionSchedule eosCall = ExtractEOS (stmt,
-				me.getValue().getISIN(), me.getValue().effective().julian(), false);
+				me.getValue().isin(), me.getValue().effective().julian(), false);
 
 			if (null != eosCall) me.getValue().setEmbeddedCallSchedule (eosCall);
 
 			org.drip.product.params.EmbeddedOptionSchedule eosPut = ExtractEOS (stmt,
-				me.getValue().getISIN(), me.getValue().effective().julian(), true);
+				me.getValue().isin(), me.getValue().effective().julian(), true);
 
 			if (null != eosPut) me.getValue().setEmbeddedPutSchedule (eosPut);
 		}
@@ -340,18 +340,18 @@ public class BondManager {
 
 		if (null == mktParams) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.output.BondRVMeasures> mapBMRV = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.output.BondRVMeasures>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.output.BondRVMeasures> mapBMRV =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.output.BondRVMeasures>();
 
-		org.drip.param.valuation.WorkoutInfo wiAsk = bond.calcExerciseYieldFromPrice (valParams, mktParams,
-			null, dblAskPrice);
+		org.drip.param.valuation.WorkoutInfo wiAsk = bond.exerciseYieldFromPrice (valParams, mktParams, null,
+			dblAskPrice);
 
 		if (null != wiAsk)
 			mapBMRV.put ("ASK", bond.standardMeasures (valParams, null, mktParams, null, wiAsk,
 				dblAskPrice));
 
-		org.drip.param.valuation.WorkoutInfo wiBid = bond.calcExerciseYieldFromPrice (valParams, mktParams,
-			null, dblBidPrice);
+		org.drip.param.valuation.WorkoutInfo wiBid = bond.exerciseYieldFromPrice (valParams, mktParams, null,
+			dblBidPrice);
 
 		if (null != wiBid)
 			mapBMRV.put ("BID", bond.standardMeasures (valParams, null, mktParams, null, wiBid,
@@ -401,13 +401,13 @@ public class BondManager {
 	        java.text.DecimalFormat df2p = new java.text.DecimalFormat ("#00.000");
 
 			try {
-				java.lang.String strRunName = bond.getTicker() + "  " + df2p.format (100. * bond.coupon
+				java.lang.String strRunName = bond.ticker() + "  " + df2p.format (100. * bond.coupon
 					(valParams.valueDate(), valParams, null).rate()) + " " +
 						(org.drip.analytics.date.JulianDate.Year (bond.maturity().julian()) - 2000);
 
 				if (bond.isFloater()) {
 					if (s_bBlog)
-						System.out.println ("Setting rate for index " + bond.getRateIndex() + " and date " +
+						System.out.println ("Setting rate for index " + bond.rateIndex() + " and date " +
 							bond.getPeriodResetDate (valParams.valueDate()));
 
 					mpc.addFixings (bond.getPeriodResetDate (valParams.valueDate()), bond.forwardLabel()[0],
@@ -467,9 +467,9 @@ public class BondManager {
 			org.drip.product.definition.Bond bond = me.getValue();
 
 			if (bond.maturity().julian() > dt.julian()) {
-				java.lang.String strRunTicker = bond.getTicker();
+				java.lang.String strRunTicker = bond.ticker();
 
-				for (int i = bond.getTicker().length() - 1; i < 6; ++i)
+				for (int i = bond.ticker().length() - 1; i < 6; ++i)
 					strRunTicker += " ";
 
 				try {
@@ -524,9 +524,9 @@ public class BondManager {
 			org.drip.product.definition.Bond bond = me.getValue();
 
 			if (bond.maturity().julian() > dt.julian()) {
-				java.lang.String strRunTicker = bond.getTicker();
+				java.lang.String strRunTicker = bond.ticker();
 
-				for (int i = bond.getTicker().length() - 1; i < 6; ++i)
+				for (int i = bond.ticker().length() - 1; i < 6; ++i)
 					strRunTicker += " ";
 
 				try {
@@ -534,8 +534,8 @@ public class BondManager {
 						(dt.julian(), null, null).rate()) + " " + (org.drip.analytics.date.JulianDate.Year
 							(bond.maturity().julian()) - 2000);
 
-					if (!s_mapBondMarks.containsKey (bond.getISIN()) && !s_mapBondMarks.containsKey
-						(bond.getCUSIP())) {
+					if (!s_mapBondMarks.containsKey (bond.isin()) && !s_mapBondMarks.containsKey
+						(bond.cusip())) {
 						if (s_bBlog) System.out.println ("No price entry found for " + strRunTicker);
 
 						++iNumMarksUnavailable;
@@ -551,10 +551,10 @@ public class BondManager {
 
 					double dblMidPrice = java.lang.Double.NaN;
 
-					if (s_mapBondMarks.containsKey (bond.getISIN()))
-						dblMidPrice = s_mapBondMarks.get (bond.getISIN());
+					if (s_mapBondMarks.containsKey (bond.isin()))
+						dblMidPrice = s_mapBondMarks.get (bond.isin());
 					else
-						dblMidPrice = s_mapBondMarks.get (bond.getCUSIP());
+						dblMidPrice = s_mapBondMarks.get (bond.cusip());
 
 					if (!java.lang.Double.isNaN (dblMidPrice)) {
 						CalcBondMeasures (strRunName, bond, valParams, mpc, 0.01 * (dblMidPrice - 0.25), 0.01
@@ -1068,19 +1068,19 @@ public class BondManager {
 
 				org.drip.product.definition.Bond bond = s_mapBonds.get (me.getValue());
 
-				if (!s_mapBondMarks.containsKey (bond.getISIN()) && !s_mapBondMarks.containsKey
-					(bond.getCUSIP())) {
-					if (s_bBlog) System.out.println ("No price entry found for " + bond.getCUSIP());
+				if (!s_mapBondMarks.containsKey (bond.isin()) && !s_mapBondMarks.containsKey (bond.cusip()))
+				{
+					if (s_bBlog) System.out.println ("No price entry found for " + bond.cusip());
 
 					continue;
 				}
 
 				double dblMidPrice = java.lang.Double.NaN;
 
-				if (s_mapBondMarks.containsKey (bond.getISIN()))
-					dblMidPrice = s_mapBondMarks.get (bond.getISIN());
+				if (s_mapBondMarks.containsKey (bond.isin()))
+					dblMidPrice = s_mapBondMarks.get (bond.isin());
 				else
-					dblMidPrice = s_mapBondMarks.get (bond.getCUSIP());
+					dblMidPrice = s_mapBondMarks.get (bond.cusip());
 
 				if (!java.lang.Double.isNaN (dblMidPrice))
 					CalcBondAnalyticsFromPrice (me.getValue(), mpc, dt, dblMidPrice - 0.25, dblMidPrice +
@@ -1132,10 +1132,10 @@ public class BondManager {
 		try {
 			strOracleEOD = (new org.drip.analytics.date.JulianDate (valParams.valueDate())).toOracleDate();
 
-			stmt.executeQuery ("delete from BondHist where ISIN = '" + bond.getISIN() + "' and EOD = '" +
+			stmt.executeQuery ("delete from BondHist where ISIN = '" + bond.isin() + "' and EOD = '" +
 				strOracleEOD + "'");
 
-			stmt.executeQuery ("delete from BondHist where CUSIP = '" + bond.getCUSIP() + "' and EOD = '" +
+			stmt.executeQuery ("delete from BondHist where CUSIP = '" + bond.cusip() + "' and EOD = '" +
 				strOracleEOD + "'");
 		} catch (java.lang.Exception e) {
 			System.out.println (e.getMessage() + "; " + bond.name() + " for price=" + dblPrice);
@@ -1147,12 +1147,12 @@ public class BondManager {
 
 		java.lang.StringBuilder sbSQLInsertBondClose = new java.lang.StringBuilder();
 
-		sbSQLInsertBondClose.append ("insert into BondHist values('").append (bond.getISIN()).append
-			("', '").append (bond.getCUSIP()).append ("', '").append (strOracleEOD).append ("', ").append
+		sbSQLInsertBondClose.append ("insert into BondHist values('").append (bond.isin()).append
+			("', '").append (bond.cusip()).append ("', '").append (strOracleEOD).append ("', ").append
 				(dblPrice).append (", ");
 
 		try {
-			wi = bond.calcExerciseYieldFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
+			wi = bond.exerciseYieldFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
 				dblPrice);
 		} catch (java.lang.Exception e) {
 			System.out.println (e.getMessage() + "; " + bond.name() + " for price=" + dblPrice);
@@ -1265,8 +1265,8 @@ public class BondManager {
 			org.drip.product.definition.Bond bond = me.getValue();
 
 			if (bond.maturity().julian() > dtEOD.julian()) {
-				if (!s_mapBondMarks.containsKey (bond.getISIN()) && !s_mapBondMarks.containsKey
-					(bond.getCUSIP())) {
+				if (!s_mapBondMarks.containsKey (bond.isin()) && !s_mapBondMarks.containsKey (bond.cusip()))
+				{
 					if (s_bBlog) System.out.println ("No price entry found for " + bond.name());
 
 					++iNumMarksUnavailable;
@@ -1285,10 +1285,10 @@ public class BondManager {
 
 				double dblMidPrice = java.lang.Double.NaN;
 
-				if (s_mapBondMarks.containsKey (bond.getISIN()))
-					dblMidPrice = 0.01 * s_mapBondMarks.get (bond.getISIN());
+				if (s_mapBondMarks.containsKey (bond.isin()))
+					dblMidPrice = 0.01 * s_mapBondMarks.get (bond.isin());
 				else
-					dblMidPrice = 0.01 * s_mapBondMarks.get (bond.getCUSIP());
+					dblMidPrice = 0.01 * s_mapBondMarks.get (bond.cusip());
 
 				CalcAndLoadBondMeasuresFromPrice (stmt, bond, valParams, mpc, dblMidPrice);
 
@@ -1647,7 +1647,7 @@ public class BondManager {
 					bond.getPeriodSet().maturity())
 					continue;
 
-				bw.write ("\t\torg.drip.product.credit.Bond bond" + bond.getISIN() +
+				bw.write ("\t\torg.drip.product.credit.Bond bond" + bond.isin() +
 					" = new org.drip.product.credit.Bond();\n\n");
 
 				if (null != bond.getTreasuryBenchmark()) {
@@ -1656,15 +1656,13 @@ public class BondManager {
 					if (null != bond.getTreasuryBenchmark())
 						strPrimaryBmk = bond.getTreasuryBenchmark().getPrimaryBmk();
 
-					bw.write ("\t\tbond" + bond.getISIN() + ".setTSYParams (CreateTSYParams (\"" +
+					bw.write ("\t\tbond" + bond.isin() + ".setTSYParams (CreateTSYParams (\"" +
 						strPrimaryBmk + "\", \"NONE\", \"NONE\"));\n\n");
 				}
 
-				bw.write ("\t\tmapBondCache.add (\"" + bond.getISIN() + "\", bond" + bond.getISIN() +
-					");\n\n");
+				bw.write ("\t\tmapBondCache.add (\"" + bond.isin() + "\", bond" + bond.isin() + ");\n\n");
 
-				bw.write ("\t\tmapBondCache.add (\"" + bond.getCUSIP() + "\", bond" + bond.getISIN() +
-					");\n\n");
+				bw.write ("\t\tmapBondCache.add (\"" + bond.cusip() + "\", bond" + bond.isin() + ");\n\n");
 
 				System.out.println (i++);
 			}

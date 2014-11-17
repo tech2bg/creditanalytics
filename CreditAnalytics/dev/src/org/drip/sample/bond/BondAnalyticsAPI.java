@@ -559,7 +559,7 @@ public class BondAnalyticsAPI {
 
 			double dblPrice = aBond[i].calcPriceFromYield (valParams, mktParams, null, 0.03);
 
-			WorkoutInfo wi = aBond[i].calcExerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
+			WorkoutInfo wi = aBond[i].exerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
 
 			System.out.println ("Workout Date: " + JulianDate.fromJulian (wi.date()));
 

@@ -122,8 +122,6 @@ public class StaticBACurves {
 			return null;
 		}
 
-		if (!periodParams.validate()) return null;
-
 		bondTSY.setPeriodSet (periodParams);
 
 		org.drip.product.params.NotionalSetting notlParams = new

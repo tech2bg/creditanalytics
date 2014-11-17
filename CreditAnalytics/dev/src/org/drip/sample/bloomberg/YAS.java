@@ -433,7 +433,7 @@ public class YAS {
 
 		double dblAccrued = bond.calcAccrued (valParams.valueDate(), mktParams);
 
-		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
+		WorkoutInfo wi = bond.exerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
 
 		double dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 

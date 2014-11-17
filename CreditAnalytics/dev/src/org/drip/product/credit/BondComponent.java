@@ -239,7 +239,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
-	@Override public org.drip.param.valuation.WorkoutInfo calcExerciseYieldFromPrice (
+	@Override public org.drip.param.valuation.WorkoutInfo exerciseYieldFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
@@ -773,7 +773,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	{
 	}
 
-	@Override public double[] getSecTSYSpread (
+	@Override public double[] secTreasurySpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -812,7 +812,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return adblSecTSYSpread;
 	}
 
-	@Override public double getEffectiveTsyBmkYield (
+	@Override public double effectiveTreasuryBenchmarkYield (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
@@ -820,18 +820,19 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == csqs || java.lang.Double.isNaN (dblPrice))
-			throw new java.lang.Exception ("Bond.getEffectiveTsyBmkYield: Bad val/mkt Params");
+			throw new java.lang.Exception ("Bond.effectiveTreasuryBenchmarkYield: Bad val/mkt Params");
 
 		java.lang.String strTsyBmk = null;
 		org.drip.param.definition.ProductQuote cqTsyBmkYield = null;
 
 		if (null != _tsyBmkSet) strTsyBmk = _tsyBmkSet.getPrimaryBmk();
 
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
-			throw new java.lang.Exception ("Bond.getEffectiveTsyBmkYield: Cant do TSY wkout for px!");
+			throw new java.lang.Exception
+				("Bond.effectiveTreasuryBenchmarkYield: Cant do TSY wkout for px!");
 
 		if (null == strTsyBmk || strTsyBmk.isEmpty())
 			strTsyBmk = org.drip.analytics.support.AnalyticsHelper.BaseTsyBmk (valParams.valueDate(),
@@ -1022,13 +1023,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return new java.lang.String[] {_idParams._strID};
 	}
 
-	@Override public java.lang.String getISIN() {
+	@Override public java.lang.String isin()
+	{
 		if (null == _idParams) return null;
 
 		return _idParams._strISIN;
 	}
 
-	@Override public java.lang.String getCUSIP()
+	@Override public java.lang.String cusip()
 	{
 		if (null == _idParams) return null;
 
@@ -1264,20 +1266,18 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return sLP;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics>
-		getLossFlowFromPrice (
-			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.param.pricer.PricerParams pricerParams,
-			final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-			final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-			final double dblPrice)
+	@Override public java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> lossFlowFromPrice (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
+		final double dblPrice)
 	{
 		if (null == valParams || null == pricerParams || null == csqs || java.lang.Double.isNaN
 			(dblPrice))
 			return null;
 
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
-			quotingParams, dblPrice);
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs, vcp, dblPrice);
 
 		if (null == wi) return null;
 
@@ -1305,28 +1305,28 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return true;
 	}
 
-	@Override public java.lang.String getRateIndex()
+	@Override public java.lang.String rateIndex()
 	{
 		if (null == _fltParams) return "";
 
 		return _fltParams._fri.fullyQualifiedName();
 	}
 
-	@Override public double getCurrentCoupon()
+	@Override public double currentCoupon()
 	{
 		if (null == _fltParams) return java.lang.Double.NaN;
 
 		return _fltParams._dblCurrentCoupon;
 	}
 
-	@Override public double getFloatSpread()
+	@Override public double floatSpread()
 	{
 		if (null == _fltParams) return java.lang.Double.NaN;
 
 		return _fltParams._dblFloatSpread;
 	}
 
-	@Override public java.lang.String getTicker()
+	@Override public java.lang.String ticker()
 	{
 		if (null == _idParams) return null;
 
@@ -1349,24 +1349,24 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		_eosPut = new org.drip.product.params.EmbeddedOptionSchedule (eos);
 	}
 
-	@Override public boolean isCallable()
+	@Override public boolean callable()
 	{
 		return null != _eosCall;
 	}
 
-	@Override public boolean isPutable()
+	@Override public boolean putable()
 	{
 		return null != _eosPut;
 	}
 
-	@Override public boolean isSinkable()
+	@Override public boolean sinkable()
 	{
 		if (null == _notlParams) return false;
 
 		return true;
 	}
 
-	@Override public boolean hasVariableCoupon()
+	@Override public boolean variableCoupon()
 	{
 		if (null == _cpnParams || null == _cpnParams._strCouponType || !"variable".equalsIgnoreCase
 			(_cpnParams._strCouponType))
@@ -1375,21 +1375,21 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return true;
 	}
 
-	@Override public boolean hasBeenExercised()
+	@Override public boolean exercised()
 	{
 		if (null == _cfteParams) return false;
 
 		return _cfteParams._bHasBeenExercised;
 	}
 
-	@Override public boolean hasDefaulted()
+	@Override public boolean defaulted()
 	{
 		if (null == _cfteParams) return false;
 
 		return _cfteParams._bIsDefaulted;
 	}
 
-	@Override public boolean isPerpetual()
+	@Override public boolean perpetual()
 	{
 		if (null == _cfteParams) return false;
 
@@ -2456,7 +2456,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -2938,7 +2938,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 		
 		if (null == wi)
@@ -3956,7 +3956,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -4440,7 +4440,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -5454,7 +5454,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -5946,7 +5946,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -6484,7 +6484,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -7172,7 +7172,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -7659,7 +7659,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -8136,7 +8136,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -9372,7 +9372,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -9891,7 +9891,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -10383,7 +10383,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -10909,7 +10909,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -11395,7 +11395,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = calcExerciseYieldFromPrice (valParams, csqs,
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
 			quotingParams, dblPrice);
 
 		if (null == wi)
@@ -11713,21 +11713,21 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 			mapMeasures.put ("MarketInputType=CleanPrice", dblMarketPrice);
 
-			wiMarket = calcExerciseYieldFromPrice (valParams, csqs, quotingParams, dblMarketPrice);
+			wiMarket = exerciseYieldFromPrice (valParams, csqs, quotingParams, dblMarketPrice);
 		} else if (null != csqs.productQuote (name()).quote ("CleanPrice")) {
 			double dblCleanMarketPrice = csqs.productQuote (name()).quote ("CleanPrice").getQuote
 				("mid");
 
 			mapMeasures.put ("MarketInputType=CleanPrice", dblCleanMarketPrice);
 
-			wiMarket = calcExerciseYieldFromPrice (valParams, csqs, quotingParams, dblCleanMarketPrice);
+			wiMarket = exerciseYieldFromPrice (valParams, csqs, quotingParams, dblCleanMarketPrice);
 		} else if (null != csqs.productQuote (name()).quote ("QuotedMargin")) {
 			double dblQuotedMargin = csqs.productQuote (name()).quote ("QuotedMargin").getQuote ("mid");
 
 			mapMeasures.put ("MarketInputType=QuotedMargin", dblQuotedMargin);
 
 			try {
-				wiMarket = calcExerciseYieldFromPrice (valParams, csqs, quotingParams,
+				wiMarket = exerciseYieldFromPrice (valParams, csqs, quotingParams,
 					calcPriceFromDiscountMargin (valParams, csqs, quotingParams, dblQuotedMargin));
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
@@ -11739,8 +11739,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 				mapMeasures.put ("MarketInputType=DirtyPrice", dblDirtyMarketPrice);
 
-				wiMarket = calcExerciseYieldFromPrice (valParams, csqs, quotingParams,
-					dblDirtyMarketPrice - calcAccrued (valParams.valueDate(), csqs));
+				wiMarket = exerciseYieldFromPrice (valParams, csqs, quotingParams, dblDirtyMarketPrice -
+					calcAccrued (valParams.valueDate(), csqs));
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
 

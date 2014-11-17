@@ -1380,7 +1380,7 @@ public class CreditAnalytics {
 		if (null == valParams || null == strBondId || strBondId.isEmpty() || null == GetBond (strBondId))
 			return null;
 
-		return GetBond (strBondId).calcExerciseYieldFromPrice (valParams,
+		return GetBond (strBondId).exerciseYieldFromPrice (valParams,
 			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, null, null, null,
 				null), quotingParams, dblPrice);
 	}
@@ -1434,7 +1434,7 @@ public class CreditAnalytics {
 		if (null == GetBond (strBondId))
 			throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		org.drip.param.valuation.WorkoutInfo wi = GetBond (strBondId).calcExerciseYieldFromPrice (valParams,
+		org.drip.param.valuation.WorkoutInfo wi = GetBond (strBondId).exerciseYieldFromPrice (valParams,
 			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null,
 				null, null, null, null), quotingParams, dblPrice);
 
@@ -3818,7 +3818,7 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		org.drip.param.valuation.WorkoutInfo wi = bond.calcExerciseYieldFromPrice
+		org.drip.param.valuation.WorkoutInfo wi = bond.exerciseYieldFromPrice
 			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
 				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null,
 					null, null, null, null, null), null, dblPrice);
@@ -5662,19 +5662,19 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot get Bond " + strBondId);
 
-		if ("Callable".equalsIgnoreCase (strField)) return bond.isCallable();
+		if ("Callable".equalsIgnoreCase (strField)) return bond.callable();
 
-		if ("Defaulted".equalsIgnoreCase (strField)) return bond.hasDefaulted();
+		if ("Defaulted".equalsIgnoreCase (strField)) return bond.defaulted();
 
-		if ("Exercised".equalsIgnoreCase (strField)) return bond.hasBeenExercised();
+		if ("Exercised".equalsIgnoreCase (strField)) return bond.exercised();
 
 		if ("Floater".equalsIgnoreCase (strField)) return bond.isFloater();
 
-		if ("Perpetual".equalsIgnoreCase (strField)) return bond.isPerpetual();
+		if ("Perpetual".equalsIgnoreCase (strField)) return bond.perpetual();
 
-		if ("Putable".equalsIgnoreCase (strField)) return bond.isPutable();
+		if ("Putable".equalsIgnoreCase (strField)) return bond.putable();
 
-		if ("Sinkable".equalsIgnoreCase (strField)) return bond.isSinkable();
+		if ("Sinkable".equalsIgnoreCase (strField)) return bond.sinkable();
 
 		if (null == strBondId || strBondId.isEmpty() || null == strField || strField.isEmpty())
 			throw new java.lang.Exception ("Bad inputs into GetBondBooleanField");
@@ -5754,9 +5754,9 @@ public class CreditAnalytics {
 		if ("Coupon".equalsIgnoreCase (strField))
 			return bond.coupon (org.drip.analytics.date.JulianDate.Today().julian(), null, null).rate();
 
-		if ("CurrentCoupon".equalsIgnoreCase (strField)) return bond.getCurrentCoupon();
+		if ("CurrentCoupon".equalsIgnoreCase (strField)) return bond.currentCoupon();
 
-		if ("FloatSpread".equalsIgnoreCase (strField)) return bond.getFloatSpread();
+		if ("FloatSpread".equalsIgnoreCase (strField)) return bond.floatSpread();
 
 		if ("RedemptionValue".equalsIgnoreCase (strField)) return bond.getRedemptionValue();
 
@@ -5815,7 +5815,7 @@ public class CreditAnalytics {
 			return null == aLSLCredit || 0 == aLSLCredit.length ? null : aLSLCredit[0].fullyQualifiedName();
 		}
 
-		if ("CUSIP".equalsIgnoreCase (strField)) return bond.getCUSIP();
+		if ("CUSIP".equalsIgnoreCase (strField)) return bond.cusip();
 
 		if ("CouponDC".equalsIgnoreCase (strField)) return bond.getCouponDC();
 
@@ -5823,15 +5823,15 @@ public class CreditAnalytics {
 
 		if ("IRCurve".equalsIgnoreCase (strField)) return bond.getCouponCurrency();
 
-		if ("ISIN".equalsIgnoreCase (strField)) return bond.getISIN();
+		if ("ISIN".equalsIgnoreCase (strField)) return bond.isin();
 
 		if ("MaturityType".equalsIgnoreCase (strField)) return bond.getMaturityType();
 
-		if ("RateIndex".equalsIgnoreCase (strField)) return bond.getRateIndex();
+		if ("RateIndex".equalsIgnoreCase (strField)) return bond.rateIndex();
 
 		if ("RedemptionCurrency".equalsIgnoreCase (strField)) return bond.getRedemptionCurrency();
 
-		if ("Ticker".equalsIgnoreCase (strField)) return bond.getTicker();
+		if ("Ticker".equalsIgnoreCase (strField)) return bond.ticker();
 
 		if ("TreasuryCurve".equalsIgnoreCase (strField)) return bond.payCurrency()[0];
 
@@ -5983,8 +5983,8 @@ public class CreditAnalytics {
 		for (java.lang.String strISIN : lsstrISIN) {
 			org.drip.product.definition.Bond bond = CreditAnalytics.GetBond (strISIN);
 
-			if (null != bond && !bond.hasVariableCoupon() && !bond.hasBeenExercised() && !bond.hasDefaulted()
-				&& bond.maturity().julian() > dtCurrent.julian()) {
+			if (null != bond && !bond.variableCoupon() && !bond.exercised() && !bond.defaulted() &&
+				bond.maturity().julian() > dtCurrent.julian()) {
 				try {
 					double dblOutstandingAmount = GetBondDoubleField (strISIN, "OutstandingAmount");
 

@@ -1589,19 +1589,17 @@ public class BondProductBuilder {
 
 	public org.drip.product.params.PeriodSet getPeriodGenParams()
 	{
-		org.drip.product.params.PeriodSet periodParams = org.drip.product.params.PeriodSet.Create
-			(_dtMaturity.julian(), _dtInterestAccrualStart.julian(), null == _dtFinalMaturity ?
-				java.lang.Double.NaN : _dtFinalMaturity.julian(), null == _dtFirstCoupon ?
-					java.lang.Double.NaN : _dtFirstCoupon.julian(), _dtInterestAccrualStart.julian(),
-						_iCouponFreq, _dblCurrentCoupon, _strDayCountCode, _strDayCountCode, null, null,
-							null, null, null, null, null, null, _strMaturityType, false, _strCouponCurrency,
+		return org.drip.product.params.PeriodSet.Create (_dtMaturity.julian(),
+			_dtInterestAccrualStart.julian(), null == _dtFinalMaturity ? java.lang.Double.NaN :
+				_dtFinalMaturity.julian(), null == _dtFirstCoupon ? java.lang.Double.NaN :
+					_dtFirstCoupon.julian(), _dtInterestAccrualStart.julian(), _iCouponFreq,
+						_dblCurrentCoupon, _strDayCountCode, _strDayCountCode, null, null, null, null, null,
+							null, null, null, _strMaturityType, false, _strCouponCurrency,
 								_strCouponCurrency, !org.drip.quant.common.StringUtil.IsEmpty (_strRateIndex)
 									? org.drip.state.identifier.ForwardLabel.Standard (_strRateIndex) : null,
 										!org.drip.quant.common.StringUtil.IsEmpty (_strIssuerSPN) ?
 											org.drip.state.identifier.CreditLabel.Standard (_strIssuerSPN) :
 												null);
-
-		return periodParams.validate() ? periodParams : null;
 	}
 
 	/**

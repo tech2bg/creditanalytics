@@ -189,12 +189,6 @@ public class ProductTestSuite {
 					null, null, "", false, strCurrency, strCurrency, null,
 						org.drip.state.identifier.CreditLabel.Standard ("IBM"));
 
-		if (!periodParams.validate()) {
-			System.out.println ("Period Gen params for " + strName + " could not be validated!");
-
-			return null;
-		}
-
 		simpleBond.setPeriodSet (periodParams);
 
 		org.drip.product.params.NotionalSetting notlParams = new
@@ -306,12 +300,6 @@ public class ProductTestSuite {
 			(dt.addYears (iNumYears).julian(), dt.julian(), java.lang.Double.NaN, dt.julian(), dt.julian(),
 				2, dblCoupon, "30/360", "30/360", null, null, null, null, null, null, null, null, "", false,
 					"USD", "USD", null, org.drip.state.identifier.CreditLabel.Standard ("IBM"));
-
-		if (!periodParams.validate()) {
-			System.out.println ("Period Gen params for " + strName + " could not be validated!");
-
-			return null;
-		}
 
 		bondTSY.setPeriodSet (periodParams);
 
@@ -2346,12 +2334,6 @@ public class ProductTestSuite {
 				null, null, null, null, null, null, "IGNORE", false, "USD", "USD",
 					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),
 						org.drip.state.identifier.CreditLabel.Standard ("IBM"));
-
-		if (!bpgp.validate()) {
-			System.out.println ("Cannot validate BPGP!");
-
-			System.exit (125);
-		}
 
 		org.drip.product.credit.BondComponent bond = new org.drip.product.credit.BondComponent();
 

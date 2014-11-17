@@ -50,7 +50,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return The Optimal Work-out Information
 	 */
 
-	public abstract org.drip.param.valuation.WorkoutInfo calcExerciseYieldFromPrice (
+	public abstract org.drip.param.valuation.WorkoutInfo exerciseYieldFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp,
@@ -66,7 +66,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Array of double for the bond's secondary treasury spreads
 	 */
 
-	public abstract double[] getSecTSYSpread (
+	public abstract double[] secTreasurySpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
 
@@ -76,7 +76,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams ValuationParams
 	 * @param csqs ComponentMarketParams
-	 * @param quotingParams Bond Quoting parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPrice Market price
 	 * 
 	 * @return Effective treasury benchmark yield
@@ -84,10 +84,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the effective benchmark cannot be calculated
 	 */
 
-	public abstract double getEffectiveTsyBmkYield (
+	public abstract double effectiveTreasuryBenchmarkYield (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice)
 		throws java.lang.Exception;
 
@@ -97,7 +97,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return ISIN string
 	 */
 
-	public abstract java.lang.String getISIN();
+	public abstract java.lang.String isin();
 
 	/**
 	 * Get the CUSIP
@@ -105,7 +105,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return CUSIP string
 	 */
 
-	public abstract java.lang.String getCUSIP();
+	public abstract java.lang.String cusip();
 
 	/**
 	 * Get the bond's loss flow from price
@@ -113,19 +113,18 @@ public abstract class Bond extends CreditComponent {
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
 	 * @param csqs ComponentMarketParams
-	 * @param quotingParams Bond Quoting parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPrice Input price
 	 * 
-	 * @return List of ProductLossPeriodCurveMeasures
+	 * @return List of LossQuadratureMetrics
 	 */
 
-	public abstract java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics>
-		getLossFlowFromPrice (
-			final org.drip.param.valuation.ValuationParams valParams,
-			final org.drip.param.pricer.PricerParams pricerParams,
-			final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-			final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-			final double dblPrice);
+	public abstract java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> lossFlowFromPrice (
+		final org.drip.param.valuation.ValuationParams valParams,
+		final org.drip.param.pricer.PricerParams pricerParams,
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
+		final double dblPrice);
 
 	/**
 	 * Return whether the bond is a floater
@@ -141,7 +140,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Rate index
 	 */
 
-	public abstract java.lang.String getRateIndex();
+	public abstract java.lang.String rateIndex();
 
 	/**
 	 * Return the current bond coupon
@@ -149,7 +148,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Current coupon
 	 */
 
-	public abstract double getCurrentCoupon();
+	public abstract double currentCoupon();
 
 	/**
 	 * Return the floating spread of the bond
@@ -157,7 +156,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Floating spread
 	 */
 
-	public abstract double getFloatSpread();
+	public abstract double floatSpread();
 
 	/**
 	 * Return the bond ticker
@@ -165,7 +164,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond Ticker
 	 */
 
-	public abstract java.lang.String getTicker();
+	public abstract java.lang.String ticker();
 
 	/**
 	 * Indicate if the bond is callable
@@ -173,7 +172,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return True - callable
 	 */
 
-	public abstract boolean isCallable();
+	public abstract boolean callable();
 
 	/**
 	 * Indicate if the bond is putable
@@ -181,7 +180,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return True - putable
 	 */
 
-	public abstract boolean isPutable();
+	public abstract boolean putable();
 
 	/**
 	 * Indicate if the bond is sinkable
@@ -189,7 +188,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return True - sinkable
 	 */
 
-	public abstract boolean isSinkable();
+	public abstract boolean sinkable();
 
 	/**
 	 * Indicate if the bond has variable coupon
@@ -197,7 +196,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return True - has variable coupon
 	 */
 
-	public abstract boolean hasVariableCoupon();
+	public abstract boolean variableCoupon();
 
 	/**
 	 * Indicate if the bond has been exercised
@@ -205,7 +204,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return True - Has been exercised
 	 */
 
-	public abstract boolean hasBeenExercised();
+	public abstract boolean exercised();
 
 	/**
 	 * Indicate if the bond has defaulted
@@ -213,7 +212,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return True - Bond has defaulted
 	 */
 
-	public abstract boolean hasDefaulted();
+	public abstract boolean defaulted();
 
 	/**
 	 * Indicate if the bond is perpetual
@@ -221,7 +220,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return True - Bond is Perpetual
 	 */
 
-	public abstract boolean isPerpetual();
+	public abstract boolean perpetual();
 
 	/**
 	 * Calculate if the bond is tradeable on the given date

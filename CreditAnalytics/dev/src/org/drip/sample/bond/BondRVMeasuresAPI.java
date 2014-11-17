@@ -481,7 +481,7 @@ public class BondRVMeasuresAPI {
 		 * Compute the work-out date given the price.
 		 */
 
-		WorkoutInfo wi = bond.calcExerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
+		WorkoutInfo wi = bond.exerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
 
 		/*
 		 * Compute the base RV measures to the work-out date.

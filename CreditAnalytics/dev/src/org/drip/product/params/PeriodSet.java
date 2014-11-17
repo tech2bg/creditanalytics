@@ -40,7 +40,7 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class PeriodSet implements org.drip.product.params.Validatable {
+public class PeriodSet {
 	private java.lang.String _strMaturityType = "";
 	private double _dblFinalMaturity = java.lang.Double.NaN;
 	private java.util.List<org.drip.analytics.cashflow.CompositePeriod> _lsCouponPeriod = null;
@@ -100,10 +100,6 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
-		PeriodSet ps = new PeriodSet (null);
-
-		if (!ps.setMaturityType (strMaturityType) || !ps.setFinalMaturity (dblFinalMaturity)) return null;
-
 		boolean bCouponEOMAdj = null == strCouponDC ? false : strCouponDC.toUpperCase().contains ("EOM");
 
 		int iCouponDCIndex = null == strCouponDC ? -1 : strCouponDC.indexOf (" NON");
@@ -152,7 +148,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 				org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsStreamEdgeDate, cps,
 					ucas, cfus);
 
-			return new PeriodSet (lsCouponPeriod);
+			return new PeriodSet (lsCouponPeriod, dblFinalMaturity, strMaturityType);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -164,22 +160,23 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	 * Construct PeriodSet from the list of coupon periods
 	 * 
 	 * @param lsCouponPeriod List of Coupon Period
+	 * @param dblFinalMaturity Final Maturity Date
+	 * @param strMaturityType Maturity Type
+	 * 
+	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
 
 	public PeriodSet (
-		final java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod)
+		final java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod,
+		final double dblFinalMaturity,
+		final java.lang.String strMaturityType)
+		throws java.lang.Exception
 	{
-		_lsCouponPeriod = lsCouponPeriod;
-	}
+		if (null == (_lsCouponPeriod = lsCouponPeriod) || 0 == _lsCouponPeriod.size())
+			throw new java.lang.Exception ("PeriodSet Constructor: Invalid Inputs");
 
-	@Override public boolean validate()
-	{
-		if (null == _lsCouponPeriod || 0 == _lsCouponPeriod.size()) return false;
-
-		for (org.drip.analytics.cashflow.CompositePeriod fp : _lsCouponPeriod) {
-			if (null == fp) return false;
-		}
-		return true;
+		_strMaturityType = strMaturityType;
+		_dblFinalMaturity = dblFinalMaturity;
 	}
 
 	/**
@@ -329,21 +326,6 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	}
 
 	/**
-	 * Set the Maturity Type
-	 * 
-	 * @param strMaturityType The Maturity Type
-	 * 
-	 * @return TRUE => Maturity Type Successfully set
-	 */
-
-	public boolean setMaturityType (
-		final java.lang.String strMaturityType)
-	{
-		_strMaturityType = strMaturityType;
-		return true;
-	}
-
-	/**
 	 * Retrieve the Maturity Date
 	 * 
 	 * @return The Maturity Date
@@ -374,36 +356,6 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 	public double finalMaturity()
 	{
 		return _dblFinalMaturity;
-	}
-
-	/**
-	 * Set the Final Maturity Date
-	 * 
-	 * @param dblFinalMaturity The Final Maturity Date
-	 * 
-	 * @return TRUE => Final Maturity Date Successfully set
-	 */
-
-	public boolean setFinalMaturity (
-		final double dblFinalMaturity)
-	{
-		_dblFinalMaturity = dblFinalMaturity;
-		return true;
-	}
-
-	/**
-	 * Set the List of Coupon Periods
-	 * 
-	 * @param lsCouponPeriod List of Coupon Periods
-	 * 
-	 * @return TRUE => The Coupon Period List successfully set
-	 */
-
-	public boolean setCouponPeriodList (
-		final java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod)
-	{
-		_lsCouponPeriod = lsCouponPeriod;
-		return true;
 	}
 
 	/**
