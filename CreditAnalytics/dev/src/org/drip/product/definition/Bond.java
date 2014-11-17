@@ -563,7 +563,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the bond's credit risky theoretical price cannot be calculated
 	 */
 
-	public abstract double calcPriceFromBumpedCC (
+	public abstract double priceFromBumpedCC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final double dblWorkoutDate,
@@ -577,7 +577,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblBondBasis Bond Basis to Work-out
@@ -587,10 +587,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromBondBasis (
+	public abstract double aswFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblBondBasis)
@@ -601,7 +601,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblBondBasis Bond Basis to Maturity
 	 * 
 	 * @return ASW from Bond Basis to Maturity
@@ -609,10 +609,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromBondBasis (
+	public abstract double aswFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblBondBasis)
 		throws java.lang.Exception;
 
@@ -621,7 +621,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblBondBasis Bond Basis to Optimal Exercise
 	 * 
 	 * @return ASW from Bond Basis to Optimal Exercise
@@ -629,10 +629,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromBondBasisToOptimalExercise (
+	public abstract double aswFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblBondBasis)
 		throws java.lang.Exception;
 
@@ -641,7 +641,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblCreditBasis Credit Basis to Work-out
@@ -651,10 +651,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromCreditBasis (
+	public abstract double aswFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblCreditBasis)
@@ -665,7 +665,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblCreditBasis Credit Basis to Maturity
 	 * 
 	 * @return ASW from Credit Basis to Maturity
@@ -673,10 +673,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromCreditBasis (
+	public abstract double aswFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
 
@@ -685,7 +685,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblCreditBasis Credit Basis to Optimal Exercise
 	 * 
 	 * @return ASW from Credit Basis to Optimal Exercise
@@ -693,10 +693,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromCreditBasisToOptimalExercise (
+	public abstract double aswFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
 
@@ -705,7 +705,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblDiscountMargin Discount Margin to Work-out
@@ -715,10 +715,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromDiscountMargin (
+	public abstract double aswFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblDiscountMargin)
@@ -729,7 +729,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblDiscountMargin Discount Margin to Maturity
 	 * 
 	 * @return ASW from Discount Margin to Maturity
@@ -737,10 +737,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromDiscountMargin (
+	public abstract double aswFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
 
@@ -749,7 +749,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblDiscountMargin Discount Margin to Optimal Exercise
 	 * 
 	 * @return ASW from Discount Margin to Optimal Exercise
@@ -757,10 +757,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromDiscountMarginToOptimalExercise (
+	public abstract double aswFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
 
@@ -769,7 +769,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblGSpread G Spread to Work-out
@@ -779,10 +779,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromGSpread (
+	public abstract double aswFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblGSpread)
@@ -793,7 +793,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblGSpread G Spread to Maturity
 	 * 
 	 * @return ASW from G Spread to Maturity
@@ -801,10 +801,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromGSpread (
+	public abstract double aswFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception;
 
@@ -813,7 +813,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblGSpread G Spread to Optimal Exercise
 	 * 
 	 * @return ASW from G Spread to Optimal Exercise
@@ -821,10 +821,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromGSpreadToOptimalExercise (
+	public abstract double aswFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception;
 
@@ -833,7 +833,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblISpread I Spread to Work-out
@@ -843,10 +843,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromISpread (
+	public abstract double aswFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblISpread)
@@ -857,7 +857,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblISpread I Spread to Maturity
 	 * 
 	 * @return ASW from I Spread to Maturity
@@ -865,10 +865,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromISpread (
+	public abstract double aswFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception;
 
@@ -877,7 +877,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblISpread I Spread to Optimal Exercise
 	 * 
 	 * @return ASW from I Spread to Optimal Exercise
@@ -885,10 +885,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromISpreadToOptimalExercise (
+	public abstract double aswFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception;
 
@@ -897,7 +897,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblOAS OAS to Work-out
@@ -907,10 +907,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromOAS (
+	public abstract double aswFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblOAS)
@@ -921,7 +921,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblOAS OAS to Maturity
 	 * 
 	 * @return ASW from OAS to Maturity
@@ -929,7 +929,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromOAS (
+	public abstract double aswFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
@@ -941,7 +941,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblOAS OAS to Optimal Exercise
 	 * 
 	 * @return ASW from OAS to Optimal Exercise
@@ -949,10 +949,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromOASToOptimalExercise (
+	public abstract double aswFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblOAS)
 		throws java.lang.Exception;
 
@@ -961,7 +961,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblPECS PECS to Work-out
@@ -971,10 +971,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromPECS (
+	public abstract double aswFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblPECS)
@@ -985,7 +985,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPECS PECS to Maturity
 	 * 
 	 * @return ASW from PECS to Maturity
@@ -993,7 +993,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromPECS (
+	public abstract double aswFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
@@ -1005,7 +1005,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPECS PECS to Optimal Exercise
 	 * 
 	 * @return ASW from PECS to Optimal Exercise
@@ -1013,10 +1013,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromPECSToOptimalExercise (
+	public abstract double aswFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPECS)
 		throws java.lang.Exception;
 
@@ -1025,7 +1025,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblPrice Price to Work-out
@@ -1035,10 +1035,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromPrice (
+	public abstract double aswFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblPrice)
@@ -1049,7 +1049,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPrice Price to Maturity
 	 * 
 	 * @return ASW from Price to Maturity
@@ -1057,10 +1057,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromPrice (
+	public abstract double aswFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice)
 		throws java.lang.Exception;
 
@@ -1069,7 +1069,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPrice Price to Optimal Exercise
 	 * 
 	 * @return ASW from Price to Optimal Exercise
@@ -1077,10 +1077,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromPriceToOptimalExercise (
+	public abstract double aswFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice)
 		throws java.lang.Exception;
 
@@ -1089,7 +1089,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblTSYSpread TSY Spread to Work-out
@@ -1099,10 +1099,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromTSYSpread (
+	public abstract double aswFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblTSYSpread)
@@ -1113,7 +1113,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblTSYSpread TSY Spread to Maturity
 	 * 
 	 * @return ASW from TSY Spread to Maturity
@@ -1121,10 +1121,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromTSYSpread (
+	public abstract double aswFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
 
@@ -1133,7 +1133,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblTSYSpread TSY Spread to Optimal Exercise
 	 * 
 	 * @return ASW from TSY Spread to Optimal Exercise
@@ -1141,10 +1141,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if ASW cannot be calculated
 	 */
 
-	public abstract double calcASWFromTSYSpreadToOptimalExercise (
+	public abstract double aswFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
 

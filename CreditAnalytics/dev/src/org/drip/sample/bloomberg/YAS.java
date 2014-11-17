@@ -443,7 +443,7 @@ public class YAS {
 
 		double dblZSpread = bond.calcZSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblASW = bond.calcASWFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
+		double dblASW = bond.aswFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
 		double dblOAS = bond.calcOASFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
