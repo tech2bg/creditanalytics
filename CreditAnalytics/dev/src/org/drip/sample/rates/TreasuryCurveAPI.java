@@ -145,12 +145,13 @@ public class TreasuryCurveAPI {
 		double adblYield[] = new double[aTSYBond.length];
 
 		for (int i = 0; i < aTSYBond.length; ++i) {
-			double dblPrice = aTSYBond[i].calcPriceFromBumpedDC (
+			double dblPrice = aTSYBond[i].priceFromBumpedDC (
 				new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
 				MarketParamsBuilder.Discount (dcTSY),
 				aTSYBond[i].maturity().julian(),
 				1.,
-				0.);
+				0.
+			);
 
 			System.out.println ("\tPrice[" + aTSYBond[i].name() + "]: " +
 				FormatUtil.FormatDouble (dblPrice, 2, 3, 100.));
@@ -279,7 +280,7 @@ public class TreasuryCurveAPI {
 		 * Calculate price for off-the-run
 		 */
 
-		double dblPrice = bondOffTheRun.calcPriceFromBumpedDC (
+		double dblPrice = bondOffTheRun.priceFromBumpedDC (
 			new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
 			MarketParamsBuilder.Discount (dcTSY),
 			bondOffTheRun.maturity().julian(),

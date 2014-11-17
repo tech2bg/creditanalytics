@@ -232,7 +232,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public abstract boolean isTradeable (
+	public abstract boolean tradeable (
 		final org.drip.param.valuation.ValuationParams valParams)
 		throws java.lang.Exception;
 
@@ -242,7 +242,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return EOS Call
 	 */
 
-	public abstract org.drip.product.params.EmbeddedOptionSchedule getEmbeddedCallSchedule();
+	public abstract org.drip.product.params.EmbeddedOptionSchedule callSchedule();
 
 	/**
 	 * Return the bond's embedded put schedule
@@ -250,7 +250,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return EOS Put
 	 */
 
-	public abstract org.drip.product.params.EmbeddedOptionSchedule getEmbeddedPutSchedule();
+	public abstract org.drip.product.params.EmbeddedOptionSchedule putSchedule();
 
 	/**
 	 * Return the bond's coupon type
@@ -258,7 +258,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond's coupon Type
 	 */
 
-	public abstract java.lang.String getCouponType();
+	public abstract java.lang.String couponType();
 
 	/**
 	 * Return the bond's coupon day count
@@ -266,7 +266,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Coupon day count string
 	 */
 
-	public abstract java.lang.String getCouponDC();
+	public abstract java.lang.String couponDC();
 
 	/**
 	 * Return the bond's accrual day count
@@ -274,7 +274,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Accrual day count string
 	 */
 
-	public abstract java.lang.String getAccrualDC();
+	public abstract java.lang.String accrualDC();
 
 	/**
 	 * Return the bond's maturity type
@@ -282,7 +282,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond's maturity type
 	 */
 
-	public abstract java.lang.String getMaturityType();
+	public abstract java.lang.String maturityType();
 
 	/**
 	 * Return the bond's coupon frequency
@@ -290,7 +290,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond's coupon frequency
 	 */
 
-	public abstract int getCouponFreq();
+	public abstract int freq();
 
 	/**
 	 * Return the bond's final maturity
@@ -298,7 +298,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond's final maturity
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate getFinalMaturity();
+	public abstract org.drip.analytics.date.JulianDate finalMaturity();
 
 	/**
 	 * Return the bond's calculation type
@@ -306,7 +306,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond's calculation type
 	 */
 
-	public abstract java.lang.String getCalculationType();
+	public abstract java.lang.String calculationType();
 
 	/**
 	 * Return the bond's redemption value
@@ -314,7 +314,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond's redemption value
 	 */
 
-	public abstract double getRedemptionValue();
+	public abstract double redemptionValue();
 
 	/**
 	 * Return the bond's coupon currency
@@ -322,7 +322,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond's coupon currency
 	 */
 
-	public abstract java.lang.String getCouponCurrency();
+	public abstract java.lang.String couponCurrency();
 
 	/**
 	 * Return the bond's redemption currency
@@ -330,7 +330,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond's redemption currency
 	 */
 
-	public abstract java.lang.String getRedemptionCurrency();
+	public abstract java.lang.String redemptionCurrency();
 
 	/**
 	 * Indicate whether the given date is in the first coupon period
@@ -366,7 +366,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond's floating coupon convention
 	 */
 
-	public abstract java.lang.String getFloatCouponConvention();
+	public abstract java.lang.String floatCouponConvention();
 
 	/**
 	 * Get the bond's reset date for the period identified by the valuation date
@@ -376,7 +376,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Reset JulianDate
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate getPeriodResetDate (
+	public abstract org.drip.analytics.date.JulianDate periodFixingDate (
 		final double dblValue);
 
 	/**
@@ -387,7 +387,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Previous Coupon Date
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate calcPreviousCouponDate (
+	public abstract org.drip.analytics.date.JulianDate previousCouponDate (
 		final org.drip.analytics.date.JulianDate dt);
 
 	/**
@@ -401,7 +401,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the previous coupon rate cannot be calculated
 	 */
 
-	public abstract double calcPreviousCouponRate (
+	public abstract double previousCouponRate (
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception;
@@ -414,7 +414,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Current Coupon Date
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate calcCurrentCouponDate (
+	public abstract org.drip.analytics.date.JulianDate currentCouponDate (
 		final org.drip.analytics.date.JulianDate dt);
 
 	/**
@@ -425,7 +425,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Next Coupon Date
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate calcNextCouponDate (
+	public abstract org.drip.analytics.date.JulianDate nextCouponDate (
 		final org.drip.analytics.date.JulianDate dt);
 
 	/**
@@ -437,7 +437,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Next Exercise Information
 	 */
 
-	public abstract org.drip.analytics.output.ExerciseInfo calcNextValidExerciseDateOfType (
+	public abstract org.drip.analytics.output.ExerciseInfo nextValidExerciseDateOfType (
 		final org.drip.analytics.date.JulianDate dt,
 		final boolean bGetPut);
 
@@ -449,7 +449,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Next Exercise Info
 	 */
 
-	public abstract org.drip.analytics.output.ExerciseInfo calcNextValidExerciseInfo (
+	public abstract org.drip.analytics.output.ExerciseInfo nextValidExerciseInfo (
 		final org.drip.analytics.date.JulianDate dt);
 
 	/**
@@ -463,7 +463,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the current period coupon rate cannot be calculated
 	 */
 
-	public abstract double calcCurrentCouponRate (
+	public abstract double currentCouponRate (
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception;
@@ -479,7 +479,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the subsequent coupon rate cannot be calculated
 	 */
 
-	public abstract double calcNextCouponRate (
+	public abstract double nextCouponRate (
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception;
@@ -495,7 +495,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if accrual cannot be calculated
 	 */
 
-	public abstract double calcAccrued (
+	public abstract double accrued (
 		final double dblDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception;
@@ -505,7 +505,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams ValuationParams
 	 * @param csqs ComponentMarketParams
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param iZeroCurveBaseDC The Discount Curve to derive the zero curve off of
 	 * @param dblWorkoutDate Double Work-out date
 	 * @param dblWorkoutFactor Double Work-out factor
@@ -516,10 +516,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the price cannot be calculated
 	 */
 
-	public abstract double calcPriceFromBumpedZC (
+	public abstract double priceFromBumpedZC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final int iZeroCurveBaseDC,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
@@ -540,7 +540,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the price cannot be calculated
 	 */
 
-	public abstract double calcPriceFromBumpedDC (
+	public abstract double priceFromBumpedDC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final double dblWorkoutDate,

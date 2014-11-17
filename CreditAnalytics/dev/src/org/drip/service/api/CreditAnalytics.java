@@ -1260,7 +1260,7 @@ public class CreditAnalytics {
 	{
 		if (null == GetBond (strBondId, dt)) return null;
 
-		return GetBond (strBondId).getEmbeddedCallSchedule();
+		return GetBond (strBondId).callSchedule();
 	}
 
 	/**
@@ -1292,7 +1292,7 @@ public class CreditAnalytics {
 	{
 		if (null == GetBond (strBondId, dt)) return null;
 
-		return GetBond (strBondId).getEmbeddedPutSchedule();
+		return GetBond (strBondId).putSchedule();
 	}
 
 	/**
@@ -3308,7 +3308,7 @@ public class CreditAnalytics {
 			return null;
 
 		try {
-			return GetBond (strBondId).calcPreviousCouponDate (dt);
+			return GetBond (strBondId).previousCouponDate (dt);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -3333,7 +3333,7 @@ public class CreditAnalytics {
 			return null;
 
 		try {
-			return GetBond (strBondId).calcCurrentCouponDate (dt);
+			return GetBond (strBondId).currentCouponDate (dt);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -3358,7 +3358,7 @@ public class CreditAnalytics {
 			return null;
 
 		try {
-			return GetBond (strBondId).calcNextCouponDate (dt);
+			return GetBond (strBondId).nextCouponDate (dt);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -3382,7 +3382,7 @@ public class CreditAnalytics {
 		if (null == dt || null == strBondId || strBondId.isEmpty() || null == GetBond (strBondId))
 			return null;
 
-		return GetBond (strBondId).calcNextValidExerciseInfo (dt);
+		return GetBond (strBondId).nextValidExerciseInfo (dt);
 	}
 
 	/**
@@ -3456,7 +3456,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
@@ -3492,7 +3492,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.state.identifier.LatentStateLabel[] aLSLCredit = bond.creditLabel();
 
@@ -3536,7 +3536,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.state.identifier.LatentStateLabel[] aLSLCredit = bond.creditLabel();
 
@@ -3580,7 +3580,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
@@ -3621,7 +3621,7 @@ public class CreditAnalytics {
 		if (null == strTSY || strTSY.isEmpty())
 			throw new java.lang.Exception ("Cannot locate TSY Curve for bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcTSY = LoadEODTSYCurve (strIR, dtEOD);
 
@@ -3659,7 +3659,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -3696,7 +3696,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -3733,7 +3733,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -3773,7 +3773,7 @@ public class CreditAnalytics {
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -3814,7 +3814,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -3855,7 +3855,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -4084,7 +4084,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -4118,7 +4118,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.state.identifier.LatentStateLabel[] aLSLCredit = bond.creditLabel();
 
@@ -4162,7 +4162,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.state.identifier.LatentStateLabel[] aLSLCredit = bond.creditLabel();
 
@@ -4206,7 +4206,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
@@ -4247,7 +4247,7 @@ public class CreditAnalytics {
 		if (null == strTSY || strTSY.isEmpty())
 			throw new java.lang.Exception ("Cannot locate TSY Curve for bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcTSY = LoadEODTSYCurve (strIR, dtEOD);
 
@@ -4285,7 +4285,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -4322,7 +4322,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -4359,7 +4359,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -4398,7 +4398,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -4435,7 +4435,7 @@ public class CreditAnalytics {
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -4474,7 +4474,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -4724,7 +4724,7 @@ public class CreditAnalytics {
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -4764,7 +4764,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.state.identifier.LatentStateLabel[] aLSLCredit = bond.creditLabel();
 
@@ -4816,7 +4816,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.state.identifier.LatentStateLabel[] aLSLCredit = bond.creditLabel();
 
@@ -4868,7 +4868,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
@@ -4911,11 +4911,11 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 
-		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (bond.getCouponCurrency(), dtEOD);
+		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (bond.couponCurrency(), dtEOD);
 
 		java.lang.String strTSY = bond.payCurrency()[0];
 
@@ -4957,7 +4957,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -5003,7 +5003,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -5049,7 +5049,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -5097,7 +5097,7 @@ public class CreditAnalytics {
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -5140,7 +5140,7 @@ public class CreditAnalytics {
 		org.drip.analytics.rates.DiscountCurve dcEOD = null;
 		org.drip.analytics.rates.DiscountCurve dcTSY = null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
@@ -5180,7 +5180,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot locate bond with ID " + strBondId);
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty())
 			throw new java.lang.Exception ("Cannot locate IR Curve for bond with ID " + strBondId);
@@ -5421,7 +5421,7 @@ public class CreditAnalytics {
 
 		if (null == bond) return null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty()) return null;
 
@@ -5501,7 +5501,7 @@ public class CreditAnalytics {
 
 		if (null == bond) return null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty()) return null;
 
@@ -5582,7 +5582,7 @@ public class CreditAnalytics {
 
 		if (null == bond) return null;
 
-		java.lang.String strIR = bond.getCouponCurrency();
+		java.lang.String strIR = bond.couponCurrency();
 
 		if (null == strIR || strIR.isEmpty()) return null;
 
@@ -5723,7 +5723,7 @@ public class CreditAnalytics {
 
 		if (null == bond) throw new java.lang.Exception ("Cannot get Bond " + strBondId);
 
-		if ("Frequency".equalsIgnoreCase (strField)) return bond.getCouponFreq();
+		if ("Frequency".equalsIgnoreCase (strField)) return bond.freq();
 
 		throw new java.lang.Exception ("Cannot find field " + strField + " for Bond " + strBondId);
 	}
@@ -5758,7 +5758,7 @@ public class CreditAnalytics {
 
 		if ("FloatSpread".equalsIgnoreCase (strField)) return bond.floatSpread();
 
-		if ("RedemptionValue".equalsIgnoreCase (strField)) return bond.getRedemptionValue();
+		if ("RedemptionValue".equalsIgnoreCase (strField)) return bond.redemptionValue();
 
 		if (null == strBondId || strBondId.isEmpty() || null == strField || strField.isEmpty())
 			throw new java.lang.Exception ("Bad inputs into GetBondDoubleField");
@@ -5801,13 +5801,13 @@ public class CreditAnalytics {
 
 		if (null == bond) return null;
 
-		if ("AccrualDC".equalsIgnoreCase (strField)) return bond.getAccrualDC();
+		if ("AccrualDC".equalsIgnoreCase (strField)) return bond.accrualDC();
 
-		if ("CalculationType".equalsIgnoreCase (strField)) return bond.getCalculationType();
+		if ("CalculationType".equalsIgnoreCase (strField)) return bond.calculationType();
 
-		if ("CouponCurrency".equalsIgnoreCase (strField)) return bond.getCouponCurrency();
+		if ("CouponCurrency".equalsIgnoreCase (strField)) return bond.couponCurrency();
 
-		if ("CouponType".equalsIgnoreCase (strField)) return bond.getCouponType();
+		if ("CouponType".equalsIgnoreCase (strField)) return bond.couponType();
 
 		if ("CreditCurve".equalsIgnoreCase (strField)) {
 			org.drip.state.identifier.LatentStateLabel[] aLSLCredit = bond.creditLabel();
@@ -5817,19 +5817,19 @@ public class CreditAnalytics {
 
 		if ("CUSIP".equalsIgnoreCase (strField)) return bond.cusip();
 
-		if ("CouponDC".equalsIgnoreCase (strField)) return bond.getCouponDC();
+		if ("CouponDC".equalsIgnoreCase (strField)) return bond.couponDC();
 
-		if ("FloatCouponConvention".equalsIgnoreCase (strField)) return bond.getFloatCouponConvention();
+		if ("FloatCouponConvention".equalsIgnoreCase (strField)) return bond.floatCouponConvention();
 
-		if ("IRCurve".equalsIgnoreCase (strField)) return bond.getCouponCurrency();
+		if ("IRCurve".equalsIgnoreCase (strField)) return bond.couponCurrency();
 
 		if ("ISIN".equalsIgnoreCase (strField)) return bond.isin();
 
-		if ("MaturityType".equalsIgnoreCase (strField)) return bond.getMaturityType();
+		if ("MaturityType".equalsIgnoreCase (strField)) return bond.maturityType();
 
 		if ("RateIndex".equalsIgnoreCase (strField)) return bond.rateIndex();
 
-		if ("RedemptionCurrency".equalsIgnoreCase (strField)) return bond.getRedemptionCurrency();
+		if ("RedemptionCurrency".equalsIgnoreCase (strField)) return bond.redemptionCurrency();
 
 		if ("Ticker".equalsIgnoreCase (strField)) return bond.ticker();
 
@@ -5919,7 +5919,7 @@ public class CreditAnalytics {
 
 		if (null == bond) return null;
 
-		if ("FinalMaturity".equalsIgnoreCase (strField)) return bond.getFinalMaturity();
+		if ("FinalMaturity".equalsIgnoreCase (strField)) return bond.finalMaturity();
 
 		if ("Maturity".equalsIgnoreCase (strField)) return bond.maturity();
 

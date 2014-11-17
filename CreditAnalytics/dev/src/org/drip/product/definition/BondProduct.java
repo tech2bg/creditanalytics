@@ -293,14 +293,6 @@ public interface BondProduct {
 	);
 
 	/**
-	 * Retrieve the bond embedded call schedule parameters
-	 * 
-	 * @return Bond embedded call schedule parameters
-	 */
-
-	public abstract org.drip.product.params.EmbeddedOptionSchedule getEmbeddedCallSchedule();
-
-	/**
 	 * Set the bond's embedded put schedule
 	 * 
 	 * @param eos Bond's embedded put schedule
@@ -309,12 +301,4 @@ public interface BondProduct {
 	public abstract void setEmbeddedPutSchedule (
 		final org.drip.product.params.EmbeddedOptionSchedule eos
 	);
-
-	/**
-	 * Retrieve the bond embedded put schedule parameters
-	 * 
-	 * @return Bond embedded put schedule parameters
-	 */
-
-	public abstract org.drip.product.params.EmbeddedOptionSchedule getEmbeddedPutSchedule();
 }
