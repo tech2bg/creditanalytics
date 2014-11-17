@@ -41,20 +41,8 @@ package org.drip.product.params;
  */
 
 public class PeriodSet implements org.drip.product.params.Validatable {
-	private int _iFreq = 2;
-	private boolean _bApplyAccEOMAdj = false;
-	private boolean _bApplyCpnEOMAdj = false;
-	private java.lang.String _strCouponDC = "";
-	private java.lang.String _strCurrency = "";
-	private java.lang.String _strAccrualDC = "";
-	private boolean _bPeriodsFromForward = false;
 	private java.lang.String _strMaturityType = "";
-	private double _dblCoupon = java.lang.Double.NaN;
-	private double _dblMaturity = java.lang.Double.NaN;
-	private double _dblEffective = java.lang.Double.NaN;
 	private double _dblFinalMaturity = java.lang.Double.NaN;
-	private org.drip.analytics.daycount.DateAdjustParams _dapPay = null;
-	private org.drip.analytics.daycount.DateAdjustParams _dapAccrual = null;
 	private java.util.List<org.drip.analytics.cashflow.CompositePeriod> _lsCouponPeriod = null;
 
 	/**
@@ -112,35 +100,23 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
-		PeriodSet ps = new PeriodSet (dblEffective, strCouponDC, iFreq, null);
+		PeriodSet ps = new PeriodSet (null);
 
-		if (!ps.setDAPPay (dapPay) || !ps.setCoupon (dblCoupon) || !ps.setMaturity (dblMaturity) ||
-			!ps.setCurrency (strCurrency) ||!ps.setDAPAccrual (dapAccrualEnd) || !ps.setMaturityType
-				(strMaturityType) || !ps.setFinalMaturity (dblFinalMaturity) || !ps.setPeriodsFromForward
-					(bPeriodsFromForward) || !ps.setAccrualDC (strAccrualDC))
-			return null;
+		if (!ps.setMaturityType (strMaturityType) || !ps.setFinalMaturity (dblFinalMaturity)) return null;
 
 		boolean bCouponEOMAdj = null == strCouponDC ? false : strCouponDC.toUpperCase().contains ("EOM");
-
-		if (!ps.setCouponEOMAdjustment (bCouponEOMAdj)) return null;
 
 		int iCouponDCIndex = null == strCouponDC ? -1 : strCouponDC.indexOf (" NON");
 
 		java.lang.String strCouponDCAdj = -1 != iCouponDCIndex ? strCouponDC.substring (0, iCouponDCIndex) :
 			strCouponDC;
 
-		if (!ps.setCouponDC (strCouponDCAdj)) return null;
-
 		boolean bAccrualEOMAdj = null == strAccrualDC ? false : strAccrualDC.toUpperCase().contains ("EOM");
-
-		if (!ps.setAccrualEOMAdjustment (bAccrualEOMAdj)) return null;
 
 		int iAccrualDCIndex = null == strAccrualDC ? -1 : strAccrualDC.indexOf (" NON");
 
 		java.lang.String strAccrualDCAdj = -1 != iAccrualDCIndex ? strAccrualDC.substring (0,
 			iAccrualDCIndex) : strAccrualDC;
-
-		if (!ps.setAccrualDC (strAccrualDCAdj)) return null;
 
 		try {
 			org.drip.analytics.date.JulianDate dtEffective = new org.drip.analytics.date.JulianDate
@@ -176,47 +152,33 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 				org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsStreamEdgeDate, cps,
 					ucas, cfus);
 
-			return new PeriodSet (dblEffective, strCouponDCAdj, iFreq, lsCouponPeriod);
+			return new PeriodSet (lsCouponPeriod);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
 	}
+
 	/**
-	 * Construct PeriodSet from the effective date, day count, frequency, and the list of coupon periods
+	 * Construct PeriodSet from the list of coupon periods
 	 * 
-	 * @param dblEffective Effective Date
-	 * @param strDC Day count
-	 * @param iFreq Frequency
 	 * @param lsCouponPeriod List of Coupon Period
 	 */
 
 	public PeriodSet (
-		final double dblEffective,
-		final java.lang.String strDC,
-		final int iFreq,
 		final java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod)
 	{
-		_iFreq = iFreq;
-		_strCouponDC = strDC;
-		_strAccrualDC = strDC;
-		_dblEffective = dblEffective;
 		_lsCouponPeriod = lsCouponPeriod;
 	}
 
 	@Override public boolean validate()
 	{
-		if (null == _lsCouponPeriod || 0 == _lsCouponPeriod.size() ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblEffective) || 0 == _iFreq)
-			return false;
+		if (null == _lsCouponPeriod || 0 == _lsCouponPeriod.size()) return false;
 
 		for (org.drip.analytics.cashflow.CompositePeriod fp : _lsCouponPeriod) {
-			if (null == fp || !org.drip.quant.common.NumberUtil.IsValid (_dblMaturity = fp.endDate()))
-				return false;
+			if (null == fp) return false;
 		}
-
-		_dblFinalMaturity = _dblMaturity;
 		return true;
 	}
 
@@ -308,7 +270,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 
 	public int freq()
 	{
-		return _iFreq;
+		return _lsCouponPeriod.get (0).periods().get (0).freq();
 	}
 
 	/**
@@ -319,22 +281,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 
 	public boolean couponEOMAdjustment()
 	{
-		return _bApplyCpnEOMAdj;
-	}
-
-	/**
-	 * Set the Coupon EOM Adjustment
-	 * 
-	 * @param bApplyCpnEOMAdj The Coupon EOM Adjustment Flag
-	 * 
-	 * @return TRUE => The Coupon EOM Adjustment Successfully Set
-	 */
-
-	public boolean setCouponEOMAdjustment (
-		final boolean bApplyCpnEOMAdj)
-	{
-		_bApplyCpnEOMAdj = bApplyCpnEOMAdj;
-		return true;
+		return _lsCouponPeriod.get (0).periods().get (0).couponEOMAdjustment();
 	}
 
 	/**
@@ -345,22 +292,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 
 	public boolean accrualEOMAdjustment()
 	{
-		return _bApplyAccEOMAdj;
-	}
-
-	/**
-	 * Set the Accrual EOM Adjustment
-	 * 
-	 * @param bApplyAccEOMAdj The Accrual EOM Adjustment Flag
-	 * 
-	 * @return TRUE => The Accrual EOM Adjustment Successfully Set
-	 */
-
-	public boolean setAccrualEOMAdjustment (
-		final boolean bApplyAccEOMAdj)
-	{
-		_bApplyAccEOMAdj = bApplyAccEOMAdj;
-		return true;
+		return _lsCouponPeriod.get (0).periods().get (0).accrualEOMAdjustment();
 	}
 
 	/**
@@ -371,22 +303,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 
 	public java.lang.String couponDC()
 	{
-		return _strCouponDC;
-	}
-
-	/**
-	 * Set the Coupon Day Count
-	 * 
-	 * @param strCouponDC The Coupon Day Count
-	 * 
-	 * @return TRUE => Coupon Day Count Successfully set
-	 */
-
-	public boolean setCouponDC (
-		final java.lang.String strCouponDC)
-	{
-		_strCouponDC = strCouponDC;
-		return true;
+		return _lsCouponPeriod.get (0).periods().get (0).couponDC();
 	}
 
 	/**
@@ -397,22 +314,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 
 	public java.lang.String accrualDC()
 	{
-		return _strAccrualDC;
-	}
-
-	/**
-	 * Set the Accrual Day Count
-	 * 
-	 * @param strAccrualDC The Accrual Day Count
-	 * 
-	 * @return TRUE => Accrual Day Count Successfully set
-	 */
-
-	public boolean setAccrualDC (
-		final java.lang.String strAccrualDC)
-	{
-		_strAccrualDC = strAccrualDC;
-		return true;
+		return _lsCouponPeriod.get (0).periods().get (0).accrualDC();
 	}
 
 	/**
@@ -449,24 +351,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 
 	public double maturity()
 	{
-		return _dblMaturity;
-	}
-
-	/**
-	 * Set the Maturity Date
-	 * 
-	 * @param dblMaturity The Maturity Date
-	 * 
-	 * @return TRUE => Maturity Date Successfully set
-	 */
-
-	public boolean setMaturity (
-		final double dblMaturity)
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblMaturity)) return false;
-
-		_dblMaturity = dblMaturity;
-		return true;
+		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).endDate();
 	}
 
 	/**
@@ -477,24 +362,7 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 
 	public double effective()
 	{
-		return _dblEffective;
-	}
-
-	/**
-	 * Set the Effective Date
-	 * 
-	 * @param dblEffective The Effective Date
-	 * 
-	 * @return TRUE => Effective Date Successfully set
-	 */
-
-	public boolean setEffective (
-		final double dblEffective)
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblEffective)) return false;
-
-		_dblEffective = dblEffective;
-		return true;
+		return _lsCouponPeriod.get (0).startDate();
 	}
 
 	/**
@@ -546,129 +414,6 @@ public class PeriodSet implements org.drip.product.params.Validatable {
 
 	public java.lang.String currency()
 	{
-		return _strCurrency;
-	}
-
-	/**
-	 * Set the Coupon Currency
-	 * 
-	 * @param strCurrency The Currency
-	 * 
-	 * @return TRUE => Currency Successfully set
-	 */
-
-	public boolean setCurrency (
-		final java.lang.String strCurrency)
-	{
-		if (null == strCurrency || strCurrency.isEmpty()) return false;
-
-		_strCurrency = strCurrency;
-		return true;
-	}
-
-	/**
-	 * Retrieve the Periods From Forward Generator Flag
-	 * 
-	 * @return The Periods From Forward Generator Flag
-	 */
-
-	public boolean periodsFromForward()
-	{
-		return _bPeriodsFromForward;
-	}
-
-	/**
-	 * Set the Periods From Forward Generator Flag
-	 * 
-	 * @param bPeriodsFromForward The Periods From Forward Generator Flag
-	 * 
-	 * @return TRUE => The Periods From Forward Generator Flag Successfully Set
-	 */
-
-	public boolean setPeriodsFromForward (
-		final boolean bPeriodsFromForward)
-	{
-		_bPeriodsFromForward = bPeriodsFromForward;
-		return true;
-	}
-
-	/**
-	 * Retrieve the Coupon
-	 * 
-	 * @return The Coupon
-	 */
-
-	public double coupon()
-	{
-		return _dblCoupon;
-	}
-
-	/**
-	 * Set the Coupon
-	 * 
-	 * @param dblCoupon The Coupon
-	 * 
-	 * @return TRUE => Coupon Successfully set
-	 */
-
-	public boolean setCoupon (
-		final double dblCoupon)
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) return false;
-
-		_dblCoupon = dblCoupon;
-		return true;
-	}
-
-	/**
-	 * Retrieve the Pay Date Adjust Parameters
-	 * 
-	 * @return The Pay Date Adjust Parameters
-	 */
-
-	public org.drip.analytics.daycount.DateAdjustParams dapPay()
-	{
-		return _dapPay;
-	}
-
-	/**
-	 * Set the Pay Date Adjust Parameters
-	 * 
-	 * @param dapPay The Pay Date Adjust Parameters
-	 * 
-	 * @return TRUE => The Pay DAP successfully set
-	 */
-
-	public boolean setDAPPay (
-		final org.drip.analytics.daycount.DateAdjustParams dapPay)
-	{
-		_dapPay = dapPay;
-		return true;
-	}
-
-	/**
-	 * Retrieve the Accrual End Date Adjust Parameters
-	 * 
-	 * @return The Accrual End Date Adjust Parameters
-	 */
-
-	public org.drip.analytics.daycount.DateAdjustParams dapAccrual()
-	{
-		return _dapAccrual;
-	}
-
-	/**
-	 * Set the Accrual End Date Adjust Parameters
-	 * 
-	 * @param dapAccrual The Accrual End Date Adjust Parameters
-	 * 
-	 * @return TRUE => The Accrual End DAP successfully set
-	 */
-
-	public boolean setDAPAccrual (
-		final org.drip.analytics.daycount.DateAdjustParams dapAccrual)
-	{
-		_dapAccrual = dapAccrual;
-		return true;
+		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).payCurrency();
 	}
 }

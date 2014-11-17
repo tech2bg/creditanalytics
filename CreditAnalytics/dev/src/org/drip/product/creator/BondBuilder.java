@@ -350,8 +350,7 @@ public class BondBuilder {
 			dblPeriodStart = adblDate[i];
 		}
 
-		org.drip.product.params.PeriodSet bfpgp = new org.drip.product.params.PeriodSet
-			(dtEffective.julian(), strDC, iFreq, lsCouponPeriod);
+		org.drip.product.params.PeriodSet bfpgp = new org.drip.product.params.PeriodSet (lsCouponPeriod);
 
 		if (!bfpgp.validate()) {
 			System.out.println ("Could not validate bfpgp!");
