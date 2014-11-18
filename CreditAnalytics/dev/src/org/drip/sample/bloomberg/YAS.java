@@ -453,7 +453,7 @@ public class YAS {
 
 		double dblYield01 = bond.calcYield01FromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblConvexity = bond.calcConvexityFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
+		double dblConvexity = bond.convexityFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
 		System.out.println ("Price          : " + FormatUtil.FormatDouble (dblPrice, 1, 3, 100.));
 

@@ -2241,7 +2241,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblCreditBasis Credit Basis to Work-out
@@ -2251,10 +2251,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromCreditBasis (
+	public abstract double convexityFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblCreditBasis)
@@ -2265,7 +2265,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblCreditBasis Credit Basis to Maturity
 	 * 
 	 * @return Convexity from Credit Basis to Maturity
@@ -2273,10 +2273,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromCreditBasis (
+	public abstract double convexityFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
 
@@ -2285,7 +2285,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblCreditBasis Credit Basis to Optimal Exercise
 	 * 
 	 * @return Convexity from Credit Basis to Optimal Exercise
@@ -2293,10 +2293,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromCreditBasisToOptimalExercise (
+	public abstract double convexityFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
 
@@ -2305,7 +2305,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblDiscountMargin Discount Margin to Work-out
@@ -2315,10 +2315,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromDiscountMargin (
+	public abstract double convexityFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblDiscountMargin)
@@ -2329,7 +2329,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblDiscountMargin Discount Margin to Maturity
 	 * 
 	 * @return Convexity from Discount Margin to Maturity
@@ -2337,10 +2337,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromDiscountMargin (
+	public abstract double convexityFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
 
@@ -2349,7 +2349,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblDiscountMargin Discount Margin to Optimal Exercise
 	 * 
 	 * @return Convexity from Discount Margin to Optimal Exercise
@@ -2357,10 +2357,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromDiscountMarginToOptimalExercise (
+	public abstract double convexityFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception;
 
@@ -2369,7 +2369,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblGSpread G Spread to Work-out
@@ -2379,10 +2379,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromGSpread (
+	public abstract double convexityFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblGSpread)
@@ -2393,7 +2393,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblGSpread G Spread to Maturity
 	 * 
 	 * @return Convexity from G Spread to Maturity
@@ -2401,10 +2401,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromGSpread (
+	public abstract double convexityFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception;
 
@@ -2413,7 +2413,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblGSpread G Spread to Optimal Exercise
 	 * 
 	 * @return Convexity from G Spread to Optimal Exercise
@@ -2421,7 +2421,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromGSpreadToOptimalExercise (
+	public abstract double convexityFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
@@ -2433,7 +2433,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblISpread I Spread to Work-out
@@ -2443,10 +2443,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromISpread (
+	public abstract double convexityFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblISpread)
@@ -2457,7 +2457,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblISpread I Spread to Maturity
 	 * 
 	 * @return Convexity from I Spread to Maturity
@@ -2465,10 +2465,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromISpread (
+	public abstract double convexityFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception;
 
@@ -2477,7 +2477,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblISpread I Spread to Optimal Exercise
 	 * 
 	 * @return Convexity from I Spread to Optimal Exercise
@@ -2485,10 +2485,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromISpreadToOptimalExercise (
+	public abstract double convexityFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception;
 
@@ -2497,7 +2497,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblOAS OAS to Work-out
@@ -2507,10 +2507,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromOAS (
+	public abstract double convexityFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblOAS)
@@ -2521,7 +2521,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblOAS OAS to Maturity
 	 * 
 	 * @return Convexity from OAS to Maturity
@@ -2529,10 +2529,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromOAS (
+	public abstract double convexityFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblOAS)
 		throws java.lang.Exception;
 
@@ -2541,7 +2541,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblOAS OAS to Optimal Exercise
 	 * 
 	 * @return Convexity from OAS to Optimal Exercise
@@ -2549,10 +2549,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromOASToOptimalExercise (
+	public abstract double convexityFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblOAS)
 		throws java.lang.Exception;
 
@@ -2561,7 +2561,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblPECS PECS to Work-out
@@ -2571,10 +2571,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromPECS (
+	public abstract double convexityFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblPECS)
@@ -2585,7 +2585,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPECS PECS to Maturity
 	 * 
 	 * @return Convexity from PECS to Maturity
@@ -2593,10 +2593,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromPECS (
+	public abstract double convexityFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPECS)
 		throws java.lang.Exception;
 
@@ -2605,7 +2605,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPECS PECS to Optimal Exercise
 	 * 
 	 * @return Convexity from PECS to Optimal Exercise
@@ -2613,10 +2613,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromPECSToOptimalExercise (
+	public abstract double convexityFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPECS)
 		throws java.lang.Exception;
 
@@ -2625,7 +2625,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblPrice Price to Work-out
@@ -2635,10 +2635,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromPrice (
+	public abstract double convexityFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblPrice)
@@ -2649,7 +2649,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPrice Price to Maturity
 	 * 
 	 * @return Convexity from Price to Maturity
@@ -2657,10 +2657,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromPrice (
+	public abstract double convexityFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice)
 		throws java.lang.Exception;
 
@@ -2669,7 +2669,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPrice Price to Optimal Exercise
 	 * 
 	 * @return Convexity from Price to Optimal Exercise
@@ -2677,10 +2677,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromPriceToOptimalExercise (
+	public abstract double convexityFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice)
 		throws java.lang.Exception;
 
@@ -2689,7 +2689,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblTSYSpread TSY Spread to Work-out
@@ -2699,10 +2699,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromTSYSpread (
+	public abstract double convexityFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblTSYSpread)
@@ -2713,7 +2713,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblTSYSpread TSY Spread to Maturity
 	 * 
 	 * @return Convexity from TSY Spread to Maturity
@@ -2721,10 +2721,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromTSYSpread (
+	public abstract double convexityFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
 
@@ -2733,7 +2733,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblTSYSpread TSY Spread to Optimal Exercise
 	 * 
 	 * @return Convexity from TSY Spread to Optimal Exercise
@@ -2741,10 +2741,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Convexity cannot be calculated
 	 */
 
-	public abstract double calcConvexityFromTSYSpreadToOptimalExercise (
+	public abstract double convexityFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
 

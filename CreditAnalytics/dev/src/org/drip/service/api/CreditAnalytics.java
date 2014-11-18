@@ -3462,9 +3462,9 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.calcConvexityFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams
-			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create
-				(dcEOD, null, null, null, null, null, null), null, dblPrice);
+		return bond.convexityFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
+				null), null, dblPrice);
 	}
 
 	/**
@@ -4732,10 +4732,10 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODTSYCurve (strTSY, dtEOD);
 
-		return bond.calcConvexityFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
-			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create
-				(dcEOD, null, dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
-					dtEOD, strIR), null), null, dblTSYSpread);
+		return bond.convexityFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
+			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null,
+				null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
+					dblTSYSpread);
 	}
 
 	/**

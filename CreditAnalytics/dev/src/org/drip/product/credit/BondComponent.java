@@ -3049,7 +3049,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return convexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcPriceFromASW (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblASW));
 	}
 
@@ -3086,7 +3086,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return convexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcPriceFromBondBasis (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblBondBasis));
 	}
 
@@ -3114,250 +3114,236 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return convexityFromBondBasis (valParams, csqs, vcp, _periodParams.maturity(), 1., dblBondBasis);
 	}
 
-	@Override public double calcConvexityFromCreditBasis (
+	@Override public double convexityFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromCreditBasis (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
+		return convexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromCreditBasis (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 				dblCreditBasis));
 	}
 
-	@Override public double calcConvexityFromCreditBasis (
+	@Override public double convexityFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblCreditBasis);
+		return convexityFromCreditBasis (valParams, csqs, vcp, _periodParams.maturity(), 1., dblCreditBasis);
 	}
 
-	@Override public double calcConvexityFromCreditBasisToOptimalExercise (
+	@Override public double convexityFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcConvexityFromCreditBasisToOptimalExercise => "
+			throw new java.lang.Exception ("BondComponent::convexityFromCreditBasisToOptimalExercise => "
 				+ "Cant calc Convexity from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblCreditBasis);
+		return convexityFromCreditBasis (valParams, csqs, vcp, _periodParams.maturity(), 1., dblCreditBasis);
 	}
 
-	@Override public double calcConvexityFromDiscountMargin (
+	@Override public double convexityFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromDiscountMargin (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
+		return convexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromDiscountMargin (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 				dblDiscountMargin));
 	}
 
-	@Override public double calcConvexityFromDiscountMargin (
+	@Override public double convexityFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblDiscountMargin);
+		return convexityFromDiscountMargin (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblDiscountMargin);
 	}
 
-	@Override public double calcConvexityFromDiscountMarginToOptimalExercise (
+	@Override public double convexityFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcConvexityFromDiscountMarginToOptimalExercise "
-				+ "=> Cant calc Convexity from Discount Margin to optimal exercise for bonds w emb option");
+			throw new java.lang.Exception ("BondComponent::convexityFromDiscountMarginToOptimalExercise " +
+				"=> Cant calc Convexity from Discount Margin to optimal exercise for bonds w emb option");
 
-		return calcDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblDiscountMargin);
+		return convexityFromDiscountMargin (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblDiscountMargin);
 	}
 
-	@Override public double calcConvexityFromGSpread (
+	@Override public double convexityFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromGSpread (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-				dblGSpread));
+		return convexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromGSpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblGSpread));
 	}
 
-	@Override public double calcConvexityFromGSpread (
+	@Override public double convexityFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblGSpread);
+		return convexityFromGSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblGSpread);
 	}
 
-	@Override public double calcConvexityFromGSpreadToOptimalExercise (
+	@Override public double convexityFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcConvexityFromGSpreadToOptimalExercise => " +
+			throw new java.lang.Exception ("BondComponent::convexityFromGSpreadToOptimalExercise => " +
 				"Cant calc Convexity from G Spread to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblGSpread);
+		return convexityFromGSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblGSpread);
 	}
 
-	@Override public double calcConvexityFromISpread (
+	@Override public double convexityFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromISpread (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-				dblISpread));
+		return convexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromISpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblISpread));
 	}
 
-	@Override public double calcConvexityFromISpread (
+	@Override public double convexityFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblISpread);
+		return convexityFromISpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblISpread);
 	}
 
-	@Override public double calcConvexityFromISpreadToOptimalExercise (
+	@Override public double convexityFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcConvexityFromISpreadToOptimalExercise => " +
+			throw new java.lang.Exception ("BondComponent::convexityFromISpreadToOptimalExercise => " +
 				"Cant calc Convexity from I Spread to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblISpread);
+		return convexityFromISpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblISpread);
 	}
 
-	@Override public double calcConvexityFromOAS (
+	@Override public double convexityFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromOAS (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-				dblOAS));
+		return convexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromOAS (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblOAS));
 	}
 
-	@Override public double calcConvexityFromOAS (
+	@Override public double convexityFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblOAS);
+		return convexityFromOAS (valParams, csqs, vcp, _periodParams.maturity(), 1., dblOAS);
 	}
 
-	@Override public double calcConvexityFromOASToOptimalExercise (
+	@Override public double convexityFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblOAS)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcConvexityFromOASToOptimalExercise => " +
+			throw new java.lang.Exception ("BondComponent::convexityFromOASToOptimalExercise => " +
 				"Cant calc Convexity from OAS to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblOAS);
+		return convexityFromOAS (valParams, csqs, vcp, _periodParams.maturity(), 1., dblOAS);
 	}
 
-	@Override public double calcConvexityFromPECS (
+	@Override public double convexityFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromPECS (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-				dblPECS));
+		return convexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromPECS (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblPECS));
 	}
 
-	@Override public double calcConvexityFromPECS (
+	@Override public double convexityFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblPECS);
+		return convexityFromPECS (valParams, csqs, vcp, _periodParams.maturity(), 1., dblPECS);
 	}
 
-	@Override public double calcConvexityFromPECSToOptimalExercise (
+	@Override public double convexityFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPECS)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcConvexityFromPECSToOptimalExercise => " +
+			throw new java.lang.Exception ("BondComponent::convexityFromPECSToOptimalExercise => " +
 				"Cant calc Convexity from PECS to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblPECS);
+		return convexityFromPECS (valParams, csqs, vcp, _periodParams.maturity(), 1., dblPECS);
 	}
 
-	@Override public double calcConvexityFromPrice (
+	@Override public double convexityFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblPrice)
@@ -3365,36 +3351,35 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	{
 		if (null == valParams || valParams.valueDate() >= dblWorkoutDate + LEFT_EOS_SNIP ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblPrice))
-			throw new java.lang.Exception ("BondComponent::calcConvexityFromPrice => Input inputs");
+			throw new java.lang.Exception ("BondComponent::convexityFromPrice => Input inputs");
 
-		double dblPriceForYieldMinus1bp = calcPriceFromYield (valParams, csqs, quotingParams,
-			dblWorkoutDate, dblWorkoutFactor, calcYieldFromPrice (valParams, csqs, quotingParams,
-				dblWorkoutDate, dblWorkoutFactor, dblPrice) - 0.0001);
+		double dblPriceForYieldMinus1bp = calcPriceFromYield (valParams, csqs, vcp, dblWorkoutDate,
+			dblWorkoutFactor, calcYieldFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+				dblPrice) - 0.0001);
 
-		double dblPriceForYieldPlus1bp = calcPriceFromYield (valParams, csqs, quotingParams,
-			dblWorkoutDate, dblWorkoutFactor, calcYieldFromPrice (valParams, csqs, quotingParams,
-				dblWorkoutDate, dblWorkoutFactor, dblPrice) + 0.0001);
+		double dblPriceForYieldPlus1bp = calcPriceFromYield (valParams, csqs, vcp, dblWorkoutDate,
+			dblWorkoutFactor, calcYieldFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+				dblPrice) + 0.0001);
 
 		double dblDirtyPrice = dblPrice + accrued (valParams.valueDate(), csqs);
 
 		return (dblPriceForYieldMinus1bp + dblPriceForYieldPlus1bp - 2. * dblPrice) / dblDirtyPrice;
 	}
 
-	@Override public double calcConvexityFromPrice (
+	@Override public double convexityFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblPrice);
+		return convexityFromPrice (valParams, csqs, vcp, _periodParams.maturity(), 1., dblPrice);
 	}
 
-	@Override public double calcConvexityFromPriceToOptimalExercise (
+	@Override public double convexityFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice)
 		throws java.lang.Exception
 	{
@@ -3402,48 +3387,44 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::calcConvexityFromPriceToOptimalExercise => " +
 				"Cant calc Convexity from Price to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblPrice);
+		return convexityFromPrice (valParams, csqs, vcp, _periodParams.maturity(), 1., dblPrice);
 	}
 
-	@Override public double calcConvexityFromTSYSpread (
+	@Override public double convexityFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromTSYSpread (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-				dblTSYSpread));
+		return convexityFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromTSYSpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblTSYSpread));
 	}
 
-	@Override public double calcConvexityFromTSYSpread (
+	@Override public double convexityFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblTSYSpread);
+		return convexityFromTSYSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblTSYSpread);
 	}
 
-	@Override public double calcConvexityFromTSYSpreadToOptimalExercise (
+	@Override public double convexityFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcConvexityFromTSYSpreadToOptimalExercise => " +
+			throw new java.lang.Exception ("BondComponent::convexityFromTSYSpreadToOptimalExercise => " +
 				"Cant calc Convexity from TSY Sprd to optimal exercise for bonds w emb option");
 
-		return calcConvexityFromTSYSpread (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblTSYSpread);
+		return convexityFromTSYSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblTSYSpread);
 	}
 
 	@Override public double calcConvexityFromYield (
@@ -3455,7 +3436,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
+		return convexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
 			calcPriceFromYield (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
 				dblYield));
 	}
@@ -3495,7 +3476,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
+		return convexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
 			calcPriceFromYieldSpread (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
 				dblYieldSpread));
 	}
@@ -3535,7 +3516,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcConvexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
+		return convexityFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
 			calcPriceFromZSpread (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
 				dblZSpread));
 	}
@@ -11534,7 +11515,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		}
 
 		try {
-			dblConvexity = calcConvexityFromPrice (valParams, csqs, quotingParams, wi.date(),
+			dblConvexity = convexityFromPrice (valParams, csqs, quotingParams, wi.date(),
 				wi.factor(), dblPrice);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
