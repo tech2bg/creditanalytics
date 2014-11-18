@@ -1178,8 +1178,8 @@ public class BondManager {
 			dblASWSpread = bond.aswFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblCreditBasis = bond.calcCreditBasisFromPrice (valParams, mpc.getScenMarketParams (bond,
-				"Base"), null, wi.date(), wi.factor(), dblPrice);
+			dblCreditBasis = bond.creditBasisFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"),
+				null, wi.date(), wi.factor(), dblPrice);
 
 			AppendField (sbSQLInsertBondClose, wi.yield(), false);
 

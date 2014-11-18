@@ -1535,7 +1535,7 @@ public class CreditAnalyticsTestSuite {
 
 					System.out.println ("Credit Basis From Price: " +
 						org.drip.quant.common.FormatUtil.FormatDouble
-							(aBond[i].calcCreditBasisFromPrice
+							(aBond[i].creditBasisFromPrice
 								(org.drip.param.valuation.ValuationParams.CreateValParams
 									(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 										org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null,
@@ -1565,7 +1565,7 @@ public class CreditAnalyticsTestSuite {
 
 					System.out.println ("Credit Basis From TSY Spread: " +
 						org.drip.quant.common.FormatUtil.FormatDouble
-							(aBond[i].calcCreditBasisFromTSYSpread
+							(aBond[i].creditBasisFromTSYSpread
 								(org.drip.param.valuation.ValuationParams.CreateValParams
 									(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 										org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null,

@@ -2082,9 +2082,9 @@ public class CreditAnalytics {
 		if (null == GetBond (strBondId))
 			throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		return GetBond (strBondId).calcCreditBasisFromPriceToOptimalExercise (valParams,
-			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null,
-				cc, null, null, null, null), quotingParams, dblPrice);
+		return GetBond (strBondId).creditBasisFromPriceToOptimalExercise (valParams,
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, cc, null, null, null, null),
+				quotingParams, dblPrice);
 	}
 
 	/**
@@ -2117,9 +2117,9 @@ public class CreditAnalytics {
 		if (null == GetBond (strBondId))
 			throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		return GetBond (strBondId).calcCreditBasisFromPrice (valParams,
-			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null,
-				cc, null, null, null, null), quotingParams, dblPrice);
+		return GetBond (strBondId).creditBasisFromPrice (valParams,
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, cc, null, null, null, null),
+				quotingParams, dblPrice);
 	}
 
 	/**
@@ -2692,9 +2692,9 @@ public class CreditAnalytics {
 			strBondId.isEmpty() || null == GetBond (strBondId))
 			throw new java.lang.Exception ("Bad inputs into CreditAnalytics.BondCreditBasisFromTSYSpread");
 
-		return GetBond (strBondId).calcCreditBasisFromTSYSpread (valParams,
-			org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, cc, null, null, null,
-				null), quotingParams, dblTSYSpread);
+		return GetBond (strBondId).creditBasisFromTSYSpread (valParams,
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, cc, null, null, null, null),
+				quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -2756,9 +2756,9 @@ public class CreditAnalytics {
 			strBondId.isEmpty() || null == GetBond (strBondId))
 			throw new java.lang.Exception ("Bad inputs into CreditAnalytics.BondPECSFromTSYSpread");
 
-		return GetBond (strBondId).calcCreditBasisFromTSYSpread (valParams,
-			org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, cc,
-				null, null, null, null), quotingParams, dblTSYSpread);
+		return GetBond (strBondId).creditBasisFromTSYSpread (valParams,
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, cc, null, null, null, null),
+				quotingParams, dblTSYSpread);
 	}
 
 	/**
@@ -3110,9 +3110,9 @@ public class CreditAnalytics {
 		if (null == GetBond (strBondId))
 			throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		return GetBond (strBondId).calcCreditBasisFromYield (valParams,
-			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null,
-				cc, null, null, null, null), quotingParams, dblYield);
+		return GetBond (strBondId).creditBasisFromYield (valParams,
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, cc, null, null, null, null),
+				quotingParams, dblYield);
 	}
 
 	/**
@@ -3506,9 +3506,9 @@ public class CreditAnalytics {
 
 		org.drip.analytics.definition.CreditCurve ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		return bond.calcCreditBasisFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams
-			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create
-				(dcEOD, null, null, ccEOD, null, null, null, null), null, dblPrice);
+		return bond.creditBasisFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, ccEOD, null, null,
+				null, null), null, dblPrice);
 	}
 
 	/**
@@ -4132,9 +4132,9 @@ public class CreditAnalytics {
 
 		org.drip.analytics.definition.CreditCurve ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		return bond.calcCreditBasisFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams
-			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create
-				(dcEOD, null, null, ccEOD, null, null, null, null), null, dblYield);
+		return bond.creditBasisFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, ccEOD, null, null,
+				null, null), null, dblYield);
 	}
 
 	/**
@@ -4784,10 +4784,10 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
-		return bond.calcCreditBasisFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
-			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create
-				(dcEOD, null, dcTSY, ccEOD, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
-					dtEOD, strIR), null), null, dblTSYSpread);
+		return bond.creditBasisFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
+			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, ccEOD,
+				null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
+					dblTSYSpread);
 	}
 
 	/**

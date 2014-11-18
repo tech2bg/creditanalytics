@@ -591,7 +591,7 @@ public class BondAnalyticsAPI {
 				(aBond[i].aswFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("Credit Basis From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcCreditBasisFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
+				(aBond[i].creditBasisFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("Price From TSY Spread: " + FormatUtil.FormatDouble
 				(aBond[i].calcPriceFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 3, 100.));
@@ -603,7 +603,7 @@ public class BondAnalyticsAPI {
 				(aBond[i].aswFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 0, 10000.));
 
 			System.out.println ("Credit Basis From TSY Spread: " + FormatUtil.FormatDouble
-				(aBond[i].calcCreditBasisFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 0, 10000.));
+				(aBond[i].creditBasisFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 0, 10000.));
 
 			/* System.out.println ("PECS From TSY Spread: " + FIGen.FormatSpread
 				(aBond[i].calcPECSFromTSYSpread (valParams, mktParams, null, 0.0188))); */
