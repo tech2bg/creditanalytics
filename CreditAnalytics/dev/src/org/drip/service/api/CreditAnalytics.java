@@ -3586,9 +3586,9 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.calcDurationFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams
-			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create
-				(dcEOD, null, null, null, null, null, null), null, dblPrice);
+		return bond.durationFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
+				null), null, dblPrice);
 	}
 
 	/**
@@ -4212,9 +4212,9 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.calcDurationFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams
-			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create
-				(dcEOD, null, null, null, null, null, null), null, dblYield);
+		return bond.durationFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
+				null), null, dblYield);
 	}
 
 	/**
@@ -4879,10 +4879,10 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
-		return bond.calcDurationFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
-			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create
-				(dcEOD, null, dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
-					dtEOD, strIR), null), null, dblTSYSpread);
+		return bond.durationFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
+			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null,
+				null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
+					dblTSYSpread);
 	}
 
 	/**
