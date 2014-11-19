@@ -3777,7 +3777,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblBondBasis Bond Basis to Work-out
@@ -3787,10 +3787,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromBondBasis (
+	public abstract double discountMarginFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblBondBasis)
@@ -3801,7 +3801,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblBondBasis Bond Basis to Maturity
 	 * 
 	 * @return Discount Margin from Bond Basis to Maturity
@@ -3809,10 +3809,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromBondBasis (
+	public abstract double discountMarginFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblBondBasis)
 		throws java.lang.Exception;
 
@@ -3821,7 +3821,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblBondBasis Bond Basis to Optimal Exercise
 	 * 
 	 * @return Discount Margin from Bond Basis to Optimal Exercise
@@ -3829,10 +3829,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromBondBasisToOptimalExercise (
+	public abstract double discountMarginFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblBondBasis)
 		throws java.lang.Exception;
 
@@ -3841,7 +3841,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblCreditBasis Credit Basis to Work-out
@@ -3851,10 +3851,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromCreditBasis (
+	public abstract double discountMarginFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblCreditBasis)
@@ -3865,7 +3865,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblCreditBasis Credit Basis to Maturity
 	 * 
 	 * @return Discount Margin from Credit Basis to Maturity
@@ -3873,10 +3873,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromCreditBasis (
+	public abstract double discountMarginFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
 
@@ -3885,7 +3885,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblCreditBasis Credit Basis to Optimal Exercise
 	 * 
 	 * @return Discount Margin from Credit Basis to Optimal Exercise
@@ -3893,10 +3893,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromCreditBasisToOptimalExercise (
+	public abstract double discountMarginFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception;
 
@@ -3905,7 +3905,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblGSpread G Spread to Work-out
@@ -3915,10 +3915,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromGSpread (
+	public abstract double discountMarginFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblGSpread)
@@ -3929,7 +3929,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblGSpread G Spread to Maturity
 	 * 
 	 * @return Discount Margin from G Spread to Maturity
@@ -3937,10 +3937,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromGSpread (
+	public abstract double discountMarginFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception;
 
@@ -3949,7 +3949,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblGSpread G Spread to Optimal Exercise
 	 * 
 	 * @return Discount Margin from G Spread to Optimal Exercise
@@ -3957,10 +3957,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromGSpreadToOptimalExercise (
+	public abstract double discountMarginFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception;
 
@@ -3969,7 +3969,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblISpread I Spread to Work-out
@@ -3979,10 +3979,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromISpread (
+	public abstract double discountMarginFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblISpread)
@@ -3993,7 +3993,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblISpread I Spread to Maturity
 	 * 
 	 * @return Discount Margin from I Spread to Maturity
@@ -4001,10 +4001,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromISpread (
+	public abstract double discountMarginFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception;
 
@@ -4013,7 +4013,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblISpread I Spread to Optimal Exercise
 	 * 
 	 * @return Discount Margin from I Spread to Optimal Exercise
@@ -4021,10 +4021,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromISpreadToOptimalExercise (
+	public abstract double discountMarginFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception;
 
@@ -4033,7 +4033,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblOAS OAS to Work-out
@@ -4043,10 +4043,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromOAS (
+	public abstract double discountMarginFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblOAS)
@@ -4057,7 +4057,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblOAS OAS to Maturity
 	 * 
 	 * @return Discount Margin from OAS to Maturity
@@ -4065,10 +4065,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromOAS (
+	public abstract double discountMarginFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblOAS)
 		throws java.lang.Exception;
 
@@ -4077,7 +4077,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblOAS OAS to Optimal Exercise
 	 * 
 	 * @return Discount Margin from OAS to Optimal Exercise
@@ -4085,10 +4085,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromOASToOptimalExercise (
+	public abstract double discountMarginFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblOAS)
 		throws java.lang.Exception;
 
@@ -4097,7 +4097,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblPECS PECS to Work-out
@@ -4107,10 +4107,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromPECS (
+	public abstract double discountMarginFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblPECS)
@@ -4121,7 +4121,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPECS PECS to Maturity
 	 * 
 	 * @return Discount Margin from PECS to Maturity
@@ -4129,10 +4129,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromPECS (
+	public abstract double discountMarginFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPECS)
 		throws java.lang.Exception;
 
@@ -4141,7 +4141,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPECS PECS to Optimal Exercise
 	 * 
 	 * @return Discount Margin from PECS to Optimal Exercise
@@ -4149,10 +4149,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromPECSToOptimalExercise (
+	public abstract double discountMarginFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPECS)
 		throws java.lang.Exception;
 
@@ -4161,7 +4161,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblPrice Price to Work-out
@@ -4171,10 +4171,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromPrice (
+	public abstract double discountMarginFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblPrice)
@@ -4185,7 +4185,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPrice Price to Maturity
 	 * 
 	 * @return Discount Margin from Price to Maturity
@@ -4193,10 +4193,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromPrice (
+	public abstract double discountMarginFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice)
 		throws java.lang.Exception;
 
@@ -4205,7 +4205,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblPrice Price to Optimal Exercise
 	 * 
 	 * @return Discount Margin from Price to Optimal Exercise
@@ -4213,10 +4213,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromPriceToOptimalExercise (
+	public abstract double discountMarginFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice)
 		throws java.lang.Exception;
 
@@ -4225,7 +4225,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblWorkoutDate Work-out Date
 	 * @param dblWorkoutFactor Work-out Factor
 	 * @param dblTSYSpread TSY Spread to Work-out
@@ -4235,10 +4235,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromTSYSpread (
+	public abstract double discountMarginFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblTSYSpread)
@@ -4249,7 +4249,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblTSYSpread TSY Spread to Maturity
 	 * 
 	 * @return Discount Margin from TSY Spread to Maturity
@@ -4257,10 +4257,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromTSYSpread (
+	public abstract double discountMarginFromTSYSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
 
@@ -4269,7 +4269,7 @@ public abstract class Bond extends CreditComponent {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblTSYSpread TSY Spread to Optimal Exercise
 	 * 
 	 * @return Discount Margin from TSY Spread to Optimal Exercise
@@ -4277,10 +4277,10 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if Discount Margin cannot be calculated
 	 */
 
-	public abstract double calcDiscountMarginFromTSYSpreadToOptimalExercise (
+	public abstract double discountMarginFromTSYSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblTSYSpread)
 		throws java.lang.Exception;
 

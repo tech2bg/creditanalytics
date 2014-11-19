@@ -581,7 +581,7 @@ public class BondAnalyticsAPI {
 			System.out.println ("I Spread From Price: " + FormatUtil.FormatDouble (aBond[i].calcISpreadFromPrice
 				(valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
-			System.out.println ("Discount Margin From Price: " + FormatUtil.FormatDouble (aBond[i].calcDiscountMarginFromPrice
+			System.out.println ("Discount Margin From Price: " + FormatUtil.FormatDouble (aBond[i].discountMarginFromPrice
 				(valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("TSY Spread From Price: " + FormatUtil.FormatDouble
