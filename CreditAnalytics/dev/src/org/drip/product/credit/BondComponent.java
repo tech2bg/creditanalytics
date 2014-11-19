@@ -4000,7 +4000,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcYieldFromASW (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblASW));
 	}
 
@@ -4037,7 +4037,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcYieldFromBondBasis (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblBondBasis));
 	}
 
@@ -4076,7 +4076,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcYieldFromCreditBasis (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 				dblCreditBasis));
 	}
@@ -4117,7 +4117,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcYieldFromGSpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblGSpread));
 	}
 
@@ -4154,7 +4154,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcYieldFromISpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblISpread));
 	}
 
@@ -4191,7 +4191,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcYieldFromOAS (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblOAS));
 	}
 
@@ -4228,7 +4228,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcYieldFromPECS (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblPECS));
 	}
 
@@ -4265,7 +4265,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcYieldFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblPrice));
 	}
 
@@ -4304,7 +4304,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 			calcYieldFromTSYSpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblTSYSpread));
 	}
 
@@ -4334,10 +4334,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			dblTSYSpread);
 	}
 
-	@Override public double calcDiscountMarginFromYield (
+	@Override public double discountMarginFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblYield)
@@ -4346,12 +4346,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == valParams || null == csqs || !org.drip.quant.common.NumberUtil.IsValid
 			(dblWorkoutDate) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor) ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblYield))
-			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
+			throw new java.lang.Exception ("BondComponent::discountMarginFromYield => Invalid inputs");
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding)
-			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYield => Invalid inputs");
+			throw new java.lang.Exception ("BondComponent::discountMarginFromYield => Invalid inputs");
 
 		return null == _fltParams ? dblYield - dcFunding.libor (valParams.valueDate(), ((int) (12. / (0 ==
 			_periodParams.freq() ? 2 : _periodParams.freq()))) + "M") : dblYield - getIndexRate
@@ -4359,311 +4359,296 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					calcCurrentPeriod (valParams.valueDate()));
 	}
 
-	@Override public double calcDiscountMarginFromYield (
+	@Override public double discountMarginFromYield (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblYield);
+		return discountMarginFromYield (valParams, csqs, vcp, _periodParams.maturity(), 1., dblYield);
 	}
 
-	@Override public double calcDiscountMarginFromYieldToOptimalExercise (
+	@Override public double discountMarginFromYieldToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblYield)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromYieldToOptimalExercise =>" +
+			throw new java.lang.Exception ("BondComponent::discountMarginFromYieldToOptimalExercise =>" +
 				" Cant calc Discount Margin from Yield to optimal exercise for bonds w emb option");
 
-		return calcDiscountMarginFromYield (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblYield);
+		return discountMarginFromYield (valParams, csqs, vcp, _periodParams.maturity(), 1., dblYield);
 	}
 
-	@Override public double calcDiscountMarginFromYieldSpread (
+	@Override public double discountMarginFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, quotingParams, dblWorkoutDate,
-			dblWorkoutFactor, calcYieldFromYieldSpread (valParams, csqs, quotingParams, dblWorkoutDate,
-				dblWorkoutFactor, dblYieldSpread));
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcYieldFromYieldSpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+				dblYieldSpread));
 	}
 
-	@Override public double calcDiscountMarginFromYieldSpread (
+	@Override public double discountMarginFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYieldSpread (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblYieldSpread);
+		return discountMarginFromYieldSpread (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblYieldSpread);
 	}
 
-	@Override public double calcDiscountMarginFromYieldSpreadToOptimalExercise (
+	@Override public double discountMarginFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblYieldSpread)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
 			throw new java.lang.Exception
-				("BondComponent::calcDiscountMarginFromYieldSpreadToOptimalExercise => " +
+				("BondComponent::discountMarginFromYieldSpreadToOptimalExercise => " +
 					"Cant calc Discount Margin from Yield Sprd to optimal exercise for bonds w emb option");
 
-		return calcDiscountMarginFromYieldSpread (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblYieldSpread);
+		return discountMarginFromYieldSpread (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblYieldSpread);
 	}
 
-	@Override public double calcDiscountMarginFromZSpread (
+	@Override public double discountMarginFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromYield (valParams, csqs, quotingParams, dblWorkoutDate,
-			dblWorkoutFactor, calcYieldFromZSpread (valParams, csqs, quotingParams, dblWorkoutDate,
-				dblWorkoutFactor, dblZSpread));
+		return discountMarginFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcYieldFromZSpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblZSpread));
 	}
 
-	@Override public double calcDiscountMarginFromZSpread (
+	@Override public double discountMarginFromZSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
-		return calcDiscountMarginFromZSpread (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblZSpread);
+		return discountMarginFromZSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblZSpread);
 	}
 
-	@Override public double calcDiscountMarginFromZSpreadToOptimalExercise (
+	@Override public double discountMarginFromZSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblZSpread)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcDiscountMarginFromZSpreadToOptimalExercise =>"
+			throw new java.lang.Exception ("BondComponent::discountMarginFromZSpreadToOptimalExercise =>"
 				+ " Cant calc Discount Margin from Z Spread to optimal exercise for bonds w emb option");
 
-		return calcDiscountMarginFromZSpread (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblZSpread);
+		return discountMarginFromZSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblZSpread);
 	}
 
-	@Override public double calcDurationFromASW (
+	@Override public double durationFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcDurationFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromASW (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-				dblASW));
+		return calcDurationFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromASW (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblASW));
 	}
 
-	@Override public double calcDurationFromASW (
+	@Override public double durationFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcDurationFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblASW);
+		return durationFromASW (valParams, csqs, vcp, _periodParams.maturity(), 1., dblASW);
 	}
 
-	@Override public double calcDurationFromASWToOptimalExercise (
+	@Override public double durationFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblASW)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcDurationFromASWToOptimalExercise => " +
+			throw new java.lang.Exception ("BondComponent::durationFromASWToOptimalExercise => " +
 				"Cant calc Duration from ASW to optimal exercise for bonds w emb option");
 
-		return calcDurationFromASW (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblASW);
+		return durationFromASW (valParams, csqs, vcp, _periodParams.maturity(), 1., dblASW);
 	}
 
-	@Override public double calcDurationFromBondBasis (
+	@Override public double durationFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcDurationFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromBondBasis (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
+		return calcDurationFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromBondBasis (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 				dblBondBasis));
 	}
 
-	@Override public double calcDurationFromBondBasis (
+	@Override public double durationFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcDurationFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblBondBasis);
+		return durationFromBondBasis (valParams, csqs, vcp, _periodParams.maturity(), 1., dblBondBasis);
 	}
 
-	@Override public double calcDurationFromBondBasisToOptimalExercise (
+	@Override public double durationFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcDurationFromBondBasisToOptimalExercise => " +
+			throw new java.lang.Exception ("BondComponent::durationFromBondBasisToOptimalExercise => " +
 				"Cant calc Duration from Bond Basis to optimal exercise for bonds w emb option");
 
-		return calcDurationFromBondBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblBondBasis);
+		return durationFromBondBasis (valParams, csqs, vcp, _periodParams.maturity(), 1., dblBondBasis);
 	}
 
-	@Override public double calcDurationFromCreditBasis (
+	@Override public double durationFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcDurationFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromCreditBasis (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
+		return calcDurationFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromCreditBasis (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
 				dblCreditBasis));
 	}
 
-	@Override public double calcDurationFromCreditBasis (
+	@Override public double durationFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcDurationFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblCreditBasis);
+		return durationFromCreditBasis (valParams, csqs, vcp, _periodParams.maturity(), 1., dblCreditBasis);
 	}
 
-	@Override public double calcDurationFromCreditBasisToOptimalExercise (
+	@Override public double durationFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcDurationFromCreditBasisToOptimalExercise => "
-				+ "Cant calc Duration from Credit Basis to optimal exercise for bonds w emb option");
+			throw new java.lang.Exception ("BondComponent::durationFromCreditBasisToOptimalExercise => " +
+				"Cant calc Duration from Credit Basis to optimal exercise for bonds w emb option");
 
-		return calcDurationFromCreditBasis (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblCreditBasis);
+		return durationFromCreditBasis (valParams, csqs, vcp, _periodParams.maturity(), 1., dblCreditBasis);
 	}
 
-	@Override public double calcDurationFromDiscountMargin (
+	@Override public double durationFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcDurationFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromDiscountMargin (valParams, csqs, quotingParams, dblWorkoutDate,
-				dblWorkoutFactor, dblDiscountMargin));
+		return calcDurationFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromDiscountMargin (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+				dblDiscountMargin));
 	}
 
-	@Override public double calcDurationFromDiscountMargin (
+	@Override public double durationFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblDiscountMargin);
+		return durationFromDiscountMargin (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblDiscountMargin);
 	}
 
-	@Override public double calcDurationFromDiscountMarginToOptimalExercise (
+	@Override public double durationFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcDurationFromDiscountMarginToOptimalExercise "
-				+ "=> Cant calc Duration from Discount Margin to optimal exercise for bonds w emb option");
+			throw new java.lang.Exception ("BondComponent::durationFromDiscountMarginToOptimalExercise " +
+				"=> Cant calc Duration from Discount Margin to optimal exercise for bonds w emb option");
 
-		return calcDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblDiscountMargin);
+		return durationFromDiscountMargin (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblDiscountMargin);
 	}
 
-	@Override public double calcDurationFromGSpread (
+	@Override public double durationFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcDurationFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			calcPriceFromGSpread (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-				dblGSpread));
+		return calcDurationFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcPriceFromGSpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblGSpread));
 	}
 
-	@Override public double calcDurationFromGSpread (
+	@Override public double durationFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcDurationFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblGSpread);
+		return durationFromGSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblGSpread);
 	}
 
-	@Override public double calcDurationFromGSpreadToOptimalExercise (
+	@Override public double durationFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcDurationFromGSpreadToOptimalExercise => " +
+			throw new java.lang.Exception ("BondComponent::durationFromGSpreadToOptimalExercise => " +
 				"Cant calc Duration from G Spread to optimal exercise for bonds w emb option");
 
-		return calcDurationFromGSpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblGSpread);
+		return durationFromGSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblGSpread);
 	}
 
 	@Override public double calcDurationFromISpread (
@@ -4683,12 +4668,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	@Override public double calcDurationFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcDurationFromISpread (valParams, csqs, quotingParams, _periodParams.maturity(), 1.,
-			dblISpread);
+		return durationFromGSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblISpread);
 	}
 
 	@Override public double calcDurationFromISpreadToOptimalExercise (
@@ -11391,8 +11375,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		double dblModifiedDuration = java.lang.Double.NaN;
 
 		try {
-			dblDiscountMargin = calcDiscountMarginFromYield (valParams, csqs, quotingParams,
-				wi.date(), wi.factor(), wi.yield());
+			dblDiscountMargin = discountMarginFromYield (valParams, csqs, quotingParams, wi.date(),
+				wi.factor(), wi.yield());
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}

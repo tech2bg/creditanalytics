@@ -4329,9 +4329,9 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.calcDiscountMarginFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams
-			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create
-				(dcEOD, null, null, null, null, null, null), null, dblYield);
+		return bond.discountMarginFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams
+			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null,
+				null, null), null, dblYield);
 	}
 
 	/**
