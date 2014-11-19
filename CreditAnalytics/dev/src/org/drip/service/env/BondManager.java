@@ -1166,13 +1166,13 @@ public class BondManager {
 			dblZSpread = bond.calcZSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblGSpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
+			dblGSpread = bond.gSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblISpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
+			dblISpread = bond.gSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblTSYSpread = bond.calcGSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"),
+			dblTSYSpread = bond.gSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"),
 				null, wi.date(), wi.factor(), dblPrice);
 
 			dblASWSpread = bond.aswFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,

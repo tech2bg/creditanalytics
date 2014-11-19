@@ -437,7 +437,7 @@ public class YAS {
 
 		double dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblGSpread = bond.calcGSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
+		double dblGSpread = bond.gSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
 		double dblISpread = bond.calcISpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
