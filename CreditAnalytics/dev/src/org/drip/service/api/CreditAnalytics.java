@@ -2631,9 +2631,9 @@ public class CreditAnalytics {
 		if (null == GetBond (strBondId))
 			throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		return GetBond (strBondId).calcGSpreadFromTSYSpreadToOptimalExercise (valParams,
-			org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, null,
-				null, null, null, null), null, dblTSYSpread);
+		return GetBond (strBondId).gSpreadFromTSYSpreadToOptimalExercise (valParams,
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, null, null, null, null, null),
+				null, dblTSYSpread);
 	}
 
 	/**
@@ -3049,9 +3049,9 @@ public class CreditAnalytics {
 		if (null == GetBond (strBondId))
 			throw new java.lang.Exception ("Cannot locate bond for ID " + strBondId);
 
-		return GetBond (strBondId).calcGSpreadFromYield (valParams,
-			org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, null,
-				null, null, null, null), null, dblYield);
+		return GetBond (strBondId).gSpreadFromYield (valParams,
+			org.drip.param.creator.MarketParamsBuilder.Create (dc, dcTSY, null, null, null, null, null),
+				null, dblYield);
 	}
 
 	/**
@@ -4255,9 +4255,9 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.calcGSpreadFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
-			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD,
-				dcTSY, null, null, null, null, null), null, dblYield);
+		return bond.gSpreadFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, dcTSY, null, null, null, null,
+				null), null, dblYield);
 	}
 
 	/**
@@ -4924,11 +4924,11 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcTSY = LoadEODTSYCurve (strIR, dtEOD);
 
-		return bond.calcGSpreadFromTSYSpreadToOptimalExercise
+		return bond.gSpreadFromTSYSpreadToOptimalExercise
 			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
-				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD,
-					dcTSY, null, null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD,
-						strIR), null), null, dblTSYSpread);
+				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, dcTSY, null, null, null,
+					org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
+						dblTSYSpread);
 	}
 
 	/**
