@@ -449,7 +449,7 @@ public class YAS {
 
 		double dblModDur = bond.calcModifiedDurationFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblMacDur = bond.calcMacaulayDurationFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
+		double dblMacDur = bond.macaulayDurationFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
 		double dblYield01 = bond.calcYield01FromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
