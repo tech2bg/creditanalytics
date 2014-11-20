@@ -578,7 +578,7 @@ public class BondAnalyticsAPI {
 					(aBond[i].calcOASFromPrice (valParams, mktParams, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.)); */
 			}
 
-			System.out.println ("I Spread From Price: " + FormatUtil.FormatDouble (aBond[i].calcISpreadFromPrice
+			System.out.println ("I Spread From Price: " + FormatUtil.FormatDouble (aBond[i].iSpreadFromPrice
 				(valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("Discount Margin From Price: " + FormatUtil.FormatDouble (aBond[i].discountMarginFromPrice
