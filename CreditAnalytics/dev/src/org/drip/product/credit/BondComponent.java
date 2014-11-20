@@ -5869,332 +5869,316 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return iSpreadFromZSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblZSpread);
 	}
 
-	@Override public double calcMacaulayDurationFromASW (
+	@Override public double macaulayDurationFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromYield (valParams, csqs, quotingParams, dblWorkoutDate,
-			dblWorkoutFactor, calcYieldFromASW (valParams, csqs, quotingParams, dblWorkoutDate,
-				dblWorkoutFactor, dblASW));
+		return calcMacaulayDurationFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcYieldFromASW (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblASW));
 	}
 
-	@Override public double calcMacaulayDurationFromASW (
+	@Override public double macaulayDurationFromASW (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblASW)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromASW (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblASW);
+		return macaulayDurationFromASW (valParams, csqs, vcp, _periodParams.maturity(), 1., dblASW);
 	}
 
-	@Override public double calcMacaulayDurationFromASWToOptimalExercise (
+	@Override public double macaulayDurationFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblASW)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
 			throw new java.lang.Exception
-				("BondComponent::calcMacaulayDurationFromASWToOptimalExercise => " +
+				("BondComponent::macaulayDurationFromASWToOptimalExercise => " +
 					"Cant calc Macaulay Duration from ASW to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromASW (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblASW);
+		return macaulayDurationFromASW (valParams, csqs, vcp, _periodParams.maturity(), 1., dblASW);
 	}
 
-	@Override public double calcMacaulayDurationFromBondBasis (
+	@Override public double macaulayDurationFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromYield (valParams, csqs, quotingParams, dblWorkoutDate,
-			dblWorkoutFactor, calcYieldFromBondBasis (valParams, csqs, quotingParams, dblWorkoutDate,
-				dblWorkoutFactor, dblBondBasis));
+		return calcMacaulayDurationFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcYieldFromBondBasis (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblBondBasis));
 	}
 
-	@Override public double calcMacaulayDurationFromBondBasis (
+	@Override public double macaulayDurationFromBondBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromBondBasis (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblBondBasis);
+		return macaulayDurationFromBondBasis (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblBondBasis);
 	}
 
-	@Override public double calcMacaulayDurationFromBondBasisToOptimalExercise (
+	@Override public double macaulayDurationFromBondBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblBondBasis)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
 			throw new java.lang.Exception
-				("BondComponent::calcMacaulayDurationFromBondBasisToOptimalExercise => " +
+				("BondComponent::macaulayDurationFromBondBasisToOptimalExercise => " +
 					"Cant calc Macaulay Duration from Bnd Basis to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromBondBasis (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblBondBasis);
+		return macaulayDurationFromBondBasis (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblBondBasis);
 	}
 
-	@Override public double calcMacaulayDurationFromCreditBasis (
+	@Override public double macaulayDurationFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromYield (valParams, csqs, quotingParams, dblWorkoutDate,
-			dblWorkoutFactor, calcYieldFromCreditBasis (valParams, csqs, quotingParams, dblWorkoutDate,
-				dblWorkoutFactor, dblCreditBasis));
+		return calcMacaulayDurationFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcYieldFromCreditBasis (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+				dblCreditBasis));
 	}
 
-	@Override public double calcMacaulayDurationFromCreditBasis (
+	@Override public double macaulayDurationFromCreditBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromCreditBasis (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblCreditBasis);
+		return macaulayDurationFromCreditBasis (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblCreditBasis);
 	}
 
-	@Override public double calcMacaulayDurationFromCreditBasisToOptimalExercise (
+	@Override public double macaulayDurationFromCreditBasisToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblCreditBasis)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
 			throw new java.lang.Exception
-				("BondComponent::calcMacaulayDurationFromCreditBasisToOptimalExercise => " +
+				("BondComponent::macaulayDurationFromCreditBasisToOptimalExercise => " +
 					"Cant calc Macaulay Duration from Crd Basis to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromCreditBasis (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblCreditBasis);
+		return macaulayDurationFromCreditBasis (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblCreditBasis);
 	}
 
-	@Override public double calcMacaulayDurationFromDiscountMargin (
+	@Override public double macaulayDurationFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromYield (valParams, csqs, quotingParams, dblWorkoutDate,
-			dblWorkoutFactor, calcYieldFromDiscountMargin (valParams, csqs, quotingParams,
-				dblWorkoutDate, dblWorkoutFactor, dblDiscountMargin));
+		return calcMacaulayDurationFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcYieldFromDiscountMargin (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+				dblDiscountMargin));
 	}
 
-	@Override public double calcMacaulayDurationFromDiscountMargin (
+	@Override public double macaulayDurationFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblDiscountMargin);
+		return macaulayDurationFromDiscountMargin (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblDiscountMargin);
 	}
 
-	@Override public double calcMacaulayDurationFromDiscountMarginToOptimalExercise (
+	@Override public double macaulayDurationFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
 			throw new java.lang.Exception
-				("BondComponent::calcMacaulayDurationFromDiscountMarginToOptimalExercise => " +
+				("BondComponent::macaulayDurationFromDiscountMarginToOptimalExercise => " +
 					"Cant calc Macaulay Duration from Disc Marg to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromDiscountMargin (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblDiscountMargin);
+		return macaulayDurationFromDiscountMargin (valParams, csqs, vcp, _periodParams.maturity(), 1.,
+			dblDiscountMargin);
 	}
 
-	@Override public double calcMacaulayDurationFromGSpread (
+	@Override public double macaulayDurationFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromYield (valParams, csqs, quotingParams, dblWorkoutDate,
-			dblWorkoutFactor, calcYieldFromGSpread (valParams, csqs, quotingParams, dblWorkoutDate,
-				dblWorkoutFactor, dblGSpread));
+		return calcMacaulayDurationFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcYieldFromGSpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblGSpread));
 	}
 
-	@Override public double calcMacaulayDurationFromGSpread (
+	@Override public double macaulayDurationFromGSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromGSpread (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblGSpread);
+		return macaulayDurationFromGSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblGSpread);
 	}
 
-	@Override public double calcMacaulayDurationFromGSpreadToOptimalExercise (
+	@Override public double macaulayDurationFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
 			throw new java.lang.Exception
-				("BondComponent::calcMacaulayDurationFromGSpreadToOptimalExercise => " +
+				("BondComponent::macaulayDurationFromGSpreadToOptimalExercise => " +
 					"Cant calc Macaulay Duration from G Spread to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromGSpread (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblGSpread);
+		return macaulayDurationFromGSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblGSpread);
 	}
 
-	@Override public double calcMacaulayDurationFromISpread (
+	@Override public double macaulayDurationFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromYield (valParams, csqs, quotingParams, dblWorkoutDate,
-			dblWorkoutFactor, calcYieldFromISpread (valParams, csqs, quotingParams, dblWorkoutDate,
-				dblWorkoutFactor, dblISpread));
+		return calcMacaulayDurationFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcYieldFromISpread (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblISpread));
 	}
 
-	@Override public double calcMacaulayDurationFromISpread (
+	@Override public double macaulayDurationFromISpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromISpread (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblISpread);
+		return macaulayDurationFromISpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblISpread);
 	}
 
-	@Override public double calcMacaulayDurationFromISpreadToOptimalExercise (
+	@Override public double macaulayDurationFromISpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblISpread)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
 			throw new java.lang.Exception
-				("BondComponent::calcMacaulayDurationFromISpreadToOptimalExercise => " +
+				("BondComponent::macaulayDurationFromISpreadToOptimalExercise => " +
 					"Cant calc Macaulay Duration from I Spread to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromISpread (valParams, csqs, quotingParams,
-			_periodParams.maturity(), 1., dblISpread);
+		return macaulayDurationFromISpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblISpread);
 	}
 
-	@Override public double calcMacaulayDurationFromOAS (
+	@Override public double macaulayDurationFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromYield (valParams, csqs, quotingParams, dblWorkoutDate,
-			dblWorkoutFactor, calcYieldFromOAS (valParams, csqs, quotingParams, dblWorkoutDate,
-				dblWorkoutFactor, dblOAS));
+		return calcMacaulayDurationFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcYieldFromOAS (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblOAS));
 	}
 
-	@Override public double calcMacaulayDurationFromOAS (
+	@Override public double macaulayDurationFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblOAS)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblOAS);
+		return macaulayDurationFromOAS (valParams, csqs, vcp, _periodParams.maturity(), 1., dblOAS);
 	}
 
-	@Override public double calcMacaulayDurationFromOASToOptimalExercise (
+	@Override public double mnacaulayDurationFromOASToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblOAS)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
 			throw new java.lang.Exception
-				("BondComponent::calcMacaulayDurationFromOASToOptimalExercise => " +
+				("BondComponent::mnacaulayDurationFromOASToOptimalExercise => " +
 					"Cant calc Macaulay Duration from OAS to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromOAS (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblOAS);
+		return macaulayDurationFromOAS (valParams, csqs, vcp, _periodParams.maturity(), 1., dblOAS);
 	}
 
-	@Override public double calcMacaulayDurationFromPECS (
+	@Override public double macaulayDurationFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromYield (valParams, csqs, quotingParams, dblWorkoutDate,
-			dblWorkoutFactor, calcYieldFromPECS (valParams, csqs, quotingParams, dblWorkoutDate,
-				dblWorkoutFactor, dblPECS));
+		return calcMacaulayDurationFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
+			calcYieldFromPECS (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblPECS));
 	}
 
-	@Override public double calcMacaulayDurationFromPECS (
+	@Override public double macaulayDurationFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPECS)
 		throws java.lang.Exception
 	{
-		return calcMacaulayDurationFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblPECS);
+		return macaulayDurationFromPECS (valParams, csqs, vcp, _periodParams.maturity(), 1., dblPECS);
 	}
 
-	@Override public double calcMacaulayDurationFromPECSToOptimalExercise (
+	@Override public double macaulayDurationFromPECSToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPECS)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
 			throw new java.lang.Exception
-				("BondComponent::calcMacaulayDurationFromPECSToOptimalExercise => " +
+				("BondComponent::macaulayDurationFromPECSToOptimalExercise => " +
 					"Cant calc Macaulay Duration from PECS to optimal exercise for bonds w emb option");
 
-		return calcMacaulayDurationFromPECS (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblPECS);
+		return macaulayDurationFromPECS (valParams, csqs, vcp, _periodParams.maturity(), 1., dblPECS);
 	}
 
 	@Override public double calcMacaulayDurationFromPrice (
