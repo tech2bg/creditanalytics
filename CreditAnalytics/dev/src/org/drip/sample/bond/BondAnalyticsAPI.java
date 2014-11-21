@@ -554,10 +554,10 @@ public class BondAnalyticsAPI {
 
 			System.out.println ("\n" + aBond[i].name() + " Valuation OP: " + aBond[i].value (valParams, null, mktParams, null));
 
-			System.out.println ("\nPrice From Yield: " + FormatUtil.FormatDouble (aBond[i].calcPriceFromYield
+			System.out.println ("\nPrice From Yield: " + FormatUtil.FormatDouble (aBond[i].priceFromYield
 				(valParams, mktParams, null, 0.03), 1, 3, 100.));
 
-			double dblPrice = aBond[i].calcPriceFromYield (valParams, mktParams, null, 0.03);
+			double dblPrice = aBond[i].priceFromYield (valParams, mktParams, null, 0.03);
 
 			WorkoutInfo wi = aBond[i].exerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
 
@@ -585,7 +585,7 @@ public class BondAnalyticsAPI {
 				(valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("TSY Spread From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcTSYSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
+				(aBond[i].tsySpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("ASW From Price: " + FormatUtil.FormatDouble
 				(aBond[i].aswFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
@@ -594,7 +594,7 @@ public class BondAnalyticsAPI {
 				(aBond[i].creditBasisFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 			System.out.println ("Price From TSY Spread: " + FormatUtil.FormatDouble
-				(aBond[i].calcPriceFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 3, 100.));
+				(aBond[i].priceFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 3, 100.));
 
 			System.out.println ("Yield From TSY Spread: " + FormatUtil.FormatDouble
 				(aBond[i].calcYieldFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 2, 100.));
@@ -609,7 +609,7 @@ public class BondAnalyticsAPI {
 				(aBond[i].calcPECSFromTSYSpread (valParams, mktParams, null, 0.0188))); */
 
 			System.out.println ("Theoretical Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcPriceFromCreditBasis (valParams, mktParams, null, wi.date(), wi.factor(), 0.), 1, 3, 100.));
+				(aBond[i].priceFromCreditBasis (valParams, mktParams, null, wi.date(), wi.factor(), 0.), 1, 3, 100.));
 		}
 	}
 
@@ -657,7 +657,7 @@ public class BondAnalyticsAPI {
 		 * Theoretical Price
 		 */
 
-		double dblTheoreticalPrice = bond.calcPriceFromCreditBasis (valParams, mktParams, null, bond.maturity().julian(), 1., 0.01);
+		double dblTheoreticalPrice = bond.priceFromCreditBasis (valParams, mktParams, null, bond.maturity().julian(), 1., 0.01);
 
 
 		System.out.println ("Credit Price From DC and CC: " + dblTheoreticalPrice);
@@ -728,7 +728,7 @@ public class BondAnalyticsAPI {
 		 * Verify the Bond fair price using the calibrated credit curve
 		 */
 
-		System.out.println (bond.primaryCode() + " => " + bond.calcPriceFromCreditBasis (
+		System.out.println (bond.primaryCode() + " => " + bond.priceFromCreditBasis (
 			valParams,
 			mktParamsCalib,
 			null,

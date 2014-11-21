@@ -435,7 +435,7 @@ public class YAS {
 
 		WorkoutInfo wi = bond.exerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
 
-		double dblTSYSpread = bond.calcTSYSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
+		double dblTSYSpread = bond.tsySpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
 		double dblGSpread = bond.gSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
@@ -445,7 +445,7 @@ public class YAS {
 
 		double dblASW = bond.aswFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblOAS = bond.calcOASFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
+		double dblOAS = bond.oasFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
 		double dblModDur = bond.modifiedDurationFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
