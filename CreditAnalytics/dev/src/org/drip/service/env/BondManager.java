@@ -1163,7 +1163,7 @@ public class BondManager {
 		}
 
 		try {
-			dblZSpread = bond.calcZSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
+			dblZSpread = bond.zspreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
 			dblGSpread = bond.gSpreadFromPrice (valParams, mpc.getScenMarketParams (bond, "Base"), null,

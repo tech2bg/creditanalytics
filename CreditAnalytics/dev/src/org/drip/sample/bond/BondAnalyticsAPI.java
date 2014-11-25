@@ -568,11 +568,11 @@ public class BondAnalyticsAPI {
 			System.out.println ("Workout Yield: " + FormatUtil.FormatDouble (wi.yield(), 1, 2, 100.));
 
 			System.out.println ("Workout Yield From Price: " + FormatUtil.FormatDouble
-				(aBond[i].calcYieldFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 2, 100.));
+				(aBond[i].yieldFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 2, 100.));
 
 			if (!aBond[i].isFloater()) {
 				System.out.println ("Z Spread From Price: " + FormatUtil.FormatDouble
-					(aBond[i].calcZSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
+					(aBond[i].zspreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
 				/* System.out.println ("OAS From Price: " + FormatUtil.FormatDouble
 					(aBond[i].calcOASFromPrice (valParams, mktParams, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.)); */
@@ -597,7 +597,7 @@ public class BondAnalyticsAPI {
 				(aBond[i].priceFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 3, 100.));
 
 			System.out.println ("Yield From TSY Spread: " + FormatUtil.FormatDouble
-				(aBond[i].calcYieldFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 2, 100.));
+				(aBond[i].yieldFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 2, 100.));
 
 			System.out.println ("ASW From TSY Spread: " + FormatUtil.FormatDouble
 				(aBond[i].aswFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 0, 10000.));

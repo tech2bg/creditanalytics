@@ -156,11 +156,12 @@ public class TreasuryCurveAPI {
 			System.out.println ("\tPrice[" + aTSYBond[i].name() + "]: " +
 				FormatUtil.FormatDouble (dblPrice, 2, 3, 100.));
 
-			double dblYield = aTSYBond[i].calcYieldFromPrice (
+			double dblYield = aTSYBond[i].yieldFromPrice (
 				new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
 				MarketParamsBuilder.Discount (dcTSY),
 				null,
-				dblPrice);
+				dblPrice
+			);
 
 			System.out.println ("\tYield[" + aTSYBond[i].name() + "]: " +
 				FormatUtil.FormatDouble (dblYield, 1, 3, 100.));
@@ -294,7 +295,7 @@ public class TreasuryCurveAPI {
 		 * Calculate yield for off-the-run
 		 */
 
-		double dblYieldOffTheRun = bondOffTheRun.calcYieldFromPrice (
+		double dblYieldOffTheRun = bondOffTheRun.yieldFromPrice (
 			new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
 			MarketParamsBuilder.Discount (dcTSY),
 			null,

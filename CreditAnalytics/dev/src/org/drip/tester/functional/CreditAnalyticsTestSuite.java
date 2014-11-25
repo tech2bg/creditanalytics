@@ -1508,7 +1508,7 @@ public class CreditAnalyticsTestSuite {
 
 				try {
 					System.out.println ("Workout Yield From Price: " +
-						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcYieldFromPrice
+						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].yieldFromPrice
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "",
 									org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null,
@@ -1517,7 +1517,7 @@ public class CreditAnalyticsTestSuite {
 					try {
 						System.out.println ("Z Spread From Price: " +
 							org.drip.quant.common.FormatUtil.FormatDouble
-								(aBond[i].calcZSpreadFromPrice
+								(aBond[i].zspreadFromPrice
 									(org.drip.param.valuation.ValuationParams.CreateValParams
 										(org.drip.analytics.date.JulianDate.Today(), 0, "",
 											org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null,
@@ -1557,11 +1557,11 @@ public class CreditAnalyticsTestSuite {
 											0.0188), 2, 3, 100.));
 
 					System.out.println ("Yield From TSY Spread: " +
-						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].calcYieldFromTSYSpread
+						org.drip.quant.common.FormatUtil.FormatDouble (aBond[i].yieldFromTSYSpread
 							(org.drip.param.valuation.ValuationParams.CreateValParams
 								(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
-									org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null, 0.0188), 2,
-										3, 100.));
+									org.drip.analytics.daycount.Convention.DR_ACTUAL), mktParams, null,
+										0.0188), 2, 3, 100.));
 
 					System.out.println ("Credit Basis From TSY Spread: " +
 						org.drip.quant.common.FormatUtil.FormatDouble

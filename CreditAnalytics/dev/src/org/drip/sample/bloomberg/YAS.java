@@ -441,7 +441,7 @@ public class YAS {
 
 		double dblISpread = bond.iSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblZSpread = bond.calcZSpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
+		double dblZSpread = bond.zspreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
 		double dblASW = bond.aswFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
@@ -451,7 +451,7 @@ public class YAS {
 
 		double dblMacDur = bond.macaulayDurationFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
-		double dblYield01 = bond.calcYield01FromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
+		double dblYield01 = bond.yield01FromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
 		double dblConvexity = bond.convexityFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), dblPrice);
 
