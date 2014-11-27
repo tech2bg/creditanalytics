@@ -2421,11 +2421,11 @@ public class ProductTestSuite {
 			System.exit (136);
 		}
 
-		bond.setEmbeddedPutSchedule (org.drip.product.params.EmbeddedOptionSchedule.fromAmerican (dblStart,
+		bond.setEmbeddedPutSchedule (org.drip.product.params.EmbeddedOptionSchedule.FromAmerican (dblStart,
 			adblPutDate, adblPutFactor, true, 30, false, java.lang.Double.NaN, "CRAP",
 				java.lang.Double.NaN));
 
-		bond.setEmbeddedCallSchedule (org.drip.product.params.EmbeddedOptionSchedule.fromAmerican (dblStart,
+		bond.setEmbeddedCallSchedule (org.drip.product.params.EmbeddedOptionSchedule.FromAmerican (dblStart,
 			adblCallDate, adblCallFactor, false, 30, false, java.lang.Double.NaN, "CRAP",
 				java.lang.Double.NaN));
 

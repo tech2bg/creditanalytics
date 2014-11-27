@@ -103,7 +103,7 @@ public class EmbeddedOptionSchedule {
 			return null;
 		}
 
-		return fromAmerican (dblScheduleStart,
+		return FromAmerican (dblScheduleStart,
 			org.drip.quant.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
 				java.util.StringTokenizer (strDates, ";")),
 					org.drip.quant.common.StringUtil.MakeDoubleArrayFromStringTokenizer (new
@@ -128,7 +128,7 @@ public class EmbeddedOptionSchedule {
 	 * @return Discretized EOS
 	 */
 
-	public static final EmbeddedOptionSchedule fromAmerican (
+	public static final EmbeddedOptionSchedule FromAmerican (
 		final double dblValDate,
 		final double adblDate[],
 		final double adblFactor[],
@@ -280,7 +280,7 @@ public class EmbeddedOptionSchedule {
 	 * @return The array of dates
 	 */
 
-	public double[] getDates()
+	public double[] dates()
 	{
 		return _adblDate;
 	}
@@ -291,7 +291,7 @@ public class EmbeddedOptionSchedule {
 	 * @return The array of factors
 	 */
 
-	public double[] getFactors()
+	public double[] factors()
 	{
 		return _adblFactor;
 	}
@@ -304,7 +304,7 @@ public class EmbeddedOptionSchedule {
 	 * @return Factor corresponding to the index
 	 */
 
-	public double getFactor (
+	public double factor (
 		final int iIndex)
 	{
 		return _adblFactor[iIndex];
@@ -316,7 +316,7 @@ public class EmbeddedOptionSchedule {
 	 * @return Minimum Exercise Notice Period in Days
 	 */
 
-	public int getExerciseNoticePeriod()
+	public int exerciseNoticePeriod()
 	{
 		return _iNoticePeriod;
 	}

@@ -135,7 +135,7 @@ public class BondManager {
 			adblEOSFactor[i++] = dblCallFactor;
 
 		if (bIsAmerican)
-			return org.drip.product.params.EmbeddedOptionSchedule.fromAmerican (dblScheduleStart,
+			return org.drip.product.params.EmbeddedOptionSchedule.FromAmerican (dblScheduleStart,
 				adblEOSDate, adblEOSFactor, bIsPut, 30, false, java.lang.Double.NaN, "",
 					java.lang.Double.NaN);
 
@@ -203,7 +203,7 @@ public class BondManager {
 			adblEOSFactor[i++] = dblCallFactor;
 
 		if (bIsAmerican)
-			return org.drip.product.params.EmbeddedOptionSchedule.fromAmerican (dblScheduleStart,
+			return org.drip.product.params.EmbeddedOptionSchedule.FromAmerican (dblScheduleStart,
 				adblEOSDate, adblEOSFactor, bIsPut,
 					org.drip.product.params.EmbeddedOptionSchedule.CALL_NOTICE_PERIOD_DEFAULT, false,
 						java.lang.Double.NaN, "", java.lang.Double.NaN);
@@ -759,7 +759,7 @@ public class BondManager {
 					return null;
 				}
 
-				double dblFirstExDate = bond.getMarketConvention().getSettleDate
+				double dblFirstExDate = bond.marketConvention().getSettleDate
 					(org.drip.param.valuation.ValuationParams.CreateValParams (new
 						org.drip.analytics.date.JulianDate (dblScheduleStart), 0, "",
 							org.drip.analytics.daycount.Convention.DR_ACTUAL));
@@ -947,23 +947,23 @@ public class BondManager {
 			while (rs.next()) {
 				org.drip.product.credit.BondComponent bond = BuildBondFromResultSet (rs, mpc);
 
-				if (null == bond || bond.getMarketConvention()._dblFirstSettle >=
-					bond.getPeriodSet().maturity())
+				if (null == bond || bond.marketConvention()._dblFirstSettle >=
+					bond.periodSet().maturity())
 					continue;
 
-				s_mapBonds.put (bond.getIdentifierSet()._strCUSIP, bond);
+				s_mapBonds.put (bond.identifierSet()._strCUSIP, bond);
 
-				s_mapBonds.put (bond.getIdentifierSet()._strISIN, bond);
+				s_mapBonds.put (bond.identifierSet()._strISIN, bond);
 
 				java.util.SortedMap<java.lang.Double, java.lang.String> mapMatBond = s_mapTickerMatCUSIP.get
-					(bond.getIdentifierSet()._strTicker);
+					(bond.identifierSet()._strTicker);
 
 				if (null == mapMatBond)
 					mapMatBond = new java.util.TreeMap<java.lang.Double, java.lang.String>();
 
-				mapMatBond.put (bond.getPeriodSet().maturity(), bond.getIdentifierSet()._strCUSIP);
+				mapMatBond.put (bond.periodSet().maturity(), bond.identifierSet()._strCUSIP);
 
-				s_mapTickerMatCUSIP.put (bond.getIdentifierSet()._strTicker, mapMatBond);
+				s_mapTickerMatCUSIP.put (bond.identifierSet()._strTicker, mapMatBond);
 
 				++iNumBonds;
 
@@ -971,9 +971,9 @@ public class BondManager {
 
 				if (s_bBlog)
 					System.out.println ("Loaded Bond[" + iNumBonds + "] = " +
-						bond.getIdentifierSet()._strTicker + " " +
+						bond.identifierSet()._strTicker + " " +
 							org.drip.analytics.date.JulianDate.fromJulian
-								(bond.getPeriodSet().maturity()));
+								(bond.periodSet().maturity()));
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -1643,18 +1643,18 @@ public class BondManager {
 			while (rs.next()) {
 				org.drip.product.credit.BondComponent bond = BuildBondFromResultSet (rs, mpc);
 
-				if (null == bond || bond.getMarketConvention()._dblFirstSettle >=
-					bond.getPeriodSet().maturity())
+				if (null == bond || bond.marketConvention()._dblFirstSettle >=
+					bond.periodSet().maturity())
 					continue;
 
 				bw.write ("\t\torg.drip.product.credit.Bond bond" + bond.isin() +
 					" = new org.drip.product.credit.Bond();\n\n");
 
-				if (null != bond.getTreasuryBenchmark()) {
+				if (null != bond.treasuryBenchmark()) {
 					java.lang.String strPrimaryBmk = "";
 
-					if (null != bond.getTreasuryBenchmark())
-						strPrimaryBmk = bond.getTreasuryBenchmark().getPrimaryBmk();
+					if (null != bond.treasuryBenchmark())
+						strPrimaryBmk = bond.treasuryBenchmark().getPrimaryBmk();
 
 					bw.write ("\t\tbond" + bond.isin() + ".setTSYParams (CreateTSYParams (\"" +
 						strPrimaryBmk + "\", \"NONE\", \"NONE\"));\n\n");

@@ -50,7 +50,7 @@ public abstract class CreditComponent extends org.drip.product.definition.Calibr
 	 * @return List of ProductLossPeriodCurveMeasures
 	 */
 
-	public abstract java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> getLossFlow (
+	public abstract java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> lossFlow (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
@@ -66,7 +66,7 @@ public abstract class CreditComponent extends org.drip.product.definition.Calibr
 	 * @throws java.lang.Exception Thrown if recovery cannot be calculated
 	 */
 
-	public abstract double getRecovery (
+	public abstract double recovery (
 		final double dblDate,
 		final org.drip.analytics.definition.CreditCurve cc)
 		throws java.lang.Exception;
@@ -83,7 +83,7 @@ public abstract class CreditComponent extends org.drip.product.definition.Calibr
 	 * @throws java.lang.Exception Thrown if recovery cannot be calculated
 	 */
 
-	public abstract double getRecovery (
+	public abstract double recovery (
 		final double dblDate1,
 		final double dblDate2,
 		final org.drip.analytics.definition.CreditCurve cc)
@@ -95,5 +95,5 @@ public abstract class CreditComponent extends org.drip.product.definition.Calibr
 	 * @return CompCRValParams
 	 */
 
-	public abstract org.drip.product.params.CreditSetting getCRValParams();
+	public abstract org.drip.product.params.CreditSetting creditValuationParams();
 }

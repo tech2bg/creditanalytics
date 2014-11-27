@@ -98,9 +98,9 @@ public class LossQuadratureGenerator {
 				org.drip.analytics.cashflow.LossQuadratureMetrics lp =
 					org.drip.analytics.cashflow.LossQuadratureMetrics.MakeDefaultPeriod (dblSubPeriodStart,
 						dblSubPeriodEnd, period.accrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
-							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
+							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.recovery
 								(dblSubPeriodStart, dblSubPeriodEnd, cc), dc, cc,
-									comp.getCRValParams()._iDefPayLag);
+									comp.creditValuationParams()._iDefPayLag);
 
 				if (null != lp) sLP.add (lp);
 			} catch (java.lang.Exception e) {
@@ -181,9 +181,9 @@ public class LossQuadratureGenerator {
 				org.drip.analytics.cashflow.LossQuadratureMetrics lp =
 					org.drip.analytics.cashflow.LossQuadratureMetrics.MakeDefaultPeriod (dblSubPeriodStart,
 						dblSubPeriodEnd, period.accrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
-							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.getRecovery
+							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.recovery
 								(dblSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
-									comp.getCRValParams()._iDefPayLag);
+									comp.creditValuationParams()._iDefPayLag);
 
 				if (null != lp) sLP.add (lp);
 			} catch (java.lang.Exception e) {
@@ -243,9 +243,9 @@ public class LossQuadratureGenerator {
 			org.drip.analytics.cashflow.LossQuadratureMetrics lp =
 				org.drip.analytics.cashflow.LossQuadratureMetrics.MakeDefaultPeriod (dblPeriodStartDate,
 					dblPeriodEndDate, period.accrualDCF (0.5 * (dblPeriodStartDate + dblPeriodEndDate)),
-						comp.notional (dblPeriodStartDate, dblPeriodEndDate), comp.getRecovery
+						comp.notional (dblPeriodStartDate, dblPeriodEndDate), comp.recovery
 							(dblPeriodStartDate, dblPeriodEndDate, cc), dc, cc,
-								comp.getCRValParams()._iDefPayLag);
+								comp.creditValuationParams()._iDefPayLag);
 
 			if (null != lp) sLP.add (lp);
 		} catch (java.lang.Exception e) {

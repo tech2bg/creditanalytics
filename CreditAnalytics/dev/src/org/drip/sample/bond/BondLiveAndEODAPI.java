@@ -437,7 +437,7 @@ public class BondLiveAndEODAPI {
 
 		System.out.println ("Next Exercise Type: " + org.drip.analytics.support.AnalyticsHelper.WorkoutTypeToString (nei.workoutType()));
 
-		for (LossQuadratureMetrics dp : bond.getLossFlow (valParams, pricerParams, mktParams))
+		for (LossQuadratureMetrics dp : bond.lossFlow (valParams, pricerParams, mktParams))
 			System.out.println (
 				JulianDate.fromJulian (dp.start()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (dp.end()) + FIELD_SEPARATOR +

@@ -420,10 +420,10 @@ public class BondAnalyticsAPI {
 			}
 
 			if (bEOSAmerican) {		// Creation of the American call and put schedule
-				eosCall = EmbeddedOptionSchedule.fromAmerican (JulianDate.Today().julian() + 1, adblDate,
+				eosCall = EmbeddedOptionSchedule.FromAmerican (JulianDate.Today().julian() + 1, adblDate,
 					adblCallFactor, false, 30, false, Double.NaN, "", Double.NaN);
 
-				eosPut = EmbeddedOptionSchedule.fromAmerican (JulianDate.Today().julian(), adblDate,
+				eosPut = EmbeddedOptionSchedule.FromAmerican (JulianDate.Today().julian(), adblDate,
 					adblPutFactor, true, 30, false, Double.NaN, "", Double.NaN);
 			} else {		// Creation of the European call and put schedule
 				eosCall = new EmbeddedOptionSchedule (adblDate, adblCallFactor, false, 30, false, Double.NaN, "", Double.NaN);

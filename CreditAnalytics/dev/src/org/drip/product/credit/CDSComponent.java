@@ -514,7 +514,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return _notlSchedule.factor (dblDate1, dblDate2);
 	}
 
-	@Override public double getRecovery (
+	@Override public double recovery (
 		final double dblDate,
 		final org.drip.analytics.definition.CreditCurve cc)
 		throws java.lang.Exception
@@ -525,7 +525,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return _crValParams._bUseCurveRec ? cc.recovery (dblDate) : _crValParams._dblRecovery;
 	}
 
-	@Override public double getRecovery (
+	@Override public double recovery (
 		final double dblDateStart,
 		final double dblDateEnd,
 		final org.drip.analytics.definition.CreditCurve cc)
@@ -539,7 +539,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			_crValParams._dblRecovery;
 	}
 
-	@Override public org.drip.product.params.CreditSetting getCRValParams()
+	@Override public org.drip.product.params.CreditSetting creditValuationParams()
 	{
 		return _crValParams;
 	}
@@ -655,7 +655,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return _settleParams;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> getLossFlow (
+	@Override public java.util.List<org.drip.analytics.cashflow.LossQuadratureMetrics> lossFlow (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)

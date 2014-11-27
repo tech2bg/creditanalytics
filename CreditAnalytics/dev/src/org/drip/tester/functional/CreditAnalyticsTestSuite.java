@@ -284,11 +284,11 @@ public class CreditAnalyticsTestSuite {
 			}
 
 			if (bEOSAmerican) {
-				eosCall = org.drip.product.params.EmbeddedOptionSchedule.fromAmerican
+				eosCall = org.drip.product.params.EmbeddedOptionSchedule.FromAmerican
 					(org.drip.analytics.date.JulianDate.Today().julian() + 1, adblDate, adblCallFactor,
 						false, 30, false, java.lang.Double.NaN, "", java.lang.Double.NaN);
 
-				eosPut = org.drip.product.params.EmbeddedOptionSchedule.fromAmerican
+				eosPut = org.drip.product.params.EmbeddedOptionSchedule.FromAmerican
 					(org.drip.analytics.date.JulianDate.Today().julian(), adblDate, adblPutFactor, true,
 						30, false, java.lang.Double.NaN, "", java.lang.Double.NaN);
 			} else {
@@ -1051,7 +1051,7 @@ public class CreditAnalyticsTestSuite {
 			System.out.println
 				("----------     --------      --------      ---    ----     ---    -----    ---------  -------");
 
-			for (org.drip.analytics.cashflow.LossQuadratureMetrics dp : cds.getLossFlow
+			for (org.drip.analytics.cashflow.LossQuadratureMetrics dp : cds.lossFlow
 				(org.drip.param.valuation.ValuationParams.CreateValParams 
 					(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 						org.drip.analytics.daycount.Convention.DR_ACTUAL),
@@ -1279,7 +1279,7 @@ public class CreditAnalyticsTestSuite {
 			System.out.println
 				("----------     --------      --------      ---    ----     ---    -----    ---------  -------");
 	
-			for (org.drip.analytics.cashflow.LossQuadratureMetrics dp : bond.getLossFlow (valParams,
+			for (org.drip.analytics.cashflow.LossQuadratureMetrics dp : bond.lossFlow (valParams,
 				org.drip.param.pricer.PricerParams.Standard(),
 					org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)))
 				System.out.println (org.drip.analytics.date.JulianDate.fromJulian (dp.start()) + "    " +

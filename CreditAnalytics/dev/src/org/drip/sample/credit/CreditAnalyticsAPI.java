@@ -233,7 +233,7 @@ public class CreditAnalyticsAPI {
 		 * CDS Loss Cash Flow
 		 */
 
-		for (LossQuadratureMetrics dp : cds.getLossFlow (valParams, pricerParams, mktParams))
+		for (LossQuadratureMetrics dp : cds.lossFlow (valParams, pricerParams, mktParams))
 			System.out.println (
 				JulianDate.fromJulian (dp.start()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (dp.end()) + FIELD_SEPARATOR +

@@ -61,7 +61,7 @@ public interface BondProduct {
 	 * @return Bond treasury benchmark Set
 	 */
 
-	public abstract org.drip.product.params.TsyBmkSet getTreasuryBenchmark();
+	public abstract org.drip.product.params.TsyBmkSet treasuryBenchmark();
 
 	/**
 	 * Set the bond identifier set
@@ -81,7 +81,7 @@ public interface BondProduct {
 	 * @return Bond identifier set
 	 */
 
-	public abstract org.drip.product.params.IdentifierSet getIdentifierSet();
+	public abstract org.drip.product.params.IdentifierSet identifierSet();
 
 	/**
 	 * Set the bond coupon setting
@@ -101,7 +101,7 @@ public interface BondProduct {
 	 * @return Bond Coupon setting
 	 */
 
-	public abstract org.drip.product.params.CouponSetting getCouponSetting();
+	public abstract org.drip.product.params.CouponSetting couponSetting();
 
 	/**
 	 * Set the bond currency set
@@ -121,7 +121,7 @@ public interface BondProduct {
 	 * @return Bond Currency Set
 	 */
 
-	public abstract org.drip.product.params.CurrencySet getCurrencyParams();
+	public abstract org.drip.product.params.CurrencySet currencyParams();
 
 	/**
 	 * Set the bond floater setting
@@ -141,7 +141,7 @@ public interface BondProduct {
 	 * @return Bond Floater setting
 	 */
 
-	public abstract org.drip.product.params.FloaterSetting getFloaterSetting();
+	public abstract org.drip.product.params.FloaterSetting floaterSetting();
 
 	/**
 	 * Set the bond fixings
@@ -180,7 +180,7 @@ public interface BondProduct {
 	 * @return Bond's Market Convention
 	 */
 
-	public abstract org.drip.product.params.QuoteConvention getMarketConvention();
+	public abstract org.drip.product.params.QuoteConvention marketConvention();
 
 	/**
 	 * Ses the Bond Rates Setting
@@ -200,7 +200,7 @@ public interface BondProduct {
 	 * @return Bond Rates Setting
 	 */
 
-	public abstract org.drip.product.params.RatesSetting setRatesSetting();
+	public abstract org.drip.product.params.RatesSetting ratesSetting();
 
 	/**
 	 * Set the bond Credit Setting
@@ -220,7 +220,7 @@ public interface BondProduct {
 	 * @return Bond credit Setting
 	 */
 
-	public abstract org.drip.product.params.CreditSetting getCreditSetting();
+	public abstract org.drip.product.params.CreditSetting creditSetting();
 
 	/**
 	 * Set the bond termination setting
@@ -240,7 +240,7 @@ public interface BondProduct {
 	 * @return Bond termination setting
 	 */
 
-	public abstract org.drip.product.params.TerminationSetting getTerminationSetting();
+	public abstract org.drip.product.params.TerminationSetting terminationSetting();
 
 	/**
 	 * Set the bond Period Set
@@ -260,7 +260,7 @@ public interface BondProduct {
 	 * @return Bond period Set
 	 */
 
-	public abstract org.drip.product.params.PeriodSet getPeriodSet();
+	public abstract org.drip.product.params.PeriodSet periodSet();
 
 	/**
 	 * Set the bond notional Setting
@@ -280,7 +280,7 @@ public interface BondProduct {
 	 * @return Bond notional Setting
 	 */
 
-	public abstract org.drip.product.params.NotionalSetting getNotionalSetting();
+	public abstract org.drip.product.params.NotionalSetting notionalSetting();
 
 	/**
 	 * Set the bond's embedded call schedule
