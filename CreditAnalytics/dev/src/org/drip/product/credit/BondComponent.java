@@ -93,14 +93,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	protected org.drip.product.params.EmbeddedOptionSchedule _eosPut = null;
 	protected org.drip.product.params.EmbeddedOptionSchedule _eosCall = null;
 
-	private double getTsyBmkYield (
+	private double treasuryBenchmarkYield (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final double dblWorkoutDate)
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == csqs || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate))
-			throw new java.lang.Exception ("Bond::getTsyBmkYield => Invalid Inputs");
+			throw new java.lang.Exception ("Bond::treasuryBenchmarkYield => Invalid Inputs");
 
 		java.lang.String strTsyBmk = null;
 		org.drip.param.definition.ProductQuote cqTsyBmkYield = null;
@@ -127,7 +127,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null == dcGovvie ? java.lang.Double.NaN : dcGovvie.libor (dblValDate, dblWorkoutDate);
 	}
 
-	private org.drip.param.valuation.WorkoutInfo calcExerciseCallYieldFromPrice (
+	private org.drip.param.valuation.WorkoutInfo exerciseCallYieldFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp,
@@ -190,7 +190,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return null;
 	}
 
-	private org.drip.param.valuation.WorkoutInfo calcExercisePutYieldFromPrice (
+	private org.drip.param.valuation.WorkoutInfo exercisePutYieldFromPrice (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp,
@@ -271,16 +271,16 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 						org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 
 			if (null == _eosCall && null != _eosPut)
-				return calcExercisePutYieldFromPrice (valParams, csqs, vcp, dblPrice);
+				return exercisePutYieldFromPrice (valParams, csqs, vcp, dblPrice);
 
 			if (null != _eosCall && null == _eosPut)
-				return calcExerciseCallYieldFromPrice (valParams, csqs, vcp, dblPrice);
+				return exerciseCallYieldFromPrice (valParams, csqs, vcp, dblPrice);
 
-			org.drip.param.valuation.WorkoutInfo wiPut = calcExercisePutYieldFromPrice (valParams, csqs, vcp,
+			org.drip.param.valuation.WorkoutInfo wiPut = exercisePutYieldFromPrice (valParams, csqs, vcp,
 				dblPrice);
 
-			org.drip.param.valuation.WorkoutInfo wiCall = calcExerciseCallYieldFromPrice (valParams, csqs,
-				vcp, dblPrice);
+			org.drip.param.valuation.WorkoutInfo wiCall = exerciseCallYieldFromPrice (valParams, csqs, vcp,
+				dblPrice);
 
 			if (null == wiPut || null == wiCall) return null;
 
@@ -1341,32 +1341,24 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	@Override public boolean exercised()
 	{
-		if (null == _cfteParams) return false;
-
-		return _cfteParams._bHasBeenExercised;
+		return null == _cfteParams ? false : _cfteParams._bHasBeenExercised;
 	}
 
 	@Override public boolean defaulted()
 	{
-		if (null == _cfteParams) return false;
-
-		return _cfteParams._bIsDefaulted;
+		return null == _cfteParams ? false : _cfteParams._bIsDefaulted;
 	}
 
 	@Override public boolean perpetual()
 	{
-		if (null == _cfteParams) return false;
-
-		return _cfteParams._bIsPerpetual;
+		return null == _cfteParams ? false : _cfteParams._bIsPerpetual;
 	}
 
 	@Override public boolean tradeable (
 		final org.drip.param.valuation.ValuationParams valParams)
 		throws java.lang.Exception
 	{
-		if (null == valParams)
-			throw new java.lang.Exception
-				("BondComponent::isTradable => Null valParams in BondComponent::tradeable!");
+		if (null == valParams) throw new java.lang.Exception ("BondComponent::tradeable => invalid Inputs");
 
 		return !_cfteParams._bHasBeenExercised && !_cfteParams._bIsDefaulted && valParams.valueDate() <
 			_periodParams.maturity();
@@ -1384,38 +1376,29 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	@Override public java.lang.String couponType()
 	{
-		if (null == _cpnParams) return "";
-
-		return _cpnParams._strCouponType;
+		return null == _cpnParams ? "" : _cpnParams._strCouponType;
 	}
 
 	@Override public java.lang.String couponDC()
 	{
-		if (null == _periodParams) return "";
-
-		return _periodParams.couponDC();
+		return null == _periodParams ? "" : _periodParams.couponDC();
 	}
 
 	@Override public java.lang.String accrualDC()
 	{
-		if (null == _periodParams) return "";
-
-		return _periodParams.accrualDC();
+		return null == _periodParams ? "" : _periodParams.accrualDC();
 	}
 
 	@Override public java.lang.String maturityType()
 	{
-		if (null == _periodParams) return "";
-
-		return _periodParams.maturityType();
+		return null == _periodParams ? "" : _periodParams.maturityType();
 	}
 
 	@Override public org.drip.analytics.date.JulianDate finalMaturity()
 	{
-		if (null == _periodParams) return null;
-
 		try {
-			return new org.drip.analytics.date.JulianDate (_periodParams.finalMaturity());
+			return null == _periodParams ? null : new org.drip.analytics.date.JulianDate
+				(_periodParams.finalMaturity());
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
@@ -1425,16 +1408,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	@Override public java.lang.String calculationType()
 	{
-		if (null == _mktConv) return "";
-
-		return _mktConv._strCalculationType;
+		return null == _mktConv ? "" : _mktConv._strCalculationType;
 	}
 
 	@Override public double redemptionValue()
 	{
-		if (null == _mktConv) return java.lang.Double.NaN;
-
-		return _mktConv._dblRedemptionValue;
+		return null == _mktConv ? java.lang.Double.NaN : _mktConv._dblRedemptionValue;
 	}
 
 	@Override public java.lang.String couponCurrency()
@@ -1460,7 +1439,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (java.lang.Double.isNaN (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("BondComponent::inFirstCouponPeriod => Input date is NaN");
 
 		return _periodParams.firstPeriod().contains (dblDate);
@@ -1470,7 +1449,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (java.lang.Double.isNaN (dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("BondComponent::inLastCouponPeriod => Input date is NaN");
 
 		return _periodParams.lastPeriod().contains (dblDate);
@@ -1478,20 +1457,18 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	@Override public java.lang.String floatCouponConvention()
 	{
-		if (null == _fltParams) return "";
-
-		return _fltParams._strFloatDayCount;
+		return null == _fltParams ? "" : _fltParams._strFloatDayCount;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate periodFixingDate (
-		final double dblValue)
+		final double dblValueDate)
 	{
-		if (null == _fltParams || java.lang.Double.isNaN (dblValue) || dblValue >=
+		if (null == _fltParams || !org.drip.quant.common.NumberUtil.IsValid (dblValueDate) || dblValueDate >=
 			_periodParams.maturity())
 			return null;
 
 		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
-			if (period.payDate() < dblValue) continue;
+			if (period.payDate() < dblValueDate) continue;
 
 			try {
 				return new org.drip.analytics.date.JulianDate
@@ -1534,7 +1511,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		if (null == dt || null == csqs)
-			throw new java.lang.Exception ("BondComponent::previousCouponRate => Null val/mkt params!");
+			throw new java.lang.Exception ("BondComponent::previousCouponRate => Invalid Inputs");
 
 		int iIndex = _periodParams.periodIndex (dt.julian());
 
@@ -1549,7 +1526,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null == pcm)
 			throw new java.lang.Exception
-				("BondComponent::previousCouponRate => Cannot find previous period!");
+				("BondComponent::previousCouponRate => Invalid previous period metrics!");
 
 		return pcm.rate();
 	}
@@ -1564,9 +1541,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			
 			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.period (iIndex);
 
-			if (null == period) return null;
-
-			return new org.drip.analytics.date.JulianDate (period.payDate());
+			return null == period ? null : new org.drip.analytics.date.JulianDate (period.payDate());
 		} catch (java.lang.Exception e) {
 		}
 
@@ -1583,9 +1558,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			
 			org.drip.analytics.cashflow.CompositePeriod period = _periodParams.period (iIndex + 1);
 
-			if (null == period) return null;
-
-			return new org.drip.analytics.date.JulianDate (period.payDate());
+			return null == period ? null : new org.drip.analytics.date.JulianDate (period.payDate());
 		} catch (java.lang.Exception e) {
 		}
 
@@ -1598,24 +1571,24 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	{
 		if (null == dt || (bGetPut && null == _eosPut) || (!bGetPut && null == _eosCall)) return null;
 
-		double[] adblEOSExerciseDates = null;
-		org.drip.product.params.EmbeddedOptionSchedule eos = null;
+		org.drip.product.params.EmbeddedOptionSchedule eos = bGetPut ? _eosPut : _eosCall;
 
-		if (bGetPut)
-			adblEOSExerciseDates = (eos = _eosPut).dates();
-		else
-			adblEOSExerciseDates = (eos = _eosCall).dates();
+		double[] adblEOSExerciseDates = eos.dates();
 
-		if (null == eos || null == adblEOSExerciseDates || 0 == adblEOSExerciseDates.length) return null;
+		if (null == eos || null == adblEOSExerciseDates) return null;
 
-		for (int i = 0; i < adblEOSExerciseDates.length; ++i) {
+		int iNumExerciseDates = adblEOSExerciseDates.length;
+
+		if (0 == iNumExerciseDates) return null;
+
+		for (int i = 0; i < iNumExerciseDates; ++i) {
 			if (dt.julian() > adblEOSExerciseDates[i] + LEFT_EOS_SNIP || adblEOSExerciseDates[i] -
 				dt.julian() < eos.exerciseNoticePeriod())
 				continue;
 
 			try {
-				return new org.drip.analytics.output.ExerciseInfo (adblEOSExerciseDates[i], eos.factor
-					(i), bGetPut ? org.drip.param.valuation.WorkoutInfo.WO_TYPE_PUT :
+				return new org.drip.analytics.output.ExerciseInfo (adblEOSExerciseDates[i], eos.factor (i),
+					bGetPut ? org.drip.param.valuation.WorkoutInfo.WO_TYPE_PUT :
 						org.drip.param.valuation.WorkoutInfo.WO_TYPE_CALL);
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();
@@ -1662,7 +1635,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dt || null == csqs)
 			throw new java.lang.Exception ("BondComponent::currentCouponRate => Null val/mkt params!");
 
-		if (!java.lang.Double.isNaN (_fltParams._dblCurrentCoupon)) return _fltParams._dblCurrentCoupon;
+		if (!org.drip.quant.common.NumberUtil.IsValid (_fltParams._dblCurrentCoupon))
+			return _fltParams._dblCurrentCoupon;
 
 		org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (dt.julian(), new
 			org.drip.param.valuation.ValuationParams (dt, dt, ""), csqs);
@@ -1721,19 +1695,23 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					(_periodParams.maturity()));
 
 		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
-			if (period.payDate() < dblDate) continue;
+			double dblEndDate = period.endDate();
 
-			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (period.endDate(), new
+			double dblStartDate = period.startDate();
+
+			if (dblEndDate < dblDate) continue;
+
+			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (dblEndDate, new
 				org.drip.param.valuation.ValuationParams (dt, dt, ""), csqs);
 
 			if (null == pcm) throw new java.lang.Exception ("BondComponent::accrued => No PCM");
 
 			double dblCoupon = pcm.rate();
 
-			if (java.lang.Double.isNaN (dblCoupon)) return java.lang.Double.NaN;
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblCoupon)) return java.lang.Double.NaN;
 
-			if (period.startDate() < dblDate && period.endDate() >= dblDate)
-				return period.accrualDCF (dblDate) * dblCoupon * notional (period.startDate());
+			if (dblStartDate < dblDate && dblEndDate >= dblDate)
+				return period.accrualDCF (dblDate) * dblCoupon * notional (dblStartDate);
 
 			return 0.;
 		}
@@ -1751,16 +1729,22 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblZCBump)
 		throws java.lang.Exception
 	{
-		if (null == valParams || valParams.valueDate() >= dblWorkoutDate + LEFT_EOS_SNIP|| null == csqs ||
-			java.lang.Double.isNaN (dblWorkoutDate) || java.lang.Double.isNaN (dblWorkoutFactor) ||
-				java.lang.Double.isNaN (dblZCBump))
+		if (null == valParams)
+			throw new java.lang.Exception ("BondComponent::priceFromBumpedZC => Invalid Inputs");
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= dblWorkoutDate + LEFT_EOS_SNIP || null == csqs ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor) ||
+					!org.drip.quant.common.NumberUtil.IsValid (dblZCBump))
 			throw new java.lang.Exception ("BondComponent::priceFromBumpedZC => Invalid Inputs");
 
 		double dblPVFromZC = 0.;
 		boolean bTerminateCouponFlow = false;
+		org.drip.analytics.rates.ZeroCurve zc = null;
 		double dblCashPayDate = java.lang.Double.NaN;
 		double dblScalingNotional = java.lang.Double.NaN;
-		org.drip.analytics.rates.ZeroCurve zc = null;
 		org.drip.analytics.rates.DiscountCurve dcBase = null;
 
 		if (ZERO_OFF_OF_RATES_INSTRUMENTS_DISCOUNT_CURVE == iZeroCurveBaseDC)
@@ -1781,23 +1765,30 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (null != _notlParams && _notlParams._bPriceOffOriginalNotional) dblScalingNotional = 1.;
 
+		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCompositePeriod =
+			_periodParams.periods();
+
 		try {
 			zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (_periodParams.freq(),
 				_periodParams.couponDC(), couponCurrency(), _periodParams.couponEOMAdjustment(),
-					_periodParams.periods(), dblWorkoutDate, dblCashPayDate, dcBase, null == vcp ? (null ==
+					lsCompositePeriod, dblWorkoutDate, dblCashPayDate, dcBase, null == vcp ? (null ==
 						_mktConv ? null : _mktConv._quotingParams) : vcp, dblZCBump);
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}
 
 		if (null == zc)
-			throw new java.lang.Exception ("Cannot create shifted ZC in BondComponent::priceFromBumpedZC");
+			throw new java.lang.Exception ("BondComponent::priceFromBumpedZC => Cannot create shifted ZC");
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
-			if (period.payDate() < valParams.valueDate()) continue;
+		for (org.drip.analytics.cashflow.CompositePeriod period : lsCompositePeriod) {
+			double dblPeriodPayDate = period.payDate();
 
-			if (java.lang.Double.isNaN (dblScalingNotional))
-				dblScalingNotional = notional (period.startDate());
+			if (dblPeriodPayDate < dblValueDate) continue;
+
+			double dblPeriodStartDate = period.startDate();
+
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblScalingNotional))
+				dblScalingNotional = notional (dblPeriodStartDate);
 
 			double dblAccrualEndDate = period.endDate();
 
@@ -1809,31 +1800,31 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				dblNotionalEndDate = dblWorkoutDate;
 			}
 
-			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (valParams.valueDate(),
-				valParams, csqs);
+			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (dblValueDate, valParams,
+				csqs);
 
 			if (null == pcm) throw new java.lang.Exception ("BondComponent::priceFromBumpedZC => No PCM");
 
-			double dblZCDF = zc.df (period.payDate());
+			double dblZCDF = zc.df (dblPeriodPayDate);
 
-			double dblCouponNotional = notional (period.startDate());
+			double dblCouponNotional = notional (dblPeriodStartDate);
 
 			if (org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_END ==
 				_notlParams._iPeriodAmortizationMode)
 				dblCouponNotional = notional (dblNotionalEndDate);
 			else if (org.drip.product.params.NotionalSetting.PERIOD_AMORT_EFFECTIVE ==
 				_notlParams._iPeriodAmortizationMode)
-				dblCouponNotional = notional (period.startDate(), dblNotionalEndDate);
+				dblCouponNotional = notional (dblPeriodStartDate, dblNotionalEndDate);
 
 			dblPVFromZC += period.accrualDCF (dblAccrualEndDate) * dblZCDF * pcm.rate() * dblCouponNotional;
 
-			dblPVFromZC += (notional (period.startDate()) - notional (dblNotionalEndDate)) * dblZCDF;
+			dblPVFromZC += (notional (dblPeriodStartDate) - notional (dblNotionalEndDate)) * dblZCDF;
 
 			if (bTerminateCouponFlow) break;
 		}
 
 		return ((dblPVFromZC + dblWorkoutFactor * zc.df (dblWorkoutDate) * notional (dblWorkoutDate)) /
-			zc.df (dblCashPayDate) - accrued (valParams.valueDate(), csqs)) / dblScalingNotional;
+			zc.df (dblCashPayDate) - accrued (dblValueDate, csqs)) / dblScalingNotional;
 	}
 
 	@Override public double priceFromBumpedDC (
@@ -1844,23 +1835,26 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblDCBump)
 		throws java.lang.Exception
 	{
-		if (null == valParams || null == csqs || java.lang.Double.isNaN (dblWorkoutDate) ||
-			java.lang.Double.isNaN (dblWorkoutFactor) || java.lang.Double.isNaN (dblDCBump))
+		if (null == valParams || null == csqs || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate)
+			|| !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor) ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblDCBump))
 			throw new java.lang.Exception ("BondComponent::priceFromBumpedDC => Invalid Inputs");
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding)
-			throw new java.lang.Exception
-				("BondComponent::calcPriceFromBumpedDC => Cannot locate funding curve");
+			throw new java.lang.Exception ("BondComponent::priceFromBumpedDC => No funding curve");
 
-		if (valParams.valueDate() >= dblWorkoutDate + LEFT_EOS_SNIP)
-			throw new java.lang.Exception ("Val date " + org.drip.analytics.date.JulianDate.fromJulian
-				(valParams.valueDate()) + " greater than Work-out " +
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= dblWorkoutDate + LEFT_EOS_SNIP)
+			throw new java.lang.Exception ("BondComponent::priceFromBumpedDC => Val date " +
+				org.drip.analytics.date.JulianDate.fromJulian (dblValueDate) + " greater than Work-out " +
 					org.drip.analytics.date.JulianDate.fromJulian (dblWorkoutDate));
 
 		double dblPVFromDC = 0.;
 		boolean bTerminateCouponFlow = false;
+		double dblCashPayDate = java.lang.Double.NaN;
 		double dblScalingNotional = java.lang.Double.NaN;
 
 		if (null != _notlParams && _notlParams._bPriceOffOriginalNotional) dblScalingNotional = 1.;
@@ -1870,14 +1864,17 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				("Rate", dblDCBump);
 
 		if (null == dcFunding)
-			throw new java.lang.Exception
-				("Cannot create shifted DC in BondComponent::calcPriceFromBumpedDC");
+			throw new java.lang.Exception ("BondComponent::priceFromBumpedDC => Cannot shift funding curve");
 
 		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
-			if (period.payDate() < valParams.valueDate()) continue;
+			double dblPeriodPayDate = period.payDate();
 
-			if (java.lang.Double.isNaN (dblScalingNotional)) dblScalingNotional = notional
-				(period.startDate());
+			if (dblPeriodPayDate < dblValueDate) continue;
+
+			double dblPeriodStartDate = period.startDate();
+
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblScalingNotional))
+				dblScalingNotional = notional (dblPeriodStartDate);
 
 			double dblAccrualEndDate = period.endDate();
 
@@ -1889,31 +1886,29 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				dblNotionalEndDate = dblWorkoutDate;
 			}
 
-			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (period.endDate(), valParams,
-				csqs);
+			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (dblAccrualEndDate,
+				valParams, csqs);
 
 			if (null == pcm)
 				throw new java.lang.Exception ("BondComponent::calcPriceFromBumpedDC => No PCM");
 
-			double dblDF = dcFunding.df (period.payDate());
+			double dblDF = dcFunding.df (dblPeriodPayDate);
 
-			double dblCouponNotional = notional (period.startDate());
+			double dblCouponNotional = notional (dblPeriodStartDate);
 
 			if (org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_END ==
 				_notlParams._iPeriodAmortizationMode)
 				dblCouponNotional = notional (dblNotionalEndDate);
 			else if (org.drip.product.params.NotionalSetting.PERIOD_AMORT_EFFECTIVE ==
 				_notlParams._iPeriodAmortizationMode)
-				dblCouponNotional = notional (period.startDate(), dblNotionalEndDate);
+				dblCouponNotional = notional (dblPeriodStartDate, dblNotionalEndDate);
 
 			dblPVFromDC += period.accrualDCF (dblAccrualEndDate) * dblDF * pcm.rate() * dblCouponNotional;
 
-			dblPVFromDC += (notional (period.startDate()) - notional (dblNotionalEndDate)) * dblDF;
+			dblPVFromDC += (notional (dblPeriodStartDate) - notional (dblNotionalEndDate)) * dblDF;
 
 			if (bTerminateCouponFlow) break;
 		}
-
-		double dblCashPayDate = java.lang.Double.NaN;
 
 		try {
 			dblCashPayDate = _mktConv.getSettleDate (valParams);
@@ -1924,7 +1919,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		}
 
 		return ((dblPVFromDC + dblWorkoutFactor * dcFunding.df (dblWorkoutDate) * notional (dblWorkoutDate))
-			/ dcFunding.df (dblCashPayDate) - accrued (valParams.valueDate(), csqs)) / dblScalingNotional;
+			/ dcFunding.df (dblCashPayDate) - accrued (dblValueDate, csqs)) / dblScalingNotional;
 	}
 
 	@Override public double priceFromBumpedCC (
@@ -1936,8 +1931,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final boolean bFlat)
 		throws java.lang.Exception
 	{
-		if (null == valParams || null == csqs || java.lang.Double.isNaN (dblWorkoutDate) ||
-			java.lang.Double.isNaN (dblWorkoutFactor) || java.lang.Double.isNaN (dblCreditBasis))
+		if (null == valParams || null == csqs || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate)
+			|| !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor) ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblCreditBasis))
 			throw new java.lang.Exception ("BondComponent::priceFromBumpedCC => Invalid inputs");
 
 		org.drip.state.identifier.CreditLabel[] aLSLCreditCurve = creditLabel();
@@ -1951,104 +1947,93 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
 
 		if (null == dcFunding)
-			throw new java.lang.Exception
-				("BondComponent::priceFromBumpedCC => Cannot locate funding curve");
+			throw new java.lang.Exception ("BondComponent::priceFromBumpedCC => No funding curve");
 
-		if (valParams.valueDate() >= dblWorkoutDate + LEFT_EOS_SNIP)
-			throw new java.lang.Exception ("Val date " + org.drip.analytics.date.JulianDate.fromJulian
-				(valParams.valueDate()) + " greater than Work-out " +
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= dblWorkoutDate + LEFT_EOS_SNIP)
+			throw new java.lang.Exception ("BondComponent::priceFromBumpedCC => Val date " +
+				org.drip.analytics.date.JulianDate.fromJulian (dblValueDate) + " greater than Work-out " +
 					org.drip.analytics.date.JulianDate.fromJulian (dblWorkoutDate));
 
-		org.drip.analytics.definition.CreditCurve cc = null;
-
-		if (bFlat) {
-			double dblRecoveryCalib = java.lang.Double.NaN;
-
-			if (null != _crValParams && !_crValParams._bUseCurveRec)
-				dblRecoveryCalib = _crValParams._dblRecovery;
-
-			cc = ccIn.flatCurve (dblCreditBasis, true, dblRecoveryCalib);
-		} else
-			cc = (org.drip.analytics.definition.CreditCurve) ccIn.parallelShiftManifestMeasure
-				("FairPremium", dblCreditBasis);
+		org.drip.analytics.definition.CreditCurve cc = bFlat ? ccIn.flatCurve (dblCreditBasis, true, null !=
+			_crValParams && !_crValParams._bUseCurveRec ? _crValParams._dblRecovery : java.lang.Double.NaN) :
+				(org.drip.analytics.definition.CreditCurve) ccIn.parallelShiftManifestMeasure ("FairPremium",
+					dblCreditBasis);
 
 		if (null == cc)
 			throw new java.lang.Exception
 				("BondComponent::priceFromBumpedCC => Cannot create adjusted Curve");
 
 		double dblPVFromCC = 0.;
+		double dblScalingNotional = 1.;
+		double dblCashPayDate = java.lang.Double.NaN;
 
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
 			false, s_iDiscretizationScheme, false);
 
 		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
-			if (period.payDate() < valParams.valueDate()) continue;
+			double dblPeriodPayDate = period.payDate();
 
-			double dblAccrualEndDate = period.endDate();
+			if (dblPeriodPayDate < dblValueDate) continue;
 
-			double dblNotionalEndDate = period.endDate();
+			double dblPeriodEndDate = period.endDate();
 
-			if (dblAccrualEndDate >= dblWorkoutDate) {
-				dblAccrualEndDate = dblWorkoutDate;
-				dblNotionalEndDate = dblWorkoutDate;
-			}
+			if (dblPeriodEndDate >= dblWorkoutDate) dblPeriodEndDate = dblWorkoutDate;
 
-			double dblPeriodStart = period.startDate();
+			double dblPeriodStartDate = period.startDate();
 
-			if (dblPeriodStart < valParams.valueDate()) dblPeriodStart = valParams.valueDate();
+			if (dblPeriodStartDate < dblValueDate) dblPeriodStartDate = dblValueDate;
 
-			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (period.endDate(), valParams,
+			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (dblPeriodEndDate, valParams,
 				csqs);
 
 			if (null == pcm) throw new java.lang.Exception ("BondComponent::priceFromBumpedCC => No PCM");
 
 			double dblPeriodCoupon = pcm.rate();
 
-			double dblPeriodEndSurv = cc.survival (period.endDate());
+			double dblPeriodEndSurv = cc.survival (dblPeriodEndDate);
 
-			double dblCouponNotional = notional (period.startDate());
+			double dblCouponNotional = notional (dblPeriodStartDate);
 
 			if (org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_END ==
 				_notlParams._iPeriodAmortizationMode)
-				dblCouponNotional = notional (dblNotionalEndDate);
+				dblCouponNotional = notional (dblPeriodEndDate);
 			else if (org.drip.product.params.NotionalSetting.PERIOD_AMORT_EFFECTIVE ==
 				_notlParams._iPeriodAmortizationMode)
-				dblCouponNotional = notional (period.startDate(), dblNotionalEndDate);
+				dblCouponNotional = notional (dblPeriodStartDate, dblPeriodEndDate);
 
-			dblPVFromCC += period.accrualDCF (dblAccrualEndDate) * dcFunding.df (period.payDate()) *
+			dblPVFromCC += period.accrualDCF (dblPeriodEndDate) * dcFunding.df (dblPeriodPayDate) *
 				dblPeriodEndSurv * dblPeriodCoupon * dblCouponNotional;
 
-			dblPVFromCC += (notional (period.startDate()) - notional (period.endDate())) * dcFunding.df
-				(period.payDate()) * dblPeriodEndSurv;
+			dblPVFromCC += (notional (dblPeriodStartDate) - notional (dblPeriodEndDate)) * dcFunding.df
+				(dblPeriodPayDate) * dblPeriodEndSurv;
 
 			for (org.drip.analytics.cashflow.LossQuadratureMetrics lp : period.lossMetrics (this, valParams,
-				pricerParams, period.endDate(), csqs)) {
+				pricerParams, dblPeriodEndDate, csqs)) {
 				if (null == lp) continue;
 
-				double dblSubPeriodEnd = lp.end();
+				double dblSubPeriodEndDate = lp.end();
 
-				double dblSubPeriodStart = lp.start();
+				double dblSubPeriodStartDate = lp.start();
 
-				double dblSubPeriodDF = dcFunding.effectiveDF (dblSubPeriodStart + _crValParams._iDefPayLag,
-					dblSubPeriodEnd + _crValParams._iDefPayLag);
+				double dblSubPeriodDF = dcFunding.effectiveDF (dblSubPeriodStartDate +
+					_crValParams._iDefPayLag, dblSubPeriodEndDate + _crValParams._iDefPayLag);
 
-				double dblSubPeriodNotional = notional (dblSubPeriodStart, dblSubPeriodEnd);
+				double dblSubPeriodNotional = notional (dblSubPeriodStartDate, dblSubPeriodEndDate);
 
-				double dblSubPeriodSurvival = cc.survival (dblSubPeriodStart) - cc.survival
-					(dblSubPeriodEnd);
+				double dblSubPeriodSurvival = cc.survival (dblSubPeriodStartDate) - cc.survival
+					(dblSubPeriodEndDate);
 
 				if (_crValParams._bAccrOnDefault)
 					dblPVFromCC += 0.0001 * lp.accrualDCF() * dblSubPeriodSurvival * dblSubPeriodDF *
 						dblSubPeriodNotional * dblPeriodCoupon;
 
-				double dblRec = _crValParams._bUseCurveRec ? cc.effectiveRecovery (dblSubPeriodStart,
-					dblSubPeriodEnd) : _crValParams._dblRecovery;
-
-				dblPVFromCC += dblRec * dblSubPeriodSurvival * dblSubPeriodNotional * dblSubPeriodDF;
+				dblPVFromCC += (_crValParams._bUseCurveRec ? cc.effectiveRecovery (dblSubPeriodStartDate,
+					dblSubPeriodEndDate) : _crValParams._dblRecovery) * dblSubPeriodSurvival *
+						dblSubPeriodNotional * dblSubPeriodDF;
 			}
 		}
-
-		double dblCashPayDate = java.lang.Double.NaN;
 
 		try {
 			dblCashPayDate = _mktConv.getSettleDate (valParams);
@@ -2058,13 +2043,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			dblCashPayDate = valParams.cashPayDate();
 		}
 
-		double dblScalingNotional = 1.;
-
 		if (!_notlParams._bPriceOffOriginalNotional) dblScalingNotional = notional (dblWorkoutDate);
 
 		return ((dblPVFromCC + dblWorkoutFactor * dcFunding.df (dblWorkoutDate) * cc.survival
 			(dblWorkoutDate) * notional (dblWorkoutDate)) / dcFunding.df (dblCashPayDate) - accrued
-				(valParams.valueDate(), csqs)) / dblScalingNotional;
+				(dblValueDate, csqs)) / dblScalingNotional;
 	}
 
 	@Override public double aswFromBondBasis (
@@ -2337,8 +2320,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	{
 		if (null == valParams || null == csqs || !org.drip.quant.common.NumberUtil.IsValid
 			(dblWorkoutDate) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor) ||
-				!org.drip.quant.common.NumberUtil.IsValid (dblPrice) || valParams.valueDate() >=
-					dblWorkoutDate + LEFT_EOS_SNIP)
+				!org.drip.quant.common.NumberUtil.IsValid (dblPrice))
+			throw new java.lang.Exception ("BondComponent::aswFromPrice => Invalid Inputs");
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::aswFromPrice => Invalid Inputs");
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
@@ -2346,12 +2333,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dcFunding)
 			throw new java.lang.Exception ("BondComponent::aswFromPrice => Invalid Inputs");
 
-		org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (valParams.valueDate(),
-			valParams, csqs);
+		org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (dblValueDate, valParams, csqs);
 
 		if (null == pcm) throw new java.lang.Exception ("BondComponent::aswFromPrice => No PCM");
 
-		return pcm.rate() - dcFunding.estimateManifestMeasure ("Rate", dblWorkoutDate) + 0.01 *
+		return pcm.rate() - dcFunding.estimateManifestMeasure ("Rate", dblWorkoutDate) + 0.0001 *
 			(dblWorkoutFactor - dblPrice) / dcFunding.liborDV01 (dblWorkoutDate);
 	}
 
@@ -2368,18 +2354,17 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	@Override public double aswFromPriceToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs,
-			quotingParams, dblPrice);
+		org.drip.param.valuation.WorkoutInfo wi = exerciseYieldFromPrice (valParams, csqs, vcp, dblPrice);
 
 		if (null == wi)
 			throw new java.lang.Exception
 				("BondComponent::aswFromPriceToOptimalExercise => Can't determine Work-out");
 
-		return aswFromPrice (valParams, csqs, quotingParams, wi.date(), wi.factor(), dblPrice);
+		return aswFromPrice (valParams, csqs, vcp, wi.date(), wi.factor(), dblPrice);
 	}
 
 	@Override public double aswFromTSYSpread (
@@ -2752,8 +2737,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			throw new java.lang.Exception ("BondComponent::bondBasisFromOASToOptimalExercise => " +
 				"Cant calc Bond Basis from OAS to optimal exercise for bonds w emb option");
 
-		return bondBasisFromOAS (valParams, csqs, vcp, _periodParams.maturity(), 1.,
-			dblOAS);
+		return bondBasisFromOAS (valParams, csqs, vcp, _periodParams.maturity(), 1., dblOAS);
 	}
 
 	@Override public double bondBasisFromPECS (
@@ -3088,8 +3072,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::convexityFromCreditBasisToOptimalExercise => "
-				+ "Cant calc Convexity from Credit Basis to optimal exercise for bonds w emb option");
+			throw new java.lang.Exception ("BondComponent::convexityFromCreditBasisToOptimalExercise => " +
+				"Cant calc Convexity from Credit Basis to optimal exercise for bonds w emb option");
 
 		return convexityFromCreditBasis (valParams, csqs, vcp, _periodParams.maturity(), 1., dblCreditBasis);
 	}
@@ -3291,21 +3275,19 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		if (null == valParams || valParams.valueDate() >= dblWorkoutDate + LEFT_EOS_SNIP ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblPrice))
+		if (null == valParams || !org.drip.quant.common.NumberUtil.IsValid (dblPrice))
 			throw new java.lang.Exception ("BondComponent::convexityFromPrice => Input inputs");
 
-		double dblPriceForYieldMinus1bp = priceFromYield (valParams, csqs, vcp, dblWorkoutDate,
-			dblWorkoutFactor, yieldFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
-				dblPrice) - 0.0001);
+		double dblValueDate = valParams.valueDate();
 
-		double dblPriceForYieldPlus1bp = priceFromYield (valParams, csqs, vcp, dblWorkoutDate,
-			dblWorkoutFactor, yieldFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
-				dblPrice) + 0.0001);
+		if (dblValueDate >= dblWorkoutDate + LEFT_EOS_SNIP)
+			throw new java.lang.Exception ("BondComponent::convexityFromPrice => Input inputs");
 
-		double dblDirtyPrice = dblPrice + accrued (valParams.valueDate(), csqs);
+		double dblYield = yieldFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblPrice);
 
-		return (dblPriceForYieldMinus1bp + dblPriceForYieldPlus1bp - 2. * dblPrice) / dblDirtyPrice;
+		return (priceFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblYield - 0.0001) +
+			priceFromYield (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblYield + 0.0001) - 2. *
+				dblPrice) / (dblPrice + accrued (dblValueDate, csqs));
 	}
 
 	@Override public double convexityFromPrice (
@@ -4293,10 +4275,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		if (null == dcFunding)
 			throw new java.lang.Exception ("BondComponent::discountMarginFromYield => Invalid inputs");
 
-		return null == _fltParams ? dblYield - dcFunding.libor (valParams.valueDate(), ((int) (12. / (0 ==
-			_periodParams.freq() ? 2 : _periodParams.freq()))) + "M") : dblYield - indexRate
-				(valParams.valueDate(), csqs, (org.drip.analytics.cashflow.CompositeFloatingPeriod)
-					currentPeriod (valParams.valueDate()));
+		double dblValueDate = valParams.valueDate();
+
+		return null == _fltParams ? dblYield - dcFunding.libor (dblValueDate, ((int) (12. / (0 ==
+			_periodParams.freq() ? 2 : _periodParams.freq()))) + "M") : dblYield - indexRate (dblValueDate,
+				csqs, (org.drip.analytics.cashflow.CompositeFloatingPeriod) currentPeriod (dblValueDate));
 	}
 
 	@Override public double discountMarginFromYield (
@@ -4394,8 +4377,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::discountMarginFromZSpreadToOptimalExercise =>"
-				+ " Cant calc Discount Margin from Z Spread to optimal exercise for bonds w emb option");
+			throw new java.lang.Exception ("BondComponent::discountMarginFromZSpreadToOptimalExercise =>" +
+				" Cant calc Discount Margin from Z Spread to optimal exercise for bonds w emb option");
 
 		return discountMarginFromZSpread (valParams, csqs, vcp, _periodParams.maturity(), 1., dblZSpread);
 	}
@@ -4708,8 +4691,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return modifiedDurationFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor,
-			dblPrice);
+		return modifiedDurationFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblPrice);
 	}
 
 	@Override public double durationFromPrice (
@@ -5691,8 +5673,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		if (null == valParams || null == csqs || !org.drip.quant.common.NumberUtil.IsValid
-			(dblWorkoutDate) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor) ||
+		if (null == csqs || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor) ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblYield))
 			throw new java.lang.Exception ("BondComponent::iSpreadFromYield => Invalid inputs");
 
@@ -6202,8 +6184,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		if (null == valParams || null == csqs || !org.drip.quant.common.NumberUtil.IsValid
-			(dblWorkoutDate) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor) ||
-				valParams.valueDate() >= dblWorkoutDate + LEFT_EOS_SNIP)
+			(dblWorkoutDate) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor))
+			throw new java.lang.Exception ("BondComponent::macaulayDurationFromYield => Invalid inputs");
+
+		double dblValueDate = valParams.valueDate();
+
+		if (dblValueDate >= dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::macaulayDurationFromYield => Invalid inputs");
 
 		double dblYieldPV = 0.;
@@ -6211,112 +6197,18 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		double dblDuration = 0.;
 		boolean bFirstPeriod = true;
 		boolean bTerminateCouponFlow = false;
+		org.drip.analytics.daycount.ActActDCParams aap = null;
 		org.drip.analytics.cashflow.CompositePeriod periodRef = null;
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
-			if (period.payDate() < valParams.valueDate()) continue;
-
-			if (bFirstPeriod) {
-				bFirstPeriod = false;
-
-				dblCFPeriod = period.couponDCF() - period.accrualDCF (valParams.valueDate());
-			} else
-				dblCFPeriod += period.couponDCF();
-
-			periodRef = period;
-
-			double dblAccrualEndDate = period.endDate();
-
-			double dblNotionalEndDate = period.endDate();
-
-			if (dblAccrualEndDate >= dblWorkoutDate) {
-				bTerminateCouponFlow = true;
-				dblAccrualEndDate = dblWorkoutDate;
-				dblNotionalEndDate = dblWorkoutDate;
-			}
-
-			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (valParams.valueDate(),
-				valParams, csqs);
-
-			if (null == pcm)
-				throw new java.lang.Exception ("BondComponent::calcMacaulayDurationFromYield => No PCM");
-
-			int iFrequency = _periodParams.freq();
-			java.lang.String strDC = _periodParams.couponDC();
-			boolean bApplyCpnEOMAdj = _periodParams.couponEOMAdjustment();
-
-			java.lang.String strCalendar = couponCurrency();
-
-			if (null == strCalendar || strCalendar.isEmpty()) strCalendar = redemptionCurrency();
-
-			org.drip.analytics.daycount.ActActDCParams aap = new org.drip.analytics.daycount.ActActDCParams
-				(iFrequency, period.startDate(), period.endDate());
-
-			if (null != vcp) {
-				strDC = vcp.yieldDayCount();
-
-				iFrequency = vcp.yieldFreq();
-
-				bApplyCpnEOMAdj = vcp.applyYieldEOMAdj();
-
-				strCalendar = vcp.yieldCalendar();
-
-				if (null == (aap = vcp.yieldAAP()))
-					aap = new org.drip.analytics.daycount.ActActDCParams (vcp.yieldFreq(),
-						period.startDate(), period.endDate());
-			} else if (null != _mktConv && null != _mktConv._quotingParams) {
-				strDC = _mktConv._quotingParams.yieldDayCount();
-
-				iFrequency = _mktConv._quotingParams.yieldFreq();
-
-				bApplyCpnEOMAdj = _mktConv._quotingParams.applyYieldEOMAdj();
-
-				strCalendar = _mktConv._quotingParams.yieldCalendar();
-
-				if (null == (aap = _mktConv._quotingParams.yieldAAP()))
-					aap = new org.drip.analytics.daycount.ActActDCParams
-						(_mktConv._quotingParams.yieldFreq(), period.startDate(), period.endDate());
-			}
-
-			double dblYearFract = org.drip.analytics.daycount.Convention.YearFraction (valParams.valueDate(),
-				period.payDate(), strDC, bApplyCpnEOMAdj, aap, strCalendar);
-
-			double dblYieldDF = org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFrequency, dblYield,
-				s_bYieldDFOffofCouponAccrualDCF ? dblCFPeriod : dblYearFract);
-
-			double dblCouponNotional = notional (period.startDate());
-
-			if (org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_END ==
-				_notlParams._iPeriodAmortizationMode)
-				dblCouponNotional = notional (dblNotionalEndDate);
-			else if (org.drip.product.params.NotionalSetting.PERIOD_AMORT_EFFECTIVE ==
-				_notlParams._iPeriodAmortizationMode)
-				dblCouponNotional = notional (period.startDate(), dblNotionalEndDate);
-
-			double dblCouponPV = period.accrualDCF (dblAccrualEndDate) * pcm.rate() * dblYieldDF *
-				dblCouponNotional;
-
-			double dblPeriodNotionalPV = (notional (period.startDate()) - notional (dblNotionalEndDate)) *
-				dblYieldDF;
-
-			dblYieldPV += (dblCouponPV + dblPeriodNotionalPV);
-			dblDuration += dblCFPeriod * (dblCouponPV + dblPeriodNotionalPV);
-
-			if (bTerminateCouponFlow) break;
-		}
-
 		int iFrequency = _periodParams.freq();
+
 		java.lang.String strDC = _periodParams.couponDC();
-		org.drip.analytics.daycount.ActActDCParams aap = null;
+
 		boolean bApplyCpnEOMAdj = _periodParams.couponEOMAdjustment();
 
 		java.lang.String strCalendar = couponCurrency();
 
 		if (null == strCalendar || strCalendar.isEmpty()) strCalendar = redemptionCurrency();
-
-		if (null != periodRef)
-			aap = new org.drip.analytics.daycount.ActActDCParams (iFrequency, periodRef.startDate(),
-				periodRef.endDate());
 
 		if (null != vcp) {
 			strDC = vcp.yieldDayCount();
@@ -6326,10 +6218,6 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			bApplyCpnEOMAdj = vcp.applyYieldEOMAdj();
 
 			strCalendar = vcp.yieldCalendar();
-
-			if (null != periodRef)
-				aap = new org.drip.analytics.daycount.ActActDCParams (vcp.yieldFreq(),
-					periodRef.startDate(), periodRef.endDate());
 		} else if (null != _mktConv && null != _mktConv._quotingParams) {
 			strDC = _mktConv._quotingParams.yieldDayCount();
 
@@ -6338,19 +6226,95 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			bApplyCpnEOMAdj = _mktConv._quotingParams.applyYieldEOMAdj();
 
 			strCalendar = _mktConv._quotingParams.yieldCalendar();
+		}
 
+		for (org.drip.analytics.cashflow.CompositePeriod period : _periodParams.periods()) {
+			double dblPeriodPayDate = period.payDate();
+
+			if (dblPeriodPayDate < dblValueDate) continue;
+
+			if (bFirstPeriod) {
+				bFirstPeriod = false;
+
+				dblCFPeriod = period.couponDCF() - period.accrualDCF (dblValueDate);
+			} else
+				dblCFPeriod += period.couponDCF();
+
+			periodRef = period;
+
+			double dblPeriodEndDate = period.endDate();
+
+			double dblPeriodStartDate = period.startDate();
+
+			if (dblPeriodEndDate >= dblWorkoutDate) {
+				bTerminateCouponFlow = true;
+				dblPeriodEndDate = dblWorkoutDate;
+			}
+
+			org.drip.analytics.output.CompositePeriodCouponMetrics pcm = coupon (dblValueDate, valParams,
+				csqs);
+
+			if (null == pcm)
+				throw new java.lang.Exception ("BondComponent::calcMacaulayDurationFromYield => No PCM");
+
+			aap = new org.drip.analytics.daycount.ActActDCParams (iFrequency, dblPeriodStartDate,
+				dblPeriodEndDate);
+
+			if (null != vcp) {
+				if (null == (aap = vcp.yieldAAP()))
+					aap = new org.drip.analytics.daycount.ActActDCParams (vcp.yieldFreq(),
+						dblPeriodStartDate, dblPeriodEndDate);
+			} else if (null != _mktConv && null != _mktConv._quotingParams) {
+				if (null == (aap = _mktConv._quotingParams.yieldAAP()))
+					aap = new org.drip.analytics.daycount.ActActDCParams
+						(_mktConv._quotingParams.yieldFreq(), dblPeriodStartDate, dblPeriodEndDate);
+			}
+
+			double dblYearFract = org.drip.analytics.daycount.Convention.YearFraction (dblValueDate,
+				dblPeriodPayDate, strDC, bApplyCpnEOMAdj, aap, strCalendar);
+
+			double dblYieldDF = org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFrequency, dblYield,
+				s_bYieldDFOffofCouponAccrualDCF ? dblCFPeriod : dblYearFract);
+
+			double dblCouponNotional = notional (dblPeriodStartDate);
+
+			if (org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_END ==
+				_notlParams._iPeriodAmortizationMode)
+				dblCouponNotional = notional (dblPeriodEndDate);
+			else if (org.drip.product.params.NotionalSetting.PERIOD_AMORT_EFFECTIVE ==
+				_notlParams._iPeriodAmortizationMode)
+				dblCouponNotional = notional (dblPeriodStartDate, dblPeriodEndDate);
+
+			double dblCouponPV = period.accrualDCF (dblPeriodEndDate) * pcm.rate() * dblYieldDF *
+				dblCouponNotional;
+
+			double dblPeriodNotionalPV = (notional (dblPeriodStartDate) - notional (dblPeriodEndDate)) *
+				dblYieldDF;
+
+			dblYieldPV += (dblCouponPV + dblPeriodNotionalPV);
+			dblDuration += dblCFPeriod * (dblCouponPV + dblPeriodNotionalPV);
+
+			if (bTerminateCouponFlow) break;
+		}
+
+		if (null != periodRef)
+			aap = new org.drip.analytics.daycount.ActActDCParams (iFrequency, periodRef.startDate(),
+				periodRef.endDate());
+
+		if (null != vcp) {
+			if (null != periodRef)
+				aap = new org.drip.analytics.daycount.ActActDCParams (vcp.yieldFreq(),
+					periodRef.startDate(), periodRef.endDate());
+		} else if (null != _mktConv && null != _mktConv._quotingParams) {
 			if (null != periodRef)
 				aap = new org.drip.analytics.daycount.ActActDCParams (_mktConv._quotingParams.yieldFreq(),
 					periodRef.startDate(), periodRef.endDate());
 		}
 
-		double dblYearFractWorkout = org.drip.analytics.daycount.Convention.YearFraction
-			(valParams.valueDate(), dblWorkoutDate, strDC, bApplyCpnEOMAdj, aap, strCalendar);
-
-		double dblDFWorkout = org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFrequency, dblYield,
-			s_bYieldDFOffofCouponAccrualDCF ? dblCFPeriod : dblYearFractWorkout);
-
-		double dblRedemptionPV = dblWorkoutFactor * dblDFWorkout * notional (dblWorkoutDate);
+		double dblRedemptionPV = dblWorkoutFactor * org.drip.analytics.support.AnalyticsHelper.Yield2DF
+			(iFrequency, dblYield, s_bYieldDFOffofCouponAccrualDCF ? dblCFPeriod :
+				org.drip.analytics.daycount.Convention.YearFraction (dblValueDate, dblWorkoutDate, strDC,
+					bApplyCpnEOMAdj, aap, strCalendar)) * notional (dblWorkoutDate);
 
 		return (dblDuration + dblCFPeriod * dblRedemptionPV) / (dblYieldPV + dblRedemptionPV);
 	}
@@ -7078,44 +7042,41 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return oasFromCreditBasis (valParams, csqs, vcp, _periodParams.maturity(), 1., dblCreditBasis);
 	}
 
-	@Override public double calcOASFromDiscountMargin (
+	@Override public double oasFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return oasFromPrice (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-			priceFromDiscountMargin (valParams, csqs, quotingParams, dblWorkoutDate, dblWorkoutFactor,
-				dblDiscountMargin));
+		return oasFromPrice (valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, priceFromDiscountMargin
+			(valParams, csqs, vcp, dblWorkoutDate, dblWorkoutFactor, dblDiscountMargin));
 	}
 
-	@Override public double calcOASFromDiscountMargin (
+	@Override public double oasFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
-		return calcOASFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblDiscountMargin);
+		return oasFromDiscountMargin (valParams, csqs, vcp, _periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
-	@Override public double calcOASFromDiscountMarginToOptimalExercise (
+	@Override public double oasFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblDiscountMargin)
 		throws java.lang.Exception
 	{
 		if (null != _eosCall || null != _eosPut)
-			throw new java.lang.Exception ("BondComponent::calcOASFromDiscountMarginToOptimalExercise => " +
+			throw new java.lang.Exception ("BondComponent::oasFromDiscountMarginToOptimalExercise => " +
 				"Cant calc OAS from Discount Margin to optimal exercise for bonds w emb option");
 
-		return calcOASFromDiscountMargin (valParams, csqs, quotingParams, _periodParams.maturity(),
-			1., dblDiscountMargin);
+		return oasFromDiscountMargin (valParams, csqs, vcp, _periodParams.maturity(), 1., dblDiscountMargin);
 	}
 
 	@Override public double oasFromGSpread (
@@ -8849,7 +8810,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		double dblBmkYield = getTsyBmkYield (valParams, csqs, dblWorkoutDate);
+		double dblBmkYield = treasuryBenchmarkYield (valParams, csqs, dblWorkoutDate);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblBmkYield))
 			throw new java.lang.Exception
@@ -9341,7 +9302,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::calcYieldFromTSYSpread => Invalid Inputs");
 
-		return getTsyBmkYield (valParams, csqs, dblWorkoutDate) + dblTSYSpread;
+		return treasuryBenchmarkYield (valParams, csqs, dblWorkoutDate) + dblTSYSpread;
 	}
 
 	@Override public double yieldFromTSYSpread (
@@ -11071,7 +11032,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				mapMeasures.put ("MarketInputType=TSYSpread", dblTSYSpread);
 
 				wiMarket = new org.drip.param.valuation.WorkoutInfo (maturity().julian(),
-					getTsyBmkYield (valParams, csqs, maturity().julian()) + dblTSYSpread, 1.,
+					treasuryBenchmarkYield (valParams, csqs, maturity().julian()) + dblTSYSpread, 1.,
 						org.drip.param.valuation.WorkoutInfo.WO_TYPE_MATURITY);
 			} catch (java.lang.Exception e) {
 				if (!s_bSuppressErrors) e.printStackTrace();

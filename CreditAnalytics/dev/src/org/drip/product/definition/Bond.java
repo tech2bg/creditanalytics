@@ -8715,7 +8715,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the OAS cannot be calculated
 	 */
 
-	public abstract double calcOASFromDiscountMargin (
+	public abstract double oasFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp,
@@ -8737,7 +8737,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if OAS cannot be calculated
 	 */
 
-	public abstract double calcOASFromDiscountMargin (
+	public abstract double oasFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp,
@@ -8757,7 +8757,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if OAS cannot be calculated
 	 */
 
-	public abstract double calcOASFromDiscountMarginToOptimalExercise (
+	public abstract double oasFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp,
