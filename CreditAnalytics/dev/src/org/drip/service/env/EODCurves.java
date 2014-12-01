@@ -755,7 +755,7 @@ public class EODCurves {
 						meTSYCQ : mapTSYCQ.entrySet()) {
 						if (null != meTSYCQ)
 							System.out.println (meTSYCQ.getKey() + "=" + meTSYCQ.getValue().quote
-								("Yield").getQuote ("mid"));
+								("Yield").value ("mid"));
 					}
 				}
 

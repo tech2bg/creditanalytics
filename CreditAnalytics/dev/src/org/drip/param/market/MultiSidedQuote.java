@@ -136,7 +136,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		_mapSidedQuote.put (strSide, new SidedQuote (dblQuote, dblSize));
 	}
 
-	@Override public double getQuote (
+	@Override public double value (
 		final java.lang.String strSide)
 	{
 		if (null == strSide || strSide.isEmpty()) return java.lang.Double.NaN;
@@ -144,7 +144,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		return _mapSidedQuote.get (strSide).getQuote();
 	}
 
-	@Override public double getSize (
+	@Override public double size (
 		final java.lang.String strSide)
 	{
 		if (null == strSide || strSide.isEmpty()) return java.lang.Double.NaN;
@@ -152,7 +152,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 		return _mapSidedQuote.get (strSide).getSize();
 	}
 
-	@Override public org.drip.analytics.date.DateTime getQuoteTime (
+	@Override public org.drip.analytics.date.DateTime time (
 		final java.lang.String strSide)
 	{
 		if (null == strSide || strSide.isEmpty()) return null;

@@ -48,7 +48,7 @@ public abstract class Quote {
 	 * @return Quote Value
 	 */
 
-	public abstract double getQuote (
+	public abstract double value (
 		final java.lang.String strSide);
 
 	/**
@@ -59,7 +59,7 @@ public abstract class Quote {
 	 * @return Size
 	 */
 
-	public abstract double getSize (
+	public abstract double size (
 		final java.lang.String strSide);
 
 	/**
@@ -70,7 +70,7 @@ public abstract class Quote {
 	 * @return DateTime
 	 */
 
-	public abstract org.drip.analytics.date.DateTime getQuoteTime (
+	public abstract org.drip.analytics.date.DateTime time (
 		final java.lang.String strSide);
 
 	/**

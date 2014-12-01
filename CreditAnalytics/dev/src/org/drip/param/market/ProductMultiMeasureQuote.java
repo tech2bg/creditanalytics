@@ -116,4 +116,13 @@ public class ProductMultiMeasureQuote extends org.drip.param.definition.ProductQ
 
 		return true;
 	}
+
+	@Override public boolean containsQuote (
+		final java.lang.String strQuoteField)
+	{
+		if (null == strQuoteField || strQuoteField.isEmpty()) return false;
+
+		return _mapQuotes.containsKey (strQuoteField) || (null != _strMarketQuoteField &&
+			_strMarketQuoteField.equalsIgnoreCase (strQuoteField));
+	}
 }

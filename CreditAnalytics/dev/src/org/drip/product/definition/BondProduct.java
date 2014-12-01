@@ -251,7 +251,7 @@ public interface BondProduct {
 	 */
 
 	public abstract boolean setPeriodSet (
-		final org.drip.product.params.PeriodSet periodSet
+		final org.drip.product.params.BondStream periodSet
 	);
 
 	/**
@@ -260,7 +260,7 @@ public interface BondProduct {
 	 * @return Bond period Set
 	 */
 
-	public abstract org.drip.product.params.PeriodSet periodSet();
+	public abstract org.drip.product.params.BondStream periodSet();
 
 	/**
 	 * Set the bond notional Setting

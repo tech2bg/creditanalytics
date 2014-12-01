@@ -1587,9 +1587,9 @@ public class BondProductBuilder {
 	 * @return BondPeriodGenerationParams object
 	 */
 
-	public org.drip.product.params.PeriodSet getPeriodGenParams()
+	public org.drip.product.params.BondStream getPeriodGenParams()
 	{
-		return org.drip.product.params.PeriodSet.Create (_dtMaturity.julian(),
+		return org.drip.product.params.BondStream.Create (_dtMaturity.julian(),
 			_dtInterestAccrualStart.julian(), null == _dtFinalMaturity ? java.lang.Double.NaN :
 				_dtFinalMaturity.julian(), null == _dtFirstCoupon ? java.lang.Double.NaN :
 					_dtFirstCoupon.julian(), _dtInterestAccrualStart.julian(), _iCouponFreq,

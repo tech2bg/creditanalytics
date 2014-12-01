@@ -88,7 +88,7 @@ public class BondBuilder {
 		final org.drip.product.params.RatesSetting irValParams,
 		final org.drip.product.params.CreditSetting crValParams,
 		final org.drip.product.params.TerminationSetting cfteParams,
-		final org.drip.product.params.PeriodSet periodParams,
+		final org.drip.product.params.BondStream periodParams,
 		final org.drip.product.params.NotionalSetting notlParams)
 	{
 		if (null == idParams || !idParams.validate() || null == cpnParams || !cpnParams.validate() || null ==
@@ -168,7 +168,7 @@ public class BondBuilder {
 									strCurrency), new org.drip.product.params.CreditSetting (30,
 										java.lang.Double.NaN, true, strCreditCurveName, true), new
 											org.drip.product.params.TerminationSetting (false, false, false),
-												org.drip.product.params.PeriodSet.Create
+												org.drip.product.params.BondStream.Create
 													(dtMaturity.julian(), dtEffective.julian(),
 														java.lang.Double.NaN, java.lang.Double.NaN,
 															dtEffective.julian(), iFreq, dblCoupon,
@@ -227,7 +227,7 @@ public class BondBuilder {
 										strCurrency, strCurrency), new org.drip.product.params.CreditSetting
 											(30, java.lang.Double.NaN, true, strCreditCurveName, true), new
 												org.drip.product.params.TerminationSetting (false, false,
-													false), org.drip.product.params.PeriodSet.Create
+													false), org.drip.product.params.BondStream.Create
 														(dtMaturity.julian(), dtEffective.julian(),
 															java.lang.Double.NaN, java.lang.Double.NaN,
 																dtEffective.julian(), iFreq, dblSpread,
@@ -281,7 +281,7 @@ public class BondBuilder {
 
 		double dblTotalPrincipal = 0.;
 		double[] adblDate = new double[adt.length];
-		org.drip.product.params.PeriodSet bfpgp = null;
+		org.drip.product.params.BondStream bfpgp = null;
 		double[] adblCouponFactor = new double[adt.length];
 		double[] adblNormalizedPrincipal = new double[adt.length];
 		double[] adblCurrentCumulativePayDown = new double[adt.length];
@@ -351,7 +351,7 @@ public class BondBuilder {
 		}
 
 		try {
-			bfpgp = new org.drip.product.params.PeriodSet (lsCouponPeriod, java.lang.Double.NaN,
+			bfpgp = new org.drip.product.params.BondStream (lsCouponPeriod, java.lang.Double.NaN,
 				"MATURITY_TYPE_REGULAR");
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

@@ -702,21 +702,21 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		org.drip.analytics.definition.CreditCurve ccMarket = null;
 
 		if (null != cq.quote ("Price"))
-			mapFairMeasures.put ("MarketInputType=Price", dblMarketMeasure = cq.quote ("Price").getQuote
+			mapFairMeasures.put ("MarketInputType=Price", dblMarketMeasure = cq.quote ("Price").value
 				("mid"));
 		else if (null != cq.quote ("CleanPrice"))
 			mapFairMeasures.put ("MarketInputType=CleanPrice", dblMarketMeasure = cq.quote
-				("CleanPrice").getQuote ("mid"));
+				("CleanPrice").value ("mid"));
 		else if (null != cq.quote ("Upfront"))
-			mapFairMeasures.put ("MarketInputType=Upfront", dblMarketMeasure = cq.quote ("Upfront").getQuote
+			mapFairMeasures.put ("MarketInputType=Upfront", dblMarketMeasure = cq.quote ("Upfront").value
 				("mid"));
 		else if (null != cq.quote ("FairPremium"))
 			mapFairMeasures.put ("MarketInputType=FairPremium", dblMarketMeasure = cq.quote
-				("FairPremium").getQuote ("mid"));
+				("FairPremium").value ("mid"));
 		else if (null != cq.quote ("PV"))
-			mapFairMeasures.put ("MarketInputType=PV", dblMarketMeasure = cq.quote ("PV").getQuote ("mid"));
+			mapFairMeasures.put ("MarketInputType=PV", dblMarketMeasure = cq.quote ("PV").value ("mid"));
 		else if (null != cq.quote ("CleanPV"))
-			mapFairMeasures.put ("MarketInputType=CleanPV", dblMarketMeasure = cq.quote ("CleanPV").getQuote
+			mapFairMeasures.put ("MarketInputType=CleanPV", dblMarketMeasure = cq.quote ("CleanPV").value
 				("mid"));
 
 		try {

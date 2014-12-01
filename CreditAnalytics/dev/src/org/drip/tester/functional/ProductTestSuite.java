@@ -183,7 +183,7 @@ public class ProductTestSuite {
 
 		simpleBond.setTerminationSetting (cfteParams);
 
-		org.drip.product.params.PeriodSet periodParams = org.drip.product.params.PeriodSet.Create
+		org.drip.product.params.BondStream periodParams = org.drip.product.params.BondStream.Create
 			(dtMaturity.julian(), dtEffective.julian(), java.lang.Double.NaN, java.lang.Double.NaN,
 				java.lang.Double.NaN, 2, dblCoupon, "30/360", "30/360", null, null, null, null, null, null,
 					null, null, "", false, strCurrency, strCurrency, null,
@@ -296,7 +296,7 @@ public class ProductTestSuite {
 
 		bondTSY.setTerminationSetting (cfteParams);
 
-		org.drip.product.params.PeriodSet periodParams = org.drip.product.params.PeriodSet.Create
+		org.drip.product.params.BondStream periodParams = org.drip.product.params.BondStream.Create
 			(dt.addYears (iNumYears).julian(), dt.julian(), java.lang.Double.NaN, dt.julian(), dt.julian(),
 				2, dblCoupon, "30/360", "30/360", null, null, null, null, null, null, null, null, "", false,
 					"USD", "USD", null, org.drip.state.identifier.CreditLabel.Standard ("IBM"));
@@ -2329,7 +2329,7 @@ public class ProductTestSuite {
 		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
 			org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"), 0.0402);
 
-		org.drip.product.params.PeriodSet bpgp = org.drip.product.params.PeriodSet.Create (dblStart + 3653.,
+		org.drip.product.params.BondStream bpgp = org.drip.product.params.BondStream.Create (dblStart + 3653.,
 			dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, 0.01, "30/360", "30/360", null, null,
 				null, null, null, null, null, null, "IGNORE", false, "USD", "USD",
 					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),

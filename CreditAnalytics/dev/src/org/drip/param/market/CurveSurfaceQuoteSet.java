@@ -3890,7 +3890,7 @@ public class CurveSurfaceQuoteSet {
 		final org.drip.state.identifier.LatentStateLabel lsl)
 		throws java.lang.Exception
 	{
-		return _lsfc.get (dt, lsl);
+		return _lsfc.fixing (dt, lsl);
 	}
 
 	/**
@@ -3909,7 +3909,7 @@ public class CurveSurfaceQuoteSet {
 		final org.drip.state.identifier.LatentStateLabel lsl)
 		throws java.lang.Exception
 	{
-		return _lsfc.get (dblDate, lsl);
+		return _lsfc.fixing (dblDate, lsl);
 	}
 
 	/**

@@ -382,7 +382,7 @@ public class BondAnalyticsAPI {
 			for (int i = 0; i < NUM_CF_ENTRIES; ++i) {
 				adt[i] = dtEffective.addMonths (6 * (i + 1));
 
-				adblCouponAmount[i] = 0.025;
+				adblCouponAmount[i] = 0.05;
 				adblPrincipalAmount[i] = 1.0;
 			}
 
@@ -503,9 +503,15 @@ public class BondAnalyticsAPI {
 		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().julian(), strCreditCurve, "USD", 0.01, 0.4);
 
 		for (int i = 0; i < aBond.length; ++i) {
-			System.out.println ("\nAcc Start     Acc End     Pay Date      Cpn DCF       Pay01       Surv01");
+			System.out.println ("\nBOND #" + i + "; " + aBond[i].name());
 
-			System.out.println ("---------    ---------    ---------    ---------    ---------    --------");
+			System.out.println ("--------------------------");
+
+			System.out.println ("--------------------------");
+
+			System.out.println ("\n\tAcc Start     Acc End     Pay Date      Cpn DCF       Pay01       Surv01");
+
+			System.out.println ("\t---------    ---------    ---------    ---------    ---------    --------");
 
 			/*
 			 * Generates and displays the coupon period details for the bonds
@@ -547,68 +553,62 @@ public class BondAnalyticsAPI {
 
 			cquote.addQuote ("Yield", q, true);
 
-			for (Bond bond : aBond)
-				mktParams.setProductQuote (bond.name(), cquote);
+			mktParams.setProductQuote (aBond[i].name(), cquote);
 
-			aBond[i].value (valParams, null, mktParams, null);
-
-			System.out.println ("\n" + aBond[i].name() + " Valuation OP: " + aBond[i].value (valParams, null, mktParams, null));
-
-			System.out.println ("\nPrice From Yield: " + FormatUtil.FormatDouble (aBond[i].priceFromYield
+			System.out.println ("\n\tPrice From Yield: " + FormatUtil.FormatDouble (aBond[i].priceFromYield
 				(valParams, mktParams, null, 0.03), 1, 3, 100.));
 
 			double dblPrice = aBond[i].priceFromYield (valParams, mktParams, null, 0.03);
 
 			WorkoutInfo wi = aBond[i].exerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
 
-			System.out.println ("Workout Date: " + JulianDate.fromJulian (wi.date()));
+			System.out.println ("\tWorkout Date: " + JulianDate.fromJulian (wi.date()));
 
-			System.out.println ("Workout Factor: " + wi.factor());
+			System.out.println ("\tWorkout Factor: " + wi.factor());
 
-			System.out.println ("Workout Yield: " + FormatUtil.FormatDouble (wi.yield(), 1, 2, 100.));
+			System.out.println ("\tWorkout Yield: " + FormatUtil.FormatDouble (wi.yield(), 1, 2, 100.));
 
-			System.out.println ("Workout Yield From Price: " + FormatUtil.FormatDouble
+			System.out.println ("\tWorkout Yield From Price: " + FormatUtil.FormatDouble
 				(aBond[i].yieldFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 2, 100.));
 
 			if (!aBond[i].isFloater()) {
-				System.out.println ("Z Spread From Price: " + FormatUtil.FormatDouble
+				System.out.println ("\tZ Spread From Price: " + FormatUtil.FormatDouble
 					(aBond[i].zspreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
-				/* System.out.println ("OAS From Price: " + FormatUtil.FormatDouble
-					(aBond[i].calcOASFromPrice (valParams, mktParams, null, wi._dblDate, wi._dblExerciseFactor, 1.), 1, 0, 10000.)); */
-			}
+				System.out.println ("\tOAS From Price: " + FormatUtil.FormatDouble
+					(aBond[i].oasFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
+			} else;
+				System.out.println ("\tDiscount Margin From Price: " + FormatUtil.FormatDouble (aBond[i].discountMarginFromPrice
+					(valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
-			System.out.println ("I Spread From Price: " + FormatUtil.FormatDouble (aBond[i].iSpreadFromPrice
+			System.out.println ("\tI Spread From Price: " + FormatUtil.FormatDouble (aBond[i].iSpreadFromPrice
 				(valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
-			System.out.println ("Discount Margin From Price: " + FormatUtil.FormatDouble (aBond[i].discountMarginFromPrice
-				(valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
-
-			System.out.println ("TSY Spread From Price: " + FormatUtil.FormatDouble
+			System.out.println ("\tTSY Spread From Price: " + FormatUtil.FormatDouble
 				(aBond[i].tsySpreadFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
-			System.out.println ("ASW From Price: " + FormatUtil.FormatDouble
+			System.out.println ("\tASW From Price: " + FormatUtil.FormatDouble
 				(aBond[i].aswFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
-			System.out.println ("Credit Basis From Price: " + FormatUtil.FormatDouble
+			System.out.println ("\tCredit Basis From Price: " + FormatUtil.FormatDouble
 				(aBond[i].creditBasisFromPrice (valParams, mktParams, null, wi.date(), wi.factor(), 1.), 1, 0, 10000.));
 
-			System.out.println ("Price From TSY Spread: " + FormatUtil.FormatDouble
+			System.out.println ("\tPrice From TSY Spread: " + FormatUtil.FormatDouble
 				(aBond[i].priceFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 3, 100.));
 
-			System.out.println ("Yield From TSY Spread: " + FormatUtil.FormatDouble
+			System.out.println ("\tYield From TSY Spread: " + FormatUtil.FormatDouble
 				(aBond[i].yieldFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 2, 100.));
 
-			System.out.println ("ASW From TSY Spread: " + FormatUtil.FormatDouble
+			System.out.println ("\tASW From TSY Spread: " + FormatUtil.FormatDouble
 				(aBond[i].aswFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 0, 10000.));
 
-			System.out.println ("Credit Basis From TSY Spread: " + FormatUtil.FormatDouble
+			System.out.println ("\tCredit Basis From TSY Spread: " + FormatUtil.FormatDouble
 				(aBond[i].creditBasisFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 0, 10000.));
 
-			/* System.out.println ("PECS From TSY Spread: " + FIGen.FormatSpread
-				(aBond[i].calcPECSFromTSYSpread (valParams, mktParams, null, 0.0188))); */
+			/* System.out.println ("\tPECS From TSY Spread: " + FormatUtil.FormatDouble
+				(aBond[i].pecsFromTSYSpread (valParams, mktParams, null, 0.0188), 1, 0, 10000.)); */
 
-			System.out.println ("Theoretical Price: " + FormatUtil.FormatDouble
+			System.out.println ("\tTheoretical Price: " + FormatUtil.FormatDouble
 				(aBond[i].priceFromCreditBasis (valParams, mktParams, null, wi.date(), wi.factor(), 0.), 1, 3, 100.));
 		}
 	}

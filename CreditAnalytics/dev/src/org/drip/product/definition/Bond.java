@@ -932,7 +932,7 @@ public abstract class Bond extends CreditComponent {
 	public abstract double aswFromOAS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblOAS)
 		throws java.lang.Exception;
 
@@ -996,7 +996,7 @@ public abstract class Bond extends CreditComponent {
 	public abstract double aswFromPECS (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblPECS)
 		throws java.lang.Exception;
 
@@ -2424,7 +2424,7 @@ public abstract class Bond extends CreditComponent {
 	public abstract double convexityFromGSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblGSpread)
 		throws java.lang.Exception;
 
@@ -2872,7 +2872,7 @@ public abstract class Bond extends CreditComponent {
 	public abstract double convexityFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
 
@@ -3768,7 +3768,7 @@ public abstract class Bond extends CreditComponent {
 	public abstract double discountMarginFromASWToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblASW)
 		throws java.lang.Exception;
 
@@ -7608,7 +7608,7 @@ public abstract class Bond extends CreditComponent {
 	public abstract double macaulayDurationFromYieldSpreadToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblYieldSpread)
 		throws java.lang.Exception;
 
@@ -9934,7 +9934,7 @@ public abstract class Bond extends CreditComponent {
 	public abstract double pecsFromYieldSpread (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblWorkoutDate,
 		final double dblWorkoutFactor,
 		final double dblYieldSpread)
@@ -11019,7 +11019,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if the TSY Spread cannot be calculated
 	 */
 
-	public abstract double calcTSYSpreadFromDiscountMargin (
+	public abstract double tsySpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp,
@@ -11041,7 +11041,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if TSY Spread cannot be calculated
 	 */
 
-	public abstract double calcTSYSpreadFromDiscountMargin (
+	public abstract double tsySpreadFromDiscountMargin (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp,
@@ -11061,7 +11061,7 @@ public abstract class Bond extends CreditComponent {
 	 * @throws java.lang.Exception Thrown if TSY Spread cannot be calculated
 	 */
 
-	public abstract double calcTSYSpreadFromDiscountMarginToOptimalExercise (
+	public abstract double tsySpreadFromDiscountMarginToOptimalExercise (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams vcp,

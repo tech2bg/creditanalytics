@@ -64,7 +64,7 @@ public class TsyBmkSet {
 	 * @return Primary Treasury Benchmark
 	 */
 
-	public java.lang.String getPrimaryBmk()
+	public java.lang.String primaryBenchmark()
 	{
 		return _strBmkPrimary;
 	}
@@ -75,7 +75,7 @@ public class TsyBmkSet {
 	 * @return  Array of Secondary Treasury Benchmarks
 	 */
 
-	public java.lang.String[] getSecBmk()
+	public java.lang.String[] secondaryBenchmarks()
 	{
 		return _astrSecBmk;
 	}

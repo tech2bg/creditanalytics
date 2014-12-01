@@ -32,7 +32,7 @@ package org.drip.product.params;
  */
 
 /**
- * PeriodSet is the place-holder for the component’s period generation parameters. Contains the component's
+ * BondStream is the place-holder for the bond's period generation parameters. Contains the bond's
  * 	date adjustment parameters for period start/end, period accrual start/end, effective, maturity, pay and
  * 	reset, first coupon date, and interest accrual start date. It exports serialization into and
  *  de-serialization out of byte arrays.
@@ -40,10 +40,9 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class PeriodSet {
+public class BondStream extends org.drip.product.rates.Stream {
 	private java.lang.String _strMaturityType = "";
 	private double _dblFinalMaturity = java.lang.Double.NaN;
-	private java.util.List<org.drip.analytics.cashflow.CompositePeriod> _lsCouponPeriod = null;
 
 	/**
 	 * Construct and Instance of PeriodSet from the specified Parameters
@@ -75,7 +74,7 @@ public class PeriodSet {
 	 * @return PeriodSet Instance
 	 */
 
-	public static final PeriodSet Create (
+	public static final BondStream Create (
 		final double dblMaturity,
 		final double dblEffective,
 		final double dblFinalMaturity,
@@ -126,11 +125,7 @@ public class PeriodSet {
 					strAccrualDCAdj, bAccrualEOMAdj, strCurrency, true);
 
 			java.lang.String strTenor = (12 / iFreq) + "M";
-
-			org.drip.param.period.ComposableFixedUnitSetting cfus = new
-				org.drip.param.period.ComposableFixedUnitSetting (strTenor,
-					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
-						dblCoupon, 0., strCurrency);
+			java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod = null;
 
 			org.drip.param.period.CompositePeriodSetting cps = new
 				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null,
@@ -144,11 +139,27 @@ public class PeriodSet {
 							dtMaturity, strTenor, dapAccrualEnd,
 								org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
 
-			java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod =
-				org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsStreamEdgeDate, cps,
-					ucas, cfus);
+			if (null == forwardLabel) {
+				org.drip.param.period.ComposableFixedUnitSetting cfus = new
+					org.drip.param.period.ComposableFixedUnitSetting (strTenor,
+						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
+							dblCoupon, 0., strCurrency);
 
-			return new PeriodSet (lsCouponPeriod, dblFinalMaturity, strMaturityType);
+				lsCouponPeriod = org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit
+					(lsStreamEdgeDate, cps, ucas, cfus);
+			} else {
+				org.drip.param.period.ComposableFloatingUnitSetting cfus = new
+					org.drip.param.period.ComposableFloatingUnitSetting (strTenor,
+						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
+							forwardLabel,
+								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+					null, dblCoupon);
+
+				lsCouponPeriod = org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
+					(lsStreamEdgeDate, cps, ucas, cfus);
+			}
+
+			return new BondStream (lsCouponPeriod, dblFinalMaturity, strMaturityType);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -157,7 +168,7 @@ public class PeriodSet {
 	}
 
 	/**
-	 * Construct PeriodSet from the list of coupon periods
+	 * Construct the BondStream instance from the list of coupon periods
 	 * 
 	 * @param lsCouponPeriod List of Coupon Period
 	 * @param dblFinalMaturity Final Maturity Date
@@ -166,28 +177,16 @@ public class PeriodSet {
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
 
-	public PeriodSet (
+	public BondStream (
 		final java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod,
 		final double dblFinalMaturity,
 		final java.lang.String strMaturityType)
 		throws java.lang.Exception
 	{
-		if (null == (_lsCouponPeriod = lsCouponPeriod) || 0 == _lsCouponPeriod.size())
-			throw new java.lang.Exception ("PeriodSet Constructor: Invalid Inputs");
+		super (lsCouponPeriod);
 
 		_strMaturityType = strMaturityType;
 		_dblFinalMaturity = dblFinalMaturity;
-	}
-
-	/**
-	 * Retrieve a list of the component's coupon periods
-	 * 
-	 * @return List of Coupon Period
-	 */
-
-	public java.util.List<org.drip.analytics.cashflow.CompositePeriod> periods()
-	{
-		return _lsCouponPeriod;
 	}
 
 	/**
@@ -198,7 +197,7 @@ public class PeriodSet {
 
 	public org.drip.analytics.cashflow.CompositePeriod firstPeriod()
 	{
-		return _lsCouponPeriod.get (0);
+		return periods().get (0);
 	}
 
 	/**
@@ -209,7 +208,9 @@ public class PeriodSet {
 
 	public org.drip.analytics.cashflow.CompositePeriod lastPeriod()
 	{
-		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1);
+		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod = periods();
+
+		return lsCouponPeriod.get (lsCouponPeriod.size() - 1);
 	}
 
 	/**
@@ -231,7 +232,7 @@ public class PeriodSet {
 
 		int i = 0;
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : _lsCouponPeriod) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : periods()) {
 			if (period.contains (dblDate)) return i;
 
 			++i;
@@ -252,66 +253,11 @@ public class PeriodSet {
 		final int iIndex)
 	{
 		try {
-			return _lsCouponPeriod.get (iIndex);
+			return periods().get (iIndex);
 		} catch (java.lang.Exception e) {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Retrieve the Frequency
-	 * 
-	 * @return The Frequency
-	 */
-
-	public int freq()
-	{
-		return _lsCouponPeriod.get (0).periods().get (0).freq();
-	}
-
-	/**
-	 * Retrieve the Coupon EOM Adjustment
-	 * 
-	 * @return The Coupon EOM Adjustment
-	 */
-
-	public boolean couponEOMAdjustment()
-	{
-		return _lsCouponPeriod.get (0).periods().get (0).couponEOMAdjustment();
-	}
-
-	/**
-	 * Retrieve the Accrual EOM Adjustment
-	 * 
-	 * @return The Accrual EOM Adjustment
-	 */
-
-	public boolean accrualEOMAdjustment()
-	{
-		return _lsCouponPeriod.get (0).periods().get (0).accrualEOMAdjustment();
-	}
-
-	/**
-	 * Retrieve the Coupon Day Count
-	 * 
-	 * @return The Coupon Day Count
-	 */
-
-	public java.lang.String couponDC()
-	{
-		return _lsCouponPeriod.get (0).periods().get (0).couponDC();
-	}
-
-	/**
-	 * Retrieve the Accrual Day Count
-	 * 
-	 * @return The Accrual Day Count
-	 */
-
-	public java.lang.String accrualDC()
-	{
-		return _lsCouponPeriod.get (0).periods().get (0).accrualDC();
 	}
 
 	/**
@@ -326,28 +272,6 @@ public class PeriodSet {
 	}
 
 	/**
-	 * Retrieve the Maturity Date
-	 * 
-	 * @return The Maturity Date
-	 */
-
-	public double maturity()
-	{
-		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).endDate();
-	}
-
-	/**
-	 * Retrieve the Effective Date
-	 * 
-	 * @return The Effective Date
-	 */
-
-	public double effective()
-	{
-		return _lsCouponPeriod.get (0).startDate();
-	}
-
-	/**
 	 * Retrieve the Final Maturity Date
 	 * 
 	 * @return The FinalMaturity Date
@@ -356,16 +280,5 @@ public class PeriodSet {
 	public double finalMaturity()
 	{
 		return _dblFinalMaturity;
-	}
-
-	/**
-	 * Retrieve the Coupon Currency
-	 * 
-	 * @return The Coupon Currency
-	 */
-
-	public java.lang.String currency()
-	{
-		return _lsCouponPeriod.get (_lsCouponPeriod.size() - 1).payCurrency();
 	}
 }

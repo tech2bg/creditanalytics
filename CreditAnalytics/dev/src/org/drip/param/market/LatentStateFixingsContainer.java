@@ -194,7 +194,7 @@ public class LatentStateFixingsContainer {
 	 * @throws java.lang.Exception Thrown if the Fixing cannot be found
 	 */
 
-	public double get (
+	public double fixing (
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.state.identifier.LatentStateLabel lsl)
 		throws java.lang.Exception
@@ -252,12 +252,12 @@ public class LatentStateFixingsContainer {
 	 * @throws java.lang.Exception Thrown if the Fixing cannot be found
 	 */
 
-	public double get (
+	public double fixing (
 		final double dblDate,
 		final org.drip.state.identifier.LatentStateLabel lsl)
 		throws java.lang.Exception
 	{
-		return get (new org.drip.analytics.date.JulianDate (dblDate), lsl);
+		return fixing (new org.drip.analytics.date.JulianDate (dblDate), lsl);
 	}
 
 	/**

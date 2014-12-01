@@ -80,6 +80,17 @@ public class Stream {
 	}
 
 	/**
+	 * Retrieve a list of the component's coupon periods
+	 * 
+	 * @return List of Coupon Period
+	 */
+
+	public java.util.List<org.drip.analytics.cashflow.CompositePeriod> periods()
+	{
+		return _lsPeriod;
+	}
+
+	/**
 	 * Retrieve the Stream Frequency
 	 * 
 	 * @return The Stream Frequency
@@ -88,6 +99,50 @@ public class Stream {
 	public int freq()
 	{
 		return _lsPeriod.get (0).freq();
+	}
+
+	/**
+	 * Retrieve the Coupon Day Count
+	 * 
+	 * @return The Coupon Day Count
+	 */
+
+	public java.lang.String couponDC()
+	{
+		return _lsPeriod.get (0).periods().get (0).couponDC();
+	}
+
+	/**
+	 * Retrieve the Coupon EOM Adjustment
+	 * 
+	 * @return The Coupon EOM Adjustment
+	 */
+
+	public boolean couponEOMAdjustment()
+	{
+		return _lsPeriod.get (0).periods().get (0).couponEOMAdjustment();
+	}
+
+	/**
+	 * Retrieve the Accrual Day Count
+	 * 
+	 * @return The Accrual Day Count
+	 */
+
+	public java.lang.String accrualDC()
+	{
+		return _lsPeriod.get (0).periods().get (0).accrualDC();
+	}
+
+	/**
+	 * Retrieve the Accrual EOM Adjustment
+	 * 
+	 * @return The Accrual EOM Adjustment
+	 */
+
+	public boolean accrualEOMAdjustment()
+	{
+		return _lsPeriod.get (0).periods().get (0).accrualEOMAdjustment();
 	}
 
 	/**

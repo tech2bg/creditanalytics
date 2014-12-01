@@ -667,7 +667,7 @@ public class BondManager {
 
 		if (s_bBlog) System.out.println ("Working on making " + idParams._strCUSIP);
 
-		org.drip.product.params.PeriodSet periodParams = bpb.getPeriodGenParams();
+		org.drip.product.params.BondStream periodParams = bpb.getPeriodGenParams();
 
 		if (null == periodParams) return null;
 
@@ -948,7 +948,7 @@ public class BondManager {
 				org.drip.product.credit.BondComponent bond = BuildBondFromResultSet (rs, mpc);
 
 				if (null == bond || bond.marketConvention()._dblFirstSettle >=
-					bond.periodSet().maturity())
+					bond.periodSet().maturity().julian())
 					continue;
 
 				s_mapBonds.put (bond.identifierSet()._strCUSIP, bond);
@@ -961,7 +961,7 @@ public class BondManager {
 				if (null == mapMatBond)
 					mapMatBond = new java.util.TreeMap<java.lang.Double, java.lang.String>();
 
-				mapMatBond.put (bond.periodSet().maturity(), bond.identifierSet()._strCUSIP);
+				mapMatBond.put (bond.periodSet().maturity().julian(), bond.identifierSet()._strCUSIP);
 
 				s_mapTickerMatCUSIP.put (bond.identifierSet()._strTicker, mapMatBond);
 
@@ -971,9 +971,7 @@ public class BondManager {
 
 				if (s_bBlog)
 					System.out.println ("Loaded Bond[" + iNumBonds + "] = " +
-						bond.identifierSet()._strTicker + " " +
-							org.drip.analytics.date.JulianDate.fromJulian
-								(bond.periodSet().maturity()));
+						bond.identifierSet()._strTicker + " " + bond.periodSet().maturity());
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -1644,7 +1642,7 @@ public class BondManager {
 				org.drip.product.credit.BondComponent bond = BuildBondFromResultSet (rs, mpc);
 
 				if (null == bond || bond.marketConvention()._dblFirstSettle >=
-					bond.periodSet().maturity())
+					bond.periodSet().maturity().julian())
 					continue;
 
 				bw.write ("\t\torg.drip.product.credit.Bond bond" + bond.isin() +
@@ -1654,7 +1652,7 @@ public class BondManager {
 					java.lang.String strPrimaryBmk = "";
 
 					if (null != bond.treasuryBenchmark())
-						strPrimaryBmk = bond.treasuryBenchmark().getPrimaryBmk();
+						strPrimaryBmk = bond.treasuryBenchmark().primaryBenchmark();
 
 					bw.write ("\t\tbond" + bond.isin() + ".setTSYParams (CreateTSYParams (\"" +
 						strPrimaryBmk + "\", \"NONE\", \"NONE\"));\n\n");

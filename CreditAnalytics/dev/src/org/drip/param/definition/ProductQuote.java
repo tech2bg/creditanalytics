@@ -110,4 +110,15 @@ public abstract class ProductQuote {
 
 	public abstract boolean removeQuote (
 		final java.lang.String strQuoteField);
+
+	/**
+	 * Indicate if the named quote is available
+	 * 
+	 * @param strQuoteField The Quote Name
+	 * 
+	 * @return TRUE => Named Quote is present
+	 */
+
+	public abstract boolean containsQuote (
+		final java.lang.String strQuoteField);
 }
