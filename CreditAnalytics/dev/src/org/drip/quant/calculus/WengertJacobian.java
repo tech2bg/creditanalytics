@@ -128,14 +128,14 @@ public class WengertJacobian {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public double getWengert (
-		final int iWengertIndex)
+	public double wengert (
+		final int iIndex)
 		throws java.lang.Exception
 	{
-		if (0 > iWengertIndex || iWengertIndex >= _adblWengert.length)
-			throw new java.lang.Exception ("WengertJacobian::getWengert => Invalid Wengert Variable Index!");
+		if (0 > iIndex || iIndex >= _adblWengert.length)
+			throw new java.lang.Exception ("WengertJacobian::wengert => Invalid Wengert Variable Index!");
 
-		return _adblWengert[iWengertIndex];
+		return _adblWengert[iIndex];
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class WengertJacobian {
 	 * @return {D(Wengert)}/{D(Parameter)}
 	 */
 
-	public double getFirstDerivative (
+	public double firstDerivative (
 		final int iWengertIndex,
 		final int iParameterIndex)
 	{
@@ -194,7 +194,7 @@ public class WengertJacobian {
 		for (int iWengertIndex = 0; iWengertIndex < _aadblDWengertDParameter.length; ++iWengertIndex) {
 			for (int iParameterIndex = 0; iParameterIndex < _aadblDWengertDParameter[0].length;
 				++iParameterIndex)
-				_aadblDWengertDParameter[iWengertIndex][iParameterIndex] += wjOther.getFirstDerivative
+				_aadblDWengertDParameter[iWengertIndex][iParameterIndex] += wjOther.firstDerivative
 					(iWengertIndex, iParameterIndex);
 		}
 
@@ -219,7 +219,7 @@ public class WengertJacobian {
 		for (int iWengertIndex = 0; iWengertIndex < _aadblDWengertDParameter.length; ++iWengertIndex) {
 			for (int iParameterIndex = 0; iParameterIndex < _aadblDWengertDParameter[0].length;
 				++iParameterIndex)
-				_aadblDWengertDParameter[iWengertIndex][iParameterIndex] += wjOther.getFirstDerivative
+				_aadblDWengertDParameter[iWengertIndex][iParameterIndex] += wjOther.firstDerivative
 					(iWengertIndex, iParameterIndex) * dblWeight;
 		}
 

@@ -43,143 +43,40 @@ package org.drip.analytics.output;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BasketMeasures {
-
-	/**
-	 * Basket output calculation time
-	 */
-
-	public double _dblCalcTime = java.lang.Double.NaN;
-
-	/**
-	 * Map of the base measures
-	 */
-
-	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mBase = null;
-
-	/**
-	 * Map of the parallel IR delta measures
-	 */
-
-	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatIRDelta = null;
-
-	/**
-	 * Map of the parallel IR gamma measures
-	 */
-
-	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatIRGamma = null;
-
-	/**
-	 * Map of the parallel RR delta measures
-	 */
-
-	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatRRDelta = null;
-
-	/**
-	 * Map of the parallel RR gamma measures
-	 */
-
-	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatRRGamma = null;
-
-	/**
-	 * Map of the parallel credit delta measures
-	 */
-
-	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatCreditDelta = null;
-
-	/**
-	 * Map of the parallel credit gamma measures
-	 */
-
-	public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> _mFlatCreditGamma = null;
-
-	/**
-	 * Map of the component IR delta measure map
-	 */
-
-	public
+public class BasketMeasures extends org.drip.analytics.output.ComponentMeasures {
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			_mmIRDelta = null;
-
-	/**
-	 * Map of the component IR gamma measure map
-	 */
-
-	public
+			_mmComponentIRDeltaMeasures = null;
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			_mmIRGamma = null;
-
-	/**
-	 * Map of the component credit delta measure map
-	 */
-
-	public
+			_mmComponentIRGammaMeasures = null;
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			_mmCreditDelta = null;
-
-	/**
-	 * Map of the component credit gamma measure map
-	 */
-
-	public
+			_mmComponentCreditDeltaMeasures = null;
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			_mmCreditGamma = null;
-
-	/**
-	 * Map of the component RR delta measure map
-	 */
-
-	public
+			_mmComponentCreditGammaMeasures = null;
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			_mmRRDelta = null;
-
-	/**
-	 * Map of the component RR gamma measure map
-	 */
-
-	public
+			_mmComponentRRDeltaMeasures = null;
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			_mmRRGamma = null;
-
-	/**
-	 * Triple Map of the component, IR tenor, measure, and delta value
-	 */
-
-	public
+			_mmComponentRRGammaMeasures = null;
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-			_mmmIRTenorDelta = null;
-
-	/**
-	 * Triple Map of the component, IR tenor, measure, and gamma value
-	 */
-
-	public
+			_mmmComponentTenorIRDeltaMeasures = null;
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-			_mmmIRTenorGamma = null;
-
-	/**
-	 * Triple Map of the component, credit tenor, measure, and delta value
-	 */
-
-	public
+			_mmmComponentTenorIRGammaMeasures = null;
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-			_mmmCreditTenorDelta = null;
-
-	/**
-	 * Triple Map of the component, credit tenor, measure, and gamma value
-	 */
-
-	public
+			_mmmComponentTenorCreditDeltaMeasures = null;
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-			_mmmCreditTenorGamma = null;
-
-	/**
-	 * Map of the custom scenario measure map
-	 */
-
-	public
+			_mmmComponentTenorCreditGammaMeasures = null;
+	private
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
-			_mmCustom = null;
+			_mmComponentCustomMeasures = null;
 
 	/**
 	 * Empty constructor - all members initialized to NaN or null
@@ -187,5 +84,362 @@ public class BasketMeasures {
 
 	public BasketMeasures()
 	{
+	}
+
+	/**
+	 * Retrieve the Component IR Delta Double Measure Map
+	 * 
+	 * @return The Component IR Delta Double Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			componentIRDeltaMeasures()
+	{
+		return _mmComponentIRDeltaMeasures;
+	}
+
+	/**
+	 * Set the Component IR Delta Double Measures Map
+	 * 
+	 * @param mmComponentIRDeltaMeasures The Component IR Delta Double Measures Map
+	 * 
+	 * @return TRUE => The Component IR Delta Double Measures Map Successfully Set
+	 */
+
+	public boolean setComponentIRDeltaMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				mmComponentIRDeltaMeasures)
+	{
+		if (null == mmComponentIRDeltaMeasures || 0 == mmComponentIRDeltaMeasures.size()) return false;
+
+		_mmComponentIRDeltaMeasures = mmComponentIRDeltaMeasures;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Component IR Gamma Double Measure Map
+	 * 
+	 * @return The Component IR Gamma Double Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			componentIRGammaMeasures()
+	{
+		return _mmComponentIRGammaMeasures;
+	}
+
+	/**
+	 * Set the Component IR Gamma Double Measures Map
+	 * 
+	 * @param mmComponentIRGammaMeasures The Component IR Gamma Double Measures Map
+	 * 
+	 * @return TRUE => The Component IR Gamma Double Measures Map Successfully Set
+	 */
+
+	public boolean setComponentIRGammaMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				mmComponentIRGammaMeasures)
+	{
+		if (null == mmComponentIRGammaMeasures || 0 == mmComponentIRGammaMeasures.size()) return false;
+
+		_mmComponentIRGammaMeasures = mmComponentIRGammaMeasures;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Component Credit Delta Double Measure Map
+	 * 
+	 * @return The ComponentCredit Delta Double Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			componentCreditDeltaMeasures()
+	{
+		return _mmComponentCreditDeltaMeasures;
+	}
+
+	/**
+	 * Set the Component Credit Delta Double Measures Map
+	 * 
+	 * @param mmComponentCreditDeltaMeasures The Component Credit Delta Double Measures Map
+	 * 
+	 * @return TRUE => The Component Credit Delta Double Measures Map Successfully Set
+	 */
+
+	public boolean setComponentCreditDeltaMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				mmComponentCreditDeltaMeasures)
+	{
+		if (null == mmComponentCreditDeltaMeasures || 0 == mmComponentCreditDeltaMeasures.size())
+			return false;
+
+		_mmComponentCreditDeltaMeasures = mmComponentCreditDeltaMeasures;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Component Credit Gamma Double Measure Map
+	 * 
+	 * @return The Component Credit Gamma Double Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			componentCreditGammaMeasures()
+	{
+		return _mmComponentCreditGammaMeasures;
+	}
+
+	/**
+	 * Set the Component Credit Gamma Double Measures Map
+	 * 
+	 * @param mmComponentCreditGammaMeasures The Component Credit Gamma Double Measures Map
+	 * 
+	 * @return TRUE => The Component Credit Gamma Double Measures Map Successfully Set
+	 */
+
+	public boolean setComponentCreditGammaMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				mmComponentCreditGammaMeasures)
+	{
+		if (null == mmComponentCreditGammaMeasures || 0 == mmComponentCreditGammaMeasures.size()) return false;
+
+		_mmComponentCreditGammaMeasures = mmComponentCreditGammaMeasures;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Component RR Delta Double Measure Map
+	 * 
+	 * @return The Component RR Delta Double Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			componentRRDeltaMeasures()
+	{
+		return _mmComponentRRDeltaMeasures;
+	}
+
+	/**
+	 * Set the Component RR Delta Double Measures Map
+	 * 
+	 * @param mmComponentRRDeltaMeasures The RR Delta Double Measures Map
+	 * 
+	 * @return TRUE => The Component RR Delta Double Measures Map Successfully Set
+	 */
+
+	public boolean setComponentRRDeltaMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				mmComponentRRDeltaMeasures)
+	{
+		if (null == mmComponentRRDeltaMeasures || 0 == mmComponentRRDeltaMeasures.size()) return false;
+
+		_mmComponentRRDeltaMeasures = mmComponentRRDeltaMeasures;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Component RR Gamma Double Measure Map
+	 * 
+	 * @return The Component RR Gamma Double Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			componentRRGammaMeasures()
+	{
+		return _mmComponentRRGammaMeasures;
+	}
+
+	/**
+	 * Set the Component RR Gamma Double Measures Map
+	 * 
+	 * @param mmComponentRRGammaMeasures The RR Gamma Double Measures Map
+	 * 
+	 * @return TRUE => The Component RR Gamma Double Measures Map Successfully Set
+	 */
+
+	public boolean setComponentRRGammaMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				mmComponentRRGammaMeasures)
+	{
+		if (null == mmComponentRRGammaMeasures || 0 == mmComponentRRGammaMeasures.size()) return false;
+
+		_mmComponentRRGammaMeasures = mmComponentRRGammaMeasures;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Component/Tenor IR Delta Triple Measure Map
+	 * 
+	 * @return The Component/Tenor IR Delta Triple Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			componentTenorIRDeltaMeasures()
+	{
+		return _mmmComponentTenorIRDeltaMeasures;
+	}
+
+	/**
+	 * Set the Component/Tenor IR Delta Triple Measures Map
+	 * 
+	 * @param mmComponentTenorIRDeltaMeasures The Component/Tenor IR Delta Triple Measures Map
+	 * 
+	 * @return TRUE => The Component/Tenor IR Delta Triple Measures Map Successfully Set
+	 */
+
+	public boolean setComponentTenorIRDeltaMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+				mmmComponentTenorIRDeltaMeasures)
+	{
+		if (null == mmmComponentTenorIRDeltaMeasures || 0 == mmmComponentTenorIRDeltaMeasures.size())
+			return false;
+
+		_mmmComponentTenorIRDeltaMeasures = mmmComponentTenorIRDeltaMeasures;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Component/Tenor IR Gamma Triple Measure Map
+	 * 
+	 * @return The Component/Tenor IR Gamma Triple Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			componentTenorIRGammaMeasures()
+	{
+		return _mmmComponentTenorIRGammaMeasures;
+	}
+
+	/**
+	 * Set the Component/Tenor IR Gamma Triple Measures Map
+	 * 
+	 * @param mmComponentTenorIRGammaMeasures The Component/Tenor IR Gamma Triple Measures Map
+	 * 
+	 * @return TRUE => The Component/Tenor IR Gamma Triple Measures Map Successfully Set
+	 */
+
+	public boolean setComponentTenorIRGammaMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+				mmmComponentTenorIRGammaMeasures)
+	{
+		if (null == mmmComponentTenorIRGammaMeasures || 0 == mmmComponentTenorIRGammaMeasures.size())
+			return false;
+
+		_mmmComponentTenorIRGammaMeasures = mmmComponentTenorIRGammaMeasures;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Component/Tenor Credit Delta Triple Measure Map
+	 * 
+	 * @return The Component/Tenor Credit Delta Triple Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			componentTenorCreditDeltaMeasures()
+	{
+		return _mmmComponentTenorCreditDeltaMeasures;
+	}
+
+	/**
+	 * Set the Component/Tenor Credit Delta Triple Measures Map
+	 * 
+	 * @param mmComponentTenorCreditDeltaMeasures The Component/Tenor Credit Delta Triple Measures Map
+	 * 
+	 * @return TRUE => The Component/Tenor Credit Delta Triple Measures Map Successfully Set
+	 */
+
+	public boolean setComponentTenorCreditDeltaMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+				mmmComponentTenorCreditDeltaMeasures)
+	{
+		if (null == mmmComponentTenorCreditDeltaMeasures || 0 == mmmComponentTenorCreditDeltaMeasures.size())
+			return false;
+
+		_mmmComponentTenorCreditDeltaMeasures = mmmComponentTenorCreditDeltaMeasures;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Component/Tenor Credit Gamma Triple Measure Map
+	 * 
+	 * @return The Component/Tenor Credit Gamma Triple Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+			componentTenorCreditGammaMeasures()
+	{
+		return _mmmComponentTenorCreditGammaMeasures;
+	}
+
+	/**
+	 * Set the Component/Tenor Credit Gamma Triple Measures Map
+	 * 
+	 * @param mmComponentTenorCreditGammaMeasures The Component/Tenor Credit Gamma Triple Measures Map
+	 * 
+	 * @return TRUE => The Component/Tenor Credit Gamma Triple Measures Map Successfully Set
+	 */
+
+	public boolean setComponentTenorCreditGammaMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
+				mmmComponentTenorCreditGammaMeasures)
+	{
+		if (null == mmmComponentTenorCreditGammaMeasures || 0 == mmmComponentTenorCreditGammaMeasures.size())
+			return false;
+
+		_mmmComponentTenorCreditGammaMeasures = mmmComponentTenorCreditGammaMeasures;
+		return true;
+	}
+
+	/**
+	 * Retrieve the Component Custom Double Measure Map
+	 * 
+	 * @return The Component Custom Double Measure Map
+	 */
+
+	public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+			componentCustomMeasures()
+	{
+		return _mmComponentCustomMeasures;
+	}
+
+	/**
+	 * Set the Component Custom Double Measures Map
+	 * 
+	 * @param mmComponentCustomMeasures The Component Custom Double Measures Map
+	 * 
+	 * @return TRUE => The Component Custom Double Measures Map Successfully Set
+	 */
+
+	public boolean setComponentCustomMeasures (
+		final
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>
+				mmComponentCustomMeasures)
+	{
+		if (null == mmComponentCustomMeasures || 0 == mmComponentCustomMeasures.size()) return false;
+
+		_mmComponentCustomMeasures = mmComponentCustomMeasures;
+		return true;
 	}
 }

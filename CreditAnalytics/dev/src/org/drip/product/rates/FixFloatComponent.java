@@ -646,8 +646,8 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 		for (int i = 0; i < iNumQuote; ++i) {
 			if (!jackDDirtyPVDManifestMeasureIRS.accumulatePartialFirstDerivative (0, i, dblNotionalScaleDown
-				* (dblParSwapRate * jackDDirtyPVDManifestMeasureFixed.getFirstDerivative (0, i) +
-					jackDDirtyPVDManifestMeasureFloating.getFirstDerivative (0, i))))
+				* (dblParSwapRate * jackDDirtyPVDManifestMeasureFixed.firstDerivative (0, i) +
+					jackDDirtyPVDManifestMeasureFloating.firstDerivative (0, i))))
 				return null;
 		}
 
@@ -711,8 +711,8 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 					for (int k = 0; k < wjPeriodFwdRateDF.numParameters(); ++k) {
 						double dblPeriodMicroJack = (dblForwardRate - dblParSwapRate) *
-							wjPeriodPayDFDF.getFirstDerivative (0, k) + dblPeriodPayDF *
-								wjPeriodFwdRateDF.getFirstDerivative (0, k);
+							wjPeriodPayDFDF.firstDerivative (0, k) + dblPeriodPayDF *
+								wjPeriodFwdRateDF.firstDerivative (0, k);
 
 						if (!wjSwapRateDFMicroJack.accumulatePartialFirstDerivative (0, k, dblPeriodNotional
 							* dblPeriodDCF * dblPeriodMicroJack / dblDirtyDV01))

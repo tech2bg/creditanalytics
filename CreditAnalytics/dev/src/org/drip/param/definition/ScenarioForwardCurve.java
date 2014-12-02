@@ -134,7 +134,7 @@ public abstract class ScenarioForwardCurve {
 	 * @return The Base Forward Curve
 	 */
 
-	public abstract org.drip.analytics.rates.ForwardCurve getFCBase();
+	public abstract org.drip.analytics.rates.ForwardCurve base();
 
 	/**
 	 * Return the Bump Up Forward Curve
@@ -142,7 +142,7 @@ public abstract class ScenarioForwardCurve {
 	 * @return The Bump Up Forward Curve
 	 */
 
-	public abstract org.drip.analytics.rates.ForwardCurve getFCBumpUp();
+	public abstract org.drip.analytics.rates.ForwardCurve bumpUp();
 
 	/**
 	 * Return the Bump Down Forward Curve
@@ -150,7 +150,7 @@ public abstract class ScenarioForwardCurve {
 	 * @return The Bump Down Forward Curve
 	 */
 
-	public abstract org.drip.analytics.rates.ForwardCurve getFCBumpDn();
+	public abstract org.drip.analytics.rates.ForwardCurve bumpDown();
 
 	/**
 	 * Return the map of the tenor Bump Up Forward Curve
@@ -160,7 +160,7 @@ public abstract class ScenarioForwardCurve {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>
-			getTenorFCBumpUp();
+			tenorBumpUp();
 
 	/**
 	 * Return the map of the tenor Bump Down Forward Curve
@@ -170,5 +170,5 @@ public abstract class ScenarioForwardCurve {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.ForwardCurve>
-			getTenorFCBumpDn();
+			tenorBumpDown();
 }

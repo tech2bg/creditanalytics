@@ -1620,8 +1620,7 @@ public class Stream {
 
 				for (int k = 0; k < iNumQuote; ++k) {
 					if (!jackDDirtyPVDManifestMeasure.accumulatePartialFirstDerivative (0, k,
-						dblPeriodNotional * dblPeriodDCF * jackDDFDManifestMeasure.getFirstDerivative (0,
-							k)))
+						dblPeriodNotional * dblPeriodDCF * jackDDFDManifestMeasure.firstDerivative (0, k)))
 						return null;
 				}
 			}
@@ -1703,8 +1702,8 @@ public class Stream {
 
 					for (int k = 0; k < wjPeriodFwdRateDF.numParameters(); ++k) {
 						double dblPeriodMicroJack = (dblForwardRate - dblParSwapRate) *
-							wjPeriodPayDFDF.getFirstDerivative (0, k) + dblPeriodPayDF *
-								wjPeriodFwdRateDF.getFirstDerivative (0, k);
+							wjPeriodPayDFDF.firstDerivative (0, k) + dblPeriodPayDF *
+								wjPeriodFwdRateDF.firstDerivative (0, k);
 
 						if (!wjSwapRateDFMicroJack.accumulatePartialFirstDerivative (0, k, dblPeriodNotional
 							* dblPeriodDCF * dblPeriodMicroJack / dblDirtyDV01))

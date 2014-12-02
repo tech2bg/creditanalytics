@@ -559,7 +559,7 @@ public class CreditAnalytics {
 
 		if (null == ircsc) return null;
 
-		return ircsc.getDCBase();
+		return ircsc.base();
 	}
 
 	/**
@@ -642,7 +642,7 @@ public class CreditAnalytics {
 
 		if (null == ircsc) return null;
 
-		return ircsc.getDCBase();
+		return ircsc.base();
 	}
 
 	/**
@@ -731,7 +731,7 @@ public class CreditAnalytics {
 
 		if (null == ircsc) return null;
 
-		return ircsc.getDCBase();
+		return ircsc.base();
 	}
 
 	/**
@@ -930,7 +930,7 @@ public class CreditAnalytics {
 
 		if (null == ccsg) return null;
 
-		return ccsg.getCCBase();
+		return ccsg.base();
 	}
 
 	/**
@@ -5427,7 +5427,7 @@ public class CreditAnalytics {
 		if (null == dcEOD) return null;
 
 		org.drip.param.definition.ProductQuote cq =
-			org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+			org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 		try {
 			// cq.addQuote ("Price", org.drip.product.quote.Quote ("mid", dblPrice), true);
@@ -5506,8 +5506,7 @@ public class CreditAnalytics {
 
 		if (null == dcEOD) return null;
 
-		org.drip.param.definition.ProductQuote cq =
-			org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+		org.drip.param.definition.ProductQuote cq = org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 		try {
 			cq.addQuote ("TSYSpread", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYSpread,
@@ -5587,8 +5586,7 @@ public class CreditAnalytics {
 
 		if (null == dcEOD) return null;
 
-		org.drip.param.definition.ProductQuote cq =
-			org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+		org.drip.param.definition.ProductQuote cq = org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 		try {
 			cq.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblYield,

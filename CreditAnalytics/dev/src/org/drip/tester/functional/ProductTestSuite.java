@@ -323,7 +323,7 @@ public class ProductTestSuite {
 	{
 		try {
 			org.drip.param.definition.ProductQuote cq2YON =
-				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+				org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 			cq2YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.02,
 				java.lang.Double.NaN), true);
@@ -331,7 +331,7 @@ public class ProductTestSuite {
 			mpc.addTSYQuote ("2YON", cq2YON);
 
 			org.drip.param.definition.ProductQuote cq3YON =
-				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+				org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 			cq3YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.025,
 				java.lang.Double.NaN), true);
@@ -339,7 +339,7 @@ public class ProductTestSuite {
 			mpc.addTSYQuote ("3YON", cq3YON);
 
 			org.drip.param.definition.ProductQuote cq5YON =
-				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+				org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 			cq5YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.03,
 				java.lang.Double.NaN), true);
@@ -347,7 +347,7 @@ public class ProductTestSuite {
 			mpc.addTSYQuote ("5YON", cq5YON);
 
 			org.drip.param.definition.ProductQuote cq7YON =
-				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+				org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 			cq7YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.0325,
 				java.lang.Double.NaN), true);
@@ -355,7 +355,7 @@ public class ProductTestSuite {
 			mpc.addTSYQuote ("7YON", cq7YON);
 
 			org.drip.param.definition.ProductQuote cq10YON =
-				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+				org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 			cq10YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.0375,
 				java.lang.Double.NaN), true);
@@ -363,7 +363,7 @@ public class ProductTestSuite {
 			mpc.addTSYQuote ("10YON", cq10YON);
 
 			org.drip.param.definition.ProductQuote cq30YON =
-				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+				org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 			cq30YON.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", 0.04,
 				java.lang.Double.NaN), true);
@@ -371,7 +371,7 @@ public class ProductTestSuite {
 			mpc.addTSYQuote ("30YON", cq30YON);
 
 			org.drip.param.definition.ProductQuote cqBRA_5_00_21 =
-				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+				org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 			org.drip.param.definition.Quote qPxBRA_5_00_21 = org.drip.param.creator.QuoteBuilder.CreateQuote
 				("bid", 0.900, java.lang.Double.NaN);
@@ -385,7 +385,7 @@ public class ProductTestSuite {
 			mpc.addCompQuote ("BRA_5.00_21", cqBRA_5_00_21);
 
 			org.drip.param.definition.ProductQuote cqTESTCDS =
-				org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+				org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 			org.drip.param.definition.Quote qTESTCDS = org.drip.param.creator.QuoteBuilder.CreateQuote
 				("mid", 101., java.lang.Double.NaN);
@@ -454,7 +454,7 @@ public class ProductTestSuite {
 
 		mpc.addScenDC ("USDTSY", irscUSDTSY);
 
-		org.drip.analytics.rates.DiscountCurve dcBaseTSY = mpc.getScenMarketParams (aCompCalib[0],
+		org.drip.analytics.rates.DiscountCurve dcBaseTSY = mpc.scenMarketParams (aCompCalib[0],
 			"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
 				(aCompCalib[0].payCurrency()[0]));
 
@@ -479,7 +479,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_TSY_UP01 & iTestMode)) {
-			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenMarketParams (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.scenMarketParams (aCompCalib[0],
 				"FlatIRBumpUp").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
 					(aCompCalib[0].payCurrency()[0]));
 
@@ -504,7 +504,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_TSY_DN01 & iTestMode)) {
-			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenMarketParams (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.scenMarketParams (aCompCalib[0],
 				"FlatIRBumpDn").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
 					(aCompCalib[0].payCurrency()[0]));
 
@@ -525,7 +525,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_TSY_TENOR_UP01 & iTestMode)) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-				mapCSQSDCUp = mpc.getIRTenorMarketParams (aCompCalib[0], true);
+				mapCSQSDCUp = mpc.irTenorMarketParams (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Up TSY build: " + (null == mapCSQSDCUp ? "Failure" :
@@ -556,7 +556,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_TSY_TENOR_DN01 & iTestMode)) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-				mapCSQSDCDn = mpc.getIRTenorMarketParams (aCompCalib[0], true);
+				mapCSQSDCDn = mpc.irTenorMarketParams (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Dn TSY build: " + (null == mapCSQSDCDn ? "Failure" :
@@ -779,7 +779,7 @@ public class ProductTestSuite {
 
 		addTSYToMPC (mpc);
 
-		org.drip.analytics.rates.DiscountCurve dcBase = mpc.getScenMarketParams (aCompCalib[0],
+		org.drip.analytics.rates.DiscountCurve dcBase = mpc.scenMarketParams (aCompCalib[0],
 			"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
 				(aCompCalib[0].payCurrency()[0]));
 
@@ -800,7 +800,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
-			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.getScenMarketParams (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpUp = mpc.scenMarketParams (aCompCalib[0],
 				"FlatIRBumpUp").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
 					(aCompCalib[0].payCurrency()[0]));
 
@@ -824,7 +824,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
-			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.getScenMarketParams (aCompCalib[0],
+			org.drip.analytics.rates.DiscountCurve dcBumpDn = mpc.scenMarketParams (aCompCalib[0],
 				"FlatIRBumpDn").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
 					(aCompCalib[0].payCurrency()[0]));
 
@@ -845,7 +845,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_UP01 & iTestMode)) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-				mapCSQSDCUp = mpc.getIRTenorMarketParams (aCompCalib[0], true);
+				mapCSQSDCUp = mpc.irTenorMarketParams (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Up DC build: " + (null == mapCSQSDCUp ? "Failure" :
@@ -876,7 +876,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_DN01 & iTestMode)) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-				mapCSQSDCDn = mpc.getIRTenorMarketParams (aCompCalib[0], true);
+				mapCSQSDCDn = mpc.irTenorMarketParams (aCompCalib[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Dn DC build: " + (null == mapCSQSDCDn ? "Failure" :
@@ -945,9 +945,8 @@ public class ProductTestSuite {
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
 			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP, false);
 
-		org.drip.analytics.rates.DiscountCurve dc = mpc.getScenMarketParams (aCDSBRA[0],
-			"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-				(aCDSBRA[0].payCurrency()[0]));
+		org.drip.analytics.rates.DiscountCurve dc = mpc.scenMarketParams (aCDSBRA[0], "Base").fundingCurve
+			(org.drip.state.identifier.FundingLabel.Standard (aCDSBRA[0].payCurrency()[0]));
 
 		org.drip.param.valuation.ValuationParams valParams = new org.drip.param.valuation.ValuationParams
 			(dt, dt, "USD");
@@ -972,8 +971,8 @@ public class ProductTestSuite {
 
 		mpc.addScenCC ("BRA", ccscBRA);
 
-		org.drip.analytics.definition.CreditCurve ccBase = mpc.getScenMarketParams (aCDSBRA[0], "Base").creditCurve
-			(aCDSBRA[0].creditLabel()[0]);
+		org.drip.analytics.definition.CreditCurve ccBase = mpc.scenMarketParams (aCDSBRA[0],
+			"Base").creditCurve (aCDSBRA[0].creditLabel()[0]);
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
 			System.out.println ("Base CC build: " + (null == ccBase ? "Failure" : "Success"));
@@ -988,7 +987,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_CC_UP01 & iTestMode)) {
-			org.drip.analytics.definition.CreditCurve ccBumpUp = mpc.getScenMarketParams (aCDSBRA[0],
+			org.drip.analytics.definition.CreditCurve ccBumpUp = mpc.scenMarketParams (aCDSBRA[0],
 				"FlatCreditBumpUp").creditCurve (aCDSBRA[0].creditLabel()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -1005,7 +1004,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_CC_DN01 & iTestMode)) {
-			org.drip.analytics.definition.CreditCurve ccBumpDn = mpc.getScenMarketParams (aCDSBRA[0],
+			org.drip.analytics.definition.CreditCurve ccBumpDn = mpc.scenMarketParams (aCDSBRA[0],
 				"FlatCreditBumpDn").creditCurve (aCDSBRA[0].creditLabel()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -1022,7 +1021,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_RR_UP01 & iTestMode)) {
-			org.drip.analytics.definition.CreditCurve ccRecoveryUp = mpc.getScenMarketParams (aCDSBRA[0],
+			org.drip.analytics.definition.CreditCurve ccRecoveryUp = mpc.scenMarketParams (aCDSBRA[0],
 				"RRBumpUp").creditCurve (aCDSBRA[0].creditLabel()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -1039,7 +1038,7 @@ public class ProductTestSuite {
 		}
 
 		if (0 != (TM_RR_DN01 & iTestMode)) {
-			org.drip.analytics.definition.CreditCurve ccRecoveryDn = mpc.getScenMarketParams (aCDSBRA[0],
+			org.drip.analytics.definition.CreditCurve ccRecoveryDn = mpc.scenMarketParams (aCDSBRA[0],
 				"RRBumpDn").creditCurve (aCDSBRA[0].creditLabel()[0]);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
@@ -1058,7 +1057,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_TENOR_UP01 & iTestMode)) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-				mapCSQSCCUp = mpc.getCreditTenorMarketParams (aCDSBRA[0], true);
+				mapCSQSCCUp = mpc.creditTenorMarketParams (aCDSBRA[0], true);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Up CC build: " + (null == mapCSQSCCUp ? "Failure" :
@@ -1083,7 +1082,7 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_TENOR_DN01 & iTestMode)) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-				mapCSQSCCDn = mpc.getCreditTenorMarketParams (aCDSBRA[0], false);
+				mapCSQSCCDn = mpc.creditTenorMarketParams (aCDSBRA[0], false);
 
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Tenor Bump Dn CC build: " + (null == mapCSQSCCDn ? "Failure" :
@@ -1121,64 +1120,66 @@ public class ProductTestSuite {
 		org.drip.analytics.output.ComponentMeasures cashOut = cash.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);
 
-		System.out.println ("Cash calcs in " + cashOut._dblCalcTime + " sec");
+		System.out.println ("Cash calcs in " + cashOut.calcTime() + " sec");
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
-			System.out.println ("Cash Base test: " + (null == cashOut._mBase ? "Failure" : "Success"));
+			System.out.println ("Cash Base test: " + (null == cashOut.baseMeasures() ? "Failure" :
+				"Success"));
 		else if (TD_BRIEF == iTestDetail)
-			System.out.println ("Cash measures generated: " + cashOut._mBase.entrySet());
+			System.out.println ("Cash measures generated: " + cashOut.baseMeasures().entrySet());
 		else if (TD_DETAILED == iTestDetail) {
 			System.out.println ("----\nDisplaying Base Cash measures\n----");
 
-			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : cashOut._mBase.entrySet())
+			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
+				cashOut.baseMeasures().entrySet())
 				System.out.println (me.getKey() + ": " + me.getValue().toString());
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Cash FlatIRDelta test: " + (null == cashOut._mFlatIRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("Cash FlatIRDelta test: " + (null == cashOut.flatIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat IR Delta Cash measures generated: " +
-					cashOut._mFlatIRDelta.entrySet());
+					cashOut.flatIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat IR Delta Cash measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cashOut._mFlatIRDelta.entrySet())
+					cashOut.flatIRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Cash FlatIRGamma test: " + (null == cashOut._mFlatIRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("Cash FlatIRGamma test: " + (null == cashOut.flatIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat IR Gamma Cash measures generated: " +
-					cashOut._mFlatIRGamma.entrySet());
+					cashOut.flatIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat IR Gamma Cash measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cashOut._mFlatIRGamma.entrySet())
+					cashOut.flatIRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Cash TenorIRDelta test: " + (null == cashOut._mmTenorIRDelta ? "Failure"
-					: "Success"));
+				System.out.println ("Cash TenorIRDelta test: " + (null == cashOut.tenorIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Cash Tenor IR Delta measures generated for: " +
-					cashOut._mmTenorIRDelta.entrySet());
+					cashOut.tenorIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Cash Tenor IR Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						cashOut._mmTenorIRDelta.entrySet())
+						cashOut.tenorIRDeltaMeasures().entrySet())
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meTenorMeasure.getValue().entrySet())
 						System.out.println ("\t\t" + me.getKey() + ": " + me.getValue().toString());
@@ -1187,17 +1188,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Cash TenorIRGamma test: " + (null == cashOut._mmTenorIRGamma ? "Failure"
-					: "Success"));
+				System.out.println ("Cash TenorIRGamma test: " + (null == cashOut.tenorIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Cash Tenor IR Gamma measures generated for: " +
-					cashOut._mmTenorIRGamma.entrySet());
+					cashOut.tenorIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Cash Tenor IR Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						cashOut._mmTenorIRGamma.entrySet())
+						cashOut.tenorIRGammaMeasures().entrySet())
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meTenorMeasure.getValue().entrySet())
 						System.out.println ("\t\t" + me.getKey() + ": " + me.getValue().toString());
@@ -1220,64 +1221,65 @@ public class ProductTestSuite {
 		org.drip.analytics.output.ComponentMeasures edfOut = edf.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);
 
-		System.out.println ("EDF calcs in " + edfOut._dblCalcTime + " sec");
+		System.out.println ("EDF calcs in " + edfOut.calcTime() + " sec");
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
-			System.out.println ("EDF Base test: " + (null == edfOut._mBase ? "Failure" : "Success"));
+			System.out.println ("EDF Base test: " + (null == edfOut.baseMeasures() ? "Failure" : "Success"));
 		else if (TD_BRIEF == iTestDetail)
-			System.out.println ("EDF measures generated: " + edfOut._mBase.entrySet());
+			System.out.println ("EDF measures generated: " + edfOut.baseMeasures().entrySet());
 		else if (TD_DETAILED == iTestDetail) {
 			System.out.println ("----\nDisplaying Base EDF DC measures\n----");
 
-			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : edfOut._mBase.entrySet())
+			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
+				edfOut.baseMeasures().entrySet())
 				System.out.println (me.getKey() + ": " + me.getValue().toString());
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("EDF FlatIRDelta test: " + (null == edfOut._mFlatIRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("EDF FlatIRDelta test: " + (null == edfOut.flatIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat IR Delta EDF measures generated: " +
-					edfOut._mFlatIRDelta.entrySet());
+					edfOut.flatIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat IR Delta EDF measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					edfOut._mFlatIRDelta.entrySet())
+					edfOut.flatIRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("EDF FlatIRGamma test: " + (null == edfOut._mFlatIRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("EDF FlatIRGamma test: " + (null == edfOut.flatIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat IR Gamma EDF measures generated: " +
-					edfOut._mFlatIRGamma.entrySet());
+					edfOut.flatIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat IR Gamma EDF measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					edfOut._mFlatIRGamma.entrySet())
+					edfOut.flatIRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("EDF TenorIRDelta test: " + (null == edfOut._mmTenorIRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("EDF TenorIRDelta test: " + (null == edfOut.tenorIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("EDF Tenor IR Delta measures generated for: " +
-					edfOut._mmTenorIRDelta.entrySet());
+					edfOut.tenorIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying EDF Tenor IR Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						edfOut._mmTenorIRDelta.entrySet())
+						edfOut.tenorIRDeltaMeasures().entrySet())
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meTenorMeasure.getValue().entrySet())
 						System.out.println ("\t\t" + me.getKey() + ": " + me.getValue().toString());
@@ -1286,17 +1288,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("EDF TenorIRGamma test: " + (null == edfOut._mmTenorIRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("EDF TenorIRGamma test: " + (null == edfOut.tenorIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("EDF Tenor IR Gamma measures generated for: " +
-					edfOut._mmTenorIRGamma.entrySet());
+					edfOut.tenorIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying EDF Tenor IR Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						edfOut._mmTenorIRGamma.entrySet())
+						edfOut.tenorIRGammaMeasures().entrySet())
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meTenorMeasure.getValue().entrySet())
 						System.out.println ("\t\t" + me.getKey() + ": " + me.getValue().toString());
@@ -1365,64 +1367,65 @@ public class ProductTestSuite {
 		org.drip.analytics.output.ComponentMeasures irsOut = irs.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);
 
-		System.out.println ("IRS calcs in " + irsOut._dblCalcTime + " sec");
+		System.out.println ("IRS calcs in " + irsOut.calcTime() + " sec");
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
-			System.out.println ("IRS Base test: " + (null == irsOut._mBase ? "Failure" : "Success"));
+			System.out.println ("IRS Base test: " + (null == irsOut.baseMeasures() ? "Failure" : "Success"));
 		else if (TD_BRIEF == iTestDetail)
-			System.out.println ("IRS measures generated: " + irsOut._mBase.entrySet());
+			System.out.println ("IRS measures generated: " + irsOut.baseMeasures().entrySet());
 		else if (TD_DETAILED == iTestDetail) {
 			System.out.println ("----\nDisplaying Base IRS DC measures\n----");
 
-			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : irsOut._mBase.entrySet())
+			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
+				irsOut.baseMeasures().entrySet())
 				System.out.println (me.getKey() + ": " + me.getValue().toString());
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("IRS FlatIRDelta test: " + (null == irsOut._mFlatIRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("IRS FlatIRDelta test: " + (null == irsOut.flatIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat IR Delta IRS measures generated: " +
-					irsOut._mFlatIRDelta.entrySet());
+					irsOut.flatIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat IR Delta IRS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					irsOut._mFlatIRDelta.entrySet())
+					irsOut.flatIRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("IRS FlatIRGamma test: " + (null == irsOut._mFlatIRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("IRS FlatIRGamma test: " + (null == irsOut.flatIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat IR Gamma IRS measures generated: " +
-					irsOut._mFlatIRGamma.entrySet());
+					irsOut.flatIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat IR Gamma IRS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					irsOut._mFlatIRGamma.entrySet())
+					irsOut.flatIRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("IRS TenorIRDelta test: " + (null == irsOut._mmTenorIRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("IRS TenorIRDelta test: " + (null == irsOut.tenorIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Tenor IR Delta IRS measures generated for: " +
-					irsOut._mmTenorIRDelta.entrySet());
+					irsOut.tenorIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Tenor IR Delta IRS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						irsOut._mmTenorIRDelta.entrySet())
+						irsOut.tenorIRDeltaMeasures().entrySet())
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meTenorMeasure.getValue().entrySet())
 						System.out.println ("\t\t" + me.getKey() + ": " + me.getValue().toString());
@@ -1431,17 +1434,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("IRS TenorIRGamma test: " + (null == irsOut._mmTenorIRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("IRS TenorIRGamma test: " + (null == irsOut.tenorIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Tenor IR Gamma IRS measures generated for: " +
-					irsOut._mmTenorIRGamma.entrySet());
+					irsOut.tenorIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Tenor IR Gamma IRS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						irsOut._mmTenorIRGamma.entrySet())
+						irsOut.tenorIRGammaMeasures().entrySet())
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meTenorMeasure.getValue().entrySet())
 						System.out.println ("\t\t" + me.getKey() + ": " + me.getValue().toString());
@@ -1480,127 +1483,129 @@ public class ProductTestSuite {
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"),
 				org.drip.param.pricer.PricerParams.Standard(), mpc, null);
 
-		System.out.println ("CDS calcs in " + cdsOut._dblCalcTime + " sec");
+		System.out.println ("CDS calcs in " + cdsOut.calcTime() + " sec");
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
-			System.out.println ("CDS Base test: " + (null == cdsOut._mBase ? "Failure" : "Success"));
+			System.out.println ("CDS Base test: " + (null == cdsOut.baseMeasures() ? "Failure" : "Success"));
 		else if (TD_BRIEF == iTestDetail)
-			System.out.println ("CDS measures generated: " + cdsOut._mBase.entrySet());
+			System.out.println ("CDS measures generated: " + cdsOut.baseMeasures().entrySet());
 		else if (TD_DETAILED == iTestDetail) {
 			System.out.println ("----\nDisplaying Base CDS IR measures\n----");
 
-			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : cdsOut._mBase.entrySet())
+			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
+				cdsOut.baseMeasures().entrySet())
 				System.out.println (me.getKey() + ": " + me.getValue().toString());
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDS FlatIRDelta test: " + (null == cdsOut._mFlatIRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("CDS FlatIRDelta test: " + (null == cdsOut.flatIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat IR Delta CDS measures generated: " +
-					cdsOut._mFlatIRDelta.entrySet());
+					cdsOut.flatIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat IR Delta CDS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdsOut._mFlatIRDelta.entrySet())
+					cdsOut.flatIRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDS FlatIRGamma test: " + (null == cdsOut._mFlatIRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("CDS FlatIRGamma test: " + (null == cdsOut.flatIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat IR Gamma CDS measures generated: " +
-					cdsOut._mFlatIRGamma.entrySet());
+					cdsOut.flatIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat IR Gamma CDS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdsOut._mFlatIRGamma.entrySet())
+					cdsOut.flatIRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_CC_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDS FlatCreditDelta test: " + (null == cdsOut._mFlatCreditDelta ?
-					"Failure" : "Success"));
+				System.out.println ("CDS FlatCreditDelta test: " + (null == cdsOut.flatCreditDeltaMeasures()
+					? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat Credit Delta CDS measures generated: " +
-					cdsOut._mFlatCreditDelta.entrySet());
+					cdsOut.flatCreditDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat Credit Delta CDS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdsOut._mFlatCreditDelta.entrySet())
+					cdsOut.flatCreditDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_CC_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDS FlatCreditGamma test: " + (null == cdsOut._mFlatCreditGamma ?
-					"Failure" : "Success"));
+				System.out.println ("CDS FlatCreditGamma test: " + (null == cdsOut.flatCreditGammaMeasures()
+					? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat Credit Gamma CDS measures generated: " +
-					cdsOut._mFlatCreditGamma.entrySet());
+					cdsOut.flatCreditGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat Credit Gamma CDS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdsOut._mFlatCreditGamma.entrySet())
+					cdsOut.flatCreditGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_RR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDS FlatRRDelta test: " + (null == cdsOut._mRRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("CDS FlatRRDelta test: " + (null == cdsOut.flatRRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
-				System.out.println ("Flat RR Delta CDS measures generated: " + cdsOut._mRRDelta.entrySet());
+				System.out.println ("Flat RR Delta CDS measures generated: " +
+					cdsOut.flatRRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat RR Delta CDS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdsOut._mRRDelta.entrySet())
+					cdsOut.flatRRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_RR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDS FlatRRGamma test: " + (null == cdsOut._mRRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("CDS FlatRRGamma test: " + (null == cdsOut.flatRRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Flat RR Gamma CDS measures generated: " +
-					cdsOut._mRRGamma.entrySet());
+					cdsOut.flatRRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Flat RR Gamma CDS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdsOut._mRRGamma.entrySet())
+					cdsOut.flatRRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDS TenorIRDelta test: " + (null == cdsOut._mmTenorIRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("CDS TenorIRDelta test: " + (null == cdsOut.tenorIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Tenor IR Delta CDS measures generated for: " +
-					cdsOut._mmTenorIRDelta.entrySet());
+					cdsOut.tenorIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Tenor IR Delta CDS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						cdsOut._mmTenorIRDelta.entrySet()) {
+						cdsOut.tenorIRDeltaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meTenorMeasure.getValue().entrySet())
 						System.out.println ("\t\t" + me.getKey() + ": " + me.getValue().toString());
@@ -1610,17 +1615,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDS TenorIRGamma test: " + (null == cdsOut._mmTenorIRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("CDS TenorIRGamma test: " + (null == cdsOut.tenorIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Tenor IR Gamma CDS measures generated for: " +
-					cdsOut._mmTenorIRGamma.entrySet());
+					cdsOut.tenorIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Tenor IR Gamma CDS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						cdsOut._mmTenorIRGamma.entrySet()) {
+						cdsOut.tenorIRGammaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meTenorMeasure.getValue().entrySet())
 						System.out.println ("\t\t" + me.getKey() + ": " + me.getValue().toString());
@@ -1630,17 +1635,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDS TenorCreditDelta test: " + (null == cdsOut._mmTenorCreditDelta ?
-					"Failure" : "Success"));
+				System.out.println ("CDS TenorCreditDelta test: " + (null ==
+					cdsOut.tenorCreditDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Tenor Credit Delta CDS measures generated for: " +
-					cdsOut._mmTenorCreditDelta.entrySet());
+					cdsOut.tenorCreditDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Tenor Credit Delta CDS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						cdsOut._mmTenorCreditDelta.entrySet()) {
+						cdsOut.tenorCreditDeltaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meTenorMeasure.getValue().entrySet())
 						System.out.println ("\t\t" + me.getKey() + ": " + me.getValue().toString());
@@ -1650,18 +1655,18 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDS TenorCreditGamma test: " + (null == cdsOut._mmTenorCreditGamma ?
-					"Failure" : "Success"));
+				System.out.println ("CDS TenorCreditGamma test: " + (null ==
+					cdsOut.tenorCreditGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Tenor Credit Gamma CDS measures generated for: " +
-					cdsOut._mmTenorCreditGamma.entrySet());
+					cdsOut.tenorCreditGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println
 					("----\nDisplaying Tenor Credit Gamma CDS measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						cdsOut._mmTenorCreditGamma.entrySet()) {
+						cdsOut.tenorCreditGammaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meTenorMeasure.getValue().entrySet())
 						System.out.println ("\t\t" + me.getKey() + ": " + me.getValue().toString());
@@ -1698,48 +1703,49 @@ public class ProductTestSuite {
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"),
 				org.drip.param.pricer.PricerParams.Standard(), mpc, null);
 
-		System.out.println ("Fixed Cpn Bond calcs in " + bondOut._dblCalcTime + " sec");
+		System.out.println ("Fixed Cpn Bond calcs in " + bondOut.calcTime() + " sec");
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
-			System.out.println ("Fixed Cpn Bond Base test: " + (null == bondOut._mBase ? "Failure" :
+			System.out.println ("Fixed Cpn Bond Base test: " + (null == bondOut.baseMeasures() ? "Failure" :
 				"Success"));
 		else if (TD_BRIEF == iTestDetail)
-			System.out.println ("Fixed Cpn Bond measures generated: " + bondOut._mBase.entrySet());
+			System.out.println ("Fixed Cpn Bond measures generated: " + bondOut.baseMeasures().entrySet());
 		else if (TD_DETAILED == iTestDetail) {
 			System.out.println ("----\nDisplaying Fixed Cpn Bond Base measures\n----");
 
-			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : bondOut._mBase.entrySet())
+			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
+				bondOut.baseMeasures().entrySet())
 				System.out.println (me.getKey() + ": " + me.getValue().toString());
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Fixed Cpn Bond FlatIRDelta test: " + (null == bondOut._mFlatIRDelta ?
-					"Failure" : "Success"));
+				System.out.println ("Fixed Cpn Bond FlatIRDelta test: " + (null ==
+					bondOut.flatIRDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Fixed Cpn Bond Flat IR Delta measures generated: " +
-					bondOut._mFlatIRDelta.entrySet());
+					bondOut.flatIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Fixed Cpn Bond Flat IR Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bondOut._mFlatIRDelta.entrySet())
+					bondOut.flatIRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Fixed Cpn Bond FlatIRGamma test: " + (null == bondOut._mFlatIRGamma ?
-					"Failure" : "Success"));
+				System.out.println ("Fixed Cpn Bond FlatIRGamma test: " + (null ==
+					bondOut.flatIRGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Fixed Cpn Bond Flat IR Gamma measures generated: " +
-					bondOut._mFlatIRGamma.entrySet());
+					bondOut.flatIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Fixed Cpn Bond Flat IR Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bondOut._mFlatIRGamma.entrySet())
+					bondOut.flatIRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
@@ -1747,15 +1753,15 @@ public class ProductTestSuite {
 		if (0 != (TM_CC_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Fixed Cpn Bond FlatCreditDelta test: " + (null ==
-					bondOut._mFlatCreditDelta ? "Failure" : "Success"));
+					bondOut.flatCreditDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Fixed Cpn Bond Flat Credit Delta measures generated: " +
-					bondOut._mFlatCreditDelta.entrySet());
+					bondOut.flatCreditDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Fixed Cpn Bond Flat Credit Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bondOut._mFlatCreditDelta.entrySet())
+					bondOut.flatCreditDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
@@ -1763,64 +1769,64 @@ public class ProductTestSuite {
 		if (0 != (TM_CC_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Fixed Cpn Bond FlatCreditGamma test: " + (null ==
-					bondOut._mFlatCreditGamma ? "Failure" : "Success"));
+					bondOut.flatCreditGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Fixed Cpn Bond Flat Credit Gamma measures generated: " +
-					bondOut._mFlatCreditGamma.entrySet());
+					bondOut.flatCreditGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Fixed Cpn Bond Flat Credit Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bondOut._mFlatCreditGamma.entrySet())
+					bondOut.flatCreditGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_RR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Fixed Cpn Bond FlatRRDelta test: " + (null == bondOut._mRRDelta ?
-					"Failure" : "Success"));
+				System.out.println ("Fixed Cpn Bond FlatRRDelta test: " + (null ==
+					bondOut.flatRRDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Fixed Cpn Bond Flat RR Delta measures generated: " +
-					bondOut._mRRDelta.entrySet());
+					bondOut.flatRRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Fixed Cpn Bond Flat RR Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bondOut._mRRDelta.entrySet())
+					bondOut.flatRRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_RR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Fixed Cpn Bond FlatRRGamma test: " + (null == bondOut._mRRGamma ?
-					"Failure" : "Success"));
+				System.out.println ("Fixed Cpn Bond FlatRRGamma test: " + (null ==
+					bondOut.flatRRGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Fixed Cpn Bond Flat RR Gamma measures generated: " +
-					bondOut._mRRGamma.entrySet());
+					bondOut.flatRRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Fixed Cpn Bond Flat RR Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bondOut._mRRGamma.entrySet())
+					bondOut.flatRRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Fixed Cpn Bond TenorIRDelta test: " + (null == bondOut._mmTenorIRDelta ?
-					"Failure" : "Success"));
+				System.out.println ("Fixed Cpn Bond TenorIRDelta test: " + (null ==
+					bondOut.tenorIRDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Fixed Cpn Bond Tenor IR Delta measures generated for: " +
-					bondOut._mmTenorIRDelta.entrySet());
+					bondOut.tenorIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Fixed Cpn Bond Tenor IR Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						bondOut._mmTenorIRDelta.entrySet()) {
+						bondOut.tenorIRDeltaMeasures().entrySet()) {
 					System.out.println
 						("\t----\n\tDisplaying Fixed Cpn Bond Tenor IR Delta measures\n\t----");
 
@@ -1833,17 +1839,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Fixed Cpn Bond TenorIRGamma test: " + (null == bondOut._mmTenorIRGamma ?
-					"Failure" : "Success"));
+				System.out.println ("Fixed Cpn Bond TenorIRGamma test: " + (null ==
+					bondOut.tenorIRGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Fixed Cpn Bond Tenor IR Gamma measures generated for: " +
-					bondOut._mmTenorIRGamma.entrySet());
+					bondOut.tenorIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Fixed Cpn Bond Tenor IR Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						bondOut._mmTenorIRGamma.entrySet()) {
+						bondOut.tenorIRGammaMeasures().entrySet()) {
 					System.out.println
 						("\t----\n\tDisplaying Fixed Cpn Bond Tenor IR Gamma measures\n\t----");
 
@@ -1857,17 +1863,17 @@ public class ProductTestSuite {
 		if (0 != (TM_CC_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Fixed Cpn Bond TenorCreditDelta test: " + (null ==
-					bondOut._mmTenorCreditDelta ? "Failure" : "Success"));
+					bondOut.tenorCreditDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println
 					("Fixed Cpn Bond Tenor Credit Delta measures generated for: " +
-						bondOut._mmTenorCreditDelta.entrySet());
+						bondOut.tenorCreditDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Tenor Credit Delta Fixed Cpn Bond measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						bondOut._mmTenorCreditDelta.entrySet()) {
+						bondOut.tenorCreditDeltaMeasures().entrySet()) {
 					System.out.println
 						("\t----\n\tDisplaying Fixed Cpn Bond Tenor Credit Delta measures\n\t----");
 
@@ -1881,16 +1887,16 @@ public class ProductTestSuite {
 		if (0 != (TM_CC_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Fixed Cpn Bond TenorCreditGamma test: " + (null ==
-					bondOut._mmTenorCreditGamma ? "Failure" : "Success"));
+					bondOut.tenorCreditGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Fixed Cpn Bond Tenor Credit Gamma measures generated for: " +
-					bondOut._mmTenorCreditGamma.entrySet());
+					bondOut.tenorCreditGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Fixed Cpn Bond Tenor Credit Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenorMeasure :
-						bondOut._mmTenorCreditGamma.entrySet()) {
+						bondOut.tenorCreditGammaMeasures().entrySet()) {
 					System.out.println
 						("\t----\n\tDisplaying Fixed Cpn Bond Tenor Credit Gamma measures\n\t----");
 
@@ -1936,128 +1942,129 @@ public class ProductTestSuite {
 		org.drip.analytics.output.BasketMeasures cdxOp = cdx.measures (valParams, pricerParams, mpc,
 			null);
 
-		System.out.println ("CDX calcs in " + cdxOp._dblCalcTime + " sec");
+		System.out.println ("CDX calcs in " + cdxOp.calcTime() + " sec");
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
-			System.out.println ("CDX Base test: " + (null == cdxOp._mBase ? "Failure" : "Success"));
+			System.out.println ("CDX Base test: " + (null == cdxOp.baseMeasures() ? "Failure" : "Success"));
 		else if (TD_BRIEF == iTestDetail)
-			System.out.println ("CDX measures generated: " + cdxOp._mBase.entrySet());
+			System.out.println ("CDX measures generated: " + cdxOp.baseMeasures().entrySet());
 		else if (TD_DETAILED == iTestDetail) {
 			System.out.println ("----\nDisplaying CDX Base measures\n----");
 
-			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : cdxOp._mBase.entrySet())
+			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
+				cdxOp.baseMeasures().entrySet())
 				System.out.println (me.getKey() + ": " + me.getValue().toString());
 		}
 
 		if (0 != (TM_IR_SET_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX FlatIRDelta test: " + (null == cdxOp._mFlatIRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("CDX FlatIRDelta test: " + (null == cdxOp.flatIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX Flat IR Delta measures generated: " +
-					cdxOp._mFlatIRDelta.entrySet());
+					cdxOp.flatIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX Flat IR Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdxOp._mFlatIRDelta.entrySet())
+					cdxOp.flatIRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_SET_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX FlatIRGamma test: " + (null == cdxOp._mFlatIRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("CDX FlatIRGamma test: " + (null == cdxOp.flatIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX Flat IR Gamma measures generated: " +
-					cdxOp._mFlatIRGamma.entrySet());
+					cdxOp.flatIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX Flat IR Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdxOp._mFlatIRGamma.entrySet())
+					cdxOp.flatIRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_CC_SET_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX FlatCreditDelta test: " + (null == cdxOp._mFlatCreditDelta ?
+				System.out.println ("CDX FlatCreditDelta test: " + (null == cdxOp.flatCreditDeltaMeasures() ?
 					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX Flat Credit Delta measures generated: " +
-					cdxOp._mFlatCreditDelta.entrySet());
+					cdxOp.flatCreditDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX Flat Credit Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdxOp._mFlatCreditDelta.entrySet())
+					cdxOp.flatCreditDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_CC_SET_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX FlatCreditGamma test: " + (null == cdxOp._mFlatCreditGamma ?
+				System.out.println ("CDX FlatCreditGamma test: " + (null == cdxOp.flatCreditGammaMeasures() ?
 					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX Flat Credit Gamma measures generated: " +
-					cdxOp._mFlatCreditGamma.entrySet());
+					cdxOp.flatCreditGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX Flat Credit Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdxOp._mFlatCreditGamma.entrySet())
+					cdxOp.flatCreditGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_RR_SET_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX FlatRRDelta test: " + (null == cdxOp._mFlatRRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("CDX FlatRRDelta test: " + (null == cdxOp.flatRRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX Flat RR Delta measures generated: " +
-					cdxOp._mFlatRRDelta.entrySet());
+					cdxOp.flatRRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX Flat RR Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdxOp._mFlatRRDelta.entrySet())
+					cdxOp.flatRRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_RR_SET_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX FlatRRGamma test: " + (null == cdxOp._mFlatRRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("CDX FlatRRGamma test: " + (null == cdxOp.flatRRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX Flat RR Gamma measures generated: " +
-					cdxOp._mFlatRRGamma.entrySet());
+					cdxOp.flatRRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX Flat RR Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					cdxOp._mFlatRRGamma.entrySet())
+					cdxOp.flatRRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX IRDelta test: " + (null == cdxOp._mmIRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("CDX IRDelta test: " + (null == cdxOp.componentIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX IRDelta measures generated for curves: " +
-					cdxOp._mmIRDelta.entrySet());
+					cdxOp.componentIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX IRDelta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meIR :
-						cdxOp._mmIRDelta.entrySet()) {
+						cdxOp.componentIRDeltaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped IR Curve: " + meIR.getKey());
 	
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
@@ -2069,17 +2076,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX IRGamma test: " + (null == cdxOp._mmIRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("CDX IRGamma test: " + (null == cdxOp.componentIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX IRGamma measures generated for curves: " +
-					cdxOp._mmIRGamma.entrySet());
+					cdxOp.componentIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX IRGamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meIR :
-						cdxOp._mmIRGamma.entrySet()) {
+						cdxOp.componentIRGammaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped IR Curve: " + meIR.getKey());
 
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
@@ -2091,17 +2098,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX CreditDelta test: " + (null == cdxOp._mmCreditDelta ? "Failure" :
-					"Success"));
+				System.out.println ("CDX CreditDelta test: " + (null == cdxOp.componentCreditDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX CreditDelta measures generated for curves: " +
-					cdxOp._mmCreditDelta.entrySet());
+					cdxOp.componentCreditDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX CreditDelta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meCredit :
-						cdxOp._mmCreditDelta.entrySet()) {
+						cdxOp.componentCreditDeltaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped Credit Curve: " +
 						meCredit.getKey());
 
@@ -2114,17 +2121,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX CreditGamma test: " + (null == cdxOp._mmCreditGamma ? "Failure" :
-					"Success"));
+				System.out.println ("CDX CreditGamma test: " + (null == cdxOp.componentCreditGammaMeasures()
+					? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX CreditGamma measures generated for curves: " +
-					cdxOp._mmCreditGamma.entrySet());
+					cdxOp.componentCreditGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX CreditGamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meCredit :
-						cdxOp._mmCreditGamma.entrySet()) {
+						cdxOp.componentCreditGammaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped Credit Curve: " +
 							meCredit.getKey());
 
@@ -2137,17 +2144,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_RR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX RRDelta test: " + (null == cdxOp._mmRRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("CDX RRDelta test: " + (null == cdxOp.componentRRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX RRDelta measures generated for curves: " +
-					cdxOp._mmRRDelta.entrySet());
+					cdxOp.componentRRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX RRDelta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meRR :
-						cdxOp._mmRRDelta.entrySet()) {
+						cdxOp.componentRRDeltaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped RR Curve: " + meRR.getKey());
 
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
@@ -2159,17 +2166,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_RR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX RRGamma test: " + (null == cdxOp._mmRRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("CDX RRGamma test: " + (null == cdxOp.componentRRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX RRGamma measures generated for curves: " +
-					cdxOp._mmRRGamma.entrySet());
+					cdxOp.componentRRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX RRGamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meRR :
-						cdxOp._mmRRGamma.entrySet()) {
+						cdxOp.componentRRGammaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped RR Curve: " + meRR.getKey());
 
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
@@ -2181,17 +2188,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX IRTenorDelta test: " + (null == cdxOp._mmmIRTenorDelta ? "Failure" :
-					"Success"));
+				System.out.println ("CDX IRTenorDelta test: " + (null ==
+					cdxOp.componentTenorIRDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX IRTenorDelta measures generated for curves: " +
-					cdxOp._mmmIRTenorDelta.entrySet());
+					cdxOp.componentTenorIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX IRTenorDelta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-						mmIRTenor : cdxOp._mmmIRTenorDelta.entrySet()) {
+						mmIRTenor : cdxOp.componentTenorIRDeltaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String,
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenor :
 							mmIRTenor.getValue().entrySet()) {
@@ -2208,17 +2215,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX IRTenorGamma test: " + (null == cdxOp._mmmIRTenorGamma ? "Failure" :
-					"Success"));
+				System.out.println ("CDX IRTenorGamma test: " + (null ==
+					cdxOp.componentTenorIRGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX IRTenorGamma measures generated for curves: " +
-					cdxOp._mmmIRTenorGamma.entrySet());
+					cdxOp.componentTenorIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX IRTenorGamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-						mmIRTenor : cdxOp._mmmIRTenorGamma.entrySet()) {
+						mmIRTenor : cdxOp.componentTenorIRGammaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String,
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenor :
 							mmIRTenor.getValue().entrySet()) {
@@ -2235,17 +2242,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX CreditTenorDelta test: " + (null == cdxOp._mmmCreditTenorDelta ?
-					"Failure" : "Success"));
+				System.out.println ("CDX CreditTenorDelta test: " + (null ==
+					cdxOp.componentTenorCreditDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX CreditTenorDelta measures generated for curves: " +
-					cdxOp._mmmCreditTenorDelta.entrySet());
+					cdxOp.componentTenorCreditDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX CreditTenorDelta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-						mmCreditTenor : cdxOp._mmmCreditTenorDelta.entrySet()) {
+						mmCreditTenor : cdxOp.componentTenorCreditDeltaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String,
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenor :
 							mmCreditTenor.getValue().entrySet()) {
@@ -2262,17 +2269,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX CreditTenorGamma test: " + (null == cdxOp._mmmCreditTenorGamma ?
-					"Failure" : "Success"));
+				System.out.println ("CDX CreditTenorGamma test: " + (null ==
+					cdxOp.componentTenorCreditGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("CDX CreditTenorGamma measures generated for curves: " +
-					cdxOp._mmmCreditTenorGamma.entrySet());
+					cdxOp.componentTenorCreditGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying CDX CreditTenorGamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-						mmCreditTenor : cdxOp._mmmCreditTenorGamma.entrySet()) {
+						mmCreditTenor : cdxOp.componentTenorCreditGammaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String,
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenor :
 							mmCreditTenor.getValue().entrySet()) {
@@ -2440,128 +2447,129 @@ public class ProductTestSuite {
 
 		org.drip.analytics.output.BasketMeasures bbOp = bb.measures (valParams, pricerParams, mpc, null);
 
-		System.out.println ("Bond Basket calcs in " + bbOp._dblCalcTime + " sec");
+		System.out.println ("Bond Basket calcs in " + bbOp.calcTime() + " sec");
 
 		if (TD_SUCCESS_FAILURE == iTestDetail)
-			System.out.println ("Bond Basket Base test: " + (null == bbOp._mBase ? "Failure" : "Success"));
+			System.out.println ("Bond Basket Base test: " + (null == bbOp.baseMeasures() ? "Failure" :
+				"Success"));
 		else if (TD_BRIEF == iTestDetail)
-			System.out.println ("Bond Basket measures generated: " + bbOp._mBase.entrySet());
+			System.out.println ("Bond Basket measures generated: " + bbOp.baseMeasures().entrySet());
 		else if (TD_DETAILED == iTestDetail) {
 			System.out.println ("----\nDisplaying Bond Basket Base measures\n----");
 
-			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : bbOp._mBase.entrySet())
+			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : bbOp.baseMeasures().entrySet())
 				System.out.println (me.getKey() + ": " + me.getValue().toString());
 		}
 
 		if (0 != (TM_IR_SET_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket FlatIRDelta test: " + (null == bbOp._mFlatIRDelta ?
+				System.out.println ("Bond Basket FlatIRDelta test: " + (null == bbOp.flatIRDeltaMeasures() ?
 					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket Flat IR Delta measures generated: " +
-					bbOp._mFlatIRDelta.entrySet());
+					bbOp.flatIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket Flat IR Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bbOp._mFlatIRDelta.entrySet())
+					bbOp.flatIRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_SET_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket FlatIRGamma test: " + (null == bbOp._mFlatIRGamma ?
+				System.out.println ("Bond Basket FlatIRGamma test: " + (null == bbOp.flatIRGammaMeasures() ?
 					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket Flat IR Gamma measures generated: " +
-					bbOp._mFlatIRGamma.entrySet());
+					bbOp.flatIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket Flat IR Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bbOp._mFlatIRGamma.entrySet())
+					bbOp.flatIRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_CC_SET_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket FlatCreditDelta test: " + (null == bbOp._mFlatCreditDelta ?
-					"Failure" : "Success"));
+				System.out.println ("Bond Basket FlatCreditDelta test: " + (null ==
+					bbOp.flatCreditDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket Flat Credit Delta measures generated: " +
-					bbOp._mFlatCreditDelta.entrySet());
+					bbOp.flatCreditDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket Flat Credit Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bbOp._mFlatCreditDelta.entrySet())
+					bbOp.flatCreditDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_CC_SET_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket FlatCreditGamma test: " + (null == bbOp._mFlatCreditGamma ?
-					"Failure" : "Success"));
+				System.out.println ("Bond Basket FlatCreditGamma test: " + (null ==
+					bbOp.flatCreditGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket Flat Credit Gamma measures generated: " +
-					bbOp._mFlatCreditGamma.entrySet());
+					bbOp.flatCreditGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket Flat Credit Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bbOp._mFlatCreditGamma.entrySet())
+					bbOp.flatCreditGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_RR_SET_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket FlatRRDelta test: " + (null == bbOp._mFlatRRDelta ?
+				System.out.println ("Bond Basket FlatRRDelta test: " + (null == bbOp.flatRRDeltaMeasures() ?
 					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket Flat RR Delta measures generated: " +
-					bbOp._mFlatRRDelta.entrySet());
+					bbOp.flatRRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket Flat RR Delta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bbOp._mFlatRRDelta.entrySet())
+					bbOp.flatRRDeltaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_RR_SET_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket FlatRRGamma test: " + (null == bbOp._mFlatRRGamma ?
+				System.out.println ("Bond Basket FlatRRGamma test: " + (null == bbOp.flatRRGammaMeasures() ?
 					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket Flat RR Gamma measures generated: " +
-					bbOp._mFlatRRGamma.entrySet());
+					bbOp.flatRRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket Flat RR Gamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
-					bbOp._mFlatRRGamma.entrySet())
+					bbOp.flatRRGammaMeasures().entrySet())
 					System.out.println (me.getKey() + ": " + me.getValue().toString());
 			}
 		}
 
 		if (0 != (TM_IR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket IRDelta test: " + (null == bbOp._mmIRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("Bond Basket IRDelta test: " + (null == bbOp.componentIRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket IRDelta measures generated for curves: " +
-					bbOp._mmIRDelta.entrySet());
+					bbOp.componentIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket IRDelta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meIR :
-						bbOp._mmIRDelta.entrySet()) {
+						bbOp.componentIRDeltaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped IR Curve: " + meIR.getKey());
 	
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
@@ -2573,17 +2581,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket IRGamma test: " + (null == bbOp._mmIRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("Bond Basket IRGamma test: " + (null == bbOp.componentIRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket IRGamma measures generated for curves: " +
-					bbOp._mmIRGamma.entrySet());
+					bbOp.componentIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket IRGamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meIR :
-						bbOp._mmIRGamma.entrySet()) {
+						bbOp.componentIRGammaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped IR Curve: " + meIR.getKey());
 
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
@@ -2595,17 +2603,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("CDX CreditDelta test: " + (null == bbOp._mmCreditDelta ? "Failure" :
-					"Success"));
+				System.out.println ("CDX CreditDelta test: " + (null == bbOp.componentCreditDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket CreditDelta measures generated for curves: " +
-					bbOp._mmCreditDelta.entrySet());
+					bbOp.componentCreditDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket CreditDelta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meCredit :
-						bbOp._mmCreditDelta.entrySet()) {
+						bbOp.componentCreditDeltaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped Credit Curve: " +
 						meCredit.getKey());
 
@@ -2618,19 +2626,19 @@ public class ProductTestSuite {
 
 		if (0 != (TM_CC_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket CreditGamma test: " + (null == bbOp._mmCreditGamma ?
-					"Failure" : "Success"));
+				System.out.println ("Bond Basket CreditGamma test: " + (null ==
+					bbOp.componentCreditGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket CreditGamma measures generated for curves: " +
-					bbOp._mmCreditGamma.entrySet());
+					bbOp.componentCreditGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket CreditGamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meCredit :
-						bbOp._mmCreditGamma.entrySet()) {
+						bbOp.componentCreditGammaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped Credit Curve: " +
-							meCredit.getKey());
+						meCredit.getKey());
 
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 						meCredit.getValue().entrySet())
@@ -2641,17 +2649,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_RR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket RRDelta test: " + (null == bbOp._mmRRDelta ? "Failure" :
-					"Success"));
+				System.out.println ("Bond Basket RRDelta test: " + (null == bbOp.componentRRDeltaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket RRDelta measures generated for curves: " +
-					bbOp._mmRRDelta.entrySet());
+					bbOp.componentRRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket RRDelta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meRR :
-						bbOp._mmRRDelta.entrySet()) {
+						bbOp.componentRRDeltaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped RR Curve: " + meRR.getKey());
 
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
@@ -2663,17 +2671,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_RR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket RRGamma test: " + (null == bbOp._mmRRGamma ? "Failure" :
-					"Success"));
+				System.out.println ("Bond Basket RRGamma test: " + (null == bbOp.componentRRGammaMeasures() ?
+					"Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket RRGamma measures generated for curves: " +
-					bbOp._mmRRGamma.entrySet());
+					bbOp.componentRRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket RRGamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meRR :
-						bbOp._mmRRGamma.entrySet()) {
+						bbOp.componentRRGammaMeasures().entrySet()) {
 					System.out.println ("\tMeasures shown are for bumped RR Curve: " + meRR.getKey());
 
 					for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
@@ -2685,17 +2693,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket IRTenorDelta test: " + (null == bbOp._mmmIRTenorDelta ?
-					"Failure" : "Success"));
+				System.out.println ("Bond Basket IRTenorDelta test: " + (null ==
+					bbOp.componentTenorIRDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket IRTenorDelta measures generated for curves: " +
-					bbOp._mmmIRTenorDelta.entrySet());
+					bbOp.componentTenorIRDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket IRTenorDelta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-						mmIRTenor : bbOp._mmmIRTenorDelta.entrySet()) {
+						mmIRTenor : bbOp.componentTenorIRDeltaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String,
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenor :
 							mmIRTenor.getValue().entrySet()) {
@@ -2712,17 +2720,17 @@ public class ProductTestSuite {
 
 		if (0 != (TM_IR_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
-				System.out.println ("Bond Basket IRTenorGamma test: " + (null == bbOp._mmmIRTenorGamma ?
-					"Failure" : "Success"));
+				System.out.println ("Bond Basket IRTenorGamma test: " + (null ==
+					bbOp.componentTenorIRGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket IRTenorGamma measures generated for curves: " +
-					bbOp._mmmIRTenorGamma.entrySet());
+					bbOp.componentTenorIRGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket IRTenorGamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-						mmIRTenor : bbOp._mmmIRTenorGamma.entrySet()) {
+						mmIRTenor : bbOp.componentTenorIRGammaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String,
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenor :
 							mmIRTenor.getValue().entrySet()) {
@@ -2740,16 +2748,16 @@ public class ProductTestSuite {
 		if (0 != (TM_CC_TENOR_UP01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Bond Basket CreditTenorDelta test: " + (null ==
-					bbOp._mmmCreditTenorDelta ? "Failure" : "Success"));
+					bbOp.componentTenorCreditDeltaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket CreditTenorDelta measures generated for curves: " +
-					bbOp._mmmCreditTenorDelta.entrySet());
+					bbOp.componentTenorCreditDeltaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket CreditTenorDelta measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-						mmCreditTenor : bbOp._mmmCreditTenorDelta.entrySet()) {
+						mmCreditTenor : bbOp.componentTenorCreditDeltaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String,
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenor :
 							mmCreditTenor.getValue().entrySet()) {
@@ -2767,16 +2775,16 @@ public class ProductTestSuite {
 		if (0 != (TM_CC_TENOR_DN01 & iTestMode)) {
 			if (TD_SUCCESS_FAILURE == iTestDetail)
 				System.out.println ("Bond Basket CreditTenorGamma test: " + (null ==
-					bbOp._mmmCreditTenorGamma ? "Failure" : "Success"));
+					bbOp.componentTenorCreditGammaMeasures() ? "Failure" : "Success"));
 			else if (TD_BRIEF == iTestDetail)
 				System.out.println ("Bond Basket CreditTenorGamma measures generated for curves: " +
-					bbOp._mmmCreditTenorGamma.entrySet());
+					bbOp.componentTenorCreditGammaMeasures().entrySet());
 			else if (TD_DETAILED == iTestDetail) {
 				System.out.println ("----\nDisplaying Bond Basket CreditTenorGamma measures\n----");
 
 				for (java.util.Map.Entry<java.lang.String,
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>>
-				mmCreditTenor : bbOp._mmmCreditTenorGamma.entrySet()) {
+				mmCreditTenor : bbOp.componentTenorCreditGammaMeasures().entrySet()) {
 					for (java.util.Map.Entry<java.lang.String,
 						org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>> meTenor :
 							mmCreditTenor.getValue().entrySet()) {

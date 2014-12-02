@@ -59,7 +59,7 @@ public abstract class ZeroCurve extends org.drip.analytics.rates.DiscountCurve {
 	 * @throws java.lang.Exception Thrown if the date is not represented in the map
 	 */
 
-	public abstract double getZeroRate (
+	public abstract double zeroRate (
 		final double dblDate)
 		throws java.lang.Exception;
 }

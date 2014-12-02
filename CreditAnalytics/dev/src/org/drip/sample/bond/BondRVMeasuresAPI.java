@@ -366,51 +366,51 @@ public class BondRVMeasuresAPI {
 	{
 		if (null == rv) return false;
 
-		System.out.println (strPrefix + "ASW: " + FormatUtil.FormatDouble (rv._dblAssetSwapSpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "ASW: " + FormatUtil.FormatDouble (rv.asw(), 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Bond Basis: " + FormatUtil.FormatDouble (rv._dblBondBasis, 0, 0, 10000.));
+		System.out.println (strPrefix + "Bond Basis: " + FormatUtil.FormatDouble (rv.bondBasis(), 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Convexity: " + FormatUtil.FormatDouble (rv._dblConvexity, 0, 2, 1000000.));
+		System.out.println (strPrefix + "Convexity: " + FormatUtil.FormatDouble (rv.convexity(), 0, 2, 1000000.));
 
-		System.out.println (strPrefix + "Credit Basis: " + FormatUtil.FormatDouble (rv._dblCreditBasis, 0, 0, 10000.));
+		System.out.println (strPrefix + "Credit Basis: " + FormatUtil.FormatDouble (rv.creditBasis(), 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Discount Margin: " + FormatUtil.FormatDouble (rv._dblDiscountMargin, 0, 0, 10000.));
+		System.out.println (strPrefix + "Discount Margin: " + FormatUtil.FormatDouble (rv.discountMargin(), 0, 0, 10000.));
 
-		System.out.println (strPrefix + "G Spread: " + FormatUtil.FormatDouble (rv._dblGSpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "G Spread: " + FormatUtil.FormatDouble (rv.gSpread(), 0, 0, 10000.));
 
-		System.out.println (strPrefix + "I Spread: " + FormatUtil.FormatDouble (rv._dblISpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "I Spread: " + FormatUtil.FormatDouble (rv.iSpread(), 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Macaulay Duration: " + FormatUtil.FormatDouble (rv._dblMacaulayDuration, 0, 2, 1.));
+		System.out.println (strPrefix + "Macaulay Duration: " + FormatUtil.FormatDouble (rv.macaulayDuration(), 0, 2, 1.));
 
-		System.out.println (strPrefix + "Modified Duration: " + FormatUtil.FormatDouble (rv._dblModifiedDuration, 0, 2, 10000.));
+		System.out.println (strPrefix + "Modified Duration: " + FormatUtil.FormatDouble (rv.modifiedDuration(), 0, 2, 10000.));
 
-		System.out.println (strPrefix + "OAS: " + FormatUtil.FormatDouble (rv._dblOASpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "OAS: " + FormatUtil.FormatDouble (rv.oas(), 0, 0, 10000.));
 
-		System.out.println (strPrefix + "PECS: " + FormatUtil.FormatDouble (rv._dblPECS, 0, 0, 10000.));
+		System.out.println (strPrefix + "PECS: " + FormatUtil.FormatDouble (rv.pecs(), 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Price: " + FormatUtil.FormatDouble (rv._dblPrice, 0, 3, 100.));
+		System.out.println (strPrefix + "Price: " + FormatUtil.FormatDouble (rv.price(), 0, 3, 100.));
 
-		System.out.println (strPrefix + "TSY Spread: " + FormatUtil.FormatDouble (rv._dblTSYSpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "TSY Spread: " + FormatUtil.FormatDouble (rv.tsySpread(), 0, 0, 10000.));
 
 		try {
-			System.out.println (strPrefix + "Workout Date: " + new JulianDate (rv._wi.date()));
+			System.out.println (strPrefix + "Workout Date: " + new JulianDate (rv.wi().date()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		System.out.println (strPrefix + "Workout Factor: " + rv._wi.factor());
+		System.out.println (strPrefix + "Workout Factor: " + rv.wi().factor());
 
-		System.out.println (strPrefix + "Workout Type: " + rv._wi.type());
+		System.out.println (strPrefix + "Workout Type: " + rv.wi().type());
 
-		System.out.println (strPrefix + "Workout Yield: " + FormatUtil.FormatDouble (rv._wi.yield(), 0, 3, 100.));
+		System.out.println (strPrefix + "Workout Yield: " + FormatUtil.FormatDouble (rv.wi().yield(), 0, 3, 100.));
 
-		System.out.println (strPrefix + "Yield01: " + FormatUtil.FormatDouble (rv._dblYield01, 0, 2, 10000.));
+		System.out.println (strPrefix + "Yield01: " + FormatUtil.FormatDouble (rv.yield01(), 0, 2, 10000.));
 
-		System.out.println (strPrefix + "Yield Basis: " + FormatUtil.FormatDouble (rv._dblBondBasis, 0, 0, 10000.));
+		System.out.println (strPrefix + "Yield Basis: " + FormatUtil.FormatDouble (rv.bondBasis(), 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Yield Spread: " + FormatUtil.FormatDouble (rv._dblBondBasis, 0, 0, 10000.));
+		System.out.println (strPrefix + "Yield Spread: " + FormatUtil.FormatDouble (rv.bondBasis(), 0, 0, 10000.));
 
-		System.out.println (strPrefix + "Z Spread: " + FormatUtil.FormatDouble (rv._dblZSpread, 0, 0, 10000.));
+		System.out.println (strPrefix + "Z Spread: " + FormatUtil.FormatDouble (rv.zSpread(), 0, 0, 10000.));
 
 		return true;
 	}

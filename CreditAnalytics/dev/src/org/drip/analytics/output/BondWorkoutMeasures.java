@@ -43,104 +43,25 @@ package org.drip.analytics.output;
  */
 
 public class BondWorkoutMeasures {
+	private double _dblAccrued01 = java.lang.Double.NaN;
+	private double _dblRecoveryPV = java.lang.Double.NaN;
+	private BondCouponMeasures _bcmCreditRiskyClean = null;
+	private BondCouponMeasures _bcmCreditRiskyDirty = null;
+	private double _dblFirstIndexRate = java.lang.Double.NaN;
+	private double _dblFirstCouponRate = java.lang.Double.NaN;
+	private BondCouponMeasures _bcmCreditRisklessClean = null;
+	private BondCouponMeasures _bcmCreditRisklessDirty = null;
+	private double _dblDefaultExposure = java.lang.Double.NaN;
+	private double _dblExpectedRecovery = java.lang.Double.NaN;
+	private double _dblCreditRiskyParPV = java.lang.Double.NaN;
+	private double _dblCreditRisklessParPV = java.lang.Double.NaN;
+	private double _dblDefaultExposureNoRec = java.lang.Double.NaN;
+	private double _dblCreditRiskyPrincipalPV = java.lang.Double.NaN;
+	private double _dblCreditRisklessPrincipalPV = java.lang.Double.NaN;
+	private double _dblLossOnInstantaneousDefault = java.lang.Double.NaN;
 
 	/**
-	 * Clean Credit Risky Bond Coupon Measures
-	 */
-
-	public BondCouponMeasures _bcmCreditRiskyClean = null;
-
-	/**
-	 * Dirty Credit Risky Bond Coupon Measures
-	 */
-
-	public BondCouponMeasures _bcmCreditRiskyDirty = null;
-
-	/**
-	 * Clean Credit Risk-less Bond Coupon Measures
-	 */
-
-	public BondCouponMeasures _bcmCreditRisklessClean = null;
-
-	/**
-	 * Dirty Credit Risk-less Bond Coupon Measures
-	 */
-
-	public BondCouponMeasures _bcmCreditRisklessDirty = null;
-
-	/**
-	 * Credit Risky Par PV
-	 */
-
-	public double _dblCreditRiskyParPV = java.lang.Double.NaN;
-
-	/**
-	 * Credit Risk-less Par PV
-	 */
-
-	public double _dblCreditRisklessParPV = java.lang.Double.NaN;
-
-	/**
-	 * Credit Risky Principal PV
-	 */
-
-	public double _dblCreditRiskyPrincipalPV = java.lang.Double.NaN;
-
-	/**
-	 * Credit Risk-less Principal PV
-	 */
-
-	public double _dblCreditRisklessPrincipalPV = java.lang.Double.NaN;
-
-	/**
-	 * Recovery PV
-	 */
-
-	public double _dblRecoveryPV = java.lang.Double.NaN;
-
-	/**
-	 * Expected Recovery
-	 */
-
-	public double _dblExpectedRecovery = java.lang.Double.NaN;
-
-	/**
-	 * Default Exposure - Same as PV on instantaneous default
-	 */
-
-	public double _dblDefaultExposure = java.lang.Double.NaN;
-
-	/**
-	 * Default Exposure without recovery - Same as PV on instantaneous default without recovery
-	 */
-
-	public double _dblDefaultExposureNoRec = java.lang.Double.NaN;
-
-	/**
-	 * Loss On Instantaneous Default
-	 */
-
-	public double _dblLossOnInstantaneousDefault = java.lang.Double.NaN;
-
-	/**
-	 * Accrued 01
-	 */
-
-	public double _dblAccrued01 = java.lang.Double.NaN;
-
-	/**
-	 * First Coupon Rate
-	 */
-
-	public double _dblFirstCouponRate = java.lang.Double.NaN;
-
-	/**
-	 * First Index Rate
-	 */
-
-	public double _dblFirstIndexRate = java.lang.Double.NaN;
-
-	/**
+	 * 
 	 * BondWorkoutMeasures constructor
 	 * 
 	 * @param bcmCreditRiskyDirty Dirty credit risky BondMeasuresCoupon
@@ -199,8 +120,8 @@ public class BondWorkoutMeasures {
 		_dblLossOnInstantaneousDefault = dblLossOnInstantaneousDefault;
 
 		if (!(_bcmCreditRisklessClean = new org.drip.analytics.output.BondCouponMeasures
-			(_bcmCreditRisklessDirty._dblDV01, _bcmCreditRisklessDirty._dblIndexCouponPV,
-				_bcmCreditRisklessDirty._dblCouponPV, _bcmCreditRisklessDirty._dblPV)).adjustForSettlement
+			(_bcmCreditRisklessDirty.dv01(), _bcmCreditRisklessDirty.indexCouponPV(),
+				_bcmCreditRisklessDirty.couponPV(), _bcmCreditRisklessDirty.pv())).adjustForSettlement
 					(dblCashPayDF))
 			throw new java.lang.Exception
 				("BondWorkoutMeasures ctr: Cannot successfully set up BCM CreditRisklessClean");
@@ -211,12 +132,188 @@ public class BondWorkoutMeasures {
 				("BondWorkoutMeasures ctr: Cannot successfully set up BCM CreditRisklessClean");
 
 		if (null != _bcmCreditRiskyDirty && ((!(_bcmCreditRiskyClean = new BondCouponMeasures
-			(_bcmCreditRiskyDirty._dblDV01, _bcmCreditRiskyDirty._dblIndexCouponPV,
-				_bcmCreditRiskyDirty._dblCouponPV, _bcmCreditRiskyDirty._dblPV)).adjustForSettlement
+			(_bcmCreditRiskyDirty.dv01(), _bcmCreditRiskyDirty.indexCouponPV(),
+				_bcmCreditRiskyDirty.couponPV(), _bcmCreditRiskyDirty.pv())).adjustForSettlement
 					(dblCashPayDF)) || !_bcmCreditRiskyClean.adjustForAccrual (_dblAccrued01,
 						_dblFirstCouponRate, _dblFirstCouponRate, false)))
 			throw new java.lang.Exception
 				("BondWorkoutMeasures ctr: Cannot successfully set up BCM CreditRiskyClean");
+	}
+
+	/**
+	 * Retrieve the Credit Risky Clean Bond Coupon Measures
+	 * 
+	 * @return Credit Risky Clean Bond Coupon Measures
+	 */
+
+	public org.drip.analytics.output.BondCouponMeasures creditRiskyCleanbcm()
+	{
+		return _bcmCreditRiskyClean;
+	}
+
+	/**
+	 * Retrieve the Credit Risk-less Clean Bond Coupon Measures
+	 * 
+	 * @return Credit Risk-less Clean Bond Coupon Measures
+	 */
+
+	public org.drip.analytics.output.BondCouponMeasures creditRisklessCleanbcm()
+	{
+		return _bcmCreditRisklessClean;
+	}
+
+	/**
+	 * Retrieve the Credit Risky Dirty Bond Coupon Measures
+	 * 
+	 * @return Credit Risky Dirty Bond Coupon Measures
+	 */
+
+	public org.drip.analytics.output.BondCouponMeasures creditRiskyDirtybcm()
+	{
+		return _bcmCreditRiskyDirty;
+	}
+
+	/**
+	 * Retrieve the Credit Risk-less Dirty Bond Coupon Measures
+	 * 
+	 * @return Credit Risk-less Dirty Bond Coupon Measures
+	 */
+
+	public org.drip.analytics.output.BondCouponMeasures creditRisklessDirtybcm()
+	{
+		return _bcmCreditRisklessDirty;
+	}
+
+	/**
+	 * Retrieve the Accrued01
+	 * 
+	 * @return Accrued01
+	 */
+
+	public double accrued01()
+	{
+		return _dblAccrued01;
+	}
+
+	/**
+	 * Retrieve the First Coupon Rate
+	 * 
+	 * @return First Coupon Rate
+	 */
+
+	public double firstCouponRate()
+	{
+		return _dblFirstCouponRate;
+	}
+
+	/**
+	 * Retrieve the First Index Rate
+	 * 
+	 * @return First Index Rate
+	 */
+
+	public double firstIndexRate()
+	{
+		return _dblFirstIndexRate;
+	}
+
+	/**
+	 * Retrieve the Credit Risky Par PV
+	 * 
+	 * @return The Credit Risky Par PV
+	 */
+
+	public double creditRiskyParPV()
+	{
+		return _dblCreditRiskyParPV;
+	}
+
+	/**
+	 * Retrieve the Credit Risk-less Par PV
+	 * 
+	 * @return The Credit Risk-less Par PV
+	 */
+
+	public double creditRisklessParPV()
+	{
+		return _dblCreditRisklessParPV;
+	}
+
+	/**
+	 * Retrieve the Credit Risky Principal PV
+	 * 
+	 * @return The Credit Risky Principal PV
+	 */
+
+	public double creditRiskyPrincipalPV()
+	{
+		return _dblCreditRiskyPrincipalPV;
+	}
+
+	/**
+	 * Retrieve the Credit Risk-less Principal PV
+	 * 
+	 * @return The Credit Risk-less Principal PV
+	 */
+
+	public double creditRisklessPrincipalPV()
+	{
+		return _dblCreditRisklessPrincipalPV;
+	}
+
+	/**
+	 * Retrieve the Recovery PV
+	 * 
+	 * @return The Recovery PV
+	 */
+
+	public double recoveryPV()
+	{
+		return _dblRecoveryPV;
+	}
+
+	/**
+	 * Retrieve the Expected Recovery
+	 * 
+	 * @return The Expected Recovery
+	 */
+
+	public double expectedRecovery()
+	{
+		return _dblExpectedRecovery;
+	}
+
+	/**
+	 * Retrieve Default Exposure - Same as PV on instantaneous default
+	 * 
+	 * @return The Default Exposure
+	 */
+
+	public double defaultExposure()
+	{
+		return _dblDefaultExposure;
+	}
+
+	/**
+	 * Retrieve the Default Exposure without recovery - Same as PV on instantaneous default without recovery
+	 * 
+	 * @return The Default Exposure without recovery
+	 */
+
+	public double defaultExposureNoRec()
+	{
+		return _dblDefaultExposureNoRec;
+	}
+
+	/**
+	 * Retrieve the Loss On Instantaneous Default
+	 * 
+	 * @return Loss On Instantaneous Default
+	 */
+
+	public double lossOnInstantaneousDefault()
+	{
+		return _dblLossOnInstantaneousDefault;
 	}
 
 	/**
@@ -237,15 +334,15 @@ public class BondWorkoutMeasures {
 
 		mapMeasures.put (strPrefix + "Accrued01", _dblAccrued01);
 
-		mapMeasures.put (strPrefix + "CleanCouponPV", _bcmCreditRisklessClean._dblCouponPV);
+		mapMeasures.put (strPrefix + "CleanCouponPV", _bcmCreditRisklessClean.couponPV());
 
-		mapMeasures.put (strPrefix + "CleanDV01", _bcmCreditRisklessClean._dblDV01);
+		mapMeasures.put (strPrefix + "CleanDV01", _bcmCreditRisklessClean.dv01());
 
-		mapMeasures.put (strPrefix + "CleanIndexCouponPV", _bcmCreditRisklessClean._dblIndexCouponPV);
+		mapMeasures.put (strPrefix + "CleanIndexCouponPV", _bcmCreditRisklessClean.indexCouponPV());
 
-		mapMeasures.put (strPrefix + "CleanPrice", _bcmCreditRisklessClean._dblPV);
+		mapMeasures.put (strPrefix + "CleanPrice", _bcmCreditRisklessClean.pv());
 
-		mapMeasures.put (strPrefix + "CleanPV", _bcmCreditRisklessClean._dblPV);
+		mapMeasures.put (strPrefix + "CleanPV", _bcmCreditRisklessClean.pv());
 
 		mapMeasures.put (strPrefix + "CreditRisklessParPV", _dblCreditRisklessParPV);
 
@@ -259,17 +356,17 @@ public class BondWorkoutMeasures {
 
 		mapMeasures.put (strPrefix + "DefaultExposureNoRec", _dblDefaultExposureNoRec);
 
-		mapMeasures.put (strPrefix + "DirtyCouponPV", _bcmCreditRisklessDirty._dblCouponPV);
+		mapMeasures.put (strPrefix + "DirtyCouponPV", _bcmCreditRisklessDirty.couponPV());
 
-		mapMeasures.put (strPrefix + "DirtyDV01", _bcmCreditRisklessDirty._dblDV01);
+		mapMeasures.put (strPrefix + "DirtyDV01", _bcmCreditRisklessDirty.dv01());
 
-		mapMeasures.put (strPrefix + "DirtyIndexCouponPV", _bcmCreditRisklessDirty._dblIndexCouponPV);
+		mapMeasures.put (strPrefix + "DirtyIndexCouponPV", _bcmCreditRisklessDirty.indexCouponPV());
 
-		mapMeasures.put (strPrefix + "DirtyPrice", _bcmCreditRisklessDirty._dblPV);
+		mapMeasures.put (strPrefix + "DirtyPrice", _bcmCreditRisklessDirty.pv());
 
-		mapMeasures.put (strPrefix + "DirtyPV", _bcmCreditRisklessDirty._dblPV);
+		mapMeasures.put (strPrefix + "DirtyPV", _bcmCreditRisklessDirty.pv());
 
-		mapMeasures.put (strPrefix + "DV01", _bcmCreditRisklessClean._dblDV01);
+		mapMeasures.put (strPrefix + "DV01", _bcmCreditRisklessClean.dv01());
 
 		mapMeasures.put (strPrefix + "ExpectedRecovery", _dblExpectedRecovery);
 
@@ -283,50 +380,50 @@ public class BondWorkoutMeasures {
 
 		mapMeasures.put (strPrefix + "PrincipalPV", _dblCreditRisklessPrincipalPV);
 
-		mapMeasures.put (strPrefix + "PV", _bcmCreditRisklessClean._dblPV);
+		mapMeasures.put (strPrefix + "PV", _bcmCreditRisklessClean.pv());
 
 		mapMeasures.put (strPrefix + "RecoveryPV", _dblRecoveryPV);
 
 		org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessDirty.toMap (strPrefix +
 			"RisklessDirty"));
 
-		org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessClean.toMap (strPrefix +
-			"RisklessClean"));
+		org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRisklessClean.toMap
+			(strPrefix + "RisklessClean"));
 
 		if (null != _bcmCreditRiskyDirty) {
-			mapMeasures.put (strPrefix + "CleanCouponPV", _bcmCreditRiskyClean._dblCouponPV);
+			mapMeasures.put (strPrefix + "CleanCouponPV", _bcmCreditRiskyClean.couponPV());
 
-			mapMeasures.put (strPrefix + "CleanDV01", _bcmCreditRiskyClean._dblDV01);
+			mapMeasures.put (strPrefix + "CleanDV01", _bcmCreditRiskyClean.dv01());
 
-			mapMeasures.put (strPrefix + "CleanIndexCouponPV", _bcmCreditRiskyClean._dblIndexCouponPV);
+			mapMeasures.put (strPrefix + "CleanIndexCouponPV", _bcmCreditRiskyClean.indexCouponPV());
 
-			mapMeasures.put (strPrefix + "CleanPrice", _bcmCreditRiskyClean._dblPV);
+			mapMeasures.put (strPrefix + "CleanPrice", _bcmCreditRiskyClean.pv());
 
-			mapMeasures.put (strPrefix + "CleanPV", _bcmCreditRiskyClean._dblPV);
+			mapMeasures.put (strPrefix + "CleanPV", _bcmCreditRiskyClean.pv());
 
-			mapMeasures.put (strPrefix + "DirtyCouponPV", _bcmCreditRiskyDirty._dblCouponPV);
+			mapMeasures.put (strPrefix + "DirtyCouponPV", _bcmCreditRiskyDirty.couponPV());
 
-			mapMeasures.put (strPrefix + "DirtyDV01", _bcmCreditRiskyDirty._dblDV01);
+			mapMeasures.put (strPrefix + "DirtyDV01", _bcmCreditRiskyDirty.dv01());
 
-			mapMeasures.put (strPrefix + "DirtyIndexCouponPV", _bcmCreditRiskyDirty._dblIndexCouponPV);
+			mapMeasures.put (strPrefix + "DirtyIndexCouponPV", _bcmCreditRiskyDirty.indexCouponPV());
 
-			mapMeasures.put (strPrefix + "DirtyPrice", _bcmCreditRiskyDirty._dblPV);
+			mapMeasures.put (strPrefix + "DirtyPrice", _bcmCreditRiskyDirty.pv());
 
-			mapMeasures.put (strPrefix + "DirtyPV", _bcmCreditRiskyDirty._dblPV);
+			mapMeasures.put (strPrefix + "DirtyPV", _bcmCreditRiskyDirty.pv());
 
-			mapMeasures.put (strPrefix + "DV01", _bcmCreditRiskyClean._dblDV01);
+			mapMeasures.put (strPrefix + "DV01", _bcmCreditRiskyClean.dv01());
 
 			mapMeasures.put (strPrefix + "ParPV", _dblCreditRiskyParPV);
 
 			mapMeasures.put (strPrefix + "PrincipalPV", _dblCreditRiskyPrincipalPV);
 
-			mapMeasures.put (strPrefix + "PV", _bcmCreditRiskyClean._dblPV);
+			mapMeasures.put (strPrefix + "PV", _bcmCreditRiskyClean.pv());
 
-			org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyDirty.toMap (strPrefix +
-				"RiskyDirty"));
+			org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyDirty.toMap
+				(strPrefix + "RiskyDirty"));
 
-			org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyClean.toMap (strPrefix +
-				"RiskyClean"));
+			org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, _bcmCreditRiskyClean.toMap
+				(strPrefix + "RiskyClean"));
 		}
 
 		return mapMeasures;

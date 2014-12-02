@@ -89,7 +89,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 
 		for (int k = 0; k < iNumParameters; ++k) {
 			if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, k, dblSettleJackAdjust *
-				wjCashSettleDFDF.getFirstDerivative (0, k)))
+				wjCashSettleDFDF.firstDerivative (0, k)))
 				return false;
 		}
 
@@ -287,127 +287,132 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || null == mpc || null == mpc.getScenMarketParams (this, "Base")) return null;
+		if (null == valParams || null == mpc || null == mpc.scenMarketParams (this, "Base")) return null;
 
 		org.drip.analytics.output.ComponentMeasures compOp = new
 			org.drip.analytics.output.ComponentMeasures();
 
 		long lStart = System.nanoTime();
 
-		if (null == (compOp._mBase = value (valParams, pricerParams, mpc.getScenMarketParams (this, "Base"),
+		if (!compOp.setBaseMeasures (value (valParams, pricerParams, mpc.scenMarketParams (this, "Base"),
 			quotingParams)))
 			return null;
 
-		if (null != mpc.getScenMarketParams (this, "FlatCreditBumpUp")) {
+		if (null != mpc.scenMarketParams (this, "FlatCreditBumpUp")) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCreditBumpUp = value
-				(valParams, pricerParams, mpc.getScenMarketParams (this, "FlatCreditBumpUp"), quotingParams);
+				(valParams, pricerParams, mpc.scenMarketParams (this, "FlatCreditBumpUp"), quotingParams);
 
 			if (null != mapCreditBumpUp && null != mapCreditBumpUp.entrySet()) {
-				compOp._mFlatCreditDelta = new
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+				compOp.setFlatCreditDeltaMeasures (new
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>());
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCreditBumpUp.entrySet())
 				{
 					if (null == me || null == me.getKey()) continue;
 
-					compOp._mFlatCreditDelta.put (me.getKey(), me.getValue() - compOp._mBase.get
-						(me.getKey()));
+					compOp.flatCreditDeltaMeasures().put (me.getKey(), me.getValue() -
+						compOp.baseMeasures().get (me.getKey()));
 				}
 
-				if (null != mpc.getScenMarketParams (this, "FlatCreditBumpDn")) {
-					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCreditBumpDn = value
-						(valParams, pricerParams, mpc.getScenMarketParams (this, "FlatCreditBumpDn"),
+				if (null != mpc.scenMarketParams (this, "FlatCreditBumpDn")) {
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCreditBumpDn =
+						value (valParams, pricerParams, mpc.scenMarketParams (this, "FlatCreditBumpDn"),
 							quotingParams);
 
 					if (null != mapCreditBumpUp && null != mapCreditBumpDn.entrySet()) {
-						compOp._mFlatCreditGamma = new
-							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+						compOp.setFlatCreditGammaMeasures (new
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>());
 
 						for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 							mapCreditBumpDn.entrySet()) {
 							if (null == me || null == me.getKey()) continue;
 
-							compOp._mFlatCreditGamma.put (me.getKey(), me.getValue() + mapCreditBumpUp.get
-								(me.getKey()) - 2. * compOp._mBase.get (me.getKey()));
+							compOp.flatCreditGammaMeasures().put (me.getKey(), me.getValue() +
+								mapCreditBumpUp.get (me.getKey()) - 2. * compOp.baseMeasures().get
+									(me.getKey()));
 						}
 					}
 				}
 			}
 		}
 
-		if (null != mpc.getScenMarketParams (this, "RRBumpUp")) {
+		if (null != mpc.scenMarketParams (this, "RRBumpUp")) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapRRBumpUp = value (valParams,
-				pricerParams, mpc.getScenMarketParams (this, "RRBumpUp"), quotingParams);
+				pricerParams, mpc.scenMarketParams (this, "RRBumpUp"), quotingParams);
 
-			compOp._mRRDelta = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+			compOp.setFlatRRDeltaMeasures (new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>());
 
 			if (null != mapRRBumpUp && null != mapRRBumpUp.entrySet()) {
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapRRBumpUp.entrySet()) {
 					if (null == me || null == me.getKey()) continue;
 
-					compOp._mRRDelta.put (me.getKey(), me.getValue() - compOp._mBase.get (me.getKey()));
+					compOp.flatRRDeltaMeasures().put (me.getKey(), me.getValue() - compOp.baseMeasures().get
+						(me.getKey()));
 				}
 
-				if (null != mpc.getScenMarketParams (this, "RRBumpDn")) {
+				if (null != mpc.scenMarketParams (this, "RRBumpDn")) {
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapRRBumpDn = value
-						(valParams, pricerParams, mpc.getScenMarketParams (this, "RRBumpDn"), quotingParams);
+						(valParams, pricerParams, mpc.scenMarketParams (this, "RRBumpDn"), quotingParams);
 
 					if (null != mapRRBumpDn && null != mapRRBumpDn.entrySet()) {
-						compOp._mRRGamma = new
-							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+						compOp.setFlatRRGammaMeasures (new
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>());
 
 						for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 							mapRRBumpDn.entrySet()) {
 							if (null == me || null == me.getKey()) continue;
 
-							compOp._mRRGamma.put (me.getKey(), me.getValue() + mapRRBumpUp.get (me.getKey())
-								- 2. * compOp._mBase.get (me.getKey()));
+							compOp.flatRRGammaMeasures().put (me.getKey(), me.getValue() + mapRRBumpUp.get
+								(me.getKey()) - 2. * compOp.baseMeasures().get (me.getKey()));
 						}
 					}
 				}
 			}
 		}
 
-		if (null != mpc.getScenMarketParams (this, "IRCreditBumpUp")) {
+		if (null != mpc.scenMarketParams (this, "IRCreditBumpUp")) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIRBumpUp = value (valParams,
-				pricerParams, mpc.getScenMarketParams (this, "IRCreditBumpUp"), quotingParams);
+				pricerParams, mpc.scenMarketParams (this, "IRCreditBumpUp"), quotingParams);
 
 			if (null != mapIRBumpUp && null != mapIRBumpUp.entrySet()) {
-				compOp._mFlatIRDelta = new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+				compOp.setFlatIRDeltaMeasures (new
+					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>());
 
 				for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapIRBumpUp.entrySet()) {
 					if (null == me || null == me.getKey()) continue;
 
-					compOp._mFlatIRDelta.put (me.getKey(), me.getValue() - compOp._mBase.get (me.getKey()));
+					compOp.flatIRDeltaMeasures().put (me.getKey(), me.getValue() - compOp.baseMeasures().get
+						(me.getKey()));
 				}
 
-				if (null != mpc.getScenMarketParams (this, "IRCreditBumpDn")) {
+				if (null != mpc.scenMarketParams (this, "IRCreditBumpDn")) {
 					org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapIRBumpDn = value
-						(valParams, pricerParams, mpc.getScenMarketParams (this, "IRCreditBumpDn"),
+						(valParams, pricerParams, mpc.scenMarketParams (this, "IRCreditBumpDn"),
 							quotingParams);
 
 					if (null != mapIRBumpDn && null != mapIRBumpDn.entrySet()) {
-						compOp._mFlatIRGamma = new
-							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
+						compOp.setFlatIRGammaMeasures (new
+							org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>());
 
 						for (java.util.Map.Entry<java.lang.String, java.lang.Double> me :
 							mapIRBumpDn.entrySet()) {
 							if (null == me || null == me.getKey()) continue;
 
-							compOp._mFlatIRGamma.put (me.getKey(), me.getValue() + mapIRBumpUp.get
-								(me.getKey()) - 2. * compOp._mBase.get (me.getKey()));
+							compOp.flatIRGammaMeasures().put (me.getKey(), me.getValue() + mapIRBumpUp.get
+								(me.getKey()) - 2. * compOp.baseMeasures().get (me.getKey()));
 						}
 					}
 				}
 			}
 		}
 
-		if (null != mpc.getCreditTenorMarketParams (this, true)) {
-			compOp._mmTenorCreditDelta = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
+		if (null != mpc.creditTenorMarketParams (this, true)) {
+			compOp.setTenorCreditDeltaMeasures (new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>());
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-				mapCCTenorUpCSQS = mpc.getCreditTenorMarketParams (this, true);
+				mapCCTenorUpCSQS = mpc.creditTenorMarketParams (this, true);
 
 			if (null != mapCCTenorUpCSQS && null != mapCCTenorUpCSQS.entrySet()) {
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
@@ -426,18 +431,18 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 						mapCCTenorUp.entrySet()) {
 						if (null == me || null == me.getKey()) continue;
 
-						mapCalcUp.put (me.getKey(), me.getValue() - compOp._mBase.get (me.getKey()));
+						mapCalcUp.put (me.getKey(), me.getValue() - compOp.baseMeasures().get (me.getKey()));
 					}
 
-					compOp._mmTenorCreditDelta.put (meTenorUpMP.getKey(), mapCalcUp);
+					compOp.tenorCreditDeltaMeasures().put (meTenorUpMP.getKey(), mapCalcUp);
 				}
 
-				if (null != mpc.getCreditTenorMarketParams (this, false)) {
-					compOp._mmTenorCreditGamma = new
-						org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
+				if (null != mpc.creditTenorMarketParams (this, false)) {
+					compOp.setTenorCreditGammaMeasures (new
+						org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>());
 
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-						mapCCTenorDnCSQS = mpc.getCreditTenorMarketParams (this, false);
+						mapCCTenorDnCSQS = mpc.creditTenorMarketParams (this, false);
 
 					if (null != mapCCTenorDnCSQS && null != mapCCTenorDnCSQS.entrySet()) {
 						for (java.util.Map.Entry<java.lang.String,
@@ -457,23 +462,24 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 								mapCCTenorDn.entrySet()) {
 								if (null == me || null == me.getKey()) continue;
 
-								mapCalcDn.put (me.getKey(), me.getValue() - compOp._mBase.get (me.getKey()) +
-									compOp._mmTenorCreditDelta.get (meTenorDnMP.getKey()).get (me.getKey()));
+								mapCalcDn.put (me.getKey(), me.getValue() - compOp.baseMeasures().get
+									(me.getKey()) + compOp.tenorCreditDeltaMeasures().get
+										(meTenorDnMP.getKey()).get (me.getKey()));
 							}
 
-							compOp._mmTenorCreditGamma.put (meTenorDnMP.getKey(), mapCalcDn);
+							compOp.tenorCreditGammaMeasures().put (meTenorDnMP.getKey(), mapCalcDn);
 						}
 					}
 				}
 			}
 		}
 
-		if (null != mpc.getIRTenorMarketParams (this, true)) {
-			compOp._mmTenorIRDelta = new
-				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
+		if (null != mpc.irTenorMarketParams (this, true)) {
+			compOp.setTenorIRDeltaMeasures (new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>());
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-				mapIRTenorUpCSQS = mpc.getIRTenorMarketParams (this, true);
+				mapIRTenorUpCSQS = mpc.irTenorMarketParams (this, true);
 
 			if (null != mapIRTenorUpCSQS && null != mapIRTenorUpCSQS.entrySet()) {
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
@@ -490,19 +496,19 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 						mapCCTenorUp.entrySet()) {
 						if (null == me || null == me.getKey()) continue;
 
-						mapCalcUp.put (me.getKey(), me.getValue() - compOp._mBase.get (me.getKey()));
+						mapCalcUp.put (me.getKey(), me.getValue() - compOp.baseMeasures().get (me.getKey()));
 					}
 
-					compOp._mmTenorIRDelta.put (meTenorUpMP.getKey(), mapCalcUp);
+					compOp.tenorIRDeltaMeasures().put (meTenorUpMP.getKey(), mapCalcUp);
 				}
 			}
 
-			if (null != mpc.getIRTenorMarketParams (this, false)) {
-				compOp._mmTenorIRGamma = new
-					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>();
+			if (null != mpc.irTenorMarketParams (this, false)) {
+				compOp.setTenorIRGammaMeasures (new
+					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>());
 
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-					mapIRTenorDnCSQS = mpc.getIRTenorMarketParams (this, false);
+					mapIRTenorDnCSQS = mpc.irTenorMarketParams (this, false);
 
 				if (null != mapIRTenorDnCSQS & null != mapIRTenorDnCSQS.entrySet()) {
 					for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
@@ -519,17 +525,18 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 							mapCCTenorDn.entrySet()) {
 							if (null == me || null == me.getKey()) continue;
 
-							mapCalcDn.put (me.getKey(), me.getValue() - compOp._mBase.get (me.getKey()) +
-								compOp._mmTenorIRDelta.get (meTenorDnMP.getKey()).get (me.getKey()));
+							mapCalcDn.put (me.getKey(), me.getValue() - compOp.baseMeasures().get
+								(me.getKey()) + compOp.tenorIRDeltaMeasures().get (meTenorDnMP.getKey()).get
+									(me.getKey()));
 						}
 
-						compOp._mmTenorIRGamma.put (meTenorDnMP.getKey(), mapCalcDn);
+						compOp.tenorIRGammaMeasures().put (meTenorDnMP.getKey(), mapCalcDn);
 					}
 				}
 			}
 		}
 
-		compOp._dblCalcTime = (System.nanoTime() - lStart) * 1.e-09;
+		compOp.setCalcTime ((System.nanoTime() - lStart) * 1.e-09);
 
 		return compOp;
 	}
@@ -558,11 +565,11 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseOP)
 	{
 		if (null == strCustomScenName || strCustomScenName.isEmpty() || null == valParams || null == mpc ||
-			null == mpc.getScenMarketParams (this, strCustomScenName))
+			null == mpc.scenMarketParams (this, strCustomScenName))
 			return null;
 
 		if (null == mapBaseOP) {
-			org.drip.param.market.CurveSurfaceQuoteSet csqsBase = mpc.getScenMarketParams (this, "Base");
+			org.drip.param.market.CurveSurfaceQuoteSet csqsBase = mpc.scenMarketParams (this, "Base");
 
 			if (null == csqsBase) return null;
 
@@ -570,7 +577,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 		}
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCustomOP = value (valParams,
-			pricerParams, mpc.getScenMarketParams (this, strCustomScenName), quotingParams);
+			pricerParams, mpc.scenMarketParams (this, strCustomScenName), quotingParams);
 
 		if (null == mapCustomOP) return null;
 

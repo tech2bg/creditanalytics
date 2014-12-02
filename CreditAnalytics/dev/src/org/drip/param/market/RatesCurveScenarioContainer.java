@@ -187,31 +187,31 @@ public class RatesCurveScenarioContainer extends org.drip.param.definition.Scena
 		return true;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getDCBase()
+	@Override public org.drip.analytics.rates.DiscountCurve base()
 	{
 		return _dcBase;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getDCBumpUp()
+	@Override public org.drip.analytics.rates.DiscountCurve bumpUp()
 	{
 		return _dcBumpUp;
 	}
 
-	@Override public org.drip.analytics.rates.DiscountCurve getDCBumpDn()
+	@Override public org.drip.analytics.rates.DiscountCurve bumpDown()
 	{
 		return _dcBumpDn;
 	}
 
 	@Override public
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
-			getTenorDCBumpUp()
+			tenorBumpUp()
 	{
 		return _mapDCBumpUp;
 	}
 
 	@Override public
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
-			getTenorDCBumpDn()
+			tenorBumpDown()
 	{
 		return _mapDCBumpDn;
 	}

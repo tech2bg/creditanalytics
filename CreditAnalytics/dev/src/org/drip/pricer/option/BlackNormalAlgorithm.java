@@ -183,8 +183,6 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 				final double dblSpotVolatility)
 				throws java.lang.Exception
 			{
-				// System.out.println ("dblSpotVolatility = " + java.lang.Math.abs (dblSpotVolatility));
-
 				if (!compute (dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblUnderlier, bIsForward,
 					java.lang.Math.abs (dblSpotVolatility)))
 					throw new java.lang.Exception

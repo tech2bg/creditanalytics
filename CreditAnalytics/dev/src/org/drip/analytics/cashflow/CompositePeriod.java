@@ -217,7 +217,7 @@ public abstract class CompositePeriod {
 
 		if (null == csqs) throw new java.lang.Exception ("CompositePeriod::fx => Invalid Inputs");
 
-		if (!isFXMTM()) return csqs.getFixing (fxFixingDate(), fxLabel);
+		if (!isFXMTM()) return csqs.fixing (fxFixingDate(), fxLabel);
 
 		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
 

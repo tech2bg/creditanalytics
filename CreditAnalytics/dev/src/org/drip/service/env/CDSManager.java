@@ -101,9 +101,9 @@ public class CDSManager {
 
 		org.drip.param.definition.ScenarioCreditCurve ccsg = mpc.ccsg().get (strSPN);
 
-		if (null == ccsg.getCCBase() || null == ccsg.getCCBase().calibComp()) return false;
+		if (null == ccsg.base() || null == ccsg.base().calibComp()) return false;
 
-		org.drip.analytics.definition.CreditCurve cc = ccsg.getCCBase();
+		org.drip.analytics.definition.CreditCurve cc = ccsg.base();
 
 		org.drip.product.definition.CreditDefaultSwap[] aCDS =
 			(org.drip.product.definition.CreditDefaultSwap[]) cc.calibComp();
@@ -147,7 +147,7 @@ public class CDSManager {
 		for (int i = 0; i < aCDS.length; ++i) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc = aCDS[1].value
 				(valParams, pricerParams, org.drip.param.creator.MarketParamsBuilder.Create
-					(mpc.getScenMarketParams (aCDS[i], "Base").fundingCurve
+					(mpc.scenMarketParams (aCDS[i], "Base").fundingCurve
 						(org.drip.state.identifier.FundingLabel.Standard (aCDS[1].payCurrency()[0])), null,
 							null, cc, null, null, null, null), null);
 
@@ -216,7 +216,7 @@ public class CDSManager {
 			if (s_bCalcFlatSpread) {
 				try {
 					dblFlatSpread100 = aCDS[i].calibFlatSpread (valParams, pricerParams,
-						org.drip.param.creator.MarketParamsBuilder.Create (mpc.getScenMarketParams (aCDS[i],
+						org.drip.param.creator.MarketParamsBuilder.Create (mpc.scenMarketParams (aCDS[i],
 							"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
 								(aCDS[i].payCurrency()[0])), null, null, cc, null, null, null, null), null);
 				} catch (java.lang.Exception e) {
@@ -268,7 +268,7 @@ public class CDSManager {
 			if (s_bCalcFlatSpread) {
 				try {
 					dblFlatSpread500 = aCDS[i].calibFlatSpread (valParams, pricerParams, 
-						org.drip.param.creator.MarketParamsBuilder.Create (mpc.getScenMarketParams (aCDS[i],
+						org.drip.param.creator.MarketParamsBuilder.Create (mpc.scenMarketParams (aCDS[i],
 							"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
 								(aCDS[i].payCurrency()[0])), null, null, cc, null, null, null, null), null);
 				} catch (java.lang.Exception e) {

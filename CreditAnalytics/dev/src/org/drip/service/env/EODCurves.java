@@ -225,7 +225,7 @@ public class EODCurves {
 		if (null == mpc) return false;
 
 		org.drip.param.definition.ProductQuote cqTSY =
-			org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+			org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 		try {
 			cqTSY.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYQuote,
@@ -250,7 +250,7 @@ public class EODCurves {
 		if (null == mapTSYCQ || java.lang.Double.isNaN (dblTSYQuote)) return false;
 
 		org.drip.param.definition.ProductQuote cqTSY =
-			org.drip.param.creator.ProductQuoteBuilder.CreateProductQuote();
+			org.drip.param.creator.QuoteBuilder.CreateProductQuote();
 
 		try {
 			cqTSY.addQuote ("Yield", org.drip.param.creator.QuoteBuilder.CreateQuote ("mid", dblTSYQuote,
@@ -1189,9 +1189,9 @@ public class EODCurves {
 		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurve (lsfc, stmt, dtEOD,
 			strCurrency, strInstrType, strCurveName);
 
-		if (null == ircsg || null == ircsg.getDCBase()) return null;
+		if (null == ircsg || null == ircsg.base()) return null;
 
-		return ircsg.getDCBase();
+		return ircsg.base();
 	}
 
 	/**
@@ -1384,11 +1384,11 @@ public class EODCurves {
 	{
 		if (null == mpc || null == mpc.irsg() || null == stmt || null == dtEOD || null == strCurrency ||
 			strCurrency.isEmpty() || null == strSPN || strSPN.isEmpty() || null == mpc.irsg().get
-				(strCurrency) || null == mpc.irsg().get (strCurrency).getDCBase())
+				(strCurrency) || null == mpc.irsg().get (strCurrency).base())
 			return false;
 
-		org.drip.param.definition.ScenarioCreditCurve ccsg = BuildEODCreditCurve (stmt, dtEOD,
-			mpc.irsg().get (strCurrency).getDCBase(), strSPN, strCurrency);
+		org.drip.param.definition.ScenarioCreditCurve ccsg = BuildEODCreditCurve (stmt, dtEOD, mpc.irsg().get
+			(strCurrency).base(), strSPN, strCurrency);
 
 		if (null == ccsg) return false;
 

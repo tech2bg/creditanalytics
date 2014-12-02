@@ -541,8 +541,8 @@ public class CollectionUtil {
 
 			for (int i = 0; i < iNumParams; ++i) {
 				try {
-					if (!wjCombined.accumulatePartialFirstDerivative (0, iQuoteCursor++,
-						wj.getFirstDerivative (0, i)))
+					if (!wjCombined.accumulatePartialFirstDerivative (0, iQuoteCursor++, wj.firstDerivative
+						(0, i)))
 						return null;
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();

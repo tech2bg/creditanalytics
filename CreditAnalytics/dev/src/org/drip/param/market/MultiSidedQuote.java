@@ -57,17 +57,17 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 			_dt = new org.drip.analytics.date.DateTime();
 		}
 
-		double getQuote()
+		double quote()
 		{
 			return _dblQuote;
 		}
 
-		double getSize()
+		double size()
 		{
 			return _dblSize;
 		}
 
-		org.drip.analytics.date.DateTime getQuoteTime()
+		org.drip.analytics.date.DateTime time()
 		{
 			return _dt;
 		}
@@ -141,7 +141,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 	{
 		if (null == strSide || strSide.isEmpty()) return java.lang.Double.NaN;
 
-		return _mapSidedQuote.get (strSide).getQuote();
+		return _mapSidedQuote.get (strSide).quote();
 	}
 
 	@Override public double size (
@@ -149,7 +149,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 	{
 		if (null == strSide || strSide.isEmpty()) return java.lang.Double.NaN;
 
-		return _mapSidedQuote.get (strSide).getSize();
+		return _mapSidedQuote.get (strSide).size();
 	}
 
 	@Override public org.drip.analytics.date.DateTime time (
@@ -157,7 +157,7 @@ public class MultiSidedQuote extends org.drip.param.definition.Quote {
 	{
 		if (null == strSide || strSide.isEmpty()) return null;
 
-		return _mapSidedQuote.get (strSide).getQuoteTime();
+		return _mapSidedQuote.get (strSide).time();
 	}
 
 	@Override public boolean setSide (

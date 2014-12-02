@@ -1315,7 +1315,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 
 			for (int i = 0; i < iNumResponseBasisCoeff; ++i) {
 				for (int j = 0; j < iNumResponseBasisCoeff; ++j)
-					aadblDBasisCoeffDEdgeParams[j][i] = wjDBasisCoeffDEdgeParams.getFirstDerivative (j, i);
+					aadblDBasisCoeffDEdgeParams[j][i] = wjDBasisCoeffDEdgeParams.firstDerivative (j, i);
 			}
 
 			if (!(wjDResponseDEdgeParams = new org.drip.quant.calculus.WengertJacobian (1,

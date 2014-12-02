@@ -242,7 +242,7 @@ public class ScenarioDiscountCurveBuilder {
 				astrCalibMeasure, lsfc, null, org.drip.param.definition.ScenarioDiscountCurve.DC_BASE))
 			return null;
 
-		return irsg.getDCBase();
+		return irsg.base();
 	}
 
 	/**

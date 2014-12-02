@@ -61,4 +61,32 @@ public class QuoteBuilder {
 
 		return null;
 	}
+
+	/**
+	 * Constructor: Constructs an Empty Product Quote instance.
+	 * 
+	 * @return ProductQuote Instance
+	 */
+
+	public static final org.drip.param.definition.ProductQuote CreateProductQuote()
+	{
+		try {
+			return new org.drip.param.market.ProductMultiMeasureQuote();
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Constructor: Constructs an Empty Product Tick Quote instance.
+	 * 
+	 * @return Product Tick Quote Instance
+	 */
+
+	public static final org.drip.param.market.ProductTickQuote CreateProductTickQuote()
+	{
+		return new org.drip.param.market.ProductTickQuote();
+	}
 }

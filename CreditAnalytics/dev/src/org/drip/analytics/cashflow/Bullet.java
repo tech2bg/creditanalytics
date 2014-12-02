@@ -192,7 +192,7 @@ public class Bullet {
 
 		if (null == csqs) throw new java.lang.Exception ("Bullet::fx => Invalid Inputs");
 
-		if (!isFXMTM()) return csqs.getFixing (_dblFXFixingDate, fxLabel);
+		if (!isFXMTM()) return csqs.fixing (_dblFXFixingDate, fxLabel);
 
 		org.drip.quant.function1D.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
 

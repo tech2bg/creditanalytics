@@ -201,12 +201,12 @@ public class LatentStateFixingsContainer {
 	{
 		if (null == dt || null == lsl)
 			throw new java.lang.Exception
-				("LatentStateFixingsContainer::get => Cannot locate Latent State Fixing for the Date");
+				("LatentStateFixingsContainer::fixing => Cannot locate Latent State Fixing for the Date");
 
 		if (lsl instanceof org.drip.state.identifier.ForwardLabel) {
 			if (!_mmForwardFixing.containsKey (dt))
 				throw new java.lang.Exception
-					("LatentStateFixingsContainer::get => Cannot locate Forward Fixing for the Date");
+					("LatentStateFixingsContainer::fixing => Cannot locate Forward Fixing for the Date");
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapForwardFixing =
 				_mmForwardFixing.get (dt);
@@ -215,7 +215,7 @@ public class LatentStateFixingsContainer {
 
 			if (!mapForwardFixing.containsKey (strLabel))
 				throw new java.lang.Exception
-					("LatentStateFixingsContainer::get => Cannot locate the Forward Label Entry for the Date!");
+					("LatentStateFixingsContainer::fixing => Cannot locate the Forward Label Entry for the Date!");
 
 			return mapForwardFixing.get (strLabel);
 		}
@@ -223,7 +223,7 @@ public class LatentStateFixingsContainer {
 		if (lsl instanceof org.drip.state.identifier.FXLabel) {
 			if (!_mmFXFixing.containsKey (dt))
 				throw new java.lang.Exception
-					("LatentStateFixingsContainer::get => Cannot locate FX Fixing for the Date");
+					("LatentStateFixingsContainer::fixing => Cannot locate FX Fixing for the Date");
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFXFixing = _mmFXFixing.get
 				(dt);
@@ -232,13 +232,13 @@ public class LatentStateFixingsContainer {
 
 			if (!mapFXFixing.containsKey (strLabel))
 				throw new java.lang.Exception
-					("LatentStateFixingsContainer::get => Cannot locate the FX Label Entry for the Date!");
+					("LatentStateFixingsContainer::fixing => Cannot locate the FX Label Entry for the Date!");
 
 			return mapFXFixing.get (strLabel);
 		}
 
 		throw new java.lang.Exception
-			("LatentStateFixingsContainer::get => No Fixings available for the Latent State");
+			("LatentStateFixingsContainer::fixing => No Fixings available for the Latent State");
 	}
 
 	/**

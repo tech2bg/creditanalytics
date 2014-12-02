@@ -336,8 +336,8 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 			double dblCashSettle = null == _settleParams ? valParams.cashPayDate() :
 				_settleParams.cashSettleDate (dblValueDate);
 
-			dblParForward = csqs.available (_dtMaturity, _fri) ? csqs.getFixing (_dtMaturity, _fri) :
-				fc.forward (_dtMaturity);
+			dblParForward = csqs.available (_dtMaturity, _fri) ? csqs.fixing (_dtMaturity, _fri) : fc.forward
+				(_dtMaturity);
 
 			org.drip.state.identifier.FundingLabel fundingLabel =
 				org.drip.state.identifier.FundingLabel.Standard (_strCurrency);

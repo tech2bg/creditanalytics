@@ -827,27 +827,26 @@ public class AnalyticsHelper {
 
 		double[] adblQuotesOut = new double[adblQuotesIn.length];
 
-		if (org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK ==
-			ntp._iTweakNode) {
+		if (org.drip.param.definition.ResponseValueTweakParams.MANIFEST_MEASURE_FLAT_TWEAK == ntp.node()) {
 			for (int i = 0; i < adblQuotesIn.length; ++i) {
 				if (!org.drip.quant.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
 
-				if (!ntp._bIsTweakProportional)
-					adblQuotesOut[i] = adblQuotesIn[i] + ntp._dblTweakAmount;
+				if (!ntp.isTweakProportional())
+					adblQuotesOut[i] = adblQuotesIn[i] + ntp.amount();
 				else
-					adblQuotesOut[i] = adblQuotesIn[i] * (1. + ntp._dblTweakAmount);
+					adblQuotesOut[i] = adblQuotesIn[i] * (1. + ntp.amount());
 			}
 		} else {
-			if (ntp._iTweakNode < 0 || ntp._iTweakNode >= adblQuotesIn.length) return null;
+			if (ntp.node() < 0 || ntp.node() >= adblQuotesIn.length) return null;
 
 			for (int i = 0; i < adblQuotesIn.length; ++i) {
 				if (!org.drip.quant.common.NumberUtil.IsValid (adblQuotesIn[i])) return null;
 
-				if (i == ntp._iTweakNode) {
-					if (!ntp._bIsTweakProportional)
-						adblQuotesOut[i] = adblQuotesIn[i] + ntp._dblTweakAmount;
+				if (i == ntp.node()) {
+					if (!ntp.isTweakProportional())
+						adblQuotesOut[i] = adblQuotesIn[i] + ntp.amount();
 					else
-						adblQuotesOut[i] = adblQuotesIn[i] * (1. + ntp._dblTweakAmount);
+						adblQuotesOut[i] = adblQuotesIn[i] * (1. + ntp.amount());
 				} else
 					adblQuotesOut[i] = adblQuotesIn[i];
 			}

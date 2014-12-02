@@ -43,102 +43,22 @@ package org.drip.analytics.output;
  */
 
 public class BondRVMeasures {
-
-	/**
-	 * Price
-	 */
-
-	public double _dblPrice = java.lang.Double.NaN;
-
-	/**
-	 * Bond Basis
-	 */
-
-	public double _dblBondBasis = java.lang.Double.NaN;
-
-	/**
-	 * Z Spread
-	 */
-
-	public double _dblZSpread = java.lang.Double.NaN;
-
-	/**
-	 * G Spread
-	 */
-
-	public double _dblGSpread = java.lang.Double.NaN;
-
-	/**
-	 * I Spread
-	 */
-
-	public double _dblISpread = java.lang.Double.NaN;
-
-	/**
-	 * Option Adjusted Spread
-	 */
-
-	public double _dblOASpread = java.lang.Double.NaN;
-
-	/**
-	 * Treasury Spread
-	 */
-
-	public double _dblTSYSpread = java.lang.Double.NaN;
-
-	/**
-	 * Discount Margin
-	 */
-
-	public double _dblDiscountMargin = java.lang.Double.NaN;
-
-	/**
-	 * Asset swap spread
-	 */
-
-	public double _dblAssetSwapSpread = java.lang.Double.NaN;
-
-	/**
-	 * Credit Basis
-	 */
-
-	public double _dblCreditBasis = java.lang.Double.NaN;
-
-	/**
-	 * PECS
-	 */
-
-	public double _dblPECS = java.lang.Double.NaN;
-
-	/**
-	 * Yield 01
-	 */
-
-	public double _dblYield01 = java.lang.Double.NaN;
-
-	/**
-	 * Macaulay Duration
-	 */
-
-	public double _dblMacaulayDuration = java.lang.Double.NaN;
-
-	/**
-	 * Modified Duration
-	 */
-
-	public double _dblModifiedDuration = java.lang.Double.NaN;
-
-	/**
-	 * Convexity
-	 */
-
-	public double _dblConvexity = java.lang.Double.NaN;
-
-	/**
-	 * Work-out info
-	 */
-
-	public org.drip.param.valuation.WorkoutInfo _wi = null;
+	private double _dblPECS = java.lang.Double.NaN;
+	private double _dblPrice = java.lang.Double.NaN;
+	private double _dblGSpread = java.lang.Double.NaN;
+	private double _dblISpread = java.lang.Double.NaN;
+	private double _dblYield01 = java.lang.Double.NaN;
+	private double _dblZSpread = java.lang.Double.NaN;
+	private double _dblOASpread = java.lang.Double.NaN;
+	private double _dblBondBasis = java.lang.Double.NaN;
+	private double _dblConvexity = java.lang.Double.NaN;
+	private double _dblTSYSpread = java.lang.Double.NaN;
+	private double _dblCreditBasis = java.lang.Double.NaN;
+	private double _dblDiscountMargin = java.lang.Double.NaN;
+	private double _dblAssetSwapSpread = java.lang.Double.NaN;
+	private double _dblMacaulayDuration = java.lang.Double.NaN;
+	private double _dblModifiedDuration = java.lang.Double.NaN;
+	private org.drip.param.valuation.WorkoutInfo _wi = null;
 
 	/**
 	 * BondRVMeasures ctr
@@ -199,6 +119,182 @@ public class BondRVMeasures {
 		_dblAssetSwapSpread = dblAssetSwapSpread;
 		_dblMacaulayDuration = dblMacaulayDuration;
 		_dblModifiedDuration = dblModifiedDuration;
+	}
+
+	/**
+	 * Retrieve the Work-out Info
+	 * 
+	 * @return Work-out Info
+	 */
+
+	public org.drip.param.valuation.WorkoutInfo wi()
+	{
+		return _wi;
+	}
+
+	/**
+	 * Retrieve the PECS
+	 * 
+	 * @return PECS
+	 */
+
+	public double pecs()
+	{
+		return _dblPECS;
+	}
+
+	/**
+	 * Retrieve the Price
+	 * 
+	 * @return Price
+	 */
+
+	public double price()
+	{
+		return _dblPrice;
+	}
+
+	/**
+	 * Retrieve the G Spread
+	 * 
+	 * @return G Spread
+	 */
+
+	public double gSpread()
+	{
+		return _dblGSpread;
+	}
+
+	/**
+	 * Retrieve the I Spread
+	 * 
+	 * @return I Spread
+	 */
+
+	public double iSpread()
+	{
+		return _dblISpread;
+	}
+
+	/**
+	 * Retrieve the Yield01
+	 * 
+	 * @return Yield01
+	 */
+
+	public double yield01()
+	{
+		return _dblYield01;
+	}
+
+	/**
+	 * Retrieve the Z Spread
+	 * 
+	 * @return Z Spread
+	 */
+
+	public double zSpread()
+	{
+		return _dblZSpread;
+	}
+
+	/**
+	 * Retrieve the OAS
+	 * 
+	 * @return OAS
+	 */
+
+	public double oas()
+	{
+		return _dblOASpread;
+	}
+
+	/**
+	 * Retrieve the Bond Basis
+	 * 
+	 * @return Bond Basis
+	 */
+
+	public double bondBasis()
+	{
+		return _dblBondBasis;
+	}
+
+	/**
+	 * Retrieve the Convexity
+	 * 
+	 * @return Convexity
+	 */
+
+	public double convexity()
+	{
+		return _dblConvexity;
+	}
+
+	/**
+	 * Retrieve the TSY Spread
+	 * 
+	 * @return TSY Spread
+	 */
+
+	public double tsySpread()
+	{
+		return _dblTSYSpread;
+	}
+
+	/**
+	 * Retrieve the Credit Basis
+	 * 
+	 * @return Credit Basis
+	 */
+
+	public double creditBasis()
+	{
+		return _dblCreditBasis;
+	}
+
+	/**
+	 * Retrieve the Discount Margin
+	 * 
+	 * @return Discount Margin
+	 */
+
+	public double discountMargin()
+	{
+		return _dblDiscountMargin;
+	}
+
+	/**
+	 * Retrieve the Asset Swap Spread
+	 * 
+	 * @return Asset Swap Spread
+	 */
+
+	public double asw()
+	{
+		return _dblAssetSwapSpread;
+	}
+
+	/**
+	 * Retrieve the Macaulay Duration
+	 * 
+	 * @return Macaulay Duration
+	 */
+
+	public double macaulayDuration()
+	{
+		return _dblMacaulayDuration;
+	}
+
+	/**
+	 * Retrieve the Modified Duration
+	 * 
+	 * @return Modified Duration
+	 */
+
+	public double modifiedDuration()
+	{
+		return _dblModifiedDuration;
 	}
 
 	/**

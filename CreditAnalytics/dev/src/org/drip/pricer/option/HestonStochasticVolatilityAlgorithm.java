@@ -414,6 +414,19 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 			throw new java.lang.Exception ("HestonStochasticVolatilityAlgorithm ctr: Invalid Inputs");
 	}
 
+	/**
+	 * Record the Details of a Single Phase Adjustment Run
+	 * 
+	 * @param dblStrike Strike
+	 * @param dbTimeToExpiry TTE
+	 * @param dblRiskFreeRate Risk Free Rate
+	 * @param dblSpot Spot
+	 * @param dblInitialVolatility Initial Volatility
+	 * @param bLeft TRUE => Phase Correction applied to Left
+	 * 
+	 * @return Map of the Phase Correction Record
+	 */
+
 	public java.util.Map<java.lang.Double, java.lang.Double> recordPhase (
 		final double dblStrike,
 		final double dbTimeToExpiry,

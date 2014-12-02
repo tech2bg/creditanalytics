@@ -3885,7 +3885,7 @@ public class CurveSurfaceQuoteSet {
 	 * @throws java.lang.Exception Thrown if the Fixing cannot be found
 	 */
 
-	public double getFixing (
+	public double fixing (
 		final org.drip.analytics.date.JulianDate dt,
 		final org.drip.state.identifier.LatentStateLabel lsl)
 		throws java.lang.Exception
@@ -3904,7 +3904,7 @@ public class CurveSurfaceQuoteSet {
 	 * @throws java.lang.Exception Thrown if the Fixing cannot be found
 	 */
 
-	public double getFixing (
+	public double fixing (
 		final double dblDate,
 		final org.drip.state.identifier.LatentStateLabel lsl)
 		throws java.lang.Exception

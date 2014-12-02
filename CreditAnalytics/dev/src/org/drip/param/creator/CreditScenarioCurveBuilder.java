@@ -93,6 +93,6 @@ public class CreditScenarioCurveBuilder {
 						org.drip.param.definition.ScenarioCreditCurve.CC_BASE))
 			return null;
 
-		return ccsc.getCCBase();
+		return ccsc.base();
 	}
 }

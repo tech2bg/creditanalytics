@@ -270,7 +270,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == strTenor || strTenor.isEmpty())
-			throw new java.lang.Exception ("DiscountCurve.libor => Invalid Inputs");
+			throw new java.lang.Exception ("DiscountCurve::libor => Invalid Inputs");
 
 		double dblEndDate = new org.drip.analytics.date.JulianDate (dblDate).addTenor (strTenor).julian();
 
@@ -283,7 +283,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
-		if (null == dt) throw new java.lang.Exception ("DiscountCurve.libor => Invalid Inputs");
+		if (null == dt) throw new java.lang.Exception ("DiscountCurve::libor => Invalid Inputs");
 
 		return libor (dt.julian(), strTenor);
 	}
@@ -293,7 +293,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DiscountCurve::liborDV01 got NaN for date");
+			throw new java.lang.Exception ("DiscountCurve::liborDV01 => Invalid Dates");
 
 		java.lang.String strCurrency = currency();
 
@@ -369,13 +369,13 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 	{
 		if (null == strManifestMeasure || strManifestMeasure.isEmpty() ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DiscountCurve.estimateManifestMeasure => Invalid input");
+			throw new java.lang.Exception ("DiscountCurve::estimateManifestMeasure => Invalid input");
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aCalibComp = calibComp();
 
 		if (null == aCalibComp)
 			throw new java.lang.Exception
-				("DiscountCurve.estimateManifestMeasure => Calib Components not available");
+				("DiscountCurve::estimateManifestMeasure => Calib Components not available");
 
 		org.drip.spline.params.SegmentCustomBuilderControl sbp = new
 			org.drip.spline.params.SegmentCustomBuilderControl
@@ -391,21 +391,21 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 
 		if (0 == iNumComponent)
 			throw new java.lang.Exception
-				("DiscountCurve.estimateManifestMeasure => Calib Components not available");
+				("DiscountCurve::estimateManifestMeasure => Calib Components not available");
 
 		for (int i = 0; i < iNumComponent; ++i) {
 			if (0 != i) aSBP[i - 1] = sbp;
 
 			if (null == aCalibComp[i])
 				throw new java.lang.Exception
-					("DiscountCurve.estimateManifestMeasure => Cannot locate a component");
+					("DiscountCurve::estimateManifestMeasure => Cannot locate a component");
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapManifestMeasure =
 				manifestMeasure (aCalibComp[i].primaryCode());
 
 			if (null == mapManifestMeasure || !mapManifestMeasure.containsKey (strManifestMeasure))
 				throw new java.lang.Exception
-					("DiscountCurve.estimateManifestMeasure => Cannot locate the manifest measure");
+					("DiscountCurve::estimateManifestMeasure => Cannot locate the manifest measure");
 
 			adblQuote[i] = mapManifestMeasure.get (strManifestMeasure);
 
@@ -420,7 +420,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 
 		if (null == regime)
 			throw new java.lang.Exception
-				("DiscountCurve.estimateManifestMeasure => Cannot create Interp Stretch");
+				("DiscountCurve::estimateManifestMeasure => Cannot create Interp Stretch");
 
 		return regime.responseValue (dblDate);
 	}
@@ -560,7 +560,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 
 			for (int k = 0; k < iNumParameters; ++k) {
 				if (!wjCompPVDF.accumulatePartialFirstDerivative (i, k,
-					wjCompDDirtyPVDManifestMeasure.getFirstDerivative (0, k)))
+					wjCompDDirtyPVDManifestMeasure.firstDerivative (0, k)))
 					return null;
 			}
 		}
@@ -640,8 +640,8 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		double dblInverseAnnualizedTenorLength = 1. / dblElapsedYear;
 
 		for (int i = 0; i < iNumQuote; ++i) {
-			double dblDForwardDQManifestMeasurei = ((wjDDFDManifestMeasureDate1.getFirstDerivative (0, i) *
-				dblDForwardDManifestMeasure1iScale) - (wjDDFDManifestMeasureDate2.getFirstDerivative (0, i) *
+			double dblDForwardDQManifestMeasurei = ((wjDDFDManifestMeasureDate1.firstDerivative (0, i) *
+				dblDForwardDManifestMeasure1iScale) - (wjDDFDManifestMeasureDate2.firstDerivative (0, i) *
 					dblDForwardDManifestMeasure2iScale)) * dblInverseAnnualizedTenorLength;
 
 			if (!wjDForwardDManifestMeasure.accumulatePartialFirstDerivative (0, i,
@@ -707,7 +707,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 	 * @return The Jacobian
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian getZeroRateJack (
+	public org.drip.quant.calculus.WengertJacobian zeroRateJack (
 		final double dblDate,
 		final java.lang.String strManifestMeasure)
 	{
@@ -726,11 +726,11 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 	 * @return The Jacobian
 	 */
 
-	public org.drip.quant.calculus.WengertJacobian getZeroRateJack (
+	public org.drip.quant.calculus.WengertJacobian zeroRateJack (
 		final org.drip.analytics.date.JulianDate dt,
 		final java.lang.String strManifestMeasure)
 	{
-		return null == dt? null : getZeroRateJack (dt.julian(), strManifestMeasure);
+		return null == dt? null : zeroRateJack (dt.julian(), strManifestMeasure);
 	}
 
 	/**

@@ -45,23 +45,9 @@ public class ResponseValueTweakParams {
 
 	public static final int MANIFEST_MEASURE_FLAT_TWEAK = -1;
 
-	/**
-	 * Index of the Instrument whose Manifest Measure is to be Tweaked
-	 */
-
-	public int _iTweakNode = MANIFEST_MEASURE_FLAT_TWEAK;
-
-	/**
-	 * Is the tweak parallel or proportional
-	 */
-
-	public boolean _bIsTweakProportional = false;
-
-	/**
-	 * Node tweak amount
-	 */
-
-	public double _dblTweakAmount = java.lang.Double.NaN;
+	private boolean _bIsTweakProportional = false;
+	private int _iTweakNode = MANIFEST_MEASURE_FLAT_TWEAK;
+	private double _dblTweakAmount = java.lang.Double.NaN;
 
 	/**
 	 * ResponseValueTweakParams constructor
@@ -69,7 +55,9 @@ public class ResponseValueTweakParams {
 	 * @param iTweakNode Node to be tweaked - Set to NODE_FLAT_TWEAK for flat curve tweak
 	 * @param bIsTweakProportional True => Tweak is proportional, False => parallel
 	 * @param dblTweakAmount Amount to be tweaked - proportional tweaks are represented as percent, parallel
-	 * 			tweaks are absolute numbers
+	 * 	tweaks are absolute numbers
+	 * 
+	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
 
 	public ResponseValueTweakParams (
@@ -83,5 +71,38 @@ public class ResponseValueTweakParams {
 
 		_iTweakNode = iTweakNode;
 		_bIsTweakProportional = bIsTweakProportional;
+	}
+
+	/**
+	 * Index of the Node to be tweaked
+	 * 
+	 * @return Index of the Node to be tweaked
+	 */
+
+	public int node()
+	{
+		return _iTweakNode;
+	}
+
+	/**
+	 * Amount to be tweaked by
+	 * 
+	 * @return Amount to be tweaked by
+	 */
+
+	public double amount()
+	{
+		return _dblTweakAmount;
+	}
+
+	/**
+	 * Is the Tweak Proportional
+	 * 
+	 * @return TRUE => The Tweak is Proportional
+	 */
+
+	public boolean isTweakProportional()
+	{
+		return _bIsTweakProportional;
 	}
 }

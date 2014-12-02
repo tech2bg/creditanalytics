@@ -87,7 +87,7 @@ public class QuotedSpreadInterpreter extends org.drip.param.quoting.MeasureInter
 	 * @return The CDS Contract Type
 	 */
 
-	public java.lang.String getCDSContractType()
+	public java.lang.String cdsContractType()
 	{
 		return _strCDSContractType;
 	}
@@ -98,7 +98,7 @@ public class QuotedSpreadInterpreter extends org.drip.param.quoting.MeasureInter
 	 * @return The Coupon Strike
 	 */
 
-	public double getCouponStrike()
+	public double couponStrike()
 	{
 		return _dblCouponStrike;
 	}

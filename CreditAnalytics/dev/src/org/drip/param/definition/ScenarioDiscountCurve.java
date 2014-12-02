@@ -132,7 +132,7 @@ public abstract class ScenarioDiscountCurve {
 	 * @return The base Discount Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getDCBase();
+	public abstract org.drip.analytics.rates.DiscountCurve base();
 
 	/**
 	 * Return the Bump Up Discount Curve
@@ -140,7 +140,7 @@ public abstract class ScenarioDiscountCurve {
 	 * @return The Bump Up Discount Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getDCBumpUp();
+	public abstract org.drip.analytics.rates.DiscountCurve bumpUp();
 
 	/**
 	 * Return the Bump Down Discount Curve
@@ -148,7 +148,7 @@ public abstract class ScenarioDiscountCurve {
 	 * @return The Bump Down Discount Curve
 	 */
 
-	public abstract org.drip.analytics.rates.DiscountCurve getDCBumpDn();
+	public abstract org.drip.analytics.rates.DiscountCurve bumpDown();
 
 	/**
 	 * Return the map of the tenor Bump Up Discount Curve
@@ -158,7 +158,7 @@ public abstract class ScenarioDiscountCurve {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
-			getTenorDCBumpUp();
+			tenorBumpUp();
 
 	/**
 	 * Return the map of the tenor Bump Down Discount Curve
@@ -168,5 +168,5 @@ public abstract class ScenarioDiscountCurve {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
-			getTenorDCBumpDn();
+			tenorBumpDown();
 }

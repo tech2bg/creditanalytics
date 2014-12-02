@@ -59,19 +59,19 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		int iParameterIndex = 0 == iNodeIndex ? 0 : 2;
 
 		if (!_wjDCoeffDEdgeParams.accumulatePartialFirstDerivative (0, iNodeIndex,
-			wjDCoeffDEdgeParams.getFirstDerivative (0, iParameterIndex)))
+			wjDCoeffDEdgeParams.firstDerivative (0, iParameterIndex)))
 			return false;
 
 		if (!_wjDCoeffDEdgeParams.accumulatePartialFirstDerivative (1, iNodeIndex,
-			wjDCoeffDEdgeParams.getFirstDerivative (1, iParameterIndex)))
+			wjDCoeffDEdgeParams.firstDerivative (1, iParameterIndex)))
 			return false;
 
 		if (!_wjDCoeffDEdgeParams.accumulatePartialFirstDerivative (2, iNodeIndex,
-			wjDCoeffDEdgeParams.getFirstDerivative (2, iParameterIndex)))
+			wjDCoeffDEdgeParams.firstDerivative (2, iParameterIndex)))
 			return false;
 
 		return _wjDCoeffDEdgeParams.accumulatePartialFirstDerivative (3, iNodeIndex,
-			wjDCoeffDEdgeParams.getFirstDerivative (3, iParameterIndex));
+			wjDCoeffDEdgeParams.firstDerivative (3, iParameterIndex));
 	}
 
 	private final org.drip.quant.calculus.WengertJacobian setDResponseDEdgeResponse (
@@ -94,10 +94,10 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 		for (int i = 0; i <= iNumSegment; ++i) {
 			if (i == iNodeIndex) {
 				if (!wjDResponseDEdgeResponse.accumulatePartialFirstDerivative (0, i,
-					wjDResponseDEdgeParams.getFirstDerivative (0,
+					wjDResponseDEdgeParams.firstDerivative (0,
 						org.drip.spline.segment.LatentStateResponseModel.LEFT_NODE_VALUE_PARAMETER_INDEX)) ||
 							!wjDResponseDEdgeResponse.accumulatePartialFirstDerivative (0, i + 1,
-								wjDResponseDEdgeParams.getFirstDerivative (0,
+								wjDResponseDEdgeParams.firstDerivative (0,
 									org.drip.spline.segment.LatentStateResponseModel.RIGHT_NODE_VALUE_PARAMETER_INDEX)))
 					return null;
 			}

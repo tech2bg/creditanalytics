@@ -234,7 +234,7 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				{
 					try {
 						for (int i = 0; i < NUM_DF_NODES; ++i)
-							_adblRate[i] = _zc.getZeroRate (_adblDate[i]);
+							_adblRate[i] = _zc.zeroRate (_adblDate[i]);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
 

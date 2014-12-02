@@ -158,7 +158,7 @@ public abstract class ScenarioCreditCurve {
 	 * @return The base credit curve
 	 */
 
-	public abstract org.drip.analytics.definition.CreditCurve getCCBase();
+	public abstract org.drip.analytics.definition.CreditCurve base();
 
 	/**
 	 * Return the bump up credit curve
@@ -166,7 +166,7 @@ public abstract class ScenarioCreditCurve {
 	 * @return The Bumped up credit curve
 	 */
 
-	public abstract org.drip.analytics.definition.CreditCurve getCCBumpUp();
+	public abstract org.drip.analytics.definition.CreditCurve bumpUp();
 
 	/**
 	 * Return the bump down credit curve
@@ -174,7 +174,7 @@ public abstract class ScenarioCreditCurve {
 	 * @return The Bumped down credit curve
 	 */
 
-	public abstract org.drip.analytics.definition.CreditCurve getCCBumpDn();
+	public abstract org.drip.analytics.definition.CreditCurve bumpDown();
 
 	/**
 	 * Return the recovery bump up credit curve
@@ -182,7 +182,7 @@ public abstract class ScenarioCreditCurve {
 	 * @return The Recovery Bumped up credit curve
 	 */
 
-	public abstract org.drip.analytics.definition.CreditCurve getCCRecoveryUp();
+	public abstract org.drip.analytics.definition.CreditCurve bumpRecoveryUp();
 
 	/**
 	 * Return the recovery bump down credit curve
@@ -190,7 +190,7 @@ public abstract class ScenarioCreditCurve {
 	 * @return The Recovery Bumped Down credit curve
 	 */
 
-	public abstract org.drip.analytics.definition.CreditCurve getCCRecoveryDn();
+	public abstract org.drip.analytics.definition.CreditCurve bumpRecoveryDown();
 
 	/**
 	 * Return the tenor bump up credit curve map
@@ -200,7 +200,7 @@ public abstract class ScenarioCreditCurve {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
-			getTenorCCBumpUp();
+			tenorBumpUp();
 
 	/**
 	 * Return the tenor bump down credit curve map
@@ -210,5 +210,5 @@ public abstract class ScenarioCreditCurve {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
-			getTenorCCBumpDn();
+			tenorBumpDown();
 }

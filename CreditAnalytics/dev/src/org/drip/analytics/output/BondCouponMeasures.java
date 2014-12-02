@@ -40,30 +40,10 @@ package org.drip.analytics.output;
  */
 
 public class BondCouponMeasures {
-
-	/**
-	 * Coupon DV01
-	 */
-
-	public double _dblDV01 = java.lang.Double.NaN;
-
-	/**
-	 * Index Coupon PV
-	 */
-
-	public double _dblIndexCouponPV = java.lang.Double.NaN;
-
-	/**
-	 * Coupon PV
-	 */
-
-	public double _dblCouponPV = java.lang.Double.NaN;
-
-	/**
-	 * PV
-	 */
-
-	public double _dblPV = java.lang.Double.NaN;
+	private double _dblDV01 = java.lang.Double.NaN;
+	private double _dblIndexCouponPV = java.lang.Double.NaN;
+	private double _dblCouponPV = java.lang.Double.NaN;
+	private double _dblPV = java.lang.Double.NaN;
 
 	/**
 	 * BondCouponMeasures constructor
@@ -109,6 +89,50 @@ public class BondCouponMeasures {
 		_dblCouponPV /= dblCashPayDF;
 		_dblPV /= dblCashPayDF;
 		return true;
+	}
+
+	/**
+	 * Retrieve the DV01
+	 * 
+	 * @return DV01
+	 */
+
+	public double dv01()
+	{
+		return _dblDV01;
+	}
+
+	/**
+	 * Retrieve the Index Coupon PV
+	 * 
+	 * @return Index Coupon PV
+	 */
+
+	public double indexCouponPV()
+	{
+		return _dblIndexCouponPV;
+	}
+
+	/**
+	 * Retrieve the Coupon PV
+	 * 
+	 * @return Coupon PV
+	 */
+
+	public double couponPV()
+	{
+		return _dblCouponPV;
+	}
+
+	/**
+	 * Retrieve the PV
+	 * 
+	 * @return PV
+	 */
+
+	public double pv()
+	{
+		return _dblPV;
 	}
 
 	/**

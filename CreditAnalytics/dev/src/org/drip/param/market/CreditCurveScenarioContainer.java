@@ -240,39 +240,41 @@ public class CreditCurveScenarioContainer extends org.drip.param.definition.Scen
 		return true;
 	}
 
-	@Override public org.drip.analytics.definition.CreditCurve getCCBase()
+	@Override public org.drip.analytics.definition.CreditCurve base()
 	{
 		return _ccBase;
 	}
 
-	@Override public org.drip.analytics.definition.CreditCurve getCCBumpUp()
+	@Override public org.drip.analytics.definition.CreditCurve bumpUp()
 	{
 		return _ccBumpUp;
 	}
 
-	@Override public org.drip.analytics.definition.CreditCurve getCCBumpDn()
+	@Override public org.drip.analytics.definition.CreditCurve bumpDown()
 	{
 		return _ccBumpDn;
 	}
 
-	@Override public org.drip.analytics.definition.CreditCurve getCCRecoveryUp()
+	@Override public org.drip.analytics.definition.CreditCurve bumpRecoveryUp()
 	{
 		return _ccRecoveryUp;
 	}
 
-	@Override public org.drip.analytics.definition.CreditCurve getCCRecoveryDn()
+	@Override public org.drip.analytics.definition.CreditCurve bumpRecoveryDown()
 	{
 		return _ccRecoveryDn;
 	}
 
-	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
-		getTenorCCBumpUp()
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+			tenorBumpUp()
 	{
 		return _mapTenorCCBumpUp;
 	}
 
-	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
-		getTenorCCBumpDn()
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
+			tenorBumpDown()
 	{
 		return _mapTenorCCBumpDn;
 	}

@@ -168,7 +168,7 @@ public abstract class ScenarioMarketParams {
 	 * @return Treasury Quote
 	 */
 
-	public abstract org.drip.param.definition.ProductQuote getTSYQuote (
+	public abstract org.drip.param.definition.ProductQuote tsyQuote (
 		final java.lang.String strBenchmark);
 
 	/**
@@ -178,7 +178,7 @@ public abstract class ScenarioMarketParams {
 	 */
 
 	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
-		getTSYQuotes();
+		tsyQuotes();
 
 	/**
 	 * Add the fixing for the given Latent State Label and the given date
@@ -260,7 +260,7 @@ public abstract class ScenarioMarketParams {
 	 * @return ComponentQuote
 	 */
 
-	public abstract org.drip.param.definition.ProductQuote getCompQuote (
+	public abstract org.drip.param.definition.ProductQuote compQuote (
 		final java.lang.String strCompID);
 
 	/**
@@ -271,7 +271,7 @@ public abstract class ScenarioMarketParams {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
-			getCompQuotes();
+			compQuotes();
 
 	/**
 	 * Add the named scenario Market Parameters
@@ -294,7 +294,7 @@ public abstract class ScenarioMarketParams {
 	 * @return Named Market Parameters
 	 */
 
-	public abstract org.drip.param.market.CurveSurfaceQuoteSet getScenMarketParams (
+	public abstract org.drip.param.market.CurveSurfaceQuoteSet scenMarketParams (
 		final java.lang.String strScenarioName);
 
 	/**
@@ -306,7 +306,7 @@ public abstract class ScenarioMarketParams {
 	 * @return The Market Parameters
 	 */
 
-	public abstract org.drip.param.market.CurveSurfaceQuoteSet getScenMarketParams (
+	public abstract org.drip.param.market.CurveSurfaceQuoteSet scenMarketParams (
 		final org.drip.product.definition.FixedIncomeComponent comp,
 		final java.lang.String strScen);
 
@@ -321,7 +321,7 @@ public abstract class ScenarioMarketParams {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-			getIRTenorMarketParams (
+			irTenorMarketParams (
 				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp);
 
@@ -336,7 +336,7 @@ public abstract class ScenarioMarketParams {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-			getForwardTenorMarketParams (
+			forwardTenorMarketParams (
 				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp);
 
@@ -351,7 +351,7 @@ public abstract class ScenarioMarketParams {
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-			getCreditTenorMarketParams (
+			creditTenorMarketParams (
 				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp);
 
@@ -364,7 +364,7 @@ public abstract class ScenarioMarketParams {
 	 * @return Market Parameters Instance
 	 */
 
-	public abstract org.drip.param.market.CurveSurfaceQuoteSet getScenMarketParams (
+	public abstract org.drip.param.market.CurveSurfaceQuoteSet scenMarketParams (
 		final org.drip.product.definition.BasketProduct bp,
 		final java.lang.String strScen);
 

@@ -254,13 +254,12 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 				org.drip.quant.calculus.WengertJacobian (1, wjDFMaturity.numParameters());
 
 			for (int i = 0; i < wjDFMaturity.numParameters(); ++i) {
-				if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, i, wjDFMaturity.getFirstDerivative
-					(0, i) / dblDFEffective))
+				if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, i, wjDFMaturity.firstDerivative (0,
+					i) / dblDFEffective))
 					return null;
 
-				if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, i,
-					-wjDFEffective.getFirstDerivative (0, i) * dblDFMaturity / dblDFEffective /
-						dblDFEffective))
+				if (!wjPVDFMicroJack.accumulatePartialFirstDerivative (0, i, -wjDFEffective.firstDerivative
+					(0, i) * dblDFMaturity / dblDFEffective / dblDFEffective))
 					return null;
 			}
 
@@ -308,11 +307,11 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 
 				for (int i = 0; i < wjDFMaturity.numParameters(); ++i) {
 					if (!wjDFMicroJack.accumulatePartialFirstDerivative (0, i,
-						wjDFMaturity.getFirstDerivative (0, i) / dblDFEffective))
+						wjDFMaturity.firstDerivative (0, i) / dblDFEffective))
 						return null;
 
 					if (!wjDFMicroJack.accumulatePartialFirstDerivative (0, i, -1. *
-						wjDFEffective.getFirstDerivative (0, i) * dblDFMaturity / dblDFEffective /
+						wjDFEffective.firstDerivative (0, i) * dblDFMaturity / dblDFEffective /
 							dblDFEffective))
 						return null;
 				}

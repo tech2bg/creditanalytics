@@ -45,7 +45,7 @@ package org.drip.param.config;
  */
 
 public class ConfigLoader {
-	private static final int GetIntTagValue (
+	private static final int IntegerTagValue (
 		final org.w3c.dom.Element eTag,
 		final java.lang.String strTag)
 		throws java.lang.Exception {
@@ -71,7 +71,7 @@ public class ConfigLoader {
 		return new java.lang.Integer (node.getNodeValue()).intValue();
 	}
 
-	private static final boolean GetBooleanTagValue (
+	private static final boolean BooleanTagValue (
 		final org.w3c.dom.Element eTag,
 		final java.lang.String strTag)
 		throws java.lang.Exception
@@ -98,7 +98,7 @@ public class ConfigLoader {
 		return new java.lang.Boolean (node.getNodeValue()).booleanValue();
 	}
 
-	private static final java.lang.String GetStringTagValue (
+	private static final java.lang.String StringTagValue (
 		final org.w3c.dom.Element eTag,
 		final java.lang.String strTag)
 	{
@@ -121,7 +121,7 @@ public class ConfigLoader {
 		return node.getNodeValue();
 	}
 
-	private static final int[] GetIntArrayTagValue (
+	private static final int[] IntegerArrayTagValue (
 		final org.w3c.dom.Element eTag,
 		final java.lang.String strTag)
 	{
@@ -151,7 +151,7 @@ public class ConfigLoader {
 		return ai;
 	}
 
-	private static final org.w3c.dom.Document GetNormalizedXMLDoc (
+	private static final org.w3c.dom.Document NormalizedXMLDoc (
 		final java.lang.String strXMLFile)
 	{
 		if (null == strXMLFile || strXMLFile.isEmpty()) return null;
@@ -183,7 +183,7 @@ public class ConfigLoader {
 	 * @return LocHolidays
 	 */
 
-	public static org.drip.analytics.holiday.Locale GetLocHolidays (
+	public static org.drip.analytics.holiday.Locale LocationHolidays (
 		final org.w3c.dom.Document doc,
 		final java.lang.String strLoc)
 	{
@@ -203,7 +203,7 @@ public class ConfigLoader {
 
 		if (null != nlHols && null != nlHols.item (0) && org.w3c.dom.Node.ELEMENT_NODE == nlHols.item
 			(0).getNodeType())
-			locHols.addWeekend (GetIntArrayTagValue ((org.w3c.dom.Element) nlHols.item (0), "DaysInWeek"));
+			locHols.addWeekend (IntegerArrayTagValue ((org.w3c.dom.Element) nlHols.item (0), "DaysInWeek"));
 
 		if (null != (nlHols = e.getElementsByTagName ("FixedHoliday"))) {
 			for (int j = 0; j < nlHols.getLength(); ++j) {
@@ -215,7 +215,7 @@ public class ConfigLoader {
 
 				if (null != elemHol) {
 					try {
-						locHols.addFixedHoliday (GetIntTagValue (elemHol, "Date"), GetIntTagValue (elemHol,
+						locHols.addFixedHoliday (IntegerTagValue (elemHol, "Date"), IntegerTagValue (elemHol,
 							"Month"), "");
 					} catch (java.lang.Exception ex) {
 						ex.printStackTrace();
@@ -234,8 +234,8 @@ public class ConfigLoader {
 
 				if (null != elemHol) {
 					try {
-						locHols.addFloatingHoliday (GetIntTagValue (elemHol, "WeekInMonth"), GetIntTagValue
-							(elemHol, "WeekDay"), GetIntTagValue (elemHol, "Month"), GetBooleanTagValue
+						locHols.addFloatingHoliday (IntegerTagValue (elemHol, "WeekInMonth"), IntegerTagValue
+							(elemHol, "WeekDay"), IntegerTagValue (elemHol, "Month"), BooleanTagValue
 								(elemHol, "FromFront"), "");
 					} catch (java.lang.Exception ex) {
 						ex.printStackTrace();
@@ -255,10 +255,10 @@ public class ConfigLoader {
 	 * @return String representing the logger location's full path
 	 */
 
-	public static java.lang.String GetLoggerLocation (
+	public static java.lang.String LoggerLocation (
 		final java.lang.String strConfigFile)
 	{
-		org.w3c.dom.Document doc = GetNormalizedXMLDoc (strConfigFile);
+		org.w3c.dom.Document doc = NormalizedXMLDoc (strConfigFile);
 
 		if (null == doc) return null;
 
@@ -268,7 +268,7 @@ public class ConfigLoader {
 			nlLogger.item (0).getNodeType())
 			return null;
 
-		return GetStringTagValue ((org.w3c.dom.Element) nlLogger.item (0), "Location");
+		return StringTagValue ((org.w3c.dom.Element) nlLogger.item (0), "Location");
 	}
 
 	/**
@@ -282,7 +282,7 @@ public class ConfigLoader {
 	public static java.net.Socket ConnectToAnalServer (
 		final java.lang.String strConfigFile)
 	{
-		org.w3c.dom.Document doc = GetNormalizedXMLDoc (strConfigFile);
+		org.w3c.dom.Document doc = NormalizedXMLDoc (strConfigFile);
 
 		if (null == doc) return null;
 
@@ -293,8 +293,8 @@ public class ConfigLoader {
 			return null;
 
 		try {
-			return new java.net.Socket (GetStringTagValue ((org.w3c.dom.Element) nlLogger.item (0),
-				"host"), GetIntTagValue ((org.w3c.dom.Element) nlLogger.item (0), "port"));
+			return new java.net.Socket (StringTagValue ((org.w3c.dom.Element) nlLogger.item (0), "host"),
+				IntegerTagValue ((org.w3c.dom.Element) nlLogger.item (0), "port"));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -313,7 +313,7 @@ public class ConfigLoader {
 	public static java.net.ServerSocket InitAnalServer (
 		final java.lang.String strConfigFile)
 	{
-		org.w3c.dom.Document doc = GetNormalizedXMLDoc (strConfigFile);
+		org.w3c.dom.Document doc = NormalizedXMLDoc (strConfigFile);
 
 		if (null == doc) return null;
 
@@ -324,8 +324,8 @@ public class ConfigLoader {
 			return null;
 
 		try {
-			return new java.net.ServerSocket (GetIntTagValue ((org.w3c.dom.Element) nlLogger.item (0),
-				"port"), GetIntTagValue ((org.w3c.dom.Element) nlLogger.item (0), "maxconn"));
+			return new java.net.ServerSocket (IntegerTagValue ((org.w3c.dom.Element) nlLogger.item (0),
+				"port"), IntegerTagValue ((org.w3c.dom.Element) nlLogger.item (0), "maxconn"));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -345,11 +345,11 @@ public class ConfigLoader {
 		LoadHolidayCalendars (
 			final java.lang.String strConfigFile)
 		{
-		org.w3c.dom.Document doc = GetNormalizedXMLDoc (strConfigFile);
+		org.w3c.dom.Document doc = NormalizedXMLDoc (strConfigFile);
 
 		if (null == doc) return null;
 
-		org.drip.analytics.holiday.Locale lhNYB = GetLocHolidays (doc, "NYB");
+		org.drip.analytics.holiday.Locale lhNYB = LocationHolidays (doc, "NYB");
 
 		if (null == lhNYB) return null;
 
@@ -372,7 +372,7 @@ public class ConfigLoader {
 	public static java.sql.Statement OracleInit (
 		final java.lang.String strConfigFile)
 	{
-		org.w3c.dom.Document doc = GetNormalizedXMLDoc (strConfigFile);
+		org.w3c.dom.Document doc = NormalizedXMLDoc (strConfigFile);
 
 		if (null == doc) return null;
 
@@ -387,8 +387,8 @@ public class ConfigLoader {
 		try {
 			java.lang.Class.forName ("oracle.jdbc.driver.OracleDriver");
 
-			java.lang.String strURL = "jdbc:oracle:thin:@//" + GetStringTagValue (elemDBConn, "host") + ":" +
-				GetStringTagValue (elemDBConn, "port") + "/" + GetStringTagValue (elemDBConn, "dbname");
+			java.lang.String strURL = "jdbc:oracle:thin:@//" + StringTagValue (elemDBConn, "host") + ":" +
+				StringTagValue (elemDBConn, "port") + "/" + StringTagValue (elemDBConn, "dbname");
 
 			// java.lang.String strURL = "jdbc:oracle:thin:@//localhost:1521/XE";
 
@@ -483,6 +483,6 @@ public class ConfigLoader {
 			mapHols.entrySet())
 			System.out.println (me.getKey() + "=" + me.getValue());
 
-		System.out.println ("Logger: " + GetLoggerLocation (strConfigFile));
+		System.out.println ("Logger: " + LoggerLocation (strConfigFile));
 	}
 }

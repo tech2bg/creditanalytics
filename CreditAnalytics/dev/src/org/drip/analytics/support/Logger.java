@@ -96,7 +96,7 @@ public class Logger {
 
 		try {
 			_writeLog = new java.io.BufferedWriter (new java.io.FileWriter
-				(org.drip.param.config.ConfigLoader.GetLoggerLocation (strConfigFile)));
+				(org.drip.param.config.ConfigLoader.LoggerLocation (strConfigFile)));
 
 			return _sbInit = true;
 		} catch (java.lang.Exception e) {

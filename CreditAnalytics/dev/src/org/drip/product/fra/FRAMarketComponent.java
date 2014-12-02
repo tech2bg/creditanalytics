@@ -103,7 +103,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 		if (null == mapResult || 0 == mapResult.size()) return null;
 
 		try {
-			double dblParStandardFRA = csqs.available (dtMaturity, fri) ? csqs.getFixing (dtMaturity, fri) :
+			double dblParStandardFRA = csqs.available (dtMaturity, fri) ? csqs.fixing (dtMaturity, fri) :
 				fc.forward (dblMaturity);
 
 			double dblForwardDCF = org.drip.analytics.daycount.Convention.YearFraction (dblMaturity, new

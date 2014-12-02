@@ -65,23 +65,9 @@ public class CreditManifestMeasureTweak extends ResponseValueTweakParams {
 
 	public static final java.lang.String CREDIT_TWEAK_NODE_MEASURE_HAZARD = "Hazard";
 
-	/**
-	 * Tweak Parameter Type
-	 */
-
-	public java.lang.String _strTweakParamType = "";
-
-	/**
-	 * Tweak Measure Type
-	 */
-
-	public java.lang.String _strTweakMeasureType = "";
-
-	/**
-	 * Flag indicating if the calibration occurs over a single node
-	 */
-
-	public boolean _bSingleNodeCalib = false;
+	private boolean _bSingleNodeCalib = false;
+	private java.lang.String _strTweakParamType = "";
+	private java.lang.String _strTweakMeasureType = "";
 
 	/**
 	 * CreditManifestMeasureTweak constructor
@@ -118,5 +104,38 @@ public class CreditManifestMeasureTweak extends ResponseValueTweakParams {
 			throw new java.lang.Exception ("CreditManifestMeasureTweak ctr => Invalid Tweak Measure Type!");
 
 		_bSingleNodeCalib = bSingleNodeCalib;
+	}
+
+	/**
+	 * Single Node Calibration Flag
+	 * 
+	 * @return TRUE => Turn on Single Node Calibration
+	 */
+
+	public boolean singleNodeCalib()
+	{
+		return _bSingleNodeCalib;
+	}
+
+	/**
+	 * Retrieve the Tweak Parameter Type
+	 * 
+	 * @return The Tweak Parameter Type
+	 */
+
+	public java.lang.String tweakParamType()
+	{
+		return _strTweakParamType;
+	}
+
+	/**
+	 * Retrieve the Tweak Measure Type
+	 * 
+	 * @return The Tweak Measure Type
+	 */
+
+	public java.lang.String tweakMeasureType()
+	{
+		return _strTweakMeasureType;
 	}
 }

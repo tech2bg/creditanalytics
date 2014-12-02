@@ -87,8 +87,7 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 
 		org.drip.state.identifier.ForwardLabel forwardLabel = _refIndexPeriod.forwardLabel();
 
-		if (csqs.available (dblFixingDate, forwardLabel))
-			return csqs.getFixing (dblFixingDate, forwardLabel);
+		if (csqs.available (dblFixingDate, forwardLabel)) return csqs.fixing (dblFixingDate, forwardLabel);
 
 		double dblReferencePeriodEndDate = _refIndexPeriod.endDate();
 

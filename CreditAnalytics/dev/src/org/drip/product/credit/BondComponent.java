@@ -330,7 +330,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 					"M") : dc.libor (dblStartDate, period.endDate());
 			}
 
-			return csqs.getFixing (dblFixingDate, _fltParams._fri);
+			return csqs.fixing (dblFixingDate, _fltParams._fri);
 		}
 
 		return dc.libor (dblValueDate, 0 != iFreq ? dblValueDate + 365.25 / iFreq : dblValueDate +
@@ -571,9 +571,9 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapMeasures = bwmFair.toMap ("");
 
-		double dblPrice = (null == bwmFair._bcmCreditRiskyClean || !org.drip.quant.common.NumberUtil.IsValid
-			(bwmFair._bcmCreditRiskyClean._dblPV)) ? bwmFair._bcmCreditRisklessClean._dblPV :
-				bwmFair._bcmCreditRiskyClean._dblPV;
+		double dblPrice = (null == bwmFair.creditRiskyCleanbcm() || !org.drip.quant.common.NumberUtil.IsValid
+			(bwmFair.creditRiskyCleanbcm().pv())) ? bwmFair.creditRisklessCleanbcm().pv() :
+				bwmFair.creditRiskyCleanbcm().pv();
 
 		try {
 			org.drip.quant.common.CollectionUtil.MergeWithMain (mapMeasures, rvMeasures (valParams,

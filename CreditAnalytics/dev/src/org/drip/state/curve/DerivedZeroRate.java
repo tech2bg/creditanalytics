@@ -191,20 +191,20 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		return _dc.jackDDFDManifestMeasure (dblDate, strManifestMeasure);
 	}
 
-	@Override public double getZeroRate (
+	@Override public double zeroRate (
 		final double dblDate)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("DerivedZeroCurve::getZeroRate => Invalid Date");
+			throw new java.lang.Exception ("DerivedZeroCurve::zeroRate => Invalid Date");
 
 		if (dblDate <= epoch().julian()) return 1.;
 
 		java.lang.Double objZeroRate = _mapZeroRate.get (new org.drip.analytics.date.JulianDate (dblDate));
 
 		if (null == objZeroRate)
-			throw new java.lang.Exception ("DerivedZeroCurve::getZeroRate => No Zero Rate found for date " +
-				new org.drip.analytics.date.JulianDate (dblDate));
+			throw new java.lang.Exception ("DerivedZeroCurve::zeroRate => No Zero Rate found for date " + new
+				org.drip.analytics.date.JulianDate (dblDate));
 
 		return objZeroRate;
 	}

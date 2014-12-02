@@ -547,7 +547,7 @@ public class BondAnalyticsAPI {
 
 			ValuationParams valParams = ValuationParams.CreateValParams (JulianDate.Today(), 0, "", Convention.DR_ACTUAL);
 
-			ProductQuote cquote = ProductQuoteBuilder.CreateProductQuote();
+			ProductQuote cquote = QuoteBuilder.CreateProductQuote();
 
 			Quote q = QuoteBuilder.CreateQuote ("mid", 0.05, Double.NaN);
 

@@ -228,7 +228,7 @@ public class BondStream extends org.drip.product.rates.Stream {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("PeriodSet::periodIndex => Input date is NaN!");
+			throw new java.lang.Exception ("BondStream::periodIndex => Input date is NaN!");
 
 		int i = 0;
 
@@ -238,7 +238,7 @@ public class BondStream extends org.drip.product.rates.Stream {
 			++i;
 		}
 
-		throw new java.lang.Exception ("PeriodSet::periodIndex => Input date not in the period set range!");
+		throw new java.lang.Exception ("BondStream::periodIndex => Input date not in the period set range!");
 	}
 	
 	/**

@@ -113,13 +113,13 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqsUp,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqsDown,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseMeasures)
 	{
 		if (null == csqsUp) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapUpMeasures = value (valParams,
-			pricerParams, csqsUp, quotingParams);
+			pricerParams, csqsUp, vcp);
 
 		if (null == mapUpMeasures || 0 == mapUpMeasures.size()) return null;
 
@@ -148,7 +148,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		if (null == csqsDown) return new FlatDeltaGammaMeasureMap (mapDeltaMeasures, null);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapDownMeasures = value
-			(valParams, pricerParams, csqsDown, quotingParams);
+			(valParams, pricerParams, csqsDown, vcp);
 
 		if (null == mapDownMeasures || 0 == mapDownMeasures.size())
 			return new FlatDeltaGammaMeasureMap (mapDeltaMeasures, null);
@@ -188,7 +188,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 			mapTenorUpCSQS,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
 			mapTenorDownCSQS,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseMeasures,
 		final ComponentCurve compCurve)
 	{
@@ -233,7 +233,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 			}
 
 			mapTenorDGMM.put (strTenorKey, accumulateDeltaGammaMeasures (valParams, pricerParams,
-				csqsTenorUp, csqsTenorDown, quotingParams, mapBaseMeasures));
+				csqsTenorUp, csqsTenorDown, vcp, mapBaseMeasures));
 
 			if (null != csqsTenorUp && null != compCurve && null != compCurve._strName &&
 				!compCurve._strName.isEmpty() && null != ccVirginUp)
@@ -281,7 +281,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 			mapTenorUpCSQS,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
 			mapTenorDownCSQS,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBaseMeasures)
 	{
 		if (null == mapCSQS || 0 == mapCSQS.size()) return null;
@@ -306,9 +306,9 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 
 			if (null != csqs)
 				mapComponentTenorDGMM.put (strComponentName, accumulateTenorDeltaGammaMeasures (valParams,
-					pricerParams, mapTenorUpCSQS, mapTenorDownCSQS, quotingParams, mapBaseMeasures, new
-						ComponentCurve (strComponentName, csqs.creditCurve
-							(org.drip.state.identifier.CreditLabel.Standard (strComponentName)))));
+					pricerParams, mapTenorUpCSQS, mapTenorDownCSQS, vcp, mapBaseMeasures, new ComponentCurve
+						(strComponentName, csqs.creditCurve (org.drip.state.identifier.CreditLabel.Standard
+							(strComponentName)))));
 		}
 
 		if (0 == mapComponentTenorDGMM.size()) return null;
@@ -894,7 +894,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * 
 	 * @return Map of measure name and value
 	 */
@@ -903,7 +903,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams vcp)
 	{
 		long lStart = System.nanoTime();
 
@@ -918,7 +918,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 
 		for (int i = 0; i < iNumComp; ++i) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCompOP = aComp[i].value
-				(valParams, pricerParams, csqs, quotingParams);
+				(valParams, pricerParams, csqs, vcp);
 
 			if (null == mapCompOP || 0 == mapCompOP.size()) continue;
 
@@ -962,7 +962,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param strMeasure Measure String
 	 * 
 	 * @return Double measure value
@@ -974,11 +974,11 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final java.lang.String strMeasure)
 		throws java.lang.Exception
 	{
-		return measureValue (strMeasure, value (valParams, pricerParams, csqs, quotingParams));
+		return measureValue (strMeasure, value (valParams, pricerParams, csqs, vcp));
 	}
 
 	/**
@@ -988,7 +988,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
 	 * @param mpc org.drip.param.definition.MarketParams
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * 
 	 * @return BasketOutput object
 	 */
@@ -997,7 +997,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ScenarioMarketParams mpc,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams vcp)
 	{
 		if (null == valParams || null == mpc) return null;
 
@@ -1005,30 +1005,30 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 
 		org.drip.analytics.output.BasketMeasures bkop = new org.drip.analytics.output.BasketMeasures();
 
-		if (null == (bkop._mBase = value (valParams, pricerParams, mpc.getScenMarketParams (this, "Base"),
-			quotingParams)))
+		if (!bkop.setBaseMeasures (value (valParams, pricerParams, mpc.scenMarketParams (this, "Base"),
+			vcp)))
 			return null;
 
 		FlatDeltaGammaMeasureMap dgmmCredit = accumulateDeltaGammaMeasures (valParams, pricerParams,
-			mpc.getScenMarketParams (this, "FlatCreditBumpUp"), mpc.getScenMarketParams (this,
-				"FlatCreditBumpDn"), quotingParams, bkop._mBase);
+			mpc.scenMarketParams (this, "FlatCreditBumpUp"), mpc.scenMarketParams (this, "FlatCreditBumpDn"),
+				vcp, bkop.baseMeasures());
 
-		if (null != dgmmCredit && null != (bkop._mFlatCreditDelta = dgmmCredit._mapDelta))
-			bkop._mFlatCreditGamma = dgmmCredit._mapGamma;
+		if (null != dgmmCredit && !bkop.setFlatCreditDeltaMeasures (dgmmCredit._mapDelta))
+			bkop.setFlatCreditGammaMeasures (dgmmCredit._mapGamma);
 
 		FlatDeltaGammaMeasureMap dgmmRates = accumulateDeltaGammaMeasures (valParams, pricerParams,
-			mpc.getScenMarketParams (this, "FlatIRBumpUp"), mpc.getScenMarketParams (this, "FlatIRBumpDn"),
-				quotingParams, bkop._mBase);
+			mpc.scenMarketParams (this, "FlatIRBumpUp"), mpc.scenMarketParams (this, "FlatIRBumpDn"), vcp,
+				bkop.baseMeasures());
 
-		if (null != dgmmRates && null != (bkop._mFlatIRDelta = dgmmRates._mapDelta))
-			bkop._mFlatIRGamma = dgmmRates._mapGamma;
+		if (null != dgmmRates && bkop.setFlatIRDeltaMeasures (dgmmRates._mapDelta))
+			bkop.setFlatIRGammaMeasures (dgmmRates._mapGamma);
 
 		FlatDeltaGammaMeasureMap dgmmRecovery = accumulateDeltaGammaMeasures (valParams, pricerParams,
-			mpc.getScenMarketParams (this, "FlatRRBumpUp"), mpc.getScenMarketParams (this, "FlatRRBumpDn"),
-				quotingParams, bkop._mBase);
+			mpc.scenMarketParams (this, "FlatRRBumpUp"), mpc.scenMarketParams (this, "FlatRRBumpDn"), vcp,
+				bkop.baseMeasures());
 
-		if (null != dgmmRecovery && null != (bkop._mFlatRRDelta = dgmmRates._mapDelta))
-			bkop._mFlatRRGamma = dgmmRates._mapGamma;
+		if (null != dgmmRecovery && bkop.setFlatRRDeltaMeasures (dgmmRates._mapDelta))
+			bkop.setFlatRRGammaMeasures (dgmmRates._mapGamma);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
 			mapCSQSIRTenorUp = mpc.dcFlatBump (this, true);
@@ -1037,11 +1037,12 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 			mapCSQSIRTenorDown = mpc.dcFlatBump (this, false);
 
 		TenorDeltaGammaMeasureMap mapDGMMRatesTenor = accumulateTenorDeltaGammaMeasures (valParams,
-			pricerParams, mapCSQSIRTenorUp, mapCSQSIRTenorDown, quotingParams, bkop._mBase, null);
+			pricerParams, mapCSQSIRTenorUp, mapCSQSIRTenorDown, vcp, bkop.baseMeasures(), null);
 
 		if (null != mapDGMMRatesTenor) {
-			bkop._mmIRDelta = mapDGMMRatesTenor._mmDelta;
-			bkop._mmIRGamma = mapDGMMRatesTenor._mmGamma;
+			bkop.setComponentIRDeltaMeasures (mapDGMMRatesTenor._mmDelta);
+
+			bkop.setComponentIRGammaMeasures (mapDGMMRatesTenor._mmGamma);
 		}
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
@@ -1051,41 +1052,45 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 			mapCSQSCreditTenorDown = mpc.creditFlatBump (this, false);
 
 		TenorDeltaGammaMeasureMap mapDGMMCreditComp = accumulateTenorDeltaGammaMeasures (valParams,
-			pricerParams, mapCSQSCreditTenorUp, mapCSQSCreditTenorDown, quotingParams, bkop._mBase, null);
+			pricerParams, mapCSQSCreditTenorUp, mapCSQSCreditTenorDown, vcp, bkop.baseMeasures(), null);
 
 		if (null != mapDGMMCreditComp) {
-			bkop._mmCreditDelta = mapDGMMCreditComp._mmDelta;
-			bkop._mmCreditGamma = mapDGMMCreditComp._mmGamma;
+			bkop.setComponentCreditDeltaMeasures (mapDGMMCreditComp._mmDelta);
+
+			bkop.setComponentCreditGammaMeasures (mapDGMMCreditComp._mmGamma);
 		}
 
 		TenorDeltaGammaMeasureMap mapDGMMRecoveryTenor = accumulateTenorDeltaGammaMeasures (valParams,
-			pricerParams, mpc.recoveryFlatBump (this, true), mpc.recoveryFlatBump (this, false),
-				quotingParams, bkop._mBase, null);
+			pricerParams, mpc.recoveryFlatBump (this, true), mpc.recoveryFlatBump (this, false), vcp,
+				bkop.baseMeasures(), null);
 
 		if (null != mapDGMMRecoveryTenor) {
-			bkop._mmRRDelta = mapDGMMRecoveryTenor._mmDelta;
-			bkop._mmRRGamma = mapDGMMRecoveryTenor._mmGamma;
+			bkop.setComponentRRDeltaMeasures (mapDGMMRecoveryTenor._mmDelta);
+
+			bkop.setComponentRRGammaMeasures (mapDGMMRecoveryTenor._mmGamma);
 		}
 
 		ComponentFactorTenorDeltaGammaMeasureMap mapCompRatesTenorDGMM =
 			accumulateComponentWiseTenorDeltaGammaMeasures (valParams, pricerParams, mapCSQSCreditTenorUp,
-				mapCSQSIRTenorUp, mapCSQSIRTenorDown, quotingParams, bkop._mBase);
+				mapCSQSIRTenorUp, mapCSQSIRTenorDown, vcp, bkop.baseMeasures());
 
 		if (null != mapCompRatesTenorDGMM) {
-			bkop._mmmIRTenorDelta = mapCompRatesTenorDGMM._mmmDelta;
-			bkop._mmmIRTenorGamma = mapCompRatesTenorDGMM._mmmGamma;
+			bkop.setComponentTenorIRDeltaMeasures (mapCompRatesTenorDGMM._mmmDelta);
+
+			bkop.setComponentTenorIRGammaMeasures (mapCompRatesTenorDGMM._mmmGamma);
 		}
 
 		ComponentFactorTenorDeltaGammaMeasureMap mapCompCreditTenorDGMM =
 			accumulateComponentWiseTenorDeltaGammaMeasures (valParams, pricerParams, mapCSQSCreditTenorUp,
-				mapCSQSCreditTenorUp, mapCSQSCreditTenorDown, quotingParams, bkop._mBase);
+				mapCSQSCreditTenorUp, mapCSQSCreditTenorDown, vcp, bkop.baseMeasures());
 
 		if (null != mapCompCreditTenorDGMM) {
-			bkop._mmmCreditTenorDelta = mapCompCreditTenorDGMM._mmmDelta;
-			bkop._mmmCreditTenorGamma = mapCompCreditTenorDGMM._mmmGamma;
+			bkop.setComponentTenorCreditDeltaMeasures (mapCompCreditTenorDGMM._mmmDelta);
+
+			bkop.setComponentTenorCreditGammaMeasures (mapCompCreditTenorDGMM._mmmGamma);
 		}
 
-		bkop._dblCalcTime = (System.nanoTime() - lStart) * 1.e-09;
+		bkop.setCalcTime ((System.nanoTime() - lStart) * 1.e-09);
 
 		return bkop;
 	}
@@ -1097,7 +1102,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 	 * @param pricerParams Pricer Parameters
 	 * @param mpc Market Parameters Container
 	 * @param strCustomScenName Custom Scenario Name
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param mapBase Map of Base Measures
 	 * 
 	 * @return Basket's Custom Scenario Measures
@@ -1108,26 +1113,25 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.definition.ScenarioMarketParams mpc,
 		final java.lang.String strCustomScenName,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapBase)
 	{
 		if (null == valParams || null == mpc) return null;
 
-		if (null == mapBase && null == mpc.getScenMarketParams (this, "Base")) return null;
+		if (null == mapBase && null == mpc.scenMarketParams (this, "Base")) return null;
 
 		if (null == mapBase) {
-			org.drip.param.market.CurveSurfaceQuoteSet csqs = mpc.getScenMarketParams (this, "Base");
+			org.drip.param.market.CurveSurfaceQuoteSet csqs = mpc.scenMarketParams (this, "Base");
 
-			if (null == (mapBase = value (valParams, pricerParams, csqs, quotingParams))) return null;
+			if (null == (mapBase = value (valParams, pricerParams, csqs, vcp))) return null;
 		}
 
-		org.drip.param.market.CurveSurfaceQuoteSet csqsScen = mpc.getScenMarketParams (this,
-			strCustomScenName);
+		org.drip.param.market.CurveSurfaceQuoteSet csqsScen = mpc.scenMarketParams (this, strCustomScenName);
 
 		if (null == csqsScen) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapScenMeasures = value
-			(valParams, pricerParams, csqsScen, quotingParams);
+			(valParams, pricerParams, csqsScen, vcp);
 
 		if (null == mapScenMeasures || null != mapScenMeasures.entrySet()) return null;
 

@@ -363,7 +363,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			(org.drip.param.definition.CreditManifestMeasureTweak) mmtp;
 
 		if (org.drip.param.definition.CreditManifestMeasureTweak.CREDIT_TWEAK_NODE_PARAM_RECOVERY.equalsIgnoreCase
-			(cmmt._strTweakParamType)) {
+			(cmmt.tweakParamType())) {
 			double[] adblRecoveryRateBumped = null;
 
 			if (null == (adblRecoveryRateBumped =
@@ -379,9 +379,9 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 			}
 		} else if
 			(org.drip.param.definition.CreditManifestMeasureTweak.CREDIT_TWEAK_NODE_PARAM_QUOTE.equalsIgnoreCase
-				(cmmt._strTweakParamType)) {
+				(cmmt.tweakParamType())) {
 			if (org.drip.param.definition.CreditManifestMeasureTweak.CREDIT_TWEAK_NODE_MEASURE_HAZARD.equalsIgnoreCase
-				(cmmt._strTweakMeasureType)) {
+				(cmmt.tweakMeasureType())) {
 				double[] adblHazardBumped = null;
 
 				if (null == (adblHazardBumped =
@@ -398,7 +398,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 				}
 			} else if
 				(org.drip.param.definition.CreditManifestMeasureTweak.CREDIT_TWEAK_NODE_MEASURE_QUOTE.equalsIgnoreCase
-					(cmmt._strTweakMeasureType)) {
+					(cmmt.tweakMeasureType())) {
 				double[] adblQuoteBumped = null;
 
 				if (null == (adblQuoteBumped =
@@ -412,7 +412,7 @@ public class ForwardHazardCreditCurve extends org.drip.analytics.definition.Expl
 					org.drip.state.estimator.NonlinearCurveCalibrator();
 
 				try {
-					if (cmmt._bSingleNodeCalib)
+					if (cmmt.singleNodeCalib())
 						cc = org.drip.state.creator.CreditCurveBuilder.FromHazardNode (_dblEpochDate,
 							_strCurrency, _label.fullyQualifiedName(), _adblHazardRate[0],
 								_adblHazardDate[0], _adblRecoveryRate[0]);

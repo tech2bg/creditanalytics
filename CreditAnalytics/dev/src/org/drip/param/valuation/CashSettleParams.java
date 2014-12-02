@@ -107,7 +107,7 @@ public class CashSettleParams {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue))
-			throw new java.lang.Exception ("CashSettleParams ctr: Invalid input valuation date");
+			throw new java.lang.Exception ("CashSettleParams::cashSettleDate Invalid input valuation date");
 
 		return org.drip.analytics.daycount.Convention.Adjust (dblValue + _iLag, _strCalendar, _iAdjustMode);
 	}

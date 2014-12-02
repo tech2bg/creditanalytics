@@ -93,27 +93,27 @@ public class YieldInterpreter extends org.drip.param.quoting.MeasureInterpreter 
 		_bApplyEOMAdj = bApplyEOMAdj;
 	}
 
-	public java.lang.String getDC()
+	public java.lang.String dayCount()
 	{
 		return _strDC;
 	}
 
-	public int getFrequency()
+	public int freq()
 	{
 		return _iFreq;
 	}
 
-	public boolean getApplyEOMAdj()
+	public boolean eomAdj()
 	{
 		return _bApplyEOMAdj;
 	}
 
-	public org.drip.analytics.daycount.ActActDCParams getAAP()
+	public org.drip.analytics.daycount.ActActDCParams aap()
 	{
 		return _aap;
 	}
 
-	public java.lang.String getCalendar()
+	public java.lang.String calendar()
 	{
 		return _strCalendar;
 	}
