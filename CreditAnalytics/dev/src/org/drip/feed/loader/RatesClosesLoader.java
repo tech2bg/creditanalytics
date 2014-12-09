@@ -531,7 +531,7 @@ public class RatesClosesLoader {
 		final org.drip.param.market.LatentStateFixingsContainer lsfc)
 		throws java.lang.Exception
 	{
-		if (comp.maturity().julian() <= dt.julian()) return 0.;
+		if (comp.maturityDate().julian() <= dt.julian()) return 0.;
 
 		return comp.value (new org.drip.param.valuation.ValuationParams (dt, dt, strCurrency), null,
 			org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc),
@@ -617,7 +617,7 @@ public class RatesClosesLoader {
 				null, null, null, null)).rate();
 
 		double dblCurveFloatingRate = dcDatePrevQuotePrev.libor (dtPrev.julian(),
-			irs.forwardLabel()[0].tenor());
+			irs.forwardLabel().get (0).tenor());
 
 		int i1DFloatingAccrualDays = org.drip.analytics.daycount.Convention.DaysAccrued (dtPrev.julian(),
 			dtCurr.julian(), _mapFloatingDC.get (strCurrency), bApplyFloatingCouponEOMAdj, null,
@@ -770,7 +770,7 @@ public class RatesClosesLoader {
 
 		for (int i = 0; i < aComp.length; ++i) {
 			for (int j = 0; j < aComp.length; ++j) {
-				double dblForward = Forward (dc, aComp[j].maturity(), aComp[i].maturity());
+				double dblForward = Forward (dc, aComp[j].maturityDate(), aComp[i].maturityDate());
 
 				if (0 != dblForward) fmOP.addForward (dblForward);
 			}
@@ -860,11 +860,8 @@ public class RatesClosesLoader {
 
 		if (comp instanceof org.drip.product.rates.DualStreamComponent)
 			forwardLabel =((org.drip.product.rates.DualStreamComponent) comp).derivedStream().forwardLabel();
-		else {
-			org.drip.state.identifier.ForwardLabel[] aForwardLabel = comp.forwardLabel();
-
-			if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
-		}
+		else
+			forwardLabel = comp.forwardLabel().get (0);
 
 		if (null != forwardLabel) {
 			try {
@@ -886,7 +883,7 @@ public class RatesClosesLoader {
 						org.drip.state.identifier.FundingLabel.Standard (comp instanceof
 							org.drip.product.rates.DualStreamComponent ?
 								((org.drip.product.rates.DualStreamComponent)
-									comp).derivedStream().couponCurrency() : comp.payCurrency()[0]));
+									comp).derivedStream().couponCurrency() : comp.payCurrency()));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

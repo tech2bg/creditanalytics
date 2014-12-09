@@ -118,7 +118,7 @@ public class BondBuilder {
 
 		bond.setTerminationSetting (cfteParams);
 
-		bond.setPeriodSet (periodParams);
+		bond.setStream (periodParams);
 
 		bond.setNotionalSetting (notlParams);
 

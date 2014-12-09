@@ -382,17 +382,6 @@ public class Stream {
 	}
 
 	/**
-	 * Retrieve the Principal Currency
-	 * 
-	 * @return The Principal Currency
-	 */
-
-	public java.lang.String[] principalCurrency()
-	{
-		return new java.lang.String[] {payCurrency()};
-	}
-
-	/**
 	 * Retrieve the Stream Name
 	 * 
 	 * @return The Stream Name

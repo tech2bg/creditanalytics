@@ -60,7 +60,7 @@ public abstract class CreditDefaultSwap extends org.drip.product.definition.Cred
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
 	 * @param csqs ComponentMarketParams
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * 
 	 * @return Calibrated flat spread
 	 * 
@@ -71,7 +71,7 @@ public abstract class CreditDefaultSwap extends org.drip.product.definition.Cred
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams vcp)
 		throws java.lang.Exception;
 
 	/**
@@ -80,7 +80,7 @@ public abstract class CreditDefaultSwap extends org.drip.product.definition.Cred
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
 	 * @param csqs ComponentMarketParams
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblFixCoupon Fix Coupon
 	 * @param dblQuotedSpread Quoted Spread
 	 * 
@@ -91,7 +91,7 @@ public abstract class CreditDefaultSwap extends org.drip.product.definition.Cred
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final double dblFixCoupon,
 		final double dblQuotedSpread);
 }

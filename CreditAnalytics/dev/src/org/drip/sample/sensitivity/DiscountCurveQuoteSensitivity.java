@@ -110,7 +110,7 @@ public class DiscountCurveQuoteSensitivity {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
-		String strCurrency = aDeposit[0].payCurrency()[0];
+		String strCurrency = aDeposit[0].payCurrency();
 
 		for (int i = 0; i < aDeposit.length; ++i) {
 			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
@@ -123,7 +123,7 @@ public class DiscountCurveQuoteSensitivity {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel()[0]
+						aDeposit[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -155,12 +155,12 @@ public class DiscountCurveQuoteSensitivity {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
 						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aEDF[i].payCurrency()[0])
+						FundingLabel.Standard (aEDF[i].payCurrency())
 					),
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aEDF[i].forwardLabel()[0]
+						aEDF[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -325,12 +325,12 @@ public class DiscountCurveQuoteSensitivity {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
 						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aIRS[i].payCurrency()[0])
+						FundingLabel.Standard (aIRS[i].payCurrency())
 					),
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aIRS[i].forwardLabel()[0]
+						aIRS[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -488,7 +488,7 @@ public class DiscountCurveQuoteSensitivity {
 		);
 
 		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (
-			irsBespoke.maturity(),
+			irsBespoke.maturityDate(),
 			strManifestMeasure
 		);
 
@@ -724,7 +724,7 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aDeposit.length; ++i)
-			System.out.println ("\t[" + aDeposit[i].maturity() + "] = " +
+			System.out.println ("\t[" + aDeposit[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
@@ -741,7 +741,7 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aEDF.length; ++i)
-			System.out.println ("\t[" + aEDF[i].maturity() + "] = " +
+			System.out.println ("\t[" + aEDF[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aEDF[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblEDFQuote[i], 1, 6, 1.));
@@ -758,7 +758,7 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aSwap.length; ++i)
-			System.out.println ("\t[" + aSwap[i].maturity() + "] = " +
+			System.out.println ("\t[" + aSwap[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aSwap[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
@@ -774,9 +774,9 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aDeposit.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDeposit[i].maturity(), "PV");
+			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDeposit[i].maturityDate(), "PV");
 
-			System.out.println (aDeposit[i].maturity() + " => " + wj.displayString());
+			System.out.println (aDeposit[i].maturityDate() + " => " + wj.displayString());
 		}
 
 		/*
@@ -790,9 +790,9 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aEDF.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aEDF[i].maturity(), "PV");
+			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aEDF[i].maturityDate(), "PV");
 
-			System.out.println (aEDF[i].maturity() + " => " + wj.displayString());
+			System.out.println (aEDF[i].maturityDate() + " => " + wj.displayString());
 		}
 
 		/*
@@ -806,9 +806,9 @@ public class DiscountCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aSwap.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aSwap[i].maturity(), "PV");
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aSwap[i].maturityDate(), "PV");
 
-			System.out.println (aSwap[i].maturity() + " => " + wjDFQuote.displayString());
+			System.out.println (aSwap[i].maturityDate() + " => " + wjDFQuote.displayString());
 		}
 
 		System.out.println ("\n\t----------------------------------------------------------------");

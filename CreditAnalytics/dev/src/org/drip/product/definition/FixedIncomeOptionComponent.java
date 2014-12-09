@@ -42,7 +42,7 @@ package org.drip.product.definition;
  */
 
 public abstract class FixedIncomeOptionComponent implements
-	org.drip.product.definition.MarketParamRef {
+	org.drip.product.definition.ComponentMarketParamRef {
 	private java.lang.String _strCalendar = "";
 	private java.lang.String _strDayCount = "";
 	private double _dblStrike = java.lang.Double.NaN;
@@ -55,14 +55,19 @@ public abstract class FixedIncomeOptionComponent implements
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc)
 		throws java.lang.Exception
 	{
-		if (null == strMeasure || strMeasure.isEmpty() || null == mapCalc || null == mapCalc.entrySet())
-			throw new java.lang.Exception ("FixedIncomeComponent::getMeasure => Invalid Inputs");
+		if (null == strMeasure || strMeasure.isEmpty() || null == mapCalc)
+			throw new java.lang.Exception ("FixedIncomeComponent::measure => Invalid Inputs");
 
-		for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCalc.entrySet()) {
-			if (null != me.getKey() && me.getKey().equalsIgnoreCase (strMeasure)) return me.getValue();
+		java.util.Set<java.util.Map.Entry<java.lang.String, java.lang.Double>> meMesureSet =
+			mapCalc.entrySet();
+
+		if (null != meMesureSet && 0 != meMesureSet.size()) {
+			for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : meMesureSet) {
+				if (me.getKey().equalsIgnoreCase (strMeasure)) return me.getValue();
+			}
 		}
 
-		throw new java.lang.Exception ("FixedIncomeOptionComponent::getMeasure => Invalid Measure: " +
+		throw new java.lang.Exception ("FixedIncomeOptionComponent::measure => Invalid Measure: " +
 			strMeasure);
 	}
 
@@ -146,9 +151,9 @@ public abstract class FixedIncomeOptionComponent implements
 	 * @return The Option Exercise Date
 	 */
 
-	public org.drip.analytics.date.JulianDate exercise()
+	public org.drip.analytics.date.JulianDate exerciseDate()
 	{
-		return _comp.effective();
+		return _comp.effectiveDate();
 	}
 
 	/**
@@ -178,22 +183,22 @@ public abstract class FixedIncomeOptionComponent implements
 		return _comp.name();
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	@Override public org.drip.state.identifier.CreditLabel creditLabel()
 	{
 		return _comp.creditLabel();
 	}
 
-	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
+	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
 	{
 		return _comp.forwardLabel();
 	}
 
-	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
+	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
 	{
 		return _comp.fundingLabel();
 	}
 
-	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
+	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
 	{
 		return _comp.fxLabel();
 	}
@@ -204,7 +209,7 @@ public abstract class FixedIncomeOptionComponent implements
 	 * @param valParams ValuationParams
 	 * @param pricerParams PricerParams
 	 * @param csqs Market Parameters
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * 
 	 * @return Map of measure name and value
 	 */
@@ -213,7 +218,7 @@ public abstract class FixedIncomeOptionComponent implements
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
+		final org.drip.param.valuation.ValuationCustomizationParams vcp);
 
 	/**
 	 * Retrieve the ordered set of the measure names whose values will be calculated
@@ -230,7 +235,7 @@ public abstract class FixedIncomeOptionComponent implements
 	 * @param pricerParams PricerParams
 	 * @param csqs Market Parameters
 	 * @param strMeasure Measure String
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * 
 	 * @return Double measure value
 	 * 
@@ -241,10 +246,10 @@ public abstract class FixedIncomeOptionComponent implements
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final java.lang.String strMeasure)
 		throws java.lang.Exception
 	{
-		return measure (strMeasure, value (valParams, pricerParams, csqs, quotingParams));
+		return measure (strMeasure, value (valParams, pricerParams, csqs, vcp));
 	}
 }

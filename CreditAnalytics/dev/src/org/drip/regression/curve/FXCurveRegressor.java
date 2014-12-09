@@ -167,9 +167,9 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 				@Override public boolean execRegression()
 				{
 					try {
-						_dblFXFwd = _fxfwd.implyFXForward (_valParams, _dcEUR, _dcUSD, 1.4, false);
+						_dblFXFwd = _fxfwd.imply (_valParams, _dcEUR, _dcUSD, 1.4, false);
 
-						_dblFXFwdPIP = _fxfwd.implyFXForward (_valParams, _dcEUR, _dcUSD, 1.4, true);
+						_dblFXFwdPIP = _fxfwd.imply (_valParams, _dcEUR, _dcUSD, 1.4, true);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
 
@@ -243,10 +243,10 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 				@Override public boolean execRegression()
 				{
 					try {
-						_dblDCEURBasis = _fxfwd.calcDCBasis (_valParams, _dcEUR, _dcUSD, _dblFXSpot,
+						_dblDCEURBasis = _fxfwd.discountCurveBasis (_valParams, _dcEUR, _dcUSD, _dblFXSpot,
 							_dblFXFwdMarket, false);
 
-						_dblDCUSDBasis = _fxfwd.calcDCBasis (_valParams, _dcEUR, _dcUSD, _dblFXSpot,
+						_dblDCUSDBasis = _fxfwd.discountCurveBasis (_valParams, _dcEUR, _dcUSD, _dblFXSpot,
 							_dblFXFwdMarket, true);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();

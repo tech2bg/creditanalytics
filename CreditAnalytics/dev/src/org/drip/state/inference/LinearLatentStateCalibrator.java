@@ -102,7 +102,7 @@ public class LinearLatentStateCalibrator extends org.drip.state.estimator.Global
 
 			for (int i = 0; i <= iNumCalibComp; ++i) {
 				adblPredictorOrdinate[i] = 0 == i ? valParams.valueDate() :
-					aSegmentSpec[i - 1].component().maturity().julian();
+					aSegmentSpec[i - 1].component().maturityDate().julian();
 
 				if (i != iNumCalibComp) aSCBC[i] = segmentBuilderControl (stretchSpec.name());
 			}

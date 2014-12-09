@@ -773,7 +773,7 @@ public class AnalyticsHelper {
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new
 			org.drip.param.market.LatentStateFixingsContainer();
 
-		return lsfc.add (dtFixing, bond.forwardLabel()[0], dblFixing) ? lsfc : null;
+		return lsfc.add (dtFixing, bond.forwardLabel().get (0), dblFixing) ? lsfc : null;
 	}
 
 	/**
@@ -952,7 +952,7 @@ public class AnalyticsHelper {
 			if (null == aComp[i]) continue;
 
 			java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCompPeriod =
-				aComp[i].cashFlowPeriod();
+				aComp[i].couponPeriods();
 
 			if (null == lsCompPeriod || 0 == lsCompPeriod.size()) continue;
 

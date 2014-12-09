@@ -64,13 +64,13 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 	{
 		super (comp, strManifestMeasure, dblStrike, dblNotional, strDayCount, strCalendar);
 
-		java.lang.String strIR = comp.payCurrency()[0];
+		java.lang.String strIR = comp.payCurrency();
 
-		org.drip.state.identifier.ForwardLabel fri = comp.forwardLabel()[0];
+		org.drip.state.identifier.ForwardLabel fri = comp.forwardLabel().get (0);
 
 		java.lang.String strFRACodePrefix = fri.fullyQualifiedName();
 
-		for (org.drip.analytics.cashflow.CompositePeriod period : comp.cashFlowPeriod()) {
+		for (org.drip.analytics.cashflow.CompositePeriod period : comp.couponPeriods()) {
 			double dblFRAStartDate = period.startDate();
 
 			org.drip.product.fra.FRAStandardComponent fra = new org.drip.product.fra.FRAStandardComponent
@@ -82,17 +82,17 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 		}
 	}
 
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	@Override public java.util.List<java.lang.String> couponCurrency()
 	{
-		return _lsFRACapFloorlet.get (0).cashflowCurrencySet();
+		return _lsFRACapFloorlet.get (0).couponCurrency();
 	}
 
-	@Override public java.lang.String[] payCurrency()
+	@Override public java.lang.String payCurrency()
 	{
 		return _lsFRACapFloorlet.get (0).payCurrency();
 	}
 
-	@Override public java.lang.String[] principalCurrency()
+	@Override public java.lang.String principalCurrency()
 	{
 		return _lsFRACapFloorlet.get (0).principalCurrency();
 	}

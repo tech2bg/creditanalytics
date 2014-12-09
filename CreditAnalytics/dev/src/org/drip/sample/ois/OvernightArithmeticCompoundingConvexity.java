@@ -97,7 +97,7 @@ public class OvernightArithmeticCompoundingConvexity {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
-		String strCurrency = aDeposit[0].payCurrency()[0];
+		String strCurrency = aDeposit[0].payCurrency();
 
 		for (int i = 0; i < aDeposit.length; ++i) {
 			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
@@ -110,7 +110,7 @@ public class OvernightArithmeticCompoundingConvexity {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel()[0]
+						aDeposit[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -416,7 +416,7 @@ public class OvernightArithmeticCompoundingConvexity {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aOIS.length];
 
-		String strCurrency = aOIS[0].payCurrency()[0];
+		String strCurrency = aOIS[0].payCurrency();
 
 		for (int i = 0; i < aOIS.length; ++i) {
 			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
@@ -429,7 +429,7 @@ public class OvernightArithmeticCompoundingConvexity {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aOIS[i].forwardLabel()[0]
+						aOIS[i].forwardLabel().get (0)
 					)
 				}
 			);

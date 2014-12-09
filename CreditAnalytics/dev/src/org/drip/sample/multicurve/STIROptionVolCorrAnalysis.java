@@ -774,7 +774,7 @@ public class STIROptionVolCorrAnalysis {
 	{
 		String strManifestMeasure = "FairPremium";
 
-		ForwardLabel fri = stir.forwardLabel()[0];
+		ForwardLabel fri = stir.forwardLabel().get (0);
 
 		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 
@@ -791,7 +791,7 @@ public class STIROptionVolCorrAnalysis {
 
 		Map<String, Double> mapSTIROutput = stir.value (valParams, null, mktParams, null);
 
-		String strCurrency = stir.payCurrency()[0];
+		String strCurrency = stir.payCurrency();
 
 		double dblStrike = 1.01 * mapSTIROutput.get (strManifestMeasure);
 

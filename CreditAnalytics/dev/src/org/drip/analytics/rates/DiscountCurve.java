@@ -353,7 +353,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new
 			org.drip.param.market.LatentStateFixingsContainer();
 
-		lsfc.add (dtStart.addDays (2), irs.forwardLabel()[0], 0.);
+		lsfc.add (dtStart.addDays (2), irs.forwardLabel().get (0), 0.);
 
 		org.drip.param.market.CurveSurfaceQuoteSet csqs = org.drip.param.creator.MarketParamsBuilder.Create
 			(this, null, null, null, null, null, null, lsfc);
@@ -409,7 +409,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 
 			adblQuote[i] = mapManifestMeasure.get (strManifestMeasure);
 
-			adblDate[i] = aCalibComp[i].maturity().julian();
+			adblDate[i] = aCalibComp[i].maturityDate().julian();
 		}
 
 		org.drip.spline.stretch.MultiSegmentSequence regime =
@@ -770,11 +770,11 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		for (org.drip.product.definition.CalibratableFixedIncomeComponent cc : aCC) {
 			if (null == cc) continue;
 
-			java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod = cc.cashFlowPeriod();
+			java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod = cc.couponPeriods();
 
 			if (null == lsCouponPeriod || 0 == lsCouponPeriod.size()) continue;
 
-			for (org.drip.analytics.cashflow.CompositePeriod cpnPeriod : cc.cashFlowPeriod()) {
+			for (org.drip.analytics.cashflow.CompositePeriod cpnPeriod : lsCouponPeriod) {
 				if (null == cpnPeriod) continue;
 
 				double dblPay = cpnPeriod.payDate();

@@ -60,7 +60,7 @@ public class Bullet {
 	private double _dblBaseNotional = java.lang.Double.NaN;
 	private org.drip.product.params.FactorSchedule _notlSchedule = null;
 
-	private org.drip.analytics.output.ConvexityAdjustment calcConvexityAdjustment (
+	private org.drip.analytics.output.ConvexityAdjustment convexityAdjustment (
 		final double dblValueDate,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
@@ -382,7 +382,7 @@ public class Bullet {
 			if (null != cc) dblSurvival = cc.survival (_dblPayDate);
 
 			return new org.drip.analytics.output.BulletMetrics (_dblTerminalDate, _dblPayDate, notional
-				(_dblTerminalDate), dblSurvival, dblDF, dblFX, calcConvexityAdjustment (dblValueDate, csqs),
+				(_dblTerminalDate), dblSurvival, dblDF, dblFX, convexityAdjustment (dblValueDate, csqs),
 					creditLabel, fundingLabel, fxLabel);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

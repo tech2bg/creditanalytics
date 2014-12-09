@@ -129,7 +129,7 @@ public class ShapePreservingOISZeroSmooth {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
-		String strCurrency = aDeposit[0].payCurrency()[0];
+		String strCurrency = aDeposit[0].payCurrency();
 
 		for (int i = 0; i < aDeposit.length; ++i) {
 			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
@@ -142,7 +142,7 @@ public class ShapePreservingOISZeroSmooth {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel()[0]
+						aDeposit[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -448,7 +448,7 @@ public class ShapePreservingOISZeroSmooth {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aOIS.length];
 
-		String strCurrency = aOIS[0].payCurrency()[0];
+		String strCurrency = aOIS[0].payCurrency();
 
 		for (int i = 0; i < aOIS.length; ++i) {
 			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
@@ -461,7 +461,7 @@ public class ShapePreservingOISZeroSmooth {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aOIS[i].forwardLabel()[0]
+						aOIS[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -783,7 +783,7 @@ public class ShapePreservingOISZeroSmooth {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aDeposit.length; ++i)
-			System.out.println ("\t[" + aDeposit[i].maturity() + "] = " +
+			System.out.println ("\t[" + aDeposit[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (
 					aDeposit[i].measureValue (
 						new ValuationParams (dtSpot, dtSpot, strCurrency), null,
@@ -828,7 +828,7 @@ public class ShapePreservingOISZeroSmooth {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aLongEndOISComp.length; ++i)
-			System.out.println ("\t[" + aLongEndOISComp[i].maturity() + "] = " +
+			System.out.println ("\t[" + aLongEndOISComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (
 					aLongEndOISComp[i].measureValue (
 						new ValuationParams (dtSpot, dtSpot, strCurrency), null,
@@ -880,7 +880,7 @@ public class ShapePreservingOISZeroSmooth {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aCC.length; ++i)
-			System.out.println ("\t[" + aCC[i].maturity() + "] = " +
+			System.out.println ("\t[" + aCC[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (
 					aCC[i].measureValue (new ValuationParams (dtSpot, dtSpot, strCurrency), null,
 					MarketParamsBuilder.Create (dcShapePreserving, null, null, null, null, null, null),

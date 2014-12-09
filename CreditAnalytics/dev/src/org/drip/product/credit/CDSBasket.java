@@ -63,7 +63,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 	{
 		if (null == aComp || 0 == aComp.length || null == adblWeight || 0 == adblWeight.length ||
 			aComp.length != adblWeight.length || null == strName || strName.isEmpty())
-			throw new java.lang.Exception ("Invalid inputs to BasketDefaultSwap ctr!");
+			throw new java.lang.Exception ("CDSBasket ctr: Invalid inputs!");
 
 		_strName = strName;
 		double dblCumulativeWeight = 0.;
@@ -75,7 +75,7 @@ public class CDSBasket extends org.drip.product.definition.BasketProduct {
 
 		for (int i = 0; i < aComp.length; ++i) {
 			if (null == (_aComp[i] = aComp[i]))
-				throw new java.lang.Exception ("Invalid Basket Swap component!");
+				throw new java.lang.Exception ("CDSBasket ctr: Invalid Inputs!");
 
 			_adblWeight[i] = adblWeight[i] / dblCumulativeWeight;
 		}

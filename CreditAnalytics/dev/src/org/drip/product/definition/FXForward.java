@@ -48,7 +48,7 @@ public abstract class FXForward {
 	 * @return Primary Code string
 	 */
 
-	public abstract java.lang.String getPrimaryCode();
+	public abstract java.lang.String primaryCode();
 
 	/**
 	 * Set the primary code
@@ -65,7 +65,7 @@ public abstract class FXForward {
 	 * @return Array of secondary code string
 	 */
 
-	public abstract java.lang.String[] getSecondaryCode();
+	public abstract java.lang.String[] secondaryCode();
 
 	/**
 	 * Get the Effective Date
@@ -73,7 +73,7 @@ public abstract class FXForward {
 	 * @return Effective Date
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate getEffectiveDate();
+	public abstract org.drip.analytics.date.JulianDate effectiveDate();
 
 	/**
 	 * Get the Maturity Date
@@ -81,7 +81,7 @@ public abstract class FXForward {
 	 * @return Maturity Date
 	 */
 
-	public abstract org.drip.analytics.date.JulianDate getMaturityDate();
+	public abstract org.drip.analytics.date.JulianDate maturityDate();
 
 	/**
 	 * Get the Currency Pair
@@ -89,7 +89,7 @@ public abstract class FXForward {
 	 * @return CurrencyPair
 	 */
 
-	public abstract org.drip.product.params.CurrencyPair getCcyPair();
+	public abstract org.drip.product.params.CurrencyPair currencyPair();
 
 	/**
 	 * Imply the FX Forward
@@ -105,7 +105,7 @@ public abstract class FXForward {
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public abstract double implyFXForward (
+	public abstract double imply (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dcNum,
 		final org.drip.analytics.rates.DiscountCurve dcDenom,
@@ -129,7 +129,7 @@ public abstract class FXForward {
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
-	public abstract double calcDCBasis (
+	public abstract double discountCurveBasis (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dcNum,
 		final org.drip.analytics.rates.DiscountCurve dcDenom,

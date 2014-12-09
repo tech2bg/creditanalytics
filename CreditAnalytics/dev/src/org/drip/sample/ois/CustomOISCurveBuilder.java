@@ -98,7 +98,7 @@ public class CustomOISCurveBuilder {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
-		String strCurrency = aDeposit[0].payCurrency()[0];
+		String strCurrency = aDeposit[0].payCurrency();
 
 		for (int i = 0; i < aDeposit.length; ++i) {
 			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
@@ -111,7 +111,7 @@ public class CustomOISCurveBuilder {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel()[0]
+						aDeposit[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -417,7 +417,7 @@ public class CustomOISCurveBuilder {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aOIS.length];
 
-		String strCurrency = aOIS[0].payCurrency()[0];
+		String strCurrency = aOIS[0].payCurrency();
 
 		for (int i = 0; i < aOIS.length; ++i) {
 			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
@@ -430,7 +430,7 @@ public class CustomOISCurveBuilder {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aOIS[i].forwardLabel()[0]
+						aOIS[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -651,7 +651,7 @@ public class CustomOISCurveBuilder {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aDeposit.length; ++i)
-			System.out.println ("\t[" + aDeposit[i].effective() + " => " + aDeposit[i].maturity() + "] = " +
+			System.out.println ("\t[" + aDeposit[i].effectiveDate() + " => " + aDeposit[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
@@ -668,7 +668,7 @@ public class CustomOISCurveBuilder {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aShortEndOISComp.length; ++i)
-			System.out.println ("\t[" + aShortEndOISComp[i].effective() + " => " + aShortEndOISComp[i].maturity() + "] = " +
+			System.out.println ("\t[" + aShortEndOISComp[i].effectiveDate() + " => " + aShortEndOISComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.) + " | " +
@@ -688,7 +688,7 @@ public class CustomOISCurveBuilder {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aOISFutureComp.length; ++i)
-			System.out.println ("\t[" + aOISFutureComp[i].effective() + " => " + aOISFutureComp[i].maturity() + "] = " +
+			System.out.println ("\t[" + aOISFutureComp[i].effectiveDate() + " => " + aOISFutureComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "SwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.) + " | " +
@@ -708,7 +708,7 @@ public class CustomOISCurveBuilder {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aLongEndOISComp.length; ++i)
-			System.out.println ("\t[" + aLongEndOISComp[i].effective() + " => " + aLongEndOISComp[i].maturity() + "] = " +
+			System.out.println ("\t[" + aLongEndOISComp[i].effectiveDate() + " => " + aLongEndOISComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aLongEndOISComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblLongEndOISQuote[i], 1, 6, 1.) + " | " +

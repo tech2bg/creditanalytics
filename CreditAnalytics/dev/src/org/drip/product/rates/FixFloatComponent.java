@@ -99,45 +99,25 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return _strCode;
 	}
 
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	@Override public java.util.List<java.lang.String> couponCurrency()
 	{
-		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
+		java.util.List<java.lang.String> lsCouponCurrency = new java.util.ArrayList<java.lang.String>();
 
-		setCcy.addAll (_fixReference.cashflowCurrencySet());
+		lsCouponCurrency.add (_fixReference.couponCurrency());
 
-		setCcy.addAll (_floatDerived.cashflowCurrencySet());
+		lsCouponCurrency.add (_floatDerived.couponCurrency());
 
-		return setCcy;
+		return lsCouponCurrency;
 	}
 
-	@Override public java.lang.String[] payCurrency()
+	@Override public java.lang.String payCurrency()
 	{
-		return new java.lang.String[] {_fixReference.payCurrency(), _floatDerived.payCurrency()};
+		return _fixReference.payCurrency();
 	}
 
-	@Override public java.lang.String[] principalCurrency()
+	@Override public java.lang.String principalCurrency()
 	{
-		java.lang.String[] astrReferencePrincipalCurrency = _fixReference.principalCurrency();
-
-		java.lang.String[] astrDerivedPrincipalCurrency = _floatDerived.principalCurrency();
-
-		int iNumReferencePrincipalCurrency = null == astrReferencePrincipalCurrency ? 0 :
-			astrReferencePrincipalCurrency.length;
-		int iNumDerivedPrincipalCurrency = null == astrDerivedPrincipalCurrency ? 0 :
-			astrDerivedPrincipalCurrency.length;
-		int iNumPrincipalCurrency = iNumReferencePrincipalCurrency + iNumDerivedPrincipalCurrency;
-
-		if (0 == iNumPrincipalCurrency) return null;
-
-		java.lang.String[] astrPrincipalCurrency = new java.lang.String[iNumPrincipalCurrency];
-
-		for (int i = 0; i < iNumReferencePrincipalCurrency; ++i)
-			astrPrincipalCurrency[i] = astrReferencePrincipalCurrency[i];
-
-		for (int i = iNumReferencePrincipalCurrency; i < iNumPrincipalCurrency; ++i)
-			astrPrincipalCurrency[i] = astrDerivedPrincipalCurrency[i - iNumReferencePrincipalCurrency];
-
-		return astrPrincipalCurrency;
+		return null;
 	}
 
 	@Override public double initialNotional()
@@ -161,7 +141,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return _fixReference.notional (dblDate1, dblDate2);
 	}
 
-	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
+	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics couponMetrics (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -174,26 +154,36 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return _fixReference.freq();
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	@Override public org.drip.state.identifier.CreditLabel creditLabel()
 	{
-		return new org.drip.state.identifier.CreditLabel[] {_fixReference.creditLabel(),
-			_floatDerived.creditLabel()};
+		return _fixReference.creditLabel();
 	}
 
-	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
+	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
 	{
-		return new org.drip.state.identifier.ForwardLabel[] {_floatDerived.forwardLabel()};
+		java.util.List<org.drip.state.identifier.ForwardLabel> lsFRI = new
+			java.util.ArrayList<org.drip.state.identifier.ForwardLabel>();
+
+		lsFRI.add (_floatDerived.forwardLabel());
+
+		return lsFRI;
 	}
 
-	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
+	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
 	{
-		return new org.drip.state.identifier.FundingLabel[] {_fixReference.fundingLabel(),
-			_floatDerived.fundingLabel()};
+		return _fixReference.fundingLabel();
 	}
 
-	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
+	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
 	{
-		return new org.drip.state.identifier.FXLabel[] {_fixReference.fxLabel(), _floatDerived.fxLabel()};
+		java.util.List<org.drip.state.identifier.FXLabel> lsFXLabel = new
+			java.util.ArrayList<org.drip.state.identifier.FXLabel>();
+
+		lsFXLabel.add (_fixReference.fxLabel());
+
+		lsFXLabel.add (_floatDerived.fxLabel());
+
+		return lsFXLabel;
 	}
 
 	@Override public org.drip.product.rates.Stream referenceStream()
@@ -206,7 +196,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return _floatDerived;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate effective()
+	@Override public org.drip.analytics.date.JulianDate effectiveDate()
 	{
 		org.drip.analytics.date.JulianDate dtFloatReferenceEffective = _fixReference.effective();
 
@@ -216,7 +206,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 			dtFloatReferenceEffective : dtFloatDerivedEffective;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate maturity()
+	@Override public org.drip.analytics.date.JulianDate maturityDate()
 	{
 		org.drip.analytics.date.JulianDate dtFloatReferenceMaturity = _fixReference.maturity();
 
@@ -236,7 +226,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 			dtFloatReferenceFirstCoupon : dtFloatDerivedFirstCoupon;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> couponPeriods()
 	{
 		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCP = new
 			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
@@ -444,14 +434,14 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 			if (org.drip.quant.common.NumberUtil.IsValid (dblValueNotional)) {
 				double dblCleanPrice = 100. * (1. + (dblCleanPV / initialNotional() / dblValueNotional));
 
-				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
+				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
 
 				if (null == dcFunding) return null;
 
-				double dblStartDate = effective().julian();
+				double dblStartDate = effectiveDate().julian();
 
 				double dblTelescopedFloatingPV = dcFunding.df (dblStartDate > dblValueDate ? dblStartDate :
-					dblValueDate) - dcFunding.df (maturity());
+					dblValueDate) - dcFunding.df (maturityDate());
 
 				mapResult.put ("CalibFloatingPV", dblTelescopedFloatingPV);
 
@@ -661,7 +651,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().julian() || null ==
+		if (null == valParams || valParams.valueDate() >= maturityDate().julian() || null ==
 			strManifestMeasure || null == csqs)
 			return null;
 
@@ -679,11 +669,11 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 			try {
 				org.drip.quant.calculus.WengertJacobian wjSwapRateDFMicroJack = null;
 
-				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
+				org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
 
 				if (null == dcFunding) return null;
 
-				for (org.drip.analytics.cashflow.CompositePeriod p : cashFlowPeriod()) {
+				for (org.drip.analytics.cashflow.CompositePeriod p : couponPeriods()) {
 					double dblPeriodPayDate = p.payDate();
 
 					if (dblPeriodPayDate < valParams.valueDate()) continue;
@@ -748,7 +738,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == pqs || !(pqs
+		if (null == valParams || valParams.valueDate() >= maturityDate().julian() || null == pqs || !(pqs
 			instanceof org.drip.product.calib.FixFloatQuoteSet))
 			return null;
 
@@ -807,7 +797,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == pqs || !(pqs
+		if (null == valParams || valParams.valueDate() >= maturityDate().julian() || null == pqs || !(pqs
 			instanceof org.drip.product.calib.FixFloatQuoteSet))
 			return null;
 
@@ -866,7 +856,7 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == pqs || !(pqs
+		if (null == valParams || valParams.valueDate() >= maturityDate().julian() || null == pqs || !(pqs
 			instanceof org.drip.product.calib.FixFloatQuoteSet))
 			return null;
 

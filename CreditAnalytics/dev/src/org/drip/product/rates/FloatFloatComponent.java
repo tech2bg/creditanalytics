@@ -100,45 +100,25 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		return _strCode;
 	}
 
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	@Override public java.util.List<java.lang.String> couponCurrency()
 	{
-		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
+		java.util.List<java.lang.String> lsCouponCurrency = new java.util.ArrayList<java.lang.String>();
 
-		setCcy.addAll (_floatReference.cashflowCurrencySet());
+		lsCouponCurrency.add (_floatReference.couponCurrency());
 
-		setCcy.addAll (_floatDerived.cashflowCurrencySet());
+		lsCouponCurrency.add (_floatDerived.couponCurrency());
 
-		return setCcy;
+		return lsCouponCurrency;
 	}
 
-	@Override public java.lang.String[] payCurrency()
+	@Override public java.lang.String payCurrency()
 	{
-		return new java.lang.String[] {_floatReference.payCurrency(), _floatDerived.payCurrency()};
+		return _floatReference.payCurrency();
 	}
 
-	@Override public java.lang.String[] principalCurrency()
+	@Override public java.lang.String principalCurrency()
 	{
-		java.lang.String[] astrReferencePrincipalCurrency = _floatReference.principalCurrency();
-
-		java.lang.String[] astrDerivedPrincipalCurrency = _floatDerived.principalCurrency();
-
-		int iNumReferencePrincipalCurrency = null == astrReferencePrincipalCurrency ? 0 :
-			astrReferencePrincipalCurrency.length;
-		int iNumDerivedPrincipalCurrency = null == astrDerivedPrincipalCurrency ? 0 :
-			astrDerivedPrincipalCurrency.length;
-		int iNumPrincipalCurrency = iNumReferencePrincipalCurrency + iNumDerivedPrincipalCurrency;
-
-		if (0 == iNumPrincipalCurrency) return null;
-
-		java.lang.String[] astrPrincipalCurrency = new java.lang.String[iNumPrincipalCurrency];
-
-		for (int i = 0; i < iNumReferencePrincipalCurrency; ++i)
-			astrPrincipalCurrency[i] = astrReferencePrincipalCurrency[i];
-
-		for (int i = iNumReferencePrincipalCurrency; i < iNumPrincipalCurrency; ++i)
-			astrPrincipalCurrency[i] = astrDerivedPrincipalCurrency[i - iNumReferencePrincipalCurrency];
-
-		return astrPrincipalCurrency;
+		return null;
 	}
 
 	@Override public double initialNotional()
@@ -162,7 +142,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		return _floatReference.notional (dblDate1, dblDate2);
 	}
 
-	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
+	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics couponMetrics (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -175,24 +155,29 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		return _floatReference.freq();
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	@Override public org.drip.state.identifier.CreditLabel creditLabel()
 	{
 		return null;
 	}
 
-	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
+	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
 	{
-		return new org.drip.state.identifier.ForwardLabel[] {_floatReference.forwardLabel(),
-			_floatDerived.forwardLabel()};
+		java.util.List<org.drip.state.identifier.ForwardLabel> lsFRI = new
+			java.util.ArrayList<org.drip.state.identifier.ForwardLabel>();
+
+		lsFRI.add (_floatReference.forwardLabel());
+
+		lsFRI.add (_floatDerived.forwardLabel());
+
+		return lsFRI;
 	}
 
-	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
+	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
 	{
-		return new org.drip.state.identifier.FundingLabel[] {_floatReference.fundingLabel(),
-			_floatDerived.fundingLabel()};
+		return _floatReference.fundingLabel();
 	}
 
-	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
+	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
 	{
 		return null;
 	}
@@ -207,7 +192,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		return _floatDerived;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate effective()
+	@Override public org.drip.analytics.date.JulianDate effectiveDate()
 	{
 		org.drip.analytics.date.JulianDate dtFloatReferenceEffective = _floatReference.effective();
 
@@ -219,7 +204,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 			dtFloatReferenceEffective : dtFloatDerivedEffective;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate maturity()
+	@Override public org.drip.analytics.date.JulianDate maturityDate()
 	{
 		org.drip.analytics.date.JulianDate dtFloatReferenceMaturity = _floatReference.maturity();
 
@@ -243,7 +228,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 			dtFloatReferenceFirstCoupon : dtFloatDerivedFirstCoupon;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> couponPeriods()
 	{
 		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCP = new
 			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
@@ -535,7 +520,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FloatFloatQuoteSet))
 			return null;
 
-		if (valParams.valueDate() >= maturity().julian()) return null;
+		if (valParams.valueDate() >= maturityDate().julian()) return null;
 
 		double dblPV = 0.;
 		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
@@ -596,7 +581,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FloatFloatQuoteSet))
 			return null;
 
-		if (valParams.valueDate() >= maturity().julian()) return null;
+		if (valParams.valueDate() >= maturityDate().julian()) return null;
 
 		double dblPV = 0.;
 		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;
@@ -656,7 +641,7 @@ public class FloatFloatComponent extends org.drip.product.rates.DualStreamCompon
 		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FloatFloatQuoteSet))
 			return null;
 
-		if (valParams.valueDate() >= maturity().julian()) return null;
+		if (valParams.valueDate() >= maturityDate().julian()) return null;
 
 		double dblPV = 0.;
 		org.drip.product.calib.FloatingStreamQuoteSet fsqsDerived = null;

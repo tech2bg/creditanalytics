@@ -75,7 +75,7 @@ public class IBOR {
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 						aCalibComp[i] instanceof DualStreamComponent ? ((DualStreamComponent)
-							aCalibComp[i]).derivedStream().forwardLabel() : aCalibComp[i].forwardLabel()[0]
+							aCalibComp[i]).derivedStream().forwardLabel() : aCalibComp[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -622,10 +622,10 @@ public class IBOR {
 				System.out.println ("\t----------------------------------------------------------------");
 
 				for (int i = 0; i < aDeposit.length; ++i)
-					System.out.println ("\t[" + aDeposit[i].effective() + " - " + aDeposit[i].maturity() + "] = " +
+					System.out.println ("\t[" + aDeposit[i].effectiveDate() + " - " + aDeposit[i].maturityDate() + "] = " +
 						FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null, mktParams, null, strDepositCalibMeasure), 1, 6, 1.) +
 							" | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.) + " | " +
-								FormatUtil.FormatDouble (fcDerived.forward (aDeposit[i].maturity()), 1, 4, 100.) + "%");
+								FormatUtil.FormatDouble (fcDerived.forward (aDeposit[i].maturityDate()), 1, 4, 100.) + "%");
 			}
 
 			/*
@@ -640,10 +640,10 @@ public class IBOR {
 				System.out.println ("\t----------------------------------------------------------------");
 
 				for (int i = 0; i < aFRA.length; ++i)
-					System.out.println ("\t[" + aFRA[i].effective() + " - " + aFRA[i].maturity() + "] = " +
+					System.out.println ("\t[" + aFRA[i].effectiveDate() + " - " + aFRA[i].maturityDate() + "] = " +
 						FormatUtil.FormatDouble (aFRA[i].measureValue (valParams, null, mktParams, null, strFRACalibMeasure), 1, 6, 1.) +
 							" | " + FormatUtil.FormatDouble (adblFRAQuote[i], 1, 6, 1.) + " | " +
-								FormatUtil.FormatDouble (fcDerived.forward (aFRA[i].maturity()), 1, 4, 100.) + "%");
+								FormatUtil.FormatDouble (fcDerived.forward (aFRA[i].maturityDate()), 1, 4, 100.) + "%");
 			}
 
 			/*
@@ -658,10 +658,10 @@ public class IBOR {
 				System.out.println ("\t----------------------------------------------------------------");
 
 				for (int i = 0; i < aFixFloat.length; ++i)
-					System.out.println ("\t[" + aFixFloat[i].effective() + " - " + aFixFloat[i].maturity() + "] = " +
+					System.out.println ("\t[" + aFixFloat[i].effectiveDate() + " - " + aFixFloat[i].maturityDate() + "] = " +
 						FormatUtil.FormatDouble (aFixFloat[i].measureValue (valParams, null, mktParams, null, strFixFloatCalibMeasure), 1, 2, 100.) +
 							"% | " + FormatUtil.FormatDouble (adblFixFloatQuote[i], 1, 2, 100.) + "% | " +
-								FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].maturity()), 1, 4, 100.) + "%");
+								FormatUtil.FormatDouble (fcDerived.forward (aFixFloat[i].maturityDate()), 1, 4, 100.) + "%");
 			}
 
 			/*
@@ -676,10 +676,10 @@ public class IBOR {
 				System.out.println ("\t----------------------------------------------------------------");
 
 				for (int i = 0; i < aFloatFloat.length; ++i)
-					System.out.println ("\t[" + aFloatFloat[i].effective() + " - " + aFloatFloat[i].maturity() + "] = " +
+					System.out.println ("\t[" + aFloatFloat[i].effectiveDate() + " - " + aFloatFloat[i].maturityDate() + "] = " +
 						FormatUtil.FormatDouble (aFloatFloat[i].measureValue (valParams, null, mktParams, null, strFloatFloatCalibMeasure), 1, 2, 1.) +
 							" | " + FormatUtil.FormatDouble (adblFloatFloatQuote[i], 1, 2, 10000.) + " | " +
-								FormatUtil.FormatDouble (fcDerived.forward (aFloatFloat[i].maturity()), 1, 4, 100.) + "%");
+								FormatUtil.FormatDouble (fcDerived.forward (aFloatFloat[i].maturityDate()), 1, 4, 100.) + "%");
 			}
 
 			/*
@@ -694,10 +694,10 @@ public class IBOR {
 				System.out.println ("\t----------------------------------------------------------------");
 
 				for (int i = 0; i < aSyntheticFloatFloat.length; ++i)
-					System.out.println ("\t[" + aSyntheticFloatFloat[i].effective() + " - " + aSyntheticFloatFloat[i].maturity() + "] = " +
+					System.out.println ("\t[" + aSyntheticFloatFloat[i].effectiveDate() + " - " + aSyntheticFloatFloat[i].maturityDate() + "] = " +
 						FormatUtil.FormatDouble (aSyntheticFloatFloat[i].measureValue (valParams, null, mktParams, null, strSyntheticFloatFloatCalibMeasure), 1, 2, 1.) +
 							" | " + FormatUtil.FormatDouble (adblSyntheticFloatFloatQuote[i], 1, 2, 10000.) + " | " +
-								FormatUtil.FormatDouble (fcDerived.forward (aSyntheticFloatFloat[i].maturity()), 1, 4, 100.) + "%");
+								FormatUtil.FormatDouble (fcDerived.forward (aSyntheticFloatFloat[i].maturityDate()), 1, 4, 100.) + "%");
 			}
 		}
 

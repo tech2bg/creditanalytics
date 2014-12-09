@@ -107,7 +107,7 @@ public class OISCurveQuoteSensitivity {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
-		String strCurrency = aDeposit[0].payCurrency()[0];
+		String strCurrency = aDeposit[0].payCurrency();
 
 		for (int i = 0; i < aDeposit.length; ++i) {
 			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
@@ -120,7 +120,7 @@ public class OISCurveQuoteSensitivity {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel()[0]
+						aDeposit[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -426,7 +426,7 @@ public class OISCurveQuoteSensitivity {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aOIS.length];
 
-		String strCurrency = aOIS[0].payCurrency()[0];
+		String strCurrency = aOIS[0].payCurrency();
 
 		for (int i = 0; i < aOIS.length; ++i) {
 			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
@@ -439,7 +439,7 @@ public class OISCurveQuoteSensitivity {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aOIS[i].forwardLabel()[0]
+						aOIS[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -753,7 +753,7 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aDepositComp.length; ++i)
-			System.out.println ("\t[" + aDepositComp[i].maturity() + "] = " +
+			System.out.println ("\t[" + aDepositComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aDepositComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
@@ -770,7 +770,7 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aShortEndOISComp.length; ++i)
-			System.out.println ("\t[" + aShortEndOISComp[i].maturity() + "] = " +
+			System.out.println ("\t[" + aShortEndOISComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.));
@@ -787,7 +787,7 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aOISFutureComp.length; ++i)
-			System.out.println ("\t[" + aOISFutureComp[i].maturity() + "] = " +
+			System.out.println ("\t[" + aOISFutureComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "SwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.));
@@ -804,7 +804,7 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aLongEndOISComp.length; ++i)
-			System.out.println ("\t[" + aLongEndOISComp[i].maturity() + "] = " +
+			System.out.println ("\t[" + aLongEndOISComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aLongEndOISComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblLongEndOISQuote[i], 1, 6, 1.));
@@ -820,9 +820,9 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aDepositComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDepositComp[i].maturity(), "PV");
+			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDepositComp[i].maturityDate(), "PV");
 
-			System.out.println (aDepositComp[i].maturity() + " => " + wj.displayString());
+			System.out.println (aDepositComp[i].maturityDate() + " => " + wj.displayString());
 		}
 
 		/*
@@ -836,9 +836,9 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aShortEndOISComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aShortEndOISComp[i].maturity(), "PV");
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aShortEndOISComp[i].maturityDate(), "PV");
 
-			System.out.println (aShortEndOISComp[i].maturity() + " => " + wjDFQuote.displayString());
+			System.out.println (aShortEndOISComp[i].maturityDate() + " => " + wjDFQuote.displayString());
 		}
 
 		/*
@@ -852,9 +852,9 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aOISFutureComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aOISFutureComp[i].maturity(), "PV");
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aOISFutureComp[i].maturityDate(), "PV");
 
-			System.out.println (aOISFutureComp[i].maturity() + " => " + wjDFQuote.displayString());
+			System.out.println (aOISFutureComp[i].maturityDate() + " => " + wjDFQuote.displayString());
 		}
 
 		/*
@@ -868,9 +868,9 @@ public class OISCurveQuoteSensitivity {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aLongEndOISComp.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aLongEndOISComp[i].maturity(), "PV");
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aLongEndOISComp[i].maturityDate(), "PV");
 
-			System.out.println (aLongEndOISComp[i].maturity() + " => " + wjDFQuote.displayString());
+			System.out.println (aLongEndOISComp[i].maturityDate() + " => " + wjDFQuote.displayString());
 		}
 	}
 

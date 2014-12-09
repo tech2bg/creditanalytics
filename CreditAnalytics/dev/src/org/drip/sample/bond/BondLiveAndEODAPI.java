@@ -167,7 +167,7 @@ public class BondLiveAndEODAPI {
 			Bond bond = CreditAnalytics.GetBond (strISIN);
 
 			if (null != bond && !bond.variableCoupon() && !bond.exercised() && !bond.defaulted() &&
-				bond.maturity().julian() > dtToday.julian()) {
+				bond.maturityDate().julian() > dtToday.julian()) {
 				double dblZSpreadFromPrice = Double.NaN;
 				double dblOASpreadFromPrice = Double.NaN;
 
@@ -191,8 +191,8 @@ public class BondLiveAndEODAPI {
 
 				System.out.println (strISIN + FIELD_SEPARATOR +
 					(bond.isFloater() ? "FLOAT   " : "FIXED   ") + bond.ticker() + FIELD_SEPARATOR +
-					FormatUtil.FormatDouble (bond.coupon (dtToday.julian(), null, mktParams).rate(), 2, 3, 100.) + FIELD_SEPARATOR +
-					bond.maturity() + FIELD_SEPARATOR +
+					FormatUtil.FormatDouble (bond.couponMetrics (dtToday.julian(), null, mktParams).rate(), 2, 3, 100.) + FIELD_SEPARATOR +
+					bond.maturityDate() + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dblYieldFromPrice, 2, 3, 100.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dblZSpreadFromPrice, 1, 3, 100.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dblOASpreadFromPrice, 1, 3, 100.) + FIELD_SEPARATOR +
@@ -211,8 +211,8 @@ public class BondLiveAndEODAPI {
 
 			System.out.println (
 				strISIN + FIELD_SEPARATOR + bond.ticker() + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (bond.coupon (JulianDate.Today().julian(), null, null).rate(), 2, 3, 100.) + FIELD_SEPARATOR +
-				bond.maturity() + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (bond.couponMetrics (JulianDate.Today().julian(), null, null).rate(), 2, 3, 100.) + FIELD_SEPARATOR +
+				bond.maturityDate() + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (CreditAnalytics.GetBondDoubleField (strISIN, "OutstandingAmount"), 10, 0, 1.)
 			);
 		}
@@ -366,8 +366,8 @@ public class BondLiveAndEODAPI {
 
 		ExerciseInfo nei = CreditAnalytics.NextExerciseInfo (strISIN, dtToday);
 
-		System.out.println (strISIN + "    " + bond.ticker() + " " + FormatUtil.FormatDouble (bond.coupon
-			(valParams.valueDate(), valParams, mktParams).rate(), 2, 3, 100.) + " " + bond.maturity());
+		System.out.println (strISIN + "    " + bond.ticker() + " " + FormatUtil.FormatDouble (bond.couponMetrics
+			(valParams.valueDate(), valParams, mktParams).rate(), 2, 3, 100.) + " " + bond.maturityDate());
 
 		System.out.println ("Work-out date From Price: " + new JulianDate (wi.date()));
 

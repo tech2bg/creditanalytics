@@ -46,7 +46,7 @@ public abstract class FXSpot {
 	 * @return Spot JulianDate
 	 */
 
-	public abstract double getSpotDate();
+	public abstract double spotDate();
 
 	/**
 	 * Get the currency pair
@@ -54,5 +54,5 @@ public abstract class FXSpot {
 	 * @return CurrencyPair
 	 */
 
-	public abstract org.drip.product.params.CurrencyPair getCcyPair();
+	public abstract org.drip.product.params.CurrencyPair currencyPair();
 }

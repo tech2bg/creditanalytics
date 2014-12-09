@@ -106,94 +106,46 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return _aCompFloatStream;
 	}
 
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	@Override public java.util.List<java.lang.String> couponCurrency()
 	{
-		java.util.Set<java.lang.String> setCurrency = new java.util.TreeSet<java.lang.String>();
+		java.util.List<java.lang.String> lsCouponCurrency = new java.util.ArrayList<java.lang.String>();
 
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
 			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream)
-				setCurrency.addAll (fixedStream.cashflowCurrencySet());
+				lsCouponCurrency.add (fixedStream.couponCurrency());
 		}
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
 			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream)
-				setCurrency.addAll (floatStream.cashflowCurrencySet());
+				lsCouponCurrency.add (floatStream.couponCurrency());
 		}
+
+		return lsCouponCurrency;
+	}
+
+	@Override public java.lang.String payCurrency()
+	{
+		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length)
+			return _aCompFixedStream[0].payCurrency();
+
+		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length)
+			return _aCompFloatStream[0].payCurrency();
 
 		return null;
 	}
 
-	@Override public java.lang.String[] payCurrency()
+	@Override public java.lang.String principalCurrency()
 	{
-		java.util.Set<java.lang.String> setCouponCurrency = new java.util.TreeSet<java.lang.String>();
-
-		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream)
-				setCouponCurrency.add (fixedStream.couponCurrency());
-		}
-
-		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream)
-				setCouponCurrency.add (floatStream.couponCurrency());
-		}
-
-		int iNumCouponCurrency = setCouponCurrency.size();
-
-		int i = 0;
-		java.lang.String[] astrCouponCurrency = new java.lang.String[iNumCouponCurrency];
-
-		for (java.lang.String strCouponCurrency : setCouponCurrency)
-			astrCouponCurrency[i++] = strCouponCurrency;
-
-		return astrCouponCurrency;
+		return null;
 	}
 
-	@Override public String[] principalCurrency()
+	@Override public org.drip.state.identifier.CreditLabel creditLabel()
 	{
-		java.util.Set<java.lang.String> setPrincipalCurrency = new java.util.TreeSet<java.lang.String>();
-
-		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream) {
-				java.lang.String[] astrPrincipalCurrency = fixedStream.principalCurrency();
-
-				if (null != astrPrincipalCurrency && 0 != astrPrincipalCurrency.length) {
-					for (java.lang.String strPrincipalCurrency : astrPrincipalCurrency)
-						setPrincipalCurrency.add (strPrincipalCurrency);
-				}
-			}
-		}
-
-		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
-				java.lang.String[] astrPrincipalCurrency = floatStream.principalCurrency();
-
-				if (null != astrPrincipalCurrency && 0 != astrPrincipalCurrency.length) {
-					for (java.lang.String strPrincipalCurrency : astrPrincipalCurrency)
-						setPrincipalCurrency.add (strPrincipalCurrency);
-				}
-			}
-		}
-
-		int iNumPrincipalCurrency = setPrincipalCurrency.size();
-
-		int i = 0;
-		java.lang.String[] astrPrincipalCurrency = new java.lang.String[iNumPrincipalCurrency];
-
-		for (java.lang.String strPrincipalCurrency : setPrincipalCurrency)
-			astrPrincipalCurrency[i++] = strPrincipalCurrency;
-
-		return astrPrincipalCurrency;
-	}
-
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
-	{
-		java.util.Set<java.lang.String> setstrCreditLabel = new java.util.TreeSet<java.lang.String>();
-
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
 			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream) {
 				org.drip.state.identifier.CreditLabel creditLabel = fixedStream.creditLabel();
 
-				if (null != creditLabel) setstrCreditLabel.add (creditLabel.fullyQualifiedName());
+				if (null != creditLabel) return creditLabel;
 			}
 		}
 
@@ -201,81 +153,44 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
 				org.drip.state.identifier.CreditLabel creditLabel = floatStream.creditLabel();
 
-				if (null != creditLabel) setstrCreditLabel.add (creditLabel.fullyQualifiedName());
+				if (null != creditLabel) return creditLabel;
 			}
 		}
 
-		int iNumCreditLabel = setstrCreditLabel.size();
-
-		int i = 0;
-		org.drip.state.identifier.CreditLabel[] aCreditLabel = new
-			org.drip.state.identifier.CreditLabel[iNumCreditLabel];
-
-		for (java.lang.String strCreditLabel : setstrCreditLabel)
-			aCreditLabel[i++] = org.drip.state.identifier.CreditLabel.Standard (strCreditLabel);
-
-		return aCreditLabel;
+		return null;
 	}
 
-	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
+	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
 	{
-		java.util.Set<java.lang.String> setstrForwardLabel = new java.util.TreeSet<java.lang.String>();
+		java.util.List<org.drip.state.identifier.ForwardLabel> lsForwardLabel = new
+			java.util.ArrayList<org.drip.state.identifier.ForwardLabel>();
 
 		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
 			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
 				org.drip.state.identifier.ForwardLabel forwardLabel = floatStream.forwardLabel();
 
-				if (null != forwardLabel) setstrForwardLabel.add (forwardLabel.fullyQualifiedName());
+				if (null != forwardLabel) lsForwardLabel.add (forwardLabel);
 			}
 		}
 
-		int iNumForwardLabel = setstrForwardLabel.size();
-
-		int i = 0;
-		org.drip.state.identifier.ForwardLabel[] aForwardLabel = new
-			org.drip.state.identifier.ForwardLabel[iNumForwardLabel];
-
-		for (java.lang.String strForwardLabel : setstrForwardLabel)
-			aForwardLabel[i++] = org.drip.state.identifier.ForwardLabel.Standard (strForwardLabel);
-
-		return aForwardLabel;
+		return lsForwardLabel;
 	}
 
-	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
+	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
 	{
-		java.util.Set<java.lang.String> setstrFundingLabel = new java.util.TreeSet<java.lang.String>();
-
-		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream)
-				setstrFundingLabel.add (fixedStream.fundingLabel().fullyQualifiedName());
-		}
-
-		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream)
-				setstrFundingLabel.add (floatStream.fundingLabel().fullyQualifiedName());
-		}
-
-		int iNumFundingLabel = setstrFundingLabel.size();
-
-		int i = 0;
-		org.drip.state.identifier.FundingLabel[] aFundingLabel = new
-			org.drip.state.identifier.FundingLabel[iNumFundingLabel];
-
-		for (java.lang.String strFundingLabel : setstrFundingLabel)
-			aFundingLabel[i++] = org.drip.state.identifier.FundingLabel.Standard (strFundingLabel);
-
-		return aFundingLabel;
+		return org.drip.state.identifier.FundingLabel.Standard (payCurrency());
 	}
 
-	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
+	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
 	{
-		java.util.Set<java.lang.String> setstrFXLabel = new java.util.TreeSet<java.lang.String>();
+		java.util.List<org.drip.state.identifier.FXLabel> lsFXLabel = new
+			java.util.ArrayList<org.drip.state.identifier.FXLabel>();
 
 		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
 			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream) {
 				org.drip.state.identifier.FXLabel fxLabel = fixedStream.fxLabel();
 
-				if (null != fxLabel) setstrFXLabel.add (fxLabel.fullyQualifiedName());
+				if (null != fxLabel) lsFXLabel.add (fxLabel);
 			}
 		}
 
@@ -283,19 +198,11 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
 				org.drip.state.identifier.FXLabel fxLabel = floatStream.fxLabel();
 
-				if (null != fxLabel) setstrFXLabel.add (fxLabel.fullyQualifiedName());
+				if (null != fxLabel) lsFXLabel.add (fxLabel);
 			}
 		}
 
-		int iNumFXLabel = setstrFXLabel.size();
-
-		int i = 0;
-		org.drip.state.identifier.FXLabel[] aFXLabel = new org.drip.state.identifier.FXLabel[iNumFXLabel];
-
-		for (java.lang.String strFXLabel : setstrFXLabel)
-			aFXLabel[i++] = org.drip.state.identifier.FXLabel.Standard (strFXLabel);
-
-		return aFXLabel;
+		return lsFXLabel;
 	}
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
@@ -388,7 +295,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return 0;
 	}
 
-	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
+	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics couponMetrics (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -401,12 +308,12 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return 0;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate effective()
+	@Override public org.drip.analytics.date.JulianDate effectiveDate()
 	{
 		return null;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate maturity()
+	@Override public org.drip.analytics.date.JulianDate maturityDate()
 	{
 		return null;
 	}
@@ -416,7 +323,7 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> couponPeriods()
 	{
 		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCP = new
 			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();

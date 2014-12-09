@@ -68,19 +68,24 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		_bIsCaplet = bIsCaplet;
 	}
 
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	@Override public java.util.List<java.lang.String> couponCurrency()
 	{
-		return _fra.cashflowCurrencySet();
+		return _fra.couponCurrency();
 	}
 
-	@Override public java.lang.String[] payCurrency()
+	@Override public java.lang.String payCurrency()
 	{
 		return _fra.payCurrency();
 	}
 
-	@Override public java.lang.String[] principalCurrency()
+	@Override public java.lang.String principalCurrency()
 	{
 		return _fra.principalCurrency();
+	}
+
+	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
+	{
+		return _fra.fundingLabel();
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
@@ -92,17 +97,17 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		if (null == valParams || null == csqs) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (_fra.payCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (_fra.payCurrency()));
 
 		if (null == dcFunding) return null;
 
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate >= exercise().julian()) return null;
+		if (dblValueDate >= exerciseDate().julian()) return null;
 
 		long lStart = System.nanoTime();
 
-		double dblExerciseDate = exercise().julian();
+		double dblExerciseDate = exerciseDate().julian();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapFRAOutput = _fra.value
 			(valParams, pricerParams, csqs, quotingParams);

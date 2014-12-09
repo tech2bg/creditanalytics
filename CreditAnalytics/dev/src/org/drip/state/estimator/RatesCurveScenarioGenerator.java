@@ -130,13 +130,13 @@ public class RatesCurveScenarioGenerator {
 		for (int i = 0; i < adblQuotes.length; ++i) {
 			adblRates[i] = 0.02;
 
-			if (null == _aCalibInst[i] || null == _aCalibInst[i].maturity()) {
+			if (null == _aCalibInst[i] || null == _aCalibInst[i].maturityDate()) {
 				System.out.println ("Param " + i + " invalid in IRCurveScenarioGenerator::createIRCurve!");
 
 				return null;
 			}
 
-			adblDates[i] = _aCalibInst[i].maturity().julian();
+			adblDates[i] = _aCalibInst[i].maturityDate().julian();
 		}
 
 		try {
@@ -270,7 +270,7 @@ public class RatesCurveScenarioGenerator {
 			}
 
 			mapTenorDC.put (org.drip.analytics.date.JulianDate.fromJulian
-				(_aCalibInst[i].maturity().julian()), createIRCurve (valParams, dcTSY, adblTenorQuotes, 0.,
+				(_aCalibInst[i].maturityDate().julian()), createIRCurve (valParams, dcTSY, adblTenorQuotes, 0.,
 					astrCalibMeasure, lsfc, quotingParams));
 		}
 

@@ -243,24 +243,24 @@ public interface BondProduct {
 	public abstract org.drip.product.params.TerminationSetting terminationSetting();
 
 	/**
-	 * Set the bond Period Set
+	 * Set the bond Stream
 	 * 
-	 * @param periodSet Bond Period Set
+	 * @param stream Bond Stream
 	 * 
 	 * @return True if succeeded
 	 */
 
-	public abstract boolean setPeriodSet (
-		final org.drip.product.params.BondStream periodSet
+	public abstract boolean setStream (
+		final org.drip.product.params.BondStream stream
 	);
 
 	/**
-	 * Retrieve the bond period Set
+	 * Retrieve the Bond Stream
 	 * 
-	 * @return Bond period Set
+	 * @return Bond Stream
 	 */
 
-	public abstract org.drip.product.params.BondStream periodSet();
+	public abstract org.drip.product.params.BondStream stream();
 
 	/**
 	 * Set the bond notional Setting

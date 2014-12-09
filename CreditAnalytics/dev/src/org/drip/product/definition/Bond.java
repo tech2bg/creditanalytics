@@ -322,7 +322,7 @@ public abstract class Bond extends CreditComponent {
 	 * @return Bond's coupon currency
 	 */
 
-	public abstract java.lang.String couponCurrency();
+	public abstract java.lang.String currency();
 
 	/**
 	 * Return the bond's redemption currency

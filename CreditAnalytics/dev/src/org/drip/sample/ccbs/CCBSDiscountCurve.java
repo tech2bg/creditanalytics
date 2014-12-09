@@ -388,7 +388,7 @@ public class CCBSDiscountCurve {
 		);
 
 		WengertJacobian wjDFQuoteBespokeMat = dc.jackDDFDManifestMeasure (
-			irsBespoke.maturity(),
+			irsBespoke.maturityDate(),
 			strManifestMeasure
 		);
 
@@ -491,11 +491,11 @@ public class CCBSDiscountCurve {
 
 			double dblCalibSwapRate = mapOP.get (rcDerived.name() + "[SwapRate]");
 
-			System.out.println ("\t[" + rcDerived.effective() + " - " + rcDerived.maturity() + "] = " +
+			System.out.println ("\t[" + rcDerived.effectiveDate() + " - " + rcDerived.maturityDate() + "] = " +
 				FormatUtil.FormatDouble (dblCalibSwapRate, 1, 3, 100.) +
 					"% | " + FormatUtil.FormatDouble (adblSwapRate[i], 1, 3, 100.) + "% | " +
 						FormatUtil.FormatDouble (adblSwapRate[i] - dblCalibSwapRate, 2, 0, 10000.) + " | " +
-							FormatUtil.FormatDouble (dcDerived.df (rcDerived.maturity()), 1, 4, 1.));
+							FormatUtil.FormatDouble (dcDerived.df (rcDerived.maturityDate()), 1, 4, 1.));
 		}
 
 		System.out.println ("\t----------------------------------------------------------------------");

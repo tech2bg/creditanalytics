@@ -155,23 +155,23 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return "FRA=" + _fri.fullyQualifiedName();
 	}
 
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	@Override public java.util.List<java.lang.String> couponCurrency()
 	{
-		java.util.Set<java.lang.String> setCcy = new java.util.HashSet<java.lang.String>();
+		java.util.List<java.lang.String> lsCouponCurrency = new java.util.ArrayList<java.lang.String>();
 
-		setCcy.add (_strCurrency);
+		lsCouponCurrency.add (_strCurrency);
 
-		return setCcy;
+		return lsCouponCurrency;
 	}
 
-	@Override public java.lang.String[] payCurrency()
+	@Override public java.lang.String payCurrency()
 	{
-		return new java.lang.String[] {_strCurrency};
+		return _strCurrency;
 	}
 
-	@Override public java.lang.String[] principalCurrency()
+	@Override public java.lang.String principalCurrency()
 	{
-		return new java.lang.String[] {_strCurrency};
+		return _strCurrency;
 	}
 
 	@Override public double initialNotional()
@@ -207,7 +207,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return 1.;
 	}
 
-	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
+	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics couponMetrics (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -217,31 +217,35 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 
 	@Override public int freq()
 	{
-		return cashFlowPeriod().get (0).freq();
+		return couponPeriods().get (0).freq();
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	@Override public org.drip.state.identifier.CreditLabel creditLabel()
 	{
 		return null;
 	}
 
-	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
+	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
 	{
-		return new org.drip.state.identifier.ForwardLabel[] {_fri};
+		java.util.List<org.drip.state.identifier.ForwardLabel> lsFRI = new
+			java.util.ArrayList<org.drip.state.identifier.ForwardLabel>();
+
+		lsFRI.add (_fri);
+
+		return lsFRI;
 	}
 
-	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
+	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
 	{
-		return new org.drip.state.identifier.FundingLabel[] {org.drip.state.identifier.FundingLabel.Standard
-			(_strCurrency)};
+		return org.drip.state.identifier.FundingLabel.Standard (_strCurrency);
 	}
 
-	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
+	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
 	{
 		return null;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate effective()
+	@Override public org.drip.analytics.date.JulianDate effectiveDate()
 	{
 		try {
 			return new org.drip.analytics.date.JulianDate (_dblEffectiveDate);
@@ -252,17 +256,17 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return null;
 	}
 
-	@Override public org.drip.analytics.date.JulianDate maturity()
+	@Override public org.drip.analytics.date.JulianDate maturityDate()
 	{
 		return _dtMaturity;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate firstCouponDate()
 	{
-		return maturity();
+		return maturityDate();
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> couponPeriods()
 	{
 		try {
 			java.lang.String strTenor = _fri.tenor();
@@ -311,7 +315,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		if (null == valParams || null == csqs) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()));
 
 		if (null == dcFunding) return null;
 

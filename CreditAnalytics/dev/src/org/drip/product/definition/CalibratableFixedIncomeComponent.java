@@ -45,7 +45,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
+		final org.drip.param.valuation.ValuationCustomizationParams vcp);
 
 	/**
 	 * Return the primary code
@@ -94,7 +94,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
 	 * @param csqs Component Market Parameters
-	 * @param quotingParams Component Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * 
 	 * @return The micro-Jacobian
 	 */
@@ -103,7 +103,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
+		final org.drip.param.valuation.ValuationCustomizationParams vcp);
 
 	/**
 	 * Compute the micro-Jacobian of the given measure to the DF
@@ -112,7 +112,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
 	 * @param csqs Component Market Parameters
-	 * @param quotingParams Component Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * 
 	 * @return The micro-Jacobian
 	 */
@@ -122,7 +122,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams);
+		final org.drip.param.valuation.ValuationCustomizationParams vcp);
 
 	/**
 	 * Generate the Product Specific Calibration Quote Set
@@ -143,7 +143,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
 	 * @param csqs Component Market Parameters
-	 * @param quotingParams Component Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param pqs Product Quote Set
 	 * 
 	 * @return The Calibratable Linearized Predictor/Response Constraints (Date/Cash Flow pairs and the
@@ -154,7 +154,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final org.drip.product.calib.ProductQuoteSet pqs);
 
 	/**
@@ -165,7 +165,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
 	 * @param csqs Component Market Parameters
-	 * @param quotingParams Component Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param pqs Product Quote Set
 	 * 
 	 * @return The Calibratable Linearized Predictor/Response Constraints (Date/Cash Flow pairs and the
@@ -176,7 +176,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final org.drip.product.calib.ProductQuoteSet pqs);
 
 	/**
@@ -187,7 +187,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
 	 * @param csqs Component Market Parameters
-	 * @param quotingParams Component Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param pqs Product Quote Set
 	 * 
 	 * @return The Calibratable Linearized Predictor/Response Constraints (Date/Cash Flow pairs and the
@@ -198,7 +198,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final org.drip.product.calib.ProductQuoteSet pqs);
 
 	/**
@@ -209,7 +209,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 	 * @param valParams Valuation Parameters
 	 * @param pricerParams Pricer Parameters
 	 * @param csqs Component Market Parameters
-	 * @param quotingParams Component Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param pqs The Product Calibration Quote Set
 	 * 
 	 * @return The Calibratable Linearized Predictor/Response Constraints (Date/Cash Flow pairs and the
@@ -220,7 +220,7 @@ public abstract class CalibratableFixedIncomeComponent extends
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
 		if (null == valParams || null == pqs) return null;
@@ -233,19 +233,19 @@ public abstract class CalibratableFixedIncomeComponent extends
 							(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD) &&
 								pqs.containsLatentStateQuantificationMetric
 									(org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE))
-			return fundingForwardPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
+			return fundingForwardPRWC (valParams, pricerParams, csqs, vcp, pqs);
 
 		if (pqs.containsLatentStateType
 			(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING) &&
 				pqs.containsLatentStateQuantificationMetric
 					(org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR))
-			return fundingPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
+			return fundingPRWC (valParams, pricerParams, csqs, vcp, pqs);
 
 		if (pqs.containsLatentStateType
 			(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD) &&
 				pqs.containsLatentStateQuantificationMetric
 					(org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE))
-			return forwardPRWC (valParams, pricerParams, csqs, quotingParams, pqs);
+			return forwardPRWC (valParams, pricerParams, csqs, vcp, pqs);
 
 		return null;
 	}
@@ -258,6 +258,6 @@ public abstract class CalibratableFixedIncomeComponent extends
 
 	public org.drip.analytics.date.JulianDate terminalDate()
 	{
-		return maturity();
+		return maturityDate();
 	}
 }

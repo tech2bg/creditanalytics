@@ -1012,7 +1012,7 @@ public abstract class CompositePeriod {
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (null == comp || null == valParams || null == pricerParams || null == csqs || null ==
-			csqs.creditCurve (comp.creditLabel()[0]) || !org.drip.quant.common.NumberUtil.IsValid
+			csqs.creditCurve (comp.creditLabel()) || !org.drip.quant.common.NumberUtil.IsValid
 				(dblWorkoutDate) || startDate() > dblWorkoutDate)
 			return null;
 

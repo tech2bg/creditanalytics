@@ -80,7 +80,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 				("DerivedFXForward::calcNodeBasis => Cannot make fxfwd at maturity " +
 					org.drip.analytics.date.JulianDate.fromJulian (_adblDate[iNode]));
 
-		return fxfwd.calcDCBasis (valParam, dcNum, dcDenom, _dblFXSpot, dblFXFwd, bBasisOnDenom);
+		return fxfwd.discountCurveBasis (valParam, dcNum, dcDenom, _dblFXSpot, dblFXFwd, bBasisOnDenom);
 	}
 
 	/**

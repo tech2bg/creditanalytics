@@ -308,9 +308,9 @@ public class CDSW {
 
 		for (int i = 0; i < aCDS.length; ++i)
 			System.out.println (
-				aCDS[i].maturity() + " | " +
+				aCDS[i].maturityDate() + " | " +
 				cc.manifestMeasure(aCDS[i].primaryCode()) + " | " +
-				org.drip.quant.common.FormatUtil.FormatDouble (1. - cc.survival (aCDS[i].maturity()), 1, 3, 1.));
+				org.drip.quant.common.FormatUtil.FormatDouble (1. - cc.survival (aCDS[i].maturityDate()), 1, 3, 1.));
 	}
 
 	/*
@@ -403,9 +403,9 @@ public class CDSW {
 
 		System.out.println ("\n---- CDS Details ----");
 
-		System.out.println ("Effective    : " + cds.effective());
+		System.out.println ("Effective    : " + cds.effectiveDate());
 
-		System.out.println ("Maturity     : " + cds.maturity());
+		System.out.println ("Maturity     : " + cds.maturityDate());
 
 		/*
 		 * Generate the base CDS Measures
@@ -486,7 +486,7 @@ public class CDSW {
 
 		System.out.println ("\n---- CDS Coupon Flows ----");
 
-		for (CompositePeriod p : cds.cashFlowPeriod())
+		for (CompositePeriod p : cds.couponPeriods())
 			System.out.println (
 				JulianDate.fromJulian (p.startDate()) + FIELD_SEPARATOR +
 				JulianDate.fromJulian (p.endDate()) + FIELD_SEPARATOR +

@@ -317,7 +317,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 					final org.drip.regression.core.RegressionRunDetail rnvd)
 				{
 					for (int i = 0; i < _aCalibComp.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = _aCalibComp[i].maturity();
+						org.drip.analytics.date.JulianDate dt = _aCalibComp[i].maturityDate();
 
 						java.lang.String strCode = _aCalibComp[i].primaryCode();
 
@@ -366,7 +366,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
 					for (int i = 0; i < aCalibComp.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = aCalibComp[i].maturity();
+						org.drip.analytics.date.JulianDate dt = aCalibComp[i].maturityDate();
 
 						double dblBaseHazard = java.lang.Double.NaN;
 						double dblShiftedHazard = java.lang.Double.NaN;
@@ -425,7 +425,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
 					for (int i = 0; i < aCalibComp.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = aCalibComp[i].maturity();
+						org.drip.analytics.date.JulianDate dt = aCalibComp[i].maturityDate();
 
 						try {
 							rnvd.set ("BaseCurveQuote[" + dt + "]",
@@ -499,7 +499,7 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 					org.drip.analytics.date.JulianDate dt1 = _dtStart;
 
 					for (int i = 0; i < aCalibComp.length; ++i) {
-						org.drip.analytics.date.JulianDate dt = aCalibComp[i].maturity();
+						org.drip.analytics.date.JulianDate dt = aCalibComp[i].maturityDate();
 
 						double dblBaseHazard = java.lang.Double.NaN;
 						double dblShiftedHazard = java.lang.Double.NaN;

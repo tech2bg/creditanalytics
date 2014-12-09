@@ -499,7 +499,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						try {
 							double dblQuote = _dc.manifestMeasure (strCalibCompCode).get ("Rate");
 
-							org.drip.analytics.date.JulianDate dt = _aCalibComp[i].maturity();
+							org.drip.analytics.date.JulianDate dt = _aCalibComp[i].maturityDate();
 
 							rnvd.set ("CompQuote" + "_" + strCalibCompCode + "{" + dt + "}",
 								org.drip.quant.common.FormatUtil.FormatDouble (dblQuote, 1, 4, 1));

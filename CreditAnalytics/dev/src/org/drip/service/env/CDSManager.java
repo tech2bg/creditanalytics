@@ -148,7 +148,7 @@ public class CDSManager {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc = aCDS[1].value
 				(valParams, pricerParams, org.drip.param.creator.MarketParamsBuilder.Create
 					(mpc.scenMarketParams (aCDS[i], "Base").fundingCurve
-						(org.drip.state.identifier.FundingLabel.Standard (aCDS[1].payCurrency()[0])), null,
+						(org.drip.state.identifier.FundingLabel.Standard (aCDS[1].payCurrency())), null,
 							null, cc, null, null, null, null), null);
 
 			if (null == mapCalc) {
@@ -218,7 +218,7 @@ public class CDSManager {
 					dblFlatSpread100 = aCDS[i].calibFlatSpread (valParams, pricerParams,
 						org.drip.param.creator.MarketParamsBuilder.Create (mpc.scenMarketParams (aCDS[i],
 							"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-								(aCDS[i].payCurrency()[0])), null, null, cc, null, null, null, null), null);
+								(aCDS[i].payCurrency())), null, null, cc, null, null, null, null), null);
 				} catch (java.lang.Exception e) {
 					System.out.println ("SPN: " + strSPN + "; Flat spread 500 calc problem!" +
 						e.getMessage());
@@ -270,7 +270,7 @@ public class CDSManager {
 					dblFlatSpread500 = aCDS[i].calibFlatSpread (valParams, pricerParams, 
 						org.drip.param.creator.MarketParamsBuilder.Create (mpc.scenMarketParams (aCDS[i],
 							"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-								(aCDS[i].payCurrency()[0])), null, null, cc, null, null, null, null), null);
+								(aCDS[i].payCurrency())), null, null, cc, null, null, null, null), null);
 				} catch (java.lang.Exception e) {
 					System.out.println ("SPN: " + strSPN + "; Flat spread 500 calc problem!" +
 						e.getMessage());

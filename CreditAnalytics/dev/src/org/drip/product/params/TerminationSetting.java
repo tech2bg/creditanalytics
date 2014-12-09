@@ -39,24 +39,9 @@ package org.drip.product.params;
  */
 
 public class TerminationSetting implements org.drip.product.params.Validatable {
-
-	/**
-	 * Is the component Perpetual
-	 */
-
-	public boolean _bIsPerpetual = false;
-
-	/**
-	 * Has the component Defaulted
-	 */
-
-	public boolean _bIsDefaulted = false;
-
-	/**
-	 * Has the component Been Exercised
-	 */
-
-	public boolean _bHasBeenExercised = false;
+	private boolean _bIsDefaulted = false;
+	private boolean _bIsPerpetual = false;
+	private boolean _bHasBeenExercised = false;
 
 	/**
 	 * Construct the TerminationSetting object from the perpetual flag, defaulted flag, and the has
@@ -80,5 +65,38 @@ public class TerminationSetting implements org.drip.product.params.Validatable {
 	@Override public boolean validate()
 	{
 		return true;
+	}
+
+	/**
+	 * Indicate if the contract has defaulted
+	 * 
+	 * @return TRUE => The Contract has defaulted
+	 */
+
+	public boolean defaulted()
+	{
+		return _bIsDefaulted;
+	}
+
+	/**
+	 * Indicate if the contract is perpetual
+	 * 
+	 * @return TRUE => The Contract is Perpetual
+	 */
+
+	public boolean perpetual()
+	{
+		return _bIsPerpetual;
+	}
+
+	/**
+	 * Indicate if the contract has been exercised
+	 * 
+	 * @return TRUE => The Contract has been exercised
+	 */
+
+	public boolean exercised()
+	{
+		return _bHasBeenExercised;
 	}
 }

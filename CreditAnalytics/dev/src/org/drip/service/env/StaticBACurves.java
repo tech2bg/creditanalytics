@@ -122,7 +122,7 @@ public class StaticBACurves {
 			return null;
 		}
 
-		bondTSY.setPeriodSet (periodParams);
+		bondTSY.setStream (periodParams);
 
 		org.drip.product.params.NotionalSetting notlParams = new
 			org.drip.product.params.NotionalSetting (null, 100.,
@@ -705,7 +705,7 @@ public class StaticBACurves {
 			if (!(ccsc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDS)).cookScenarioCC
 				(strCC, new org.drip.param.valuation.ValuationParams (dt, dt, strIR), mpc.scenMarketParams
 					(aCDS[0], "Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-						(aCDS[0].payCurrency()[0])), null, adblQuotes, dblRecovery, astrCalibMeasure, null,
+						(aCDS[0].payCurrency())), null, adblQuotes, dblRecovery, astrCalibMeasure, null,
 							null, false, 63)) {
 				System.out.println ("CC[" + strCC + "] failed to cook");
 

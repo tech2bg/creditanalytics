@@ -107,9 +107,9 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 	public java.lang.String fxCode()
 	{
-		java.lang.String strDerivedComponentCouponCurrency = _rcDerived.payCurrency()[0];
+		java.lang.String strDerivedComponentCouponCurrency = _rcDerived.payCurrency();
 
-		java.lang.String strReferenceComponentCouponCurrency = _rcReference.payCurrency()[0];
+		java.lang.String strReferenceComponentCouponCurrency = _rcReference.payCurrency();
 
 		return strDerivedComponentCouponCurrency.equalsIgnoreCase (strReferenceComponentCouponCurrency) ?
 			null : strReferenceComponentCouponCurrency + "/" + strDerivedComponentCouponCurrency;
@@ -141,9 +141,9 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 			forwardLabel = ((org.drip.product.rates.DualStreamComponent)
 				comp).derivedStream().forwardLabel();
 		else {
-			org.drip.state.identifier.ForwardLabel[] aForwardLabel =  comp.forwardLabel();
+			java.util.List<org.drip.state.identifier.ForwardLabel> lsForwardLabel = comp.forwardLabel();
 
-			if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
+			if (null != lsForwardLabel && 0 != lsForwardLabel.size()) forwardLabel = lsForwardLabel.get (0);
 		}
 
 		try { 
@@ -224,13 +224,14 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 			fundingLabel = streamDerived.fundingLabel();
 		} else {
-			org.drip.state.identifier.ForwardLabel[] aForwardLabel = compDerived.forwardLabel();
+			java.util.List<org.drip.state.identifier.ForwardLabel> lsForwardLabel =
+				compDerived.forwardLabel();
 
-			org.drip.state.identifier.FundingLabel[] aFundingLabel = compDerived.fundingLabel();
+			org.drip.state.identifier.FundingLabel fundingLabelDerived = compDerived.fundingLabel();
 
-			if (null != aForwardLabel && 0 != aForwardLabel.length) forwardLabel = aForwardLabel[0];
+			if (null != lsForwardLabel && 0 != lsForwardLabel.size()) forwardLabel = lsForwardLabel.get (0);
 
-			if (null != aFundingLabel && 0 != aFundingLabel.length) fundingLabel = aFundingLabel[0];
+			if (null != fundingLabelDerived) fundingLabel = fundingLabelDerived;
 		}
 
 		try { 
@@ -282,24 +283,13 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
 	{
-		java.lang.String strReferenceCurrency = _rcReference.payCurrency()[0];
+		java.lang.String strReferenceCurrency = _rcReference.payCurrency();
 
-		java.lang.String strDerivedCurrency = _rcDerived.payCurrency()[0];
+		java.lang.String strDerivedCurrency = _rcDerived.payCurrency();
 
 		return new org.drip.state.identifier.FXLabel[] {org.drip.state.identifier.FXLabel.Standard
 			(strReferenceCurrency + "/" + strDerivedCurrency), org.drip.state.identifier.FXLabel.Standard
 				(strDerivedCurrency + "/" + strReferenceCurrency)};
-	}
-
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
-	{
-		java.util.Set<java.lang.String> setstrCurrency = new java.util.TreeSet<java.lang.String>();
-
-		setstrCurrency.addAll (_rcReference.cashflowCurrencySet());
-
-		setstrCurrency.addAll (_rcDerived.cashflowCurrencySet());
-
-		return setstrCurrency;
 	}
 
 	@Override public org.drip.product.definition.FixedIncomeComponent[] components()

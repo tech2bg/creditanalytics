@@ -439,7 +439,7 @@ public class EODCurves {
 			sb.append ("Recovery=").append (dblRecovery).append (";");
 
 			for (int i = 0; i < aCDS.length; ++i)
-				sb.append (" " + aCDS[i].maturity().toString()).append ("=").append
+				sb.append (" " + aCDS[i].maturityDate().toString()).append ("=").append
 					(adblQuotes[i]).append (";");
 
 			System.out.println (strSPN + " failed: " + sb.toString());

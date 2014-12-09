@@ -319,7 +319,7 @@ public class RatesAnalyticsAPI {
 			aCompCalib[i + 7] = aEDF[i];
 			astrCalibMeasure[i + 7] = "Rate";
 
-			adblMaturity[i + 7] = aEDF[i].maturity().julian();
+			adblMaturity[i + 7] = aEDF[i].maturityDate().julian();
 		}
 
 		// Final 15 instruments - IRS calibration

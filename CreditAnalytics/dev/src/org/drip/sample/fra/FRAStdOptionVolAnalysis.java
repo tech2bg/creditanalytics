@@ -674,7 +674,7 @@ public class FRAStdOptionVolAnalysis {
 		double dblStrike = 0.0189;
 		String strManifestMeasure = "QuantoAdjustedParForward";
 
-		String strCurrency = fra.payCurrency()[0];
+		String strCurrency = fra.payCurrency();
 
 		FRAStandardCapFloorlet fraCaplet = new FRAStandardCapFloorlet (
 			fra,

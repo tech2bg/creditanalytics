@@ -352,10 +352,10 @@ public class CCBSForwardCurve {
 				null
 			);
 
-			System.out.println ("\t[" + rc.effective() + " - " + rc.maturity() + "] = " +
+			System.out.println ("\t[" + rc.effectiveDate() + " - " + rc.maturityDate() + "] = " +
 				FormatUtil.FormatDouble (mapOP.get (bBasisOnDerivedLeg ? "ReferenceCompDerivedBasis" : "ReferenceCompReferenceBasis"), 1, 3, 1.) +
 					" | " + FormatUtil.FormatDouble (adblCrossCurrencyBasis[i], 1, 3, 10000.) + " | " +
-						FormatUtil.FormatDouble (fc3MDerived.forward (rc.maturity()), 1, 4, 100.) + "%");
+						FormatUtil.FormatDouble (fc3MDerived.forward (rc.maturityDate()), 1, 4, 100.) + "%");
 		}
 
 		IBOR.ForwardJack (

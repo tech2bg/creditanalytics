@@ -98,7 +98,7 @@ public class CrossOvernightFloatingStream {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
 
-		String strCurrency = aDeposit[0].payCurrency()[0];
+		String strCurrency = aDeposit[0].payCurrency();
 
 		for (int i = 0; i < aDeposit.length; ++i) {
 			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
@@ -111,7 +111,7 @@ public class CrossOvernightFloatingStream {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel()[0]
+						aDeposit[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -143,12 +143,12 @@ public class CrossOvernightFloatingStream {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
 						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aEDF[i].payCurrency()[0])
+						FundingLabel.Standard (aEDF[i].payCurrency())
 					),
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aEDF[i].forwardLabel()[0]
+						aEDF[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -317,7 +317,7 @@ public class CrossOvernightFloatingStream {
 	{
 		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aCFIC.length];
 
-		String strCurrency = aCFIC[0].payCurrency()[0];
+		String strCurrency = aCFIC[0].payCurrency();
 
 		for (int i = 0; i < aCFIC.length; ++i) {
 			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
@@ -330,7 +330,7 @@ public class CrossOvernightFloatingStream {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aCFIC[i].forwardLabel()[0]
+						aCFIC[i].forwardLabel().get (0)
 					)
 				}
 			);

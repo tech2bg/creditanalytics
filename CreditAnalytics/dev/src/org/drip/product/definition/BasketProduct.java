@@ -38,7 +38,7 @@ package org.drip.product.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class BasketProduct implements org.drip.product.definition.MarketParamRef {
+public abstract class BasketProduct implements org.drip.product.definition.BasketMarketParamRef {
 	protected static final int MEASURE_AGGREGATION_TYPE_CUMULATIVE = 1;
 	protected static final int MEASURE_AGGREGATION_TYPE_WEIGHTED_CUMULATIVE = 2;
 	protected static final int MEASURE_AGGREGATION_TYPE_UNIT_ACCUMULATE = 4;
@@ -345,7 +345,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		throws java.lang.Exception
 	{
 		if (null == strMeasure || strMeasure.isEmpty() || null == mapCalc || null == mapCalc.entrySet())
-			throw new java.lang.Exception ("BasketProduct::getMeasure => Invalid Params");
+			throw new java.lang.Exception ("BasketProduct::measureValue => Invalid Params");
 
 		for (java.util.Map.Entry<java.lang.String, java.lang.Double> me : mapCalc.entrySet()) {
 			if (null != me && null != me.getKey() && me.getKey().equalsIgnoreCase (strMeasure))
@@ -415,31 +415,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		return adblWeight;
 	}
 
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
-	{
-		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
-
-		if (null == aComp) return null;
-
-		int iNumComp = aComp.length;
-
-		if (0 == iNumComp) return null;
-
-		java.util.Set<java.lang.String> setCashflowCurrency = new java.util.HashSet<java.lang.String>();
-
-		for (int i = 0; i < iNumComp; ++i) {
-			if (null == aComp[i]) return null;
-
-			java.util.Set<java.lang.String> setCompCashflowCurrency = aComp[i].cashflowCurrencySet();
-
-			if (null != setCompCashflowCurrency && 0 != setCompCashflowCurrency.size())
-				setCashflowCurrency.addAll (setCompCashflowCurrency);
-		}
-
-		return setCashflowCurrency;
-	}
-
-	@Override public java.lang.String[] payCurrency()
+	@Override public java.lang.String[] couponCurrency()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
 
@@ -454,9 +430,9 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			java.lang.String[] astrCompCouponCurrency = aComp[i].payCurrency();
+			java.util.List<java.lang.String> astrCompCouponCurrency = aComp[i].couponCurrency();
 
-			if (null != astrCompCouponCurrency && 0 != astrCompCouponCurrency.length) {
+			if (null != astrCompCouponCurrency && 0 != astrCompCouponCurrency.size()) {
 				for (java.lang.String strCompCouponCurrency : astrCompCouponCurrency) {
 					if (null != strCompCouponCurrency && !strCompCouponCurrency.isEmpty())
 						setCouponCurrency.add (strCompCouponCurrency);
@@ -477,6 +453,37 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		return astrCouponCurrency;
 	}
 
+	@Override public java.lang.String[] payCurrency()
+	{
+		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
+
+		if (null == aComp) return null;
+
+		int iNumComp = aComp.length;
+
+		if (0 == iNumComp) return null;
+
+		java.util.Set<java.lang.String> setPayCurrency = new java.util.HashSet<java.lang.String>();
+
+		for (int i = 0; i < iNumComp; ++i) {
+			if (null == aComp[i]) return null;
+
+			setPayCurrency.add (aComp[i].payCurrency());
+		}
+
+		int iNumPayCurrency = setPayCurrency.size();
+
+		if (0 == iNumPayCurrency) return null;
+
+		int i = 0;
+		java.lang.String[] astrPayCurrency = new java.lang.String[iNumPayCurrency];
+
+		for (java.lang.String strPayCurrency : astrPayCurrency)
+			astrPayCurrency[i++] = strPayCurrency;
+
+		return astrPayCurrency;
+	}
+
 	@Override public java.lang.String[] principalCurrency()
 	{
 		org.drip.product.definition.FixedIncomeComponent[] aComp = components();
@@ -492,14 +499,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			java.lang.String[] astrCompPrincipalCurrency = aComp[i].principalCurrency();
-
-			if (null != astrCompPrincipalCurrency && 0 != astrCompPrincipalCurrency.length) {
-				for (java.lang.String strCompPrincipalCurrency : astrCompPrincipalCurrency) {
-					if (null != strCompPrincipalCurrency && !strCompPrincipalCurrency.isEmpty())
-						setPrincipalCurrency.add (strCompPrincipalCurrency);
-				}
-			}
+			setPrincipalCurrency.add (aComp[i].principalCurrency());
 		}
 
 		int iNumPrincipalCurrency = setPrincipalCurrency.size();
@@ -531,19 +531,9 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			org.drip.state.identifier.CreditLabel[] aLSLCredit = aComp[i].creditLabel();
+			org.drip.state.identifier.CreditLabel lslCredit = aComp[i].creditLabel();
 
-			if (null == aLSLCredit) continue;
-
-			int iNumCreditCurve = aLSLCredit.length;
-
-			if (0 == iNumCreditCurve) continue;
-
-			for (int j = 0; j < iNumCreditCurve; ++j) {
-				org.drip.state.identifier.CreditLabel lslCredit = aLSLCredit[j];
-
-				if (null != lslCredit) sLSLCredit.add (lslCredit);
-			}
+			if (null != lslCredit) sLSLCredit.add (lslCredit);
 		}
 
 		int iNumCreditCurve = sLSLCredit.size();
@@ -576,16 +566,16 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			org.drip.state.identifier.ForwardLabel[] aLSLForward = aComp[i].forwardLabel();
+			java.util.List<org.drip.state.identifier.ForwardLabel> aLSLForward = aComp[i].forwardLabel();
 
 			if (null == aLSLForward) continue;
 
-			int iNumForwardCurve = aLSLForward.length;
+			int iNumForwardCurve = aLSLForward.size();
 
 			if (0 == iNumForwardCurve) continue;
 
 			for (int j = 0; j < iNumForwardCurve; ++j) {
-				org.drip.state.identifier.ForwardLabel lslForward = aLSLForward[j];
+				org.drip.state.identifier.ForwardLabel lslForward = aLSLForward.get (j);
 
 				if (null != lslForward) setLSLForward.add (lslForward);
 			}
@@ -621,16 +611,11 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			org.drip.state.identifier.FundingLabel[] aLSLFunding = aComp[i].fundingLabel();
+			org.drip.state.identifier.FundingLabel lslFunding = aComp[i].fundingLabel();
 
-			if (null == aLSLFunding) continue;
+			if (null == lslFunding) continue;
 
-			int iNumFundingCurve = aLSLFunding.length;
-
-			if (0 == iNumFundingCurve) continue;
-
-			for (int j = 0; j < iNumFundingCurve; ++j)
-				sLSLFunding.add (aLSLFunding[j]);
+			sLSLFunding.add (lslFunding);
 		}
 
 		int iNumFundingCurve = sLSLFunding.size();
@@ -663,16 +648,16 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			org.drip.state.identifier.FXLabel[] aLabel = aComp[i].fxLabel();
+			java.util.List<org.drip.state.identifier.FXLabel> aLabel = aComp[i].fxLabel();
 
 			if (null == aLabel) continue;
 
-			int iNumLabel = aLabel.length;
+			int iNumLabel = aLabel.size();
 
 			if (0 == iNumLabel) continue;
 
 			for (int j = 0; j < iNumLabel; ++j) {
-				org.drip.state.identifier.FXLabel label = aLabel[j];
+				org.drip.state.identifier.FXLabel label = aLabel.get (j);
 
 				if (null != label) setLabel.add (label);
 			}
@@ -792,7 +777,7 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 		int iNumComp = aComp.length;
 
 		for (int i = 0; i < iNumComp; ++i)
-			dblCoupon += aComp[i].coupon (dblDate, null, csqs).rate();
+			dblCoupon += aComp[i].couponMetrics (dblDate, null, csqs).rate();
 
 		return dblCoupon / dblNotional;
 	}
@@ -809,10 +794,10 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 
 		int iNumComp = aComp.length;
 
-		org.drip.analytics.date.JulianDate dtEffective = aComp[0].effective();
+		org.drip.analytics.date.JulianDate dtEffective = aComp[0].effectiveDate();
 
 		for (int i = 1; i < iNumComp; ++i) {
-			org.drip.analytics.date.JulianDate dtCompEffective = aComp[i].effective();
+			org.drip.analytics.date.JulianDate dtCompEffective = aComp[i].effectiveDate();
 
 			if (dtCompEffective.julian() < dtEffective.julian()) dtEffective = dtCompEffective;
 		}
@@ -832,10 +817,10 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 
 		int iNumComp = aComp.length;
 
-		org.drip.analytics.date.JulianDate dtMaturity = aComp[0].maturity();
+		org.drip.analytics.date.JulianDate dtMaturity = aComp[0].maturityDate();
 
 		for (int i = 1; i < iNumComp; ++i) {
-			org.drip.analytics.date.JulianDate dtCompMaturity = aComp[i].maturity();
+			org.drip.analytics.date.JulianDate dtCompMaturity = aComp[i].maturityDate();
 
 			if (dtCompMaturity.julian() < dtMaturity.julian()) dtMaturity = dtCompMaturity;
 		}
@@ -1118,12 +1103,11 @@ public abstract class BasketProduct implements org.drip.product.definition.Marke
 	{
 		if (null == valParams || null == mpc) return null;
 
-		if (null == mapBase && null == mpc.scenMarketParams (this, "Base")) return null;
-
 		if (null == mapBase) {
-			org.drip.param.market.CurveSurfaceQuoteSet csqs = mpc.scenMarketParams (this, "Base");
+			org.drip.param.market.CurveSurfaceQuoteSet csqsBase = mpc.scenMarketParams (this, "Base");
 
-			if (null == (mapBase = value (valParams, pricerParams, csqs, vcp))) return null;
+			if (null == csqsBase || null == (mapBase = value (valParams, pricerParams, csqsBase, vcp)))
+				return null;
 		}
 
 		org.drip.param.market.CurveSurfaceQuoteSet csqsScen = mpc.scenMarketParams (this, strCustomScenName);

@@ -32,13 +32,13 @@ package org.drip.product.definition;
  */
 
 /**
- * MarketParamRef interface provides stubs for component name, IR curve, forward curve, credit curve, TSY
+ * BasketMarketParamRef interface provides stubs for basket name, IR curve, forward curve, credit curve, TSY
  * 	curve, and needed to value the component.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public interface MarketParamRef {
+public interface BasketMarketParamRef {
 
 	/**
 	 * Get the component name
@@ -49,12 +49,12 @@ public interface MarketParamRef {
 	public abstract java.lang.String name();
 
 	/**
-	 * Get the Cash Flow Currency Set
+	 * Get the Coupon Currency
 	 * 
-	 * @return The Cash Flow Currency Set
+	 * @return The Coupon Currency
 	 */
 
-	public abstract java.util.Set<java.lang.String> cashflowCurrencySet();
+	public abstract java.lang.String[] couponCurrency();
 
 	/**
 	 * Get the Pay Currency

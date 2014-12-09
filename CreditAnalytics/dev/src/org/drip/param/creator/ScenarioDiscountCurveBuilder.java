@@ -273,7 +273,7 @@ public class ScenarioDiscountCurveBuilder {
 		try {
 			org.drip.state.curve.DiscountFactorDiscountCurve dcdf = new
 				org.drip.state.curve.DiscountFactorDiscountCurve
-					(aStretchSpec[0].segmentSpec()[0].component().payCurrency()[0], null == quotingParam ?
+					(aStretchSpec[0].segmentSpec()[0].component().payCurrency(), null == quotingParam ?
 						null : quotingParam.coreCollateralizationParams(), (llsc.calibrateSpan (aStretchSpec,
 							dblEpochResponse, valParam, pricerParam, quotingParam, csqs)));
 
@@ -538,7 +538,6 @@ public class ScenarioDiscountCurveBuilder {
 		int iNumComp1 = null == aCalibComp1 ? 0 : aCalibComp1.length;
 		int iNumComp2 = null == aCalibComp2 ? 0 : aCalibComp2.length;
 		org.drip.state.estimator.LocalControlCurveParams lccp = null;
-		org.drip.state.identifier.ForwardLabel[] aForwardLabel = null;
 		org.drip.analytics.rates.DiscountCurve dcShapePreserving = null;
 		org.drip.state.inference.LinearLatentStateCalibrator llsc = null;
 		org.drip.state.inference.LatentStateStretchSpec stretchSpec1 = null;
@@ -546,6 +545,7 @@ public class ScenarioDiscountCurveBuilder {
 		org.drip.state.representation.LatentStateSpecification[] aLSS = null;
 		org.drip.state.inference.LatentStateStretchSpec[] aStretchSpec = null;
 		org.drip.state.representation.LatentStateSpecification lssFunding = null;
+		java.util.List<org.drip.state.identifier.ForwardLabel> lsForwardLabel = null;
 		int iNumManifestMeasures1 = null == astrManifestMeasure1 ? 0 : astrManifestMeasure1.length;
 		int iNumManifestMeasures2 = null == astrManifestMeasure2 ? 0 : astrManifestMeasure2.length;
 
@@ -558,18 +558,18 @@ public class ScenarioDiscountCurveBuilder {
 				(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
 					org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
 						org.drip.state.identifier.FundingLabel.Standard ((0 == iNumComp1 ? aCalibComp2 :
-							aCalibComp1)[0].payCurrency()[0]));
+							aCalibComp1)[0].payCurrency()));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
 			return null;
 		}
 
-		if (0 != iNumComp1) aForwardLabel = aCalibComp1[0].forwardLabel();
+		if (0 != iNumComp1) lsForwardLabel = aCalibComp1[0].forwardLabel();
 
-		if (null == aForwardLabel && 0 != iNumComp2) aForwardLabel = aCalibComp2[0].forwardLabel();
+		if (null == lsForwardLabel && 0 != iNumComp2) lsForwardLabel = aCalibComp2[0].forwardLabel();
 
-		if (null == aForwardLabel || 0 == aForwardLabel.length)
+		if (null == lsForwardLabel || 0 == lsForwardLabel.size())
 			aLSS = new org.drip.state.representation.LatentStateSpecification[] {lssFunding};
 		else {
 			try {
@@ -577,7 +577,7 @@ public class ScenarioDiscountCurveBuilder {
 					org.drip.state.representation.LatentStateSpecification
 						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
 							org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-								aForwardLabel[0])};
+								lsForwardLabel.get (0))};
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -818,7 +818,7 @@ public class ScenarioDiscountCurveBuilder {
 
 		CompQuote[] aCQ1 = null;
 
-		java.lang.String strCurrency = aCalibComp1[0].payCurrency()[0];
+		java.lang.String strCurrency = aCalibComp1[0].payCurrency();
 
 		if (null == strTenor1 || strTenor1.isEmpty()) {
 			if (null != aCalibComp1) {
@@ -832,13 +832,15 @@ public class ScenarioDiscountCurveBuilder {
 				}
 			}
 		} else
-			aCQ1 = CompQuote (valParams, csqs, strCurrency, aCalibComp1[0].effective(),
-				aCalibComp1[0].maturity(), aCalibComp1[aCalibComp1.length - 1].maturity(), strTenor1, false);
+			aCQ1 = CompQuote (valParams, csqs, strCurrency, aCalibComp1[0].effectiveDate(),
+				aCalibComp1[0].maturityDate(), aCalibComp1[aCalibComp1.length - 1].maturityDate(), strTenor1,
+					false);
 
 		if (null == strTenor2 || strTenor2.isEmpty()) return dcShapePreserver;
 
-		CompQuote[] aCQ2 = CompQuote (valParams, csqs, strCurrency, aCalibComp2[0].effective(),
-			aCalibComp2[0].maturity(), aCalibComp2[aCalibComp2.length - 1].maturity(), strTenor2, true);
+		CompQuote[] aCQ2 = CompQuote (valParams, csqs, strCurrency, aCalibComp2[0].effectiveDate(),
+			aCalibComp2[0].maturityDate(), aCalibComp2[aCalibComp2.length - 1].maturityDate(), strTenor2,
+				true);
 
 		int iNumDENSEComp1 = null == aCQ1 ? 0 : aCQ1.length;
 		int iNumDENSEComp2 = null == aCQ2 ? 0 : aCQ2.length;

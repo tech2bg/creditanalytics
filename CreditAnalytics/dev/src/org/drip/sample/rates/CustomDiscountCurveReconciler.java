@@ -172,12 +172,12 @@ public class CustomDiscountCurveReconciler {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
 						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aDeposit[i].payCurrency()[0])
+						FundingLabel.Standard (aDeposit[i].payCurrency())
 					),
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel()[0]
+						aDeposit[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -210,12 +210,12 @@ public class CustomDiscountCurveReconciler {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
 						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aEDF[i].payCurrency()[0])
+						FundingLabel.Standard (aEDF[i].payCurrency())
 					),
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aEDF[i].forwardLabel()[0]
+						aEDF[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -379,12 +379,12 @@ public class CustomDiscountCurveReconciler {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FUNDING,
 						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aIRS[i].payCurrency()[0])
+						FundingLabel.Standard (aIRS[i].payCurrency())
 					),
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aIRS[i].forwardLabel()[0]
+						aIRS[i].forwardLabel().get (0)
 					)
 				}
 			);
@@ -628,7 +628,7 @@ public class CustomDiscountCurveReconciler {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aDepositComp.length; ++i)
-			System.out.println ("\t[" + aDepositComp[i].maturity() + "] = " +
+			System.out.println ("\t[" + aDepositComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aDepositComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dfdc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
@@ -645,7 +645,7 @@ public class CustomDiscountCurveReconciler {
 		System.out.println ("\t----------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapComp.length; ++i)
-			System.out.println ("\t[" + aSwapComp[i].maturity() + "] = " +
+			System.out.println ("\t[" + aSwapComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aSwapComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dfdc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));

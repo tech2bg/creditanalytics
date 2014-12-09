@@ -78,16 +78,16 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		double dblValueDate = valParams.valueDate();
 
-		double dblEffectiveDate = effective().julian();
+		double dblEffectiveDate = effectiveDate().julian();
 
 		if (dblValueDate > dblEffectiveDate) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()));
 
 		if (null == dcFunding) return null;
 
-		org.drip.analytics.date.JulianDate dtMaturity = maturity();
+		org.drip.analytics.date.JulianDate dtMaturity = maturityDate();
 
 		double dblMaturity = dtMaturity.julian();
 

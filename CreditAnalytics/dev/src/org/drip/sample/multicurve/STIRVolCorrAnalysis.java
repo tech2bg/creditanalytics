@@ -764,7 +764,7 @@ public class STIRVolCorrAnalysis {
 		final double dblForwardFundingCorr)
 		throws Exception
 	{
-		ForwardLabel fri = stir.forwardLabel()[0];
+		ForwardLabel fri = stir.forwardLabel().get (0);
 
 		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 

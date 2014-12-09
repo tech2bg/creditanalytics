@@ -64,12 +64,12 @@ public class FXSpotContract extends org.drip.product.definition.FXSpot {
 		_dblSpotDate = dtSpot.julian();
 	}
 
-	@Override public double getSpotDate()
+	@Override public double spotDate()
 	{
 		return _dblSpotDate;
 	}
 
-	@Override public org.drip.product.params.CurrencyPair getCcyPair()
+	@Override public org.drip.product.params.CurrencyPair currencyPair()
 	{
 		return _ccyPair;
 	}

@@ -68,17 +68,17 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 		_bIsReceiver = bIsReceiver;
 	}
 
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	@Override public java.util.List<java.lang.String> couponCurrency()
 	{
-		return _stir.cashflowCurrencySet();
+		return _stir.couponCurrency();
 	}
 
-	@Override public java.lang.String[] payCurrency()
+	@Override public java.lang.String payCurrency()
 	{
 		return _stir.payCurrency();
 	}
 
-	@Override public java.lang.String[] principalCurrency()
+	@Override public java.lang.String principalCurrency()
 	{
 		return _stir.principalCurrency();
 	}
@@ -93,16 +93,16 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate >= exercise().julian()) return null;
+		if (dblValueDate >= exerciseDate().julian()) return null;
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (_stir.payCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (_stir.payCurrency()));
 
 		if (null == dcFunding) return null;
 
 		long lStart = System.nanoTime();
 
-		double dblExerciseDate = exercise().julian();
+		double dblExerciseDate = exerciseDate().julian();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapSTIROutput = _stir.value
 			(valParams, pricerParams, csqs, quotingParams);

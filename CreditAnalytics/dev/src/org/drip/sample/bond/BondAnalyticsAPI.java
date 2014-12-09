@@ -517,7 +517,7 @@ public class BondAnalyticsAPI {
 			 * Generates and displays the coupon period details for the bonds
 			 */
 
-			for (CompositePeriod p : aBond[i].cashFlowPeriod())
+			for (CompositePeriod p : aBond[i].couponPeriods())
 				System.out.println (
 					JulianDate.fromJulian (p.startDate()) + FIELD_SEPARATOR +
 					JulianDate.fromJulian (p.endDate()) + FIELD_SEPARATOR +
@@ -657,7 +657,7 @@ public class BondAnalyticsAPI {
 		 * Theoretical Price
 		 */
 
-		double dblTheoreticalPrice = bond.priceFromCreditBasis (valParams, mktParams, null, bond.maturity().julian(), 1., 0.01);
+		double dblTheoreticalPrice = bond.priceFromCreditBasis (valParams, mktParams, null, bond.maturityDate().julian(), 1., 0.01);
 
 
 		System.out.println ("Credit Price From DC and CC: " + dblTheoreticalPrice);
@@ -732,7 +732,7 @@ public class BondAnalyticsAPI {
 			valParams,
 			mktParamsCalib,
 			null,
-			bond.maturity().julian(),
+			bond.maturityDate().julian(),
 			1.,
 			0.));
 	}

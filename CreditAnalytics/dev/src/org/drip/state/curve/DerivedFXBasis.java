@@ -183,8 +183,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 						return null;
 					}
 
-					adblFXFwd[i] = fxfwd.implyFXForward (valParam, dcNum, dcBasisAdj, _dblFXSpot,
-						bFwdAsPIP);
+					adblFXFwd[i] = fxfwd.imply (valParam, dcNum, dcBasisAdj, _dblFXSpot, bFwdAsPIP);
 				} else {
 					if (_bIsFXBasisBootstrapped) {
 						if (!(dcBasisAdj instanceof org.drip.analytics.rates.ExplicitBootDiscountCurve))
@@ -205,8 +204,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 						return null;
 					}
 
-					adblFXFwd[i] = fxfwd.implyFXForward (valParam, dcBasisAdj, dcDenom, _dblFXSpot,
-						bFwdAsPIP);
+					adblFXFwd[i] = fxfwd.imply (valParam, dcBasisAdj, dcDenom, _dblFXSpot, bFwdAsPIP);
 				}
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

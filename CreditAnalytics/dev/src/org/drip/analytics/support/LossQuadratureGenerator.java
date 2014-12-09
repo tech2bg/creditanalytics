@@ -62,16 +62,16 @@ public class LossQuadratureGenerator {
 			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (null == comp || null == valParams || null == period || null == csqs || null == csqs.creditCurve
-			(comp.creditLabel()[0]) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
+			(comp.creditLabel()) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
 				period.startDate() > dblWorkoutDate)
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (comp.payCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (comp.payCurrency()));
 
 		if (null == dc) return null;
 
-		org.drip.analytics.definition.CreditCurve cc = csqs.creditCurve (comp.creditLabel()[0]);
+		org.drip.analytics.definition.CreditCurve cc = csqs.creditCurve (comp.creditLabel());
 
 		double dblPeriodEndDate = period.endDate() < dblWorkoutDate ? period.endDate() : dblWorkoutDate;
 
@@ -138,16 +138,16 @@ public class LossQuadratureGenerator {
 			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (null == comp || null == valParams || null == period || null == csqs || null == csqs.creditCurve
-			(comp.creditLabel()[0]) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
+			(comp.creditLabel()) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
 				period.startDate() > dblWorkoutDate)
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (comp.payCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (comp.payCurrency()));
 
 		if (null == dc) return null;
 
-		org.drip.analytics.definition.CreditCurve cc = csqs.creditCurve (comp.creditLabel()[0]);
+		org.drip.analytics.definition.CreditCurve cc = csqs.creditCurve (comp.creditLabel());
 
 		double dblPeriodEndDate = period.endDate() < dblWorkoutDate ? period.endDate() : dblWorkoutDate;
 
@@ -220,16 +220,16 @@ public class LossQuadratureGenerator {
 			final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 	{
 		if (null == comp || null == valParams || null == period || null == csqs || null == csqs.creditCurve
-			(comp.creditLabel()[0]) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
+			(comp.creditLabel()) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
 				period.startDate() > dblWorkoutDate)
 			return null;
 
 		org.drip.analytics.rates.DiscountCurve dc = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (comp.payCurrency()[0]));
+			(org.drip.state.identifier.FundingLabel.Standard (comp.payCurrency()));
 
 		if (null == dc) return null;
 
-		org.drip.analytics.definition.CreditCurve cc = csqs.creditCurve (comp.creditLabel()[0]);
+		org.drip.analytics.definition.CreditCurve cc = csqs.creditCurve (comp.creditLabel());
 
 		double dblPeriodEndDate = period.endDate() < dblWorkoutDate ? period.endDate() : dblWorkoutDate;
 

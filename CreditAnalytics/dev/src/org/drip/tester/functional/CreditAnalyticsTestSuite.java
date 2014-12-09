@@ -1296,10 +1296,10 @@ public class CreditAnalyticsTestSuite {
 		if (s_bBondAnalDisplay) {
 			try {
 				System.out.println (strISIN + "    " + bond.ticker() + " " +
-					org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
+					org.drip.quant.common.FormatUtil.FormatDouble (bond.couponMetrics
 						(org.drip.analytics.date.JulianDate.Today().julian(), valParams,
 							org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).rate(), 2, 3, 100.) +
-								" " + bond.maturity());
+								" " + bond.maturityDate());
 
 				System.out.println ("Work-out date From Price: " + new org.drip.analytics.date.JulianDate
 					(wi.date()));
@@ -1448,7 +1448,7 @@ public class CreditAnalyticsTestSuite {
 				System.out.println
 					("---------    ---------    ---------    ---------    ---------    --------");
 
-				for (org.drip.analytics.cashflow.CompositePeriod p : aBond[i].cashFlowPeriod()) {
+				for (org.drip.analytics.cashflow.CompositePeriod p : aBond[i].couponPeriods()) {
 					try {
 						System.out.println (org.drip.analytics.date.JulianDate.fromJulian (p.startDate()) +
 							"    " + org.drip.analytics.date.JulianDate.fromJulian (p.endDate()) + "    " +
@@ -1633,7 +1633,7 @@ public class CreditAnalyticsTestSuite {
 			org.drip.product.definition.Bond bond = org.drip.service.api.CreditAnalytics.GetBond (strISIN);
 
 			if (null != bond && !bond.variableCoupon() && !bond.exercised() && !bond.defaulted() &&
-				bond.maturity().julian() > dtToday.julian()) {
+				bond.maturityDate().julian() > dtToday.julian()) {
 				try {
 					++iNumBonds;
 					double dblPECSFromPrice = java.lang.Double.NaN;
@@ -1673,11 +1673,11 @@ public class CreditAnalyticsTestSuite {
 
 					if (s_bTickerAnalDisplay)
 						System.out.println (strISIN + "    " + bond.ticker() + " " +
-							org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
+							org.drip.quant.common.FormatUtil.FormatDouble (bond.couponMetrics
 								(org.drip.analytics.date.JulianDate.Today().julian(), null,
 									org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).rate(), 2, 3,
-										100.) + " " + bond.maturity() + "    " + (bond.isFloater() ? "FLOAT"
-											: "FIXED") + "     " +
+										100.) + " " + bond.maturityDate() + "    " + (bond.isFloater() ?
+											"FLOAT" : "FIXED") + "     " +
 												org.drip.quant.common.FormatUtil.FormatDouble
 													(dblYieldFromPrice, 2, 3, 100.) + "    " +
 														org.drip.quant.common.FormatUtil.FormatDouble
@@ -1712,10 +1712,10 @@ public class CreditAnalyticsTestSuite {
 
 				if (s_bTickerNotionalDisplay)
 					System.out.println (strISIN + "    " + bond.ticker() + " " +
-						org.drip.quant.common.FormatUtil.FormatDouble (bond.coupon
+						org.drip.quant.common.FormatUtil.FormatDouble (bond.couponMetrics
 							(org.drip.analytics.date.JulianDate.Today().julian(), null,
 								org.drip.param.creator.MarketParamsBuilder.Credit (dc, cc)).rate(), 2, 3,
-									100.) + " " + bond.maturity() + "    " +
+									100.) + " " + bond.maturityDate() + "    " +
 										org.drip.quant.common.FormatUtil.FormatDouble (dblOutstandingAmount,
 											10, 0, 1.));
 			} catch (java.lang.Exception e) {
@@ -2650,8 +2650,8 @@ public class CreditAnalyticsTestSuite {
 				(org.drip.analytics.date.JulianDate.Today(), 0, "USD",
 					org.drip.analytics.daycount.Convention.DR_ACTUAL);
 		try {
-			dblCreditPrice = bond.priceFromCreditBasis (valParams, mktParams, null, bond.maturity().julian(),
-				1., 0.);
+			dblCreditPrice = bond.priceFromCreditBasis (valParams, mktParams, null,
+				bond.maturityDate().julian(), 1., 0.);
 		} catch (java.lang.Exception e) {
 			if (s_bSupressErrMsg) {
 				System.out.println ("BondCDSCurveCalibration failed.");
@@ -2714,7 +2714,7 @@ public class CreditAnalyticsTestSuite {
 					org.drip.param.creator.MarketParamsBuilder.Create (dc, null, null, ccCalib, null, null,
 						null, org.drip.analytics.support.AnalyticsHelper.CreateFixingsObject (bond,
 							org.drip.analytics.date.JulianDate.Today(), 0.04)), null,
-								bond.maturity().julian(), 1., 0.));
+								bond.maturityDate().julian(), 1., 0.));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 			}
@@ -2840,13 +2840,15 @@ public class CreditAnalyticsTestSuite {
 				org.drip.analytics.date.JulianDate.Today(), "1Y");
 
 		try {
-			dblFXFwd = fxfwd.implyFXForward (valParams, dcEUR, dcUSD, 1.4, false);
+			dblFXFwd = fxfwd.imply (valParams, dcEUR, dcUSD, 1.4, false);
 
-			dblFXFwdPIP = fxfwd.implyFXForward (valParams, dcEUR, dcUSD, 1.4, true);
+			dblFXFwdPIP = fxfwd.imply (valParams, dcEUR, dcUSD, 1.4, true);
 
-			dblDCEURBasis = fxfwd.calcDCBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket, false);
+			dblDCEURBasis = fxfwd.discountCurveBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket,
+				false);
 
-			dblDCUSDBasis = fxfwd.calcDCBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket, true);
+			dblDCUSDBasis = fxfwd.discountCurveBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket,
+				true);
 
 			fxCurve = new org.drip.state.curve.DerivedFXForward (cp,
 				org.drip.analytics.date.JulianDate.Today(), dblFXSpot, adblNodes, adblFXFwd, abIsPIP);

@@ -497,7 +497,7 @@ public class TemplatedDiscountCurveBuilder {
 		System.out.println ("\t---------------------------------------------------------------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aDepositComp.length; ++i)
-			System.out.println ("\t[" + aDepositComp[i].maturity() + "] =    " +
+			System.out.println ("\t[" + aDepositComp[i].maturityDate() + "] =    " +
 				FormatUtil.FormatDouble (ComponentMetric (aDepositComp[i], valParams, dcKLKHyperbolicShapePreserver, "Rate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aDepositComp[i], valParams, dcKLKHyperbolicSmoother, "Rate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aDepositComp[i], valParams, dcCubicPolyShapePreserver, "Rate"), 1, 6, 1.) + "    |    " +
@@ -523,7 +523,7 @@ public class TemplatedDiscountCurveBuilder {
 		System.out.println ("\t---------------------------------------------------------------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapComp.length; ++i)
-			System.out.println ("\t[" + aSwapComp[i].maturity() + "] =    " +
+			System.out.println ("\t[" + aSwapComp[i].maturityDate() + "] =    " +
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcKLKHyperbolicShapePreserver, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcKLKHyperbolicSmoother, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
 				FormatUtil.FormatDouble (ComponentMetric (aSwapComp[i], valParams, dcCubicPolyShapePreserver, "CalibSwapRate"), 1, 6, 1.) + "    |    " +
@@ -544,9 +544,9 @@ public class TemplatedDiscountCurveBuilder {
 
 		System.out.println ("\t-----------------------------------------------------------------------------------------------------------------------------------");
 
-		double dblStartDate = aDepositComp[0].maturity().julian();
+		double dblStartDate = aDepositComp[0].maturityDate().julian();
 
-		double dblEndDate = aSwapComp[aSwapComp.length - 1].maturity().julian();
+		double dblEndDate = aSwapComp[aSwapComp.length - 1].maturityDate().julian();
 
 		double dblDateIncrement = 0.05 * (dblEndDate - dblStartDate);
 

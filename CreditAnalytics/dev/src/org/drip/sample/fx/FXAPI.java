@@ -126,7 +126,7 @@ public class FXAPI {
 		 * Calculate the FX forward outright
 		 */
 
-		double dblFXFwd = fxfwd.implyFXForward (valParams, dcEUR, dcUSD, 1.4, false);
+		double dblFXFwd = fxfwd.imply (valParams, dcEUR, dcUSD, 1.4, false);
 
 		System.out.println (cp.code() + "[1Y]= " + dblFXFwd);
 
@@ -134,7 +134,7 @@ public class FXAPI {
 		 * Calculate the FX forward PIP
 		 */
 
-		double dblFXFwdPIP = fxfwd.implyFXForward (valParams, dcEUR, dcUSD, 1.4, true);
+		double dblFXFwdPIP = fxfwd.imply (valParams, dcEUR, dcUSD, 1.4, true);
 
 		System.out.println (cp.code() + "[1Y](pip)= " + FormatUtil.FormatDouble (dblFXFwdPIP, 1, 3, 100.));
 
@@ -142,7 +142,7 @@ public class FXAPI {
 		 * Calculate the DC Basis on the EUR curve
 		 */
 
-		double dblDCEURBasis = fxfwd.calcDCBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket, false);
+		double dblDCEURBasis = fxfwd.discountCurveBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket, false);
 
 		System.out.println ("EUR Basis bp for " + cp.code() + "[1Y] = " + dblFXFwdMarket + ": " +
 			FormatUtil.FormatDouble (dblDCEURBasis, 1, 3, 100.));
@@ -151,7 +151,7 @@ public class FXAPI {
 		 * Calculate the DC Basis on the USD curve
 		 */
 
-		double dblDCUSDBasis = fxfwd.calcDCBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket, true);
+		double dblDCUSDBasis = fxfwd.discountCurveBasis (valParams, dcEUR, dcUSD, dblFXSpot, dblFXFwdMarket, true);
 
 		System.out.println ("USD Basis bp for " + cp.code() + "[1Y] = " + dblFXFwdMarket + ": " +
 			FormatUtil.FormatDouble (dblDCUSDBasis, 1, 3, 100.));

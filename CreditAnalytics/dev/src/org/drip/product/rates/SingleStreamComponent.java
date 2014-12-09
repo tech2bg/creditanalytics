@@ -87,45 +87,61 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		return _strName;
 	}
 
-	@Override public java.util.Set<java.lang.String> cashflowCurrencySet()
+	@Override public java.util.List<java.lang.String> couponCurrency()
 	{
-		return _stream.cashflowCurrencySet();
+		java.util.List<java.lang.String> lsCouponCurrency = new java.util.ArrayList<java.lang.String>();
+
+		lsCouponCurrency.add (_stream.couponCurrency());
+
+		return lsCouponCurrency;
 	}
 
-	@Override public java.lang.String[] payCurrency()
+	@Override public java.lang.String payCurrency()
 	{
-		return new java.lang.String[] {_stream.payCurrency()};
+		return _stream.payCurrency();
 	}
 
-	@Override public java.lang.String[] principalCurrency()
+	@Override public java.lang.String principalCurrency()
 	{
-		return _stream.principalCurrency();
+		return null;
 	}
 
-	@Override public org.drip.state.identifier.ForwardLabel[] forwardLabel()
+	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
 	{
 		org.drip.state.identifier.ForwardLabel forwardLabel = _stream.forwardLabel();
 
-		return null == forwardLabel ? null : new org.drip.state.identifier.ForwardLabel[] {forwardLabel};
+		if (null == forwardLabel) return null;
+
+		java.util.List<org.drip.state.identifier.ForwardLabel> lsFRI = new
+			java.util.ArrayList<org.drip.state.identifier.ForwardLabel> ();
+
+		lsFRI.add (forwardLabel);
+
+		return lsFRI;
 	}
 
-	@Override public org.drip.state.identifier.FundingLabel[] fundingLabel()
+	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
 	{
-		return new org.drip.state.identifier.FundingLabel[] {_stream.fundingLabel()};
+		return _stream.fundingLabel();
 	}
 
-	@Override public org.drip.state.identifier.CreditLabel[] creditLabel()
+	@Override public org.drip.state.identifier.CreditLabel creditLabel()
 	{
-		org.drip.state.identifier.CreditLabel creditLabel = _stream.creditLabel();
-
-		return null == creditLabel ? null : new org.drip.state.identifier.CreditLabel[] {creditLabel};
+		return _stream.creditLabel();
 	}
 
-	@Override public org.drip.state.identifier.FXLabel[] fxLabel()
+	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
 	{
 		org.drip.state.identifier.FXLabel fxLabel = _stream.fxLabel();
 
-		return null == fxLabel ? null : new org.drip.state.identifier.FXLabel[] {fxLabel};
+		if (null == fxLabel) return null;
+
+		java.util.List<org.drip.state.identifier.FXLabel> lsFXLabel = new
+			java.util.ArrayList<org.drip.state.identifier.FXLabel> ();
+
+		lsFXLabel.add (fxLabel);
+
+		return lsFXLabel;
 	}
 
 	@Override public double initialNotional()
@@ -149,7 +165,7 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		return _stream.notional (dblDate1, dblDate2);
 	}
 
-	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics coupon (
+	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics couponMetrics (
 		final double dblAccrualEndDate,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
@@ -162,12 +178,12 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		return _stream.freq();
 	}
 
-	@Override public org.drip.analytics.date.JulianDate effective()
+	@Override public org.drip.analytics.date.JulianDate effectiveDate()
 	{
 		return _stream.effective();
 	}
 
-	@Override public org.drip.analytics.date.JulianDate maturity()
+	@Override public org.drip.analytics.date.JulianDate maturityDate()
 	{
 		return _stream.maturity();
 	}
@@ -177,7 +193,7 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		return _stream.firstCouponDate();
 	}
 
-	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> cashFlowPeriod()
+	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> couponPeriods()
 	{
 		return _stream.cashFlowPeriod();
 	}
@@ -223,10 +239,10 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().julian() || null == csqs)
+		if (null == valParams || valParams.valueDate() >= maturityDate().julian() || null == csqs)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
 
 		if (null == dcFunding) return null;
 
@@ -236,17 +252,17 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 
 			if (null == mapMeasures) return null;
 
-			double dblEffectiveDate = effective().julian();
+			double dblEffectiveDate = effectiveDate().julian();
 
 			double dblDFEffective = dcFunding.df (dblEffectiveDate);
 
-			double dblDFMaturity = dcFunding.df (maturity().julian());
+			double dblDFMaturity = dcFunding.df (maturityDate().julian());
 
 			org.drip.quant.calculus.WengertJacobian wjDFEffective = dcFunding.jackDDFDManifestMeasure
 				(dblEffectiveDate, "Rate");
 
 			org.drip.quant.calculus.WengertJacobian wjDFMaturity = dcFunding.jackDDFDManifestMeasure
-				(maturity().julian(), "Rate");
+				(maturityDate().julian(), "Rate");
 
 			if (null == wjDFEffective || null == wjDFMaturity) return null;
 
@@ -278,27 +294,27 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 	{
-		if (null == valParams || valParams.valueDate() >= maturity().julian() || null ==
+		if (null == valParams || valParams.valueDate() >= maturityDate().julian() || null ==
 			strManifestMeasure || strManifestMeasure.isEmpty() || null == csqs)
 			return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel()[0]);
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel());
 
 		if (null == dcFunding) return null;
 
 		if ("Rate".equalsIgnoreCase (strManifestMeasure)) {
-			double dblEffectiveDate = effective().julian();
+			double dblEffectiveDate = effectiveDate().julian();
 
 			try {
 				double dblDFEffective = dcFunding.df (dblEffectiveDate);
 
-				double dblDFMaturity = dcFunding.df (maturity().julian());
+				double dblDFMaturity = dcFunding.df (maturityDate().julian());
 
 				org.drip.quant.calculus.WengertJacobian wjDFEffective = dcFunding.jackDDFDManifestMeasure
 					(dblEffectiveDate, "Rate");
 
 				org.drip.quant.calculus.WengertJacobian wjDFMaturity = dcFunding.jackDDFDManifestMeasure
-					(maturity().julian(), "Rate");
+					(maturityDate().julian(), "Rate");
 
 				if (null == wjDFEffective || null == wjDFMaturity) return null;
 
