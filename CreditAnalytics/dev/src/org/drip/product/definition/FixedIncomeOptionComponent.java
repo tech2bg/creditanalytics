@@ -188,7 +188,9 @@ public abstract class FixedIncomeOptionComponent implements
 		return _comp.creditLabel();
 	}
 
-	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+			forwardLabel()
 	{
 		return _comp.forwardLabel();
 	}
@@ -198,7 +200,8 @@ public abstract class FixedIncomeOptionComponent implements
 		return _comp.fundingLabel();
 	}
 
-	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel>
+		fxLabel()
 	{
 		return _comp.fxLabel();
 	}

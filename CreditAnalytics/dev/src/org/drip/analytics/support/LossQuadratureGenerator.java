@@ -100,7 +100,7 @@ public class LossQuadratureGenerator {
 						dblSubPeriodEnd, period.accrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
 							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.recovery
 								(dblSubPeriodStart, dblSubPeriodEnd, cc), dc, cc,
-									comp.creditValuationParams()._iDefPayLag);
+									comp.creditValuationParams().lossPayLag());
 
 				if (null != lp) sLP.add (lp);
 			} catch (java.lang.Exception e) {
@@ -183,7 +183,7 @@ public class LossQuadratureGenerator {
 						dblSubPeriodEnd, period.accrualDCF (0.5 * (dblSubPeriodStart + dblSubPeriodEnd)),
 							comp.notional (dblSubPeriodStart, dblSubPeriodEnd), comp.recovery
 								(dblSubPeriodStart, dblSubPeriodEnd, cc),  dc, cc,
-									comp.creditValuationParams()._iDefPayLag);
+									comp.creditValuationParams().lossPayLag());
 
 				if (null != lp) sLP.add (lp);
 			} catch (java.lang.Exception e) {
@@ -245,7 +245,7 @@ public class LossQuadratureGenerator {
 					dblPeriodEndDate, period.accrualDCF (0.5 * (dblPeriodStartDate + dblPeriodEndDate)),
 						comp.notional (dblPeriodStartDate, dblPeriodEndDate), comp.recovery
 							(dblPeriodStartDate, dblPeriodEndDate, cc), dc, cc,
-								comp.creditValuationParams()._iDefPayLag);
+								comp.creditValuationParams().lossPayLag());
 
 			if (null != lp) sLP.add (lp);
 		} catch (java.lang.Exception e) {

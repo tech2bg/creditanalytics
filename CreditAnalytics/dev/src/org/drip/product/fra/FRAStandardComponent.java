@@ -155,13 +155,14 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return "FRA=" + _fri.fullyQualifiedName();
 	}
 
-	@Override public java.util.List<java.lang.String> couponCurrency()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> couponCurrency()
 	{
-		java.util.List<java.lang.String> lsCouponCurrency = new java.util.ArrayList<java.lang.String>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapCouponCurrency = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
-		lsCouponCurrency.add (_strCurrency);
+		mapCouponCurrency.put (name(), _strCurrency);
 
-		return lsCouponCurrency;
+		return mapCouponCurrency;
 	}
 
 	@Override public java.lang.String payCurrency()
@@ -225,14 +226,16 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+			forwardLabel()
 	{
-		java.util.List<org.drip.state.identifier.ForwardLabel> lsFRI = new
-			java.util.ArrayList<org.drip.state.identifier.ForwardLabel>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel> mapFRI =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>();
 
-		lsFRI.add (_fri);
+		mapFRI.put (name(), _fri);
 
-		return lsFRI;
+		return mapFRI;
 	}
 
 	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
@@ -240,7 +243,8 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return org.drip.state.identifier.FundingLabel.Standard (_strCurrency);
 	}
 
-	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel>
+		fxLabel()
 	{
 		return null;
 	}

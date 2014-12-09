@@ -430,13 +430,13 @@ public abstract class BasketProduct implements org.drip.product.definition.Baske
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			java.util.List<java.lang.String> astrCompCouponCurrency = aComp[i].couponCurrency();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapComponentCouponCurrency =
+				aComp[i].couponCurrency();
 
-			if (null != astrCompCouponCurrency && 0 != astrCompCouponCurrency.size()) {
-				for (java.lang.String strCompCouponCurrency : astrCompCouponCurrency) {
-					if (null != strCompCouponCurrency && !strCompCouponCurrency.isEmpty())
-						setCouponCurrency.add (strCompCouponCurrency);
-				}
+			if (null != mapComponentCouponCurrency && 0 != mapComponentCouponCurrency.size()) {
+				for (java.util.Map.Entry<java.lang.String, java.lang.String> meCouponCurrency :
+					mapComponentCouponCurrency.entrySet())
+					setCouponCurrency.add (meCouponCurrency.getValue());
 			}
 		}
 
@@ -566,7 +566,8 @@ public abstract class BasketProduct implements org.drip.product.definition.Baske
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			java.util.List<org.drip.state.identifier.ForwardLabel> aLSLForward = aComp[i].forwardLabel();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+				aLSLForward = aComp[i].forwardLabel();
 
 			if (null == aLSLForward) continue;
 
@@ -648,7 +649,8 @@ public abstract class BasketProduct implements org.drip.product.definition.Baske
 		for (int i = 0; i < iNumComp; ++i) {
 			if (null == aComp[i]) return null;
 
-			java.util.List<org.drip.state.identifier.FXLabel> aLabel = aComp[i].fxLabel();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel> aLabel =
+				aComp[i].fxLabel();
 
 			if (null == aLabel) continue;
 

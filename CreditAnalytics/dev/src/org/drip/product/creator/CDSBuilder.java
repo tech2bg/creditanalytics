@@ -84,7 +84,7 @@ public class CDSBuilder {
 					false, null, null, null, dap, dap, dap, dap, null, null, 100., strIR, crValParams,
 						strCalendar);
 
-			cds.setPrimaryCode ("CDS." + dtMaturity.toString() + "." + crValParams._strCC);
+			cds.setPrimaryCode ("CDS." + dtMaturity.toString() + "." + crValParams.creditCurveName());
 
 			return cds;
 		} catch (java.lang.Exception e) {
@@ -323,7 +323,7 @@ public class CDSBuilder {
 					"30/360", "30/360", "", true, null, null, null, null, null, null, null, null, null, 100.,
 						strIR, crValParams, strCalendar);
 
-			cds.setPrimaryCode ("CDS." + strTenor + "." + crValParams._strCC);
+			cds.setPrimaryCode ("CDS." + strTenor + "." + crValParams.creditCurveName());
 
 			return cds;
 		} catch (java.lang.Exception e) {

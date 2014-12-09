@@ -40,30 +40,10 @@ package org.drip.product.params;
  */
 
 public class RatesSetting implements org.drip.product.params.Validatable {
-
-	/**
-	 * Trade Currency Discount Curve Name
-	 */
-
-	public java.lang.String _strTradeDiscountCurve = "";
-
-	/**
-	 * Coupon Cash flow Discount Curve Name
-	 */
-
-	public java.lang.String _strCouponDiscountCurve = "";
-
-	/**
-	 * Principal Cash flow Discount Curve Name
-	 */
-
-	public java.lang.String _strPrincipalDiscountCurve = "";
-
-	/**
-	 * Redemption Cash flow Discount Curve Name
-	 */
-
-	public java.lang.String _strRedemptionDiscountCurve = "";
+	private java.lang.String _strTradeDiscountCurve = "";
+	private java.lang.String _strCouponDiscountCurve = "";
+	private java.lang.String _strPrincipalDiscountCurve = "";
+	private java.lang.String _strRedemptionDiscountCurve = "";
 
 	/**
 	 * RatesSetting constructor
@@ -95,5 +75,49 @@ public class RatesSetting implements org.drip.product.params.Validatable {
 			return false;
 
 		return true;
+	}
+
+	/**
+	 * Retrieve the Trade Discount Curve
+	 * 
+	 * @return The Trade Discount Curve
+	 */
+
+	public java.lang.String tradeDiscountCurve()
+	{
+		return _strTradeDiscountCurve;
+	}
+
+	/**
+	 * Retrieve the Coupon Discount Curve
+	 * 
+	 * @return The Coupon Discount Curve
+	 */
+
+	public java.lang.String couponDiscountCurve()
+	{
+		return _strCouponDiscountCurve;
+	}
+
+	/**
+	 * Retrieve the Principal Discount Curve
+	 * 
+	 * @return The Principal Discount Curve
+	 */
+
+	public java.lang.String principalDiscountCurve()
+	{
+		return _strPrincipalDiscountCurve;
+	}
+
+	/**
+	 * Retrieve the Redemption Discount Curve
+	 * 
+	 * @return The Redemption Discount Curve
+	 */
+
+	public java.lang.String redemptionDiscountCurve()
+	{
+		return _strRedemptionDiscountCurve;
 	}
 }

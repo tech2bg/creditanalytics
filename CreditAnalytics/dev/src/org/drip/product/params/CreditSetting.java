@@ -40,68 +40,98 @@ package org.drip.product.params;
  */
 
 public class CreditSetting implements org.drip.product.params.Validatable {
-
-	/**
-	 * Default Pay Lag
-	 */
-
-	public int _iDefPayLag = -1;
-
-	/**
-	 * Use curve or component recovery
-	 */
-
-	public boolean _bUseCurveRec = true;
-
-	/**
-	 * Credit Curve Name
-	 */
-
-	public java.lang.String _strCC = "";
-
-	/**
-	 * Whether accrual gets paid on default
-	 */
-
-	public boolean _bAccrOnDefault = false;
-
-	/**
-	 * Component recovery
-	 */
-
-	public double _dblRecovery = java.lang.Double.NaN;
+	private int _iLossPayLag = -1;
+	private boolean _bUseCurveRecovery = true;
+	private boolean _bAccrualOnDefault = false;
+	private java.lang.String _strCreditCurveName = "";
+	private double _dblRecovery = java.lang.Double.NaN;
 
 	/**
 	 * Construct the CreditSetting from the default pay lag, use curve or the component recovery flag,
 	 *  component recovery, credit curve name, and whether there is accrual on default
 	 * 
-	 * @param iDefPayLag Default Pay Lag
+	 * @param iLossPayLag Loss Pay Lag
 	 * @param dblRecovery Component Recovery
-	 * @param bUseCurveRec Use the Curve Recovery (True) or Component Recovery (False)
-	 * @param strCC Credit curve name
-	 * @param bAccrOnDefault Accrual paid on default (True) 
+	 * @param bUseCurveRecovery Use the Curve Recovery (True) or Component Recovery (False)
+	 * @param strCreditCurveName Credit curve name
+	 * @param bAccrualOnDefault Accrual paid on default (True) 
 	 */
 
 	public CreditSetting (
-		final int iDefPayLag,
+		final int iLossPayLag,
 		final double dblRecovery,
-		final boolean bUseCurveRec,
-		final java.lang.String strCC,
-		final boolean bAccrOnDefault)
+		final boolean bUseCurveRecovery,
+		final java.lang.String strCreditCurveName,
+		final boolean bAccrualOnDefault)
 	{
-		_strCC = strCC;
-		_iDefPayLag = iDefPayLag;
+		_iLossPayLag = iLossPayLag;
 		_dblRecovery = dblRecovery;
-		_bUseCurveRec = bUseCurveRec;
-		_bAccrOnDefault = bAccrOnDefault;
+		_bAccrualOnDefault = bAccrualOnDefault;
+		_bUseCurveRecovery = bUseCurveRecovery;
+		_strCreditCurveName = strCreditCurveName;
 	}
 
 	@Override public boolean validate()
 	{
-		if (null == _strCC || _strCC.isEmpty()) return true;
+		if (null == _strCreditCurveName || _strCreditCurveName.isEmpty()) return true;
 
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblRecovery) && !_bUseCurveRec) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblRecovery) && !_bUseCurveRecovery) return false;
 
 		return true;
+	}
+
+	/**
+	 * Retrieve the Loss Pay-out Lag
+	 * 
+	 * @return The Loss Pay-out Lag
+	 */
+
+	public int lossPayLag()
+	{
+		return _iLossPayLag;
+	}
+
+	/**
+	 * Flag indicating whether or nor to use the Curve Recovery
+	 * 
+	 * @return TRUE => Use the Recovery From the Credit Curve
+	 */
+
+	public boolean useCurveRecovery()
+	{
+		return _bUseCurveRecovery;
+	}
+
+	/**
+	 * Retrieve the Credit Curve Name
+	 * 
+	 * @return The Credit Curve Name
+	 */
+
+	public java.lang.String creditCurveName()
+	{
+		return _strCreditCurveName;
+	}
+
+	/**
+	 * Retrieve the Accrual On Default Flag
+	 * 
+	 * @return TRUE => Accrual On Default
+	 */
+
+	public boolean accrualOnDefault()
+	{
+		return _bAccrualOnDefault;
+	}
+
+	/**
+	 * Retrieve the Recovery Amount
+	 * 
+	 * @return The Recovery Amount
+	 */
+
+	public double recovery()
+	{
+		return _dblRecovery;
 	}
 }

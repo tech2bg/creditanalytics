@@ -124,7 +124,7 @@ public class ProductTestSuite {
 
 		simpleBond.setCouponSetting (cpnParams);
 
-		org.drip.product.params.CurrencySet ccyParams = org.drip.product.params.CurrencySet.Create
+		org.drip.product.params.CurrencySetting ccyParams = org.drip.product.params.CurrencySetting.Create
 			(strCurrency);
 
 		if (!ccyParams.validate()) {
@@ -237,7 +237,7 @@ public class ProductTestSuite {
 
 		bondTSY.setCouponSetting (cpnParams);
 
-		org.drip.product.params.CurrencySet ccyParams = org.drip.product.params.CurrencySet.Create
+		org.drip.product.params.CurrencySetting ccyParams = org.drip.product.params.CurrencySetting.Create
 			("USDTSY");
 
 		if (!ccyParams.validate()) {
@@ -2344,7 +2344,7 @@ public class ProductTestSuite {
 
 		org.drip.product.credit.BondComponent bond = new org.drip.product.credit.BondComponent();
 
-		if (!bond.setTreasuryBenchmark (new org.drip.product.params.TsyBmkSet ("USD5YON", new
+		if (!bond.setTreasuryBenchmark (new org.drip.product.params.TreasuryBenchmarks ("USD5YON", new
 			java.lang.String[] {"USD3YON", "USD7YON"}))) {
 			System.out.println ("Cannot initialize bond TSY params!");
 
@@ -2380,7 +2380,7 @@ public class ProductTestSuite {
 			System.exit (130);
 		}
 
-		if (!bond.setCurrencySet (org.drip.product.params.CurrencySet.Create ("USD"))) {
+		if (!bond.setCurrencySet (org.drip.product.params.CurrencySetting.Create ("USD"))) {
 			System.out.println ("Cannot initialize bond currency params!");
 
 			System.exit (131);

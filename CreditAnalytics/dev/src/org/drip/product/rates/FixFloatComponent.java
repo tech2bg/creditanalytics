@@ -99,15 +99,16 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return _strCode;
 	}
 
-	@Override public java.util.List<java.lang.String> couponCurrency()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> couponCurrency()
 	{
-		java.util.List<java.lang.String> lsCouponCurrency = new java.util.ArrayList<java.lang.String>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapCouponCurrency = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
-		lsCouponCurrency.add (_fixReference.couponCurrency());
+		mapCouponCurrency.put ("DERIVED", _floatDerived.couponCurrency());
 
-		lsCouponCurrency.add (_floatDerived.couponCurrency());
+		mapCouponCurrency.put ("REFERENCE", _fixReference.couponCurrency());
 
-		return lsCouponCurrency;
+		return mapCouponCurrency;
 	}
 
 	@Override public java.lang.String payCurrency()
@@ -159,14 +160,16 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return _fixReference.creditLabel();
 	}
 
-	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+			forwardLabel()
 	{
-		java.util.List<org.drip.state.identifier.ForwardLabel> lsFRI = new
-			java.util.ArrayList<org.drip.state.identifier.ForwardLabel>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel> mapFRI =
+			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>();
 
-		lsFRI.add (_floatDerived.forwardLabel());
+		mapFRI.put ("DERIVED", _floatDerived.forwardLabel());
 
-		return lsFRI;
+		return mapFRI;
 	}
 
 	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
@@ -174,16 +177,23 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		return _fixReference.fundingLabel();
 	}
 
-	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel>
+		fxLabel()
 	{
-		java.util.List<org.drip.state.identifier.FXLabel> lsFXLabel = new
-			java.util.ArrayList<org.drip.state.identifier.FXLabel>();
+		org.drip.state.identifier.FXLabel fxLabelReference = _fixReference.fxLabel();
 
-		lsFXLabel.add (_fixReference.fxLabel());
+		org.drip.state.identifier.FXLabel fxLabelDerived = _floatDerived.fxLabel();
 
-		lsFXLabel.add (_floatDerived.fxLabel());
+		if (null != fxLabelReference && null != fxLabelDerived) return null;
 
-		return lsFXLabel;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel> mapFXLabel = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel>();
+
+		if (null != fxLabelReference) mapFXLabel.put ("REFERENCE", fxLabelReference);
+
+		if (null != fxLabelDerived) mapFXLabel.put ("DERIVED", fxLabelDerived);
+
+		return mapFXLabel;
 	}
 
 	@Override public org.drip.product.rates.Stream referenceStream()

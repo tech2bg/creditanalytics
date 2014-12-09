@@ -79,10 +79,10 @@ public class BondBuilder {
 	 */
 
 	public static final org.drip.product.credit.BondComponent CreateBondFromParams (
-		final org.drip.product.params.TsyBmkSet tsyParams,
+		final org.drip.product.params.TreasuryBenchmarks tsyParams,
 		final org.drip.product.params.IdentifierSet idParams,
 		final org.drip.product.params.CouponSetting cpnParams,
-		final org.drip.product.params.CurrencySet ccyParams,
+		final org.drip.product.params.CurrencySetting ccyParams,
 		final org.drip.product.params.FloaterSetting fltParams,
 		final org.drip.product.params.QuoteConvention mktConv,
 		final org.drip.product.params.RatesSetting irValParams,
@@ -160,7 +160,7 @@ public class BondBuilder {
 
 		return CreateBondFromParams (null, new org.drip.product.params.IdentifierSet (strName, strName,
 			strName, strName), new org.drip.product.params.CouponSetting (fsCoupon, "", dblCoupon,
-				java.lang.Double.NaN, java.lang.Double.NaN), org.drip.product.params.CurrencySet.Create
+				java.lang.Double.NaN, java.lang.Double.NaN), org.drip.product.params.CurrencySetting.Create
 					(strCurrency), null, new org.drip.product.params.QuoteConvention (null, "",
 						dtEffective.julian(), 100., 0, strCurrency,
 							org.drip.analytics.daycount.Convention.DR_ACTUAL), new
@@ -218,7 +218,7 @@ public class BondBuilder {
 
 		return CreateBondFromParams (null, new org.drip.product.params.IdentifierSet (strName, strName,
 			strName, strCurrency), new org.drip.product.params.CouponSetting (fsCoupon, "", dblSpread,
-				java.lang.Double.NaN, java.lang.Double.NaN), org.drip.product.params.CurrencySet.Create
+				java.lang.Double.NaN, java.lang.Double.NaN), org.drip.product.params.CurrencySetting.Create
 					(strCurrency), new org.drip.product.params.FloaterSetting (strRateIndex, "", dblSpread,
 						java.lang.Double.NaN), new org.drip.product.params.QuoteConvention (null, "",
 							dtEffective.julian(), 100., 0, strCurrency,
@@ -363,7 +363,7 @@ public class BondBuilder {
 			strName, strCurrency), new org.drip.product.params.CouponSetting
 				(org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblCouponFactor), "",
 					1., java.lang.Double.NaN, java.lang.Double.NaN),
-						org.drip.product.params.CurrencySet.Create (strCurrency), null, new
+						org.drip.product.params.CurrencySetting.Create (strCurrency), null, new
 							org.drip.product.params.QuoteConvention (null, "", dtEffective.julian(), 100.,
 								0, strCurrency, org.drip.analytics.daycount.Convention.DR_ACTUAL), new
 									org.drip.product.params.RatesSetting (strCurrency, strCurrency,

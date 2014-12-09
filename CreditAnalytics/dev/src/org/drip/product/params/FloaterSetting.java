@@ -40,56 +40,81 @@ package org.drip.product.params;
  */
 
 public class FloaterSetting implements org.drip.product.params.Validatable {
+	private java.lang.String _strDayCount = "";
+	private double _dblSpread = java.lang.Double.NaN;
+	private org.drip.state.identifier.ForwardLabel _fri = null;
+	private double _dblCurrentFullCoupon = java.lang.Double.NaN;
 
 	/**
-	 * Floating Rate Index
-	 */
-
-	public org.drip.state.identifier.ForwardLabel _fri = null;
-
-	/**
-	 * Floating Day Count
-	 */
-
-	public java.lang.String _strFloatDayCount = "";
-
-	/**
-	 * Floating Spread
-	 */
-
-	public double _dblFloatSpread = java.lang.Double.NaN;
-
-	/**
-	 * Current Coupon
-	 */
-
-	public double _dblCurrentCoupon = java.lang.Double.NaN;
-
-	/**
-	 * Construct the FloaterSetting from rate index, floating day count, float spread, and current coupon
+	 * Construct the FloaterSetting from rate index, floating day count, float spread, and current Full
+	 * 	coupon
 	 * 
 	 * @param strRateIndex Fully Qualified Floating Rate Index
-	 * @param strFloatDayCount Floating Day Count
-	 * @param dblFloatSpread Floating Spread
-	 * @param dblCurrentCoupon Current Coupon
+	 * @param strDayCount Floating Day Count
+	 * @param dblSpread Floating Spread
+	 * @param dblCurrentFullCoupon Current Full Coupon
 	 */
 
 	public FloaterSetting (
 		final java.lang.String strRateIndex,
-		final java.lang.String strFloatDayCount,
-		final double dblFloatSpread,
-		final double dblCurrentCoupon)
+		final java.lang.String strDayCount,
+		final double dblSpread,
+		final double dblCurrentFullCoupon)
 	{
-		_dblFloatSpread = dblFloatSpread;
-		_strFloatDayCount = strFloatDayCount;
-		_dblCurrentCoupon = dblCurrentCoupon;
+		_dblSpread = dblSpread;
+		_strDayCount = strDayCount;
+		_dblCurrentFullCoupon = dblCurrentFullCoupon;
 
 		_fri = org.drip.state.identifier.ForwardLabel.Standard (strRateIndex);
 	}
 
 	@Override public boolean validate()
 	{
-		return (org.drip.quant.common.NumberUtil.IsValid (_dblFloatSpread) ||
-			org.drip.quant.common.NumberUtil.IsValid (_dblCurrentCoupon)) && null != _fri;
+		return (org.drip.quant.common.NumberUtil.IsValid (_dblSpread) ||
+			org.drip.quant.common.NumberUtil.IsValid (_dblCurrentFullCoupon)) && null != _fri;
+	}
+
+	/**
+	 * Retrieve the Floating Rate Index
+	 * 
+	 * @return Tyhe Floating Rate Index
+	 */
+
+	public org.drip.state.identifier.ForwardLabel fri()
+	{
+		return _fri;
+	}
+
+	/**
+	 * Retrieve the Floating Day Count
+	 * 
+	 * @return The Floating Day Count
+	 */
+
+	public java.lang.String dayCount()
+	{
+		return _strDayCount;
+	}
+
+	/**
+	 * Retrieve the Floating Spread
+	 * 
+	 * @return The Floating Spread
+	 */
+
+	public double spread()
+	{
+		return _dblSpread;
+	}
+
+	/**
+	 * Retrieve the Full Current Coupon
+	 * 
+	 * @return The Full Current Coupon
+	 */
+
+	public double currentFullCoupon()
+	{
+		return _dblCurrentFullCoupon;
 	}
 }

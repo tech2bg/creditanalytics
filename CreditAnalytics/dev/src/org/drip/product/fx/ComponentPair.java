@@ -141,9 +141,10 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 			forwardLabel = ((org.drip.product.rates.DualStreamComponent)
 				comp).derivedStream().forwardLabel();
 		else {
-			java.util.List<org.drip.state.identifier.ForwardLabel> lsForwardLabel = comp.forwardLabel();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+				mapForwardLabel = comp.forwardLabel();
 
-			if (null != lsForwardLabel && 0 != lsForwardLabel.size()) forwardLabel = lsForwardLabel.get (0);
+			if (null != mapForwardLabel && 0 != mapForwardLabel.size()) forwardLabel = mapForwardLabel.get (0);
 		}
 
 		try { 
@@ -224,12 +225,13 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 			fundingLabel = streamDerived.fundingLabel();
 		} else {
-			java.util.List<org.drip.state.identifier.ForwardLabel> lsForwardLabel =
-				compDerived.forwardLabel();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+				mapForwardLabel = compDerived.forwardLabel();
 
 			org.drip.state.identifier.FundingLabel fundingLabelDerived = compDerived.fundingLabel();
 
-			if (null != lsForwardLabel && 0 != lsForwardLabel.size()) forwardLabel = lsForwardLabel.get (0);
+			if (null != mapForwardLabel && 0 != mapForwardLabel.size())
+				forwardLabel = mapForwardLabel.get (0);
 
 			if (null != fundingLabelDerived) fundingLabel = fundingLabelDerived;
 		}

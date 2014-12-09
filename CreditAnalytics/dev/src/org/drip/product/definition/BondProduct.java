@@ -52,7 +52,7 @@ public interface BondProduct {
 	 */
 
 	public abstract boolean setTreasuryBenchmark (
-		final org.drip.product.params.TsyBmkSet tsyBmkSet
+		final org.drip.product.params.TreasuryBenchmarks tsyBmkSet
 	);
 
 	/**
@@ -61,7 +61,7 @@ public interface BondProduct {
 	 * @return Bond treasury benchmark Set
 	 */
 
-	public abstract org.drip.product.params.TsyBmkSet treasuryBenchmark();
+	public abstract org.drip.product.params.TreasuryBenchmarks treasuryBenchmark();
 
 	/**
 	 * Set the bond identifier set
@@ -112,7 +112,7 @@ public interface BondProduct {
 	 */
 
 	public abstract boolean setCurrencySet (
-		final org.drip.product.params.CurrencySet ccySet
+		final org.drip.product.params.CurrencySetting ccySet
 	);
 
 	/**
@@ -121,7 +121,7 @@ public interface BondProduct {
 	 * @return Bond Currency Set
 	 */
 
-	public abstract org.drip.product.params.CurrencySet currencyParams();
+	public abstract org.drip.product.params.CurrencySetting currencyParams();
 
 	/**
 	 * Set the bond floater setting

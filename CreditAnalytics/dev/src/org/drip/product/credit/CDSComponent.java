@@ -135,15 +135,15 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					double dblSubPeriodStart = lp.start();
 
 					double dblSubPeriodDF = dcFunding.effectiveDF (dblSubPeriodStart +
-						_crValParams._iDefPayLag, dblSubPeriodEnd + _crValParams._iDefPayLag);
+						_crValParams.lossPayLag(), dblSubPeriodEnd + _crValParams.lossPayLag());
 
 					double dblSubPeriodNotional = notional (dblSubPeriodStart, dblSubPeriodEnd);
 
 					double dblSubPeriodSurvival = cc.survival (dblSubPeriodStart) - cc.survival
 						(dblSubPeriodEnd);
 
-					double dblRec = _crValParams._bUseCurveRec ? cc.effectiveRecovery (dblSubPeriodStart,
-						dblSubPeriodEnd) : _crValParams._dblRecovery;
+					double dblRec = _crValParams.useCurveRecovery() ? cc.effectiveRecovery (dblSubPeriodStart,
+						dblSubPeriodEnd) : _crValParams.recovery();
 
 					double dblSubPeriodExpLoss = (1. - dblRec) * 100. * dblSubPeriodSurvival *
 						dblSubPeriodNotional;
@@ -255,7 +255,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		for (org.drip.analytics.cashflow.LossQuadratureMetrics lpcf : period.lossMetrics (this, valParams,
 			pricerParams, period.endDate(), csqs)) {
 			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dcFunding.jackDDFDManifestMeasure (0.5
-				* (lpcf.start() + lpcf.end()) + _crValParams._iDefPayLag, "Rate");
+				* (lpcf.start() + lpcf.end()) + _crValParams.lossPayLag(), "Rate");
 
 			try {
 				if (null == wjPeriodOnDefaultPVDF)
@@ -301,7 +301,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			double dblPeriodEffectiveDate = 0.5 * (lpcf.start() + lpcf.end());
 
 			org.drip.quant.calculus.WengertJacobian wjPeriodPayDFDF = dcFunding.jackDDFDManifestMeasure
-				(dblPeriodEffectiveDate + _crValParams._iDefPayLag, "Rate");
+				(dblPeriodEffectiveDate + _crValParams.lossPayLag(), "Rate");
 
 			try {
 				dblPeriodNotional = notional (lpcf.start(), lpcf.end());
@@ -317,7 +317,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				if (null == plmj) plmj = new PeriodLossMicroJack (wjPeriodPayDFDF.numParameters());
 
 				plmj._dblAccrOnDef01 += dblPeriodIncrementalAccrual * dcFunding.df (dblPeriodEffectiveDate +
-					_crValParams._iDefPayLag);
+					_crValParams.lossPayLag());
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -438,7 +438,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			(iFreq, strTenor, _strCouponCurrency, null,
 				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 					_dblNotional = dblNotional, null, _notlSchedule, null, null == _crValParams ? null :
-						org.drip.state.identifier.CreditLabel.Standard (_crValParams._strCC));
+						org.drip.state.identifier.CreditLabel.Standard (_crValParams.creditCurveName()));
 
 		java.util.List<java.lang.Double> lsStreamEdgeDate =
 			org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (new
@@ -477,13 +477,14 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return "CDS=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
 	}
 
-	@Override public java.util.List<java.lang.String> couponCurrency()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> couponCurrency()
 	{
-		java.util.List<java.lang.String> lsCouponCurrency = new java.util.ArrayList<java.lang.String>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapCouponCurrency = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
-		lsCouponCurrency.add (_strCouponCurrency);
+		mapCouponCurrency.put (name(), _strCouponCurrency);
 
-		return lsCouponCurrency;
+		return mapCouponCurrency;
 	}
 
 	@Override public java.lang.String payCurrency()
@@ -531,7 +532,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == cc)
 			throw new java.lang.Exception ("CDSComponent::recovery => Bad inputs");
 
-		return _crValParams._bUseCurveRec ? cc.recovery (dblDate) : _crValParams._dblRecovery;
+		return _crValParams.useCurveRecovery() ? cc.recovery (dblDate) : _crValParams.recovery();
 	}
 
 	@Override public double recovery (
@@ -544,8 +545,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			!org.drip.quant.common.NumberUtil.IsValid (dblDateEnd) || null == cc)
 			throw new java.lang.Exception ("CDSComponent::recovery: Bad inputs");
 
-		return _crValParams._bUseCurveRec ? cc.effectiveRecovery (dblDateStart, dblDateEnd) :
-			_crValParams._dblRecovery;
+		return _crValParams.useCurveRecovery() ? cc.effectiveRecovery (dblDateStart, dblDateEnd) :
+			_crValParams.recovery();
 	}
 
 	@Override public org.drip.product.params.CreditSetting creditValuationParams()
@@ -598,11 +599,14 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 	@Override public org.drip.state.identifier.CreditLabel creditLabel()
 	{
-		return null == _crValParams || null == _crValParams._strCC || _crValParams._strCC.isEmpty() ? null :
-			org.drip.state.identifier.CreditLabel.Standard (_crValParams._strCC);
+		return null == _crValParams || null == _crValParams.creditCurveName() ||
+			_crValParams.creditCurveName().isEmpty() ? null : org.drip.state.identifier.CreditLabel.Standard
+				(_crValParams.creditCurveName());
 	}
 
-	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+			forwardLabel()
 	{
 		return null;
 	}
@@ -612,7 +616,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		return org.drip.state.identifier.FundingLabel.Standard (_strCouponCurrency);
 	}
 
-	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel>
+		fxLabel()
 	{
 		return null;
 	}

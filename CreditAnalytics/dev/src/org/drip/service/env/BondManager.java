@@ -679,7 +679,7 @@ public class BondManager {
 
 		if (null == notlParams) return null;
 
-		org.drip.product.params.CurrencySet ccyParams = bpb.getCurrencyParams();
+		org.drip.product.params.CurrencySetting ccyParams = bpb.getCurrencyParams();
 
 		if (null == ccyParams) return null;
 
@@ -759,7 +759,7 @@ public class BondManager {
 					return null;
 				}
 
-				double dblFirstExDate = bond.marketConvention().getSettleDate
+				double dblFirstExDate = bond.marketConvention().settleDate
 					(org.drip.param.valuation.ValuationParams.CreateValParams (new
 						org.drip.analytics.date.JulianDate (dblScheduleStart), 0, "",
 							org.drip.analytics.daycount.Convention.DR_ACTUAL));
@@ -947,7 +947,8 @@ public class BondManager {
 			while (rs.next()) {
 				org.drip.product.credit.BondComponent bond = BuildBondFromResultSet (rs, mpc);
 
-				if (null == bond || bond.marketConvention()._dblFirstSettle >= bond.maturityDate().julian())
+				if (null == bond || bond.marketConvention().firstSettleDate() >=
+					bond.maturityDate().julian())
 					continue;
 
 				s_mapBonds.put (bond.identifierSet()._strCUSIP, bond);
@@ -1640,7 +1641,8 @@ public class BondManager {
 			while (rs.next()) {
 				org.drip.product.credit.BondComponent bond = BuildBondFromResultSet (rs, mpc);
 
-				if (null == bond || bond.marketConvention()._dblFirstSettle >= bond.maturityDate().julian())
+				if (null == bond || bond.marketConvention().firstSettleDate() >=
+					bond.maturityDate().julian())
 					continue;
 
 				bw.write ("\t\torg.drip.product.credit.Bond bond" + bond.isin() +
@@ -1649,8 +1651,7 @@ public class BondManager {
 				if (null != bond.treasuryBenchmark()) {
 					java.lang.String strPrimaryBmk = "";
 
-					if (null != bond.treasuryBenchmark())
-						strPrimaryBmk = bond.treasuryBenchmark().primaryBenchmark();
+					if (null != bond.treasuryBenchmark()) strPrimaryBmk = bond.treasuryBenchmark().primary();
 
 					bw.write ("\t\tbond" + bond.isin() + ".setTSYParams (CreateTSYParams (\"" +
 						strPrimaryBmk + "\", \"NONE\", \"NONE\"));\n\n");

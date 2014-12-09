@@ -38,24 +38,24 @@ package org.drip.product.params;
  * @author Lakshmi Krishnamurthy
  */
 
-public class TsyBmkSet {
-	private java.lang.String _strBmkPrimary = "";
-	private java.lang.String[] _astrSecBmk = null;
+public class TreasuryBenchmarks {
+	private java.lang.String _strPrimary = "";
+	private java.lang.String[] _astrSecondary = null;
 
 	/**
 	 * Construct the treasury benchmark set from the primary treasury benchmark, and an array of secondary
 	 * 	treasury benchmarks
 	 * 
-	 * @param strBmkPrimary Primary Treasury Benchmark
-	 * @param astrSecBmk Array of Secondary Treasury Benchmarks
+	 * @param strPrimary Primary Treasury Benchmark
+	 * @param astrSecondary Array of Secondary Treasury Benchmarks
 	 */
 
-	public TsyBmkSet (
-		final java.lang.String strBmkPrimary,
-		final java.lang.String[] astrSecBmk)
+	public TreasuryBenchmarks (
+		final java.lang.String strPrimary,
+		final java.lang.String[] astrSecondary)
 	{
-		_astrSecBmk = astrSecBmk;
-		_strBmkPrimary = strBmkPrimary;
+		_strPrimary = strPrimary;
+		_astrSecondary = astrSecondary;
 	}
 
 	/**
@@ -64,19 +64,19 @@ public class TsyBmkSet {
 	 * @return Primary Treasury Benchmark
 	 */
 
-	public java.lang.String primaryBenchmark()
+	public java.lang.String primary()
 	{
-		return _strBmkPrimary;
+		return _strPrimary;
 	}
 
 	/**
 	 * Return an Array of Secondary Treasury Benchmarks
 	 * 
-	 * @return  Array of Secondary Treasury Benchmarks
+	 * @return Array of Secondary Treasury Benchmarks
 	 */
 
-	public java.lang.String[] secondaryBenchmarks()
+	public java.lang.String[] secondary()
 	{
-		return _astrSecBmk;
+		return _astrSecondary;
 	}
 }

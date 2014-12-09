@@ -68,7 +68,7 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 		_bIsReceiver = bIsReceiver;
 	}
 
-	@Override public java.util.List<java.lang.String> couponCurrency()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> couponCurrency()
 	{
 		return _stir.couponCurrency();
 	}

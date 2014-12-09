@@ -1485,10 +1485,10 @@ public class BondProductBuilder {
 	 * @return BondCurrencyParams object
 	 */
 
-	public org.drip.product.params.CurrencySet getCurrencyParams()
+	public org.drip.product.params.CurrencySetting getCurrencyParams()
 	{
-		org.drip.product.params.CurrencySet ccyParams = new org.drip.product.params.CurrencySet (new
-			java.lang.String[] {_strTradeCurrency}, new java.lang.String[] {_strRedemptionCurrency});
+		org.drip.product.params.CurrencySetting ccyParams = new org.drip.product.params.CurrencySetting
+			(_strTradeCurrency, _strRedemptionCurrency);
 
 		return ccyParams.validate() ? ccyParams : null;
 	}

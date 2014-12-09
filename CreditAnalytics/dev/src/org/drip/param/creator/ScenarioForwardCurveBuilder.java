@@ -137,11 +137,11 @@ public class ScenarioForwardCurveBuilder {
 				forwardLabel = ((org.drip.product.rates.DualStreamComponent)
 					aCalibComp[0]).derivedStream().forwardLabel();
 			else {
-				java.util.List<org.drip.state.identifier.ForwardLabel> lsForwardLabel =
-					aCalibComp[0].forwardLabel();
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+					mapForwardLabel = aCalibComp[0].forwardLabel();
 
-				if (null != lsForwardLabel && 0 != lsForwardLabel.size())
-					forwardLabel = lsForwardLabel.get (0);
+				if (null != mapForwardLabel && 0 != mapForwardLabel.size())
+					forwardLabel = mapForwardLabel.get (0);
 			}
 
 			org.drip.state.representation.LatentStateSpecification[] aLSS = new

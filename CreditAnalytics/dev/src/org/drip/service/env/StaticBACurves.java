@@ -69,7 +69,7 @@ public class StaticBACurves {
 
 		bondTSY.setCouponSetting (cpnParams);
 
-		org.drip.product.params.CurrencySet ccyParams = org.drip.product.params.CurrencySet.Create
+		org.drip.product.params.CurrencySetting ccyParams = org.drip.product.params.CurrencySetting.Create
 			(strCurrency + "TSY");
 
 		if (!ccyParams.validate()) return null;

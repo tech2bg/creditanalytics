@@ -60,57 +60,82 @@ public class NotionalSetting implements org.drip.product.params.Validatable {
 
 	public static final int PERIOD_AMORT_EFFECTIVE = 3;
 
-	/**
-	 * Notional Amount
-	 */
-
-	public double _dblNotional = java.lang.Double.NaN;
-
-	/**
-	 * Is the price quoted off of component's issue notional factor
-	 */
-
-	public boolean _bPriceOffOriginalNotional = false;
-
-	/**
-	 * Amortization Mode - Indicates which amortization node serves as the period's amortization proxy
-	 */
-
-	public int _iPeriodAmortizationMode = PERIOD_AMORT_AT_START;
-
-	/**
-	 * Notional Schedule
-	 */
-
-	public FactorSchedule _fsPrincipalOutstanding = null;
+	private boolean _bPriceOffOriginalNotional = false;
+	private double _dblNotionalAmount = java.lang.Double.NaN;
+	private int _iPeriodAmortizationMode = PERIOD_AMORT_AT_START;
+	private org.drip.product.params.FactorSchedule _fsOutstanding = null;
 
 	/**
 	 * Construct the NotionalSetting from the notional schedule and the amount.
 	 * 
-	 * @param fsPrincipalOutstanding Notional Schedule
-	 * @param dblNotional Notional Amount
+	 * @param fsOutstanding Outsitanding Factor Schedule
+	 * @param dblNotionalAmount Notional Amount
 	 * @param iPeriodAmortizationMode Period Amortization Proxy Mode
 	 * @param bPriceOffOriginalNotional Indicates whether the price is based off of the original notional
 	 */
 
 	public NotionalSetting (
-		final FactorSchedule fsPrincipalOutstanding,
-		final double dblNotional,
+		final FactorSchedule fsOutstanding,
+		final double dblNotionalAmount,
 		final int iPeriodAmortizationMode,
 		final boolean bPriceOffOriginalNotional)
 	{
-		_dblNotional = dblNotional;
-		_fsPrincipalOutstanding = fsPrincipalOutstanding;
+		_fsOutstanding = fsOutstanding;
+		_dblNotionalAmount = dblNotionalAmount;
 		_iPeriodAmortizationMode = iPeriodAmortizationMode;
 		_bPriceOffOriginalNotional = bPriceOffOriginalNotional;
 	}
 
 	@Override public boolean validate()
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotional)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotionalAmount)) return false;
 
-		if (null == _fsPrincipalOutstanding) _fsPrincipalOutstanding = FactorSchedule.BulletSchedule();
+		if (null == _fsOutstanding) _fsOutstanding = FactorSchedule.BulletSchedule();
 
 		return true;
+	}
+
+	/**
+	 * Retrieve the Notional Amount
+	 * 
+	 * @return The Notional Amount
+	 */
+
+	public double notionalAmount()
+	{
+		return _dblNotionalAmount;
+	}
+
+	/**
+	 * Retrieve "Price Off Of Original Notional" Flag
+	 * 
+	 * @return TRUE => Price Quote is based off of the original notional
+	 */
+
+	public boolean priceOffOfOriginalNotional()
+	{
+		return _bPriceOffOriginalNotional;
+	}
+
+	/**
+	 * Retrieve the Period Amortization Mode
+	 * 
+	 * @return The Period Amortization Mode
+	 */
+
+	public int periodAmortizationMode()
+	{
+		return _iPeriodAmortizationMode;
+	}
+
+	/**
+	 * Retrieve the Outstanding Factor Schedule
+	 * 
+	 * @return The Outstanding Factor Schedule
+	 */
+
+	public org.drip.product.params.FactorSchedule outstandingFactorSchedule()
+	{
+		return _fsOutstanding;
 	}
 }

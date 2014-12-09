@@ -40,105 +40,138 @@ package org.drip.product.params;
  */
 
 public class CouponSetting implements org.drip.product.params.Validatable {
-
-	/**
-	 * Coupon schedule
-	 */
-
-	public FactorSchedule _fsCoupon = null;
-
-	/**
-	 * Coupon Type
-	 */
-
-	public java.lang.String _strCouponType = "";
-
-	/**
-	 * Coupon Amount
-	 */
-
-	public double _dblCoupon = java.lang.Double.NaN;
-
-	/**
-	 * Coupon Floor
-	 */
-
-	public double _dblCouponFloor = java.lang.Double.NaN;
-
-	/**
-	 * Coupon Ceiling
-	 */
-
-	public double _dblCouponCeiling = java.lang.Double.NaN;
+	private java.lang.String _strCouponType = "";
+	private double _dblCouponRate = java.lang.Double.NaN;
+	private org.drip.product.params.FactorSchedule _fs = null;
+	private double _dblCouponFloorRate = java.lang.Double.NaN;
+	private double _dblCouponCeilingRate = java.lang.Double.NaN;
 
 	/**
 	 * Construct the CouponSetting from the coupon schedule, coupon type, and the coupon amount
 	 * 
-	 * @param fsCoupon Coupon schedule
+	 * @param fs Coupon schedule
 	 * @param strCouponType Coupon Type
-	 * @param dblCoupon Coupon Amount
-	 * @param dblCouponCeiling Coupon Ceiling Amount
-	 * @param dblCouponFloor Coupon Floor Amount
+	 * @param dblCouponRate Coupon Rate
+	 * @param dblCouponCeilingRate Coupon Ceiling Rate
+	 * @param dblCouponFloorRate Coupon Floor Rate
 	 */
 
 	public CouponSetting (
-		final FactorSchedule fsCoupon,
+		final FactorSchedule fs,
 		final java.lang.String strCouponType,
-		final double dblCoupon,
-		final double dblCouponCeiling,
-		final double dblCouponFloor)
+		final double dblCouponRate,
+		final double dblCouponCeilingRate,
+		final double dblCouponFloorRate)
 	{
-		_fsCoupon = fsCoupon;
-		_dblCoupon = dblCoupon;
+		_fs = fs;
+		_dblCouponRate = dblCouponRate;
 		_strCouponType = strCouponType;
-		_dblCouponFloor = dblCouponFloor;
-		_dblCouponCeiling = dblCouponCeiling;
+		_dblCouponFloorRate = dblCouponFloorRate;
+		_dblCouponCeilingRate = dblCouponCeilingRate;
 	}
 
 	/**
 	 * Trim the component coupon if it falls outside the (optionally) specified coupon window. Note that
 	 * 	trimming the coupon ceiling takes precedence over hiking the coupon floor.
 	 * 
-	 * @param dblCoupon Input Coupon
+	 * @param dblCouponRate Input Coupon Rate
 	 * @param dblDate Input Date representing the period that the coupon belongs to
 	 * 
-	 * @return The "trimmed" coupon
+	 * @return The "trimmed" coupon Rate
 	 * 
 	 * @throws java.lang.Exception Thrown if inputs are invalid
 	 */
 
 	public double processCouponWindow (
-		final double dblCoupon,
+		final double dblCouponRate,
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblCoupon) || !org.drip.quant.common.NumberUtil.IsValid
-			(dblDate))
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblCouponRate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("CouponSetting::processCouponWindow => Invalid Inputs");
 
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeiling) &&
-			!org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloor))
-			return dblCoupon;
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeilingRate) &&
+			!org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloorRate))
+			return dblCouponRate;
 
-		if (!!org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeiling) && dblCoupon > _dblCouponCeiling)
-			return _dblCouponCeiling;
+		if (!!org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeilingRate) && dblCouponRate >
+			_dblCouponCeilingRate)
+			return _dblCouponCeilingRate;
 
-		if (!!org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloor) && dblCoupon < _dblCouponFloor)
-			return _dblCouponFloor;
+		if (!!org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloorRate) && dblCouponRate <
+			_dblCouponFloorRate)
+			return _dblCouponFloorRate;
 
-		return dblCoupon;
+		return dblCouponRate;
 	}
 
 	@Override public boolean validate()
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCoupon)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCouponRate)) return false;
 
-		if (null == _fsCoupon) _fsCoupon = FactorSchedule.BulletSchedule();
+		if (null == _fs) _fs = FactorSchedule.BulletSchedule();
 
-		if (org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeiling) &&
-			org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloor) && _dblCouponCeiling < _dblCouponFloor)
+		if (org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeilingRate) &&
+			org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloorRate) && _dblCouponCeilingRate <
+				_dblCouponFloorRate)
 			return false;
 
 		return true;
+	}
+
+	/**
+	 * Retrieve the Factor Schedule
+	 * 
+	 * @return The Factor Schedule
+	 */
+
+	public org.drip.product.params.FactorSchedule factorSchedule()
+	{
+		return _fs;
+	}
+
+	/**
+	 * Retrieve the Coupon Type
+	 * 
+	 * @return The Coupon Type
+	 */
+
+	public java.lang.String couponType()
+	{
+		return _strCouponType;
+	}
+
+	/**
+	 * Retrieve the Coupon Rate
+	 * 
+	 * @return The Coupon Rate
+	 */
+
+	public double couponRate()
+	{
+		return _dblCouponRate;
+	}
+
+	/**
+	 * Retrieve the Coupon Ceiling Rate
+	 * 
+	 * @return The Coupon Ceiling Rate
+	 */
+
+	public double couponCeilingRate()
+	{
+		return _dblCouponCeilingRate;
+	}
+
+	/**
+	 * Retrieve the Coupon Floor Rate
+	 * 
+	 * @return The Coupon Floor Rate
+	 */
+
+	public double couponFloorRate()
+	{
+		return _dblCouponFloorRate;
 	}
 }

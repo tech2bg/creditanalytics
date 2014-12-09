@@ -68,7 +68,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		_bIsCaplet = bIsCaplet;
 	}
 
-	@Override public java.util.List<java.lang.String> couponCurrency()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> couponCurrency()
 	{
 		return _fra.couponCurrency();
 	}

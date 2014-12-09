@@ -40,44 +40,19 @@ package org.drip.product.params;
  */
 
 public class QuoteConvention implements org.drip.product.params.Validatable {
+	private java.lang.String _strCalculationType = "";
+	private double _dblFirstSettleDate = java.lang.Double.NaN;
+	private double _dblRedemptionValue = java.lang.Double.NaN;
+	private org.drip.param.valuation.CashSettleParams _cashSettleParams = null;
+	private org.drip.param.valuation.ValuationCustomizationParams _valuationCustomizationParams = null;
 
 	/**
-	 * Calculation Type
-	 */
-
-	public java.lang.String _strCalculationType = "";
-
-	/**
-	 * First Settle Date
-	 */
-
-	public double _dblFirstSettle = java.lang.Double.NaN;
-
-	/**
-	 * Redemption Value
-	 */
-
-	public double _dblRedemptionValue = java.lang.Double.NaN;
-
-	/**
-	 * Quoting Parameters
-	 */
-
-	public org.drip.param.valuation.ValuationCustomizationParams _quotingParams = null;
-
-	/**
-	 * Cash Settle parameters
-	 */
-
-	public org.drip.param.valuation.CashSettleParams _settleParams = null;
-
-	/**
-	 * Construct the QuoteConvention object from the quoting convention, the calculation type, the first
-	 * 	settle date, and the redemption value.
+	 * Construct the QuoteConvention object from the valuation Customization Parameters, the calculation
+	 *  type, the first settle date, and the redemption value.
 	 * 
-	 * @param quotingParams Quoting Parameters
+	 * @param valuationCustomizationParams Valuation Customization Parameters
 	 * @param strCalculationType Calculation Type
-	 * @param dblFirstSettle First Settle Date
+	 * @param dblFirstSettleDate First Settle Date
 	 * @param dblRedemptionValue Redemption Value
 	 * @param iSettleLag Settle Lag
 	 * @param strSettleCalendar Settlement Calendar
@@ -85,36 +60,91 @@ public class QuoteConvention implements org.drip.product.params.Validatable {
 	 */
 
 	public QuoteConvention (
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams valuationCustomizationParams,
 		final java.lang.String strCalculationType,
-		final double dblFirstSettle,
+		final double dblFirstSettleDate,
 		final double dblRedemptionValue,
 		final int iSettleLag,
 		final java.lang.String strSettleCalendar,
 		final int iSettleAdjustMode)
 	{
-		_quotingParams = quotingParams;
-		_dblFirstSettle = dblFirstSettle;
-		_strCalculationType = strCalculationType;
+		_dblFirstSettleDate = dblFirstSettleDate;
 		_dblRedemptionValue = dblRedemptionValue;
+		_strCalculationType = strCalculationType;
+		_valuationCustomizationParams = valuationCustomizationParams;
 		
-		_settleParams = new org.drip.param.valuation.CashSettleParams (iSettleLag, strSettleCalendar,
+		_cashSettleParams = new org.drip.param.valuation.CashSettleParams (iSettleLag, strSettleCalendar,
 			iSettleAdjustMode);
 	}
 
-	public double getSettleDate (
+	public double settleDate (
 		final org.drip.param.valuation.ValuationParams valParams)
 		throws java.lang.Exception
 	{
 		if (null == valParams)
-			throw new java.lang.Exception ("QuoteConvention::getSettleDate => Invalid inputs");
+			throw new java.lang.Exception ("QuoteConvention::settleDate => Invalid inputs");
 
-		return _settleParams.cashSettleDate (valParams.valueDate());
+		return _cashSettleParams.cashSettleDate (valParams.valueDate());
 	}
 
 	@Override public boolean validate()
 	{
-		return org.drip.quant.common.NumberUtil.IsValid (_dblFirstSettle) &&
+		return org.drip.quant.common.NumberUtil.IsValid (_dblFirstSettleDate) &&
 			org.drip.quant.common.NumberUtil.IsValid (_dblRedemptionValue);
+	}
+
+	/**
+	 * Retrieve the Calculation Type
+	 * 
+	 * @return The Calculation Type
+	 */
+
+	public java.lang.String calculationType()
+	{
+		return _strCalculationType;
+	}
+
+	/**
+	 * Retrieve the First Settle Date
+	 * 
+	 * @return The First Settle Date
+	 */
+
+	public double firstSettleDate()
+	{
+		return _dblFirstSettleDate;
+	}
+
+	/**
+	 * Retrieve the Redemption Value
+	 * 
+	 * @return The Redemption Value
+	 */
+
+	public double redemptionValue()
+	{
+		return _dblRedemptionValue;
+	}
+
+	/**
+	 * Retrieve the Cash Settle Parameters
+	 * 
+	 * @return The Cash Settle Parameters
+	 */
+
+	public org.drip.param.valuation.CashSettleParams cashSettleParams()
+	{
+		return _cashSettleParams;
+	}
+
+	/**
+	 * Retrieve the Valuation Customization Parameters
+	 * 
+	 * @return The Valuation Customization Parameters
+	 */
+
+	public org.drip.param.valuation.ValuationCustomizationParams valuationCustomizationParams()
+	{
+		return _valuationCustomizationParams;
 	}
 }

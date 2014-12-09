@@ -545,9 +545,10 @@ public class ScenarioDiscountCurveBuilder {
 		org.drip.state.representation.LatentStateSpecification[] aLSS = null;
 		org.drip.state.inference.LatentStateStretchSpec[] aStretchSpec = null;
 		org.drip.state.representation.LatentStateSpecification lssFunding = null;
-		java.util.List<org.drip.state.identifier.ForwardLabel> lsForwardLabel = null;
 		int iNumManifestMeasures1 = null == astrManifestMeasure1 ? 0 : astrManifestMeasure1.length;
 		int iNumManifestMeasures2 = null == astrManifestMeasure2 ? 0 : astrManifestMeasure2.length;
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+			mapForwardLabel = null;
 
 		if ((0 == iNumComp1 && 0 == iNumComp2) || iNumComp1 != iNumQuote1 || iNumComp2 != iNumQuote2 ||
 			iNumComp1 != iNumManifestMeasures1 || iNumComp2 != iNumManifestMeasures2)
@@ -565,11 +566,11 @@ public class ScenarioDiscountCurveBuilder {
 			return null;
 		}
 
-		if (0 != iNumComp1) lsForwardLabel = aCalibComp1[0].forwardLabel();
+		if (0 != iNumComp1) mapForwardLabel = aCalibComp1[0].forwardLabel();
 
-		if (null == lsForwardLabel && 0 != iNumComp2) lsForwardLabel = aCalibComp2[0].forwardLabel();
+		if (null == mapForwardLabel && 0 != iNumComp2) mapForwardLabel = aCalibComp2[0].forwardLabel();
 
-		if (null == lsForwardLabel || 0 == lsForwardLabel.size())
+		if (null == mapForwardLabel || 0 == mapForwardLabel.size())
 			aLSS = new org.drip.state.representation.LatentStateSpecification[] {lssFunding};
 		else {
 			try {
@@ -577,7 +578,7 @@ public class ScenarioDiscountCurveBuilder {
 					org.drip.state.representation.LatentStateSpecification
 						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
 							org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-								lsForwardLabel.get (0))};
+								mapForwardLabel.get (0))};
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

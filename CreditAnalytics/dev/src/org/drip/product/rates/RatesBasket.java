@@ -106,21 +106,30 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return _aCompFloatStream;
 	}
 
-	@Override public java.util.List<java.lang.String> couponCurrency()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> couponCurrency()
 	{
-		java.util.List<java.lang.String> lsCouponCurrency = new java.util.ArrayList<java.lang.String>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapCouponCurrency = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
-		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream)
-				lsCouponCurrency.add (fixedStream.couponCurrency());
+		if (null != _aCompFixedStream) {
+			int iFixedStreamLength = _aCompFixedStream.length;
+
+			if (0 != iFixedStreamLength) {
+				for (int i = 0; i < iFixedStreamLength; ++i)
+					mapCouponCurrency.put ("FIXED" + i, _aCompFixedStream[i].couponCurrency());
+			}
 		}
 
-		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream)
-				lsCouponCurrency.add (floatStream.couponCurrency());
+		if (null != _aCompFloatStream) {
+			int iFloatStreamLength = _aCompFloatStream.length;
+
+			if (0 != iFloatStreamLength) {
+				for (int i = 0; i < iFloatStreamLength; ++i)
+					mapCouponCurrency.put ("FLOAT" + i, _aCompFloatStream[i].couponCurrency());
+			}
 		}
 
-		return lsCouponCurrency;
+		return mapCouponCurrency;
 	}
 
 	@Override public java.lang.String payCurrency()
@@ -160,20 +169,22 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return null;
 	}
 
-	@Override public java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel()
+	@Override public
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+			forwardLabel()
 	{
-		java.util.List<org.drip.state.identifier.ForwardLabel> lsForwardLabel = new
-			java.util.ArrayList<org.drip.state.identifier.ForwardLabel>();
+		int iNumFloatStream = null == _aCompFloatStream ? 0 : _aCompFloatStream.length;
 
-		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
-				org.drip.state.identifier.ForwardLabel forwardLabel = floatStream.forwardLabel();
+		if (0 == iNumFloatStream) return null;
 
-				if (null != forwardLabel) lsForwardLabel.add (forwardLabel);
-			}
-		}
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+			mapForwardLabel = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>();
 
-		return lsForwardLabel;
+		for (int i = 0; i < iNumFloatStream; ++i)
+			mapForwardLabel.put ("FLOAT" + i, _aCompFloatStream[i].forwardLabel());
+
+		return mapForwardLabel;
 	}
 
 	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
@@ -181,28 +192,30 @@ public class RatesBasket extends org.drip.product.definition.CalibratableFixedIn
 		return org.drip.state.identifier.FundingLabel.Standard (payCurrency());
 	}
 
-	@Override public java.util.List<org.drip.state.identifier.FXLabel> fxLabel()
+	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel>
+		fxLabel()
 	{
-		java.util.List<org.drip.state.identifier.FXLabel> lsFXLabel = new
-			java.util.ArrayList<org.drip.state.identifier.FXLabel>();
+		int iNumFixedStream = null == _aCompFixedStream ? 0 : _aCompFixedStream.length;
+		int iNumFloatStream = null == _aCompFloatStream ? 0 : _aCompFloatStream.length;
 
-		if (null != _aCompFixedStream && 0 != _aCompFixedStream.length) {
-			for (org.drip.product.rates.Stream fixedStream : _aCompFixedStream) {
-				org.drip.state.identifier.FXLabel fxLabel = fixedStream.fxLabel();
+		if (0 == iNumFixedStream && 0 == iNumFloatStream) return null;
 
-				if (null != fxLabel) lsFXLabel.add (fxLabel);
-			}
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel> mapFXLabel = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel>();
+
+		for (int i = 0; i < iNumFixedStream; ++i) {
+			org.drip.state.identifier.FXLabel fxLabel = _aCompFixedStream[i].fxLabel();
+
+			if (null != fxLabel) mapFXLabel.put ("FIXED" + i, fxLabel);
 		}
 
-		if (null != _aCompFloatStream && 0 != _aCompFloatStream.length) {
-			for (org.drip.product.rates.Stream floatStream : _aCompFloatStream) {
-				org.drip.state.identifier.FXLabel fxLabel = floatStream.fxLabel();
+		for (int i = 0; i < iNumFloatStream; ++i) {
+			org.drip.state.identifier.FXLabel fxLabel = _aCompFloatStream[i].fxLabel();
 
-				if (null != fxLabel) lsFXLabel.add (fxLabel);
-			}
+			if (null != fxLabel) mapFXLabel.put ("FLOAT" + i, fxLabel);
 		}
 
-		return lsFXLabel;
+		return mapFXLabel;
 	}
 
 	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (

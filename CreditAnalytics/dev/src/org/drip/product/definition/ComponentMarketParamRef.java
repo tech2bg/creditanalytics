@@ -49,12 +49,12 @@ public interface ComponentMarketParamRef {
 	public abstract java.lang.String name();
 
 	/**
-	 * Get the List of Coupon Currencies
+	 * Get the Map of Coupon Currencies
 	 * 
-	 * @return The List of Coupon Currencies
+	 * @return The Map of Coupon Currencies
 	 */
 
-	public abstract java.util.List<java.lang.String> couponCurrency();
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> couponCurrency();
 
 	/**
 	 * Get the Pay Currency
@@ -81,12 +81,13 @@ public interface ComponentMarketParamRef {
 	public abstract org.drip.state.identifier.CreditLabel creditLabel();
 
 	/**
-	 * Get the Set of Forward Curve Latent State Labels
+	 * Get the Map of Forward Curve Latent State Labels
 	 * 
-	 * @return Set of the Forward Curve Latent State Labels
+	 * @return The Map of the Forward Curve Latent State Labels
 	 */
 
-	public abstract java.util.List<org.drip.state.identifier.ForwardLabel> forwardLabel();
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
+		forwardLabel();
 
 	/**
 	 * Get the Funding Curve Latent State Label
@@ -97,10 +98,11 @@ public interface ComponentMarketParamRef {
 	public abstract org.drip.state.identifier.FundingLabel fundingLabel();
 
 	/**
-	 * Get the Set of FX Latent State Identifier Labels
+	 * Get the Map of FX Latent State Identifier Labels
 	 * 
-	 * @return The Set of FX Latent State Identifier Labels
+	 * @return The Map of FX Latent State Identifier Labels
 	 */
 
-	public abstract java.util.List<org.drip.state.identifier.FXLabel> fxLabel();
+	public abstract org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel>
+		fxLabel();
 }
