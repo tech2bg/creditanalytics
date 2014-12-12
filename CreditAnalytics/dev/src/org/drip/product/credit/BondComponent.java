@@ -5,6 +5,7 @@ package org.drip.product.credit;
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
+
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
@@ -32,12 +33,12 @@ package org.drip.product.credit;
  */
 
 /**
- * BondComponent is the base class that extends CreditComponent abstract class and implements the functionality behind
- * 		bonds of all kinds. Bond static data is captured in a set of 11 container classes – BondTSYParams,
- * 		BondCouponParams, BondNotionalParams, BondFloaterParams, BondCurrencyParams, BondIdentifierParams,
- * 		BondIRValuationParams, CompCRValParams, BondCFTerminationEvent, BondFixedPeriodGenerationParams, and
- * 		one EmbeddedOptionSchedule object instance each for the call and the put objects. Each of these
- * 		parameter set can be set separately.
+ * BondComponent is the base class that extends CreditComponent abstract class and implements the
+ * 	functionality behind bonds of all kinds. Bond static data is captured in a set of 11 container classes –
+ *  BondTSYParams, BondCouponParams, BondNotionalParams, BondFloaterParams, BondCurrencyParams,
+ *  BondIdentifierParams, CompCRValParams, BondCFTerminationEvent, BondFixedPeriodGenerationParams, and one
+ *  EmbeddedOptionSchedule object instance each for the call and the put objects. Each of these parameter set
+ *  can be set separately.
  *
  * @author Lakshmi Krishnamurthy
  */
@@ -74,12 +75,10 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	private static final int ZERO_OFF_OF_TREASURIES_DISCOUNT_CURVE = 2;
 
 	private org.drip.product.params.BondStream _stream = null;
-	private org.drip.product.params.RatesSetting _ratesSetting = null;
 	private org.drip.product.params.CouponSetting _couponSetting = null;
 	private org.drip.product.params.CreditSetting _creditSetting = null;
 	private org.drip.product.params.FloaterSetting _floaterSetting = null;
 	private org.drip.param.market.LatentStateFixingsContainer _lsfc = null;
-	private org.drip.product.params.CurrencySetting _currencySetting = null;
 	private org.drip.product.params.NotionalSetting _notionalSetting = null;
 	private org.drip.product.params.QuoteConvention _marketConvention = null;
 	private org.drip.product.params.TerminationSetting _terminationSetting = null;
@@ -882,17 +881,6 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		return _couponSetting;
 	}
 
-	@Override public boolean setCurrencySet (
-		final org.drip.product.params.CurrencySetting currencySetting)
-	{
-		return null == (_currencySetting = currencySetting);
-	}
-
-	@Override public org.drip.product.params.CurrencySetting currencyParams()
-	{
-		return _currencySetting;
-	}
-
 	@Override public boolean setFloaterSetting (
 		final org.drip.product.params.FloaterSetting fltParams)
 	{
@@ -925,17 +913,6 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 	@Override public org.drip.product.params.QuoteConvention marketConvention()
 	{
 		return _marketConvention;
-	}
-
-	@Override public boolean setRatesSetting (
-		final org.drip.product.params.RatesSetting ratesSetting)
-	{
-		return null == (_ratesSetting = ratesSetting);
-	}
-
-	@Override public org.drip.product.params.RatesSetting ratesSetting()
-	{
-		return _ratesSetting;
 	}
 
 	@Override public boolean setCreditSetting (
@@ -984,7 +961,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	@Override public java.lang.String primaryCode()
 	{
-		return null == _idParams ? null : "BOND." + _idParams._strID;
+		return null == _idParams ? null : "BOND." + _idParams.id();
 	}
 
 	@Override public void setPrimaryCode (
@@ -995,22 +972,22 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	@Override public java.lang.String[] secondaryCode()
 	{
-		return new java.lang.String[] {_idParams._strID};
+		return new java.lang.String[] {_idParams.id()};
 	}
 
 	@Override public java.lang.String isin()
 	{
-		return null == _idParams ? null : _idParams._strISIN;
+		return null == _idParams ? null : _idParams.isin();
 	}
 
 	@Override public java.lang.String cusip()
 	{
-		return null == _idParams ? null : _idParams._strCUSIP;
+		return null == _idParams ? null : _idParams.cusip();
 	}
 
 	@Override public java.lang.String name()
 	{
-		return null == _idParams ? null : _idParams._strID;
+		return null == _idParams ? null : _idParams.id();
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> couponCurrency()
@@ -1018,19 +995,19 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapCouponCurrency = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
 
-		mapCouponCurrency.put (name(), _currencySetting.couponCurrency());
+		mapCouponCurrency.put (name(), _stream.couponCurrency());
 
 		return mapCouponCurrency;
 	}
 
 	@Override public java.lang.String payCurrency()
 	{
-		return _currencySetting.couponCurrency();
+		return _stream.couponCurrency();
 	}
 
 	@Override public java.lang.String principalCurrency()
 	{
-		return _currencySetting.principalCurrency();
+		return _notionalSetting.denominationCurrency();
 	}
 
 	@Override public double notional (
@@ -1150,7 +1127,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
 	{
-		return org.drip.state.identifier.FundingLabel.Standard (_ratesSetting.couponDiscountCurve());
+		return org.drip.state.identifier.FundingLabel.Standard (payCurrency());
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel>
@@ -1274,7 +1251,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	@Override public java.lang.String ticker()
 	{
-		return null == _idParams ? null : _idParams._strTicker;
+		return null == _idParams ? null : _idParams.ticker();
 	}
 
 	@Override public void setEmbeddedCallSchedule (
@@ -1392,12 +1369,12 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 	@Override public java.lang.String currency()
 	{
-		return _currencySetting.couponCurrency();
+		return _stream.couponCurrency();
 	}
 
 	@Override public java.lang.String redemptionCurrency()
 	{
-		return _currencySetting.principalCurrency();
+		return _notionalSetting.denominationCurrency();
 	}
 
 	@Override public boolean inFirstCouponPeriod (
@@ -1736,7 +1713,14 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (freq(), couponDC(), currency(),
 				_stream.couponEOMAdjustment(), lsCompositePeriod, dblWorkoutDate, dblCashPayDate, dcBase,
 					null == vcp ? (null == _marketConvention ? null :
-						_marketConvention.valuationCustomizationParams()) : vcp, dblZCBump);
+						_marketConvention.valuationCustomizationParams()) : vcp, dblZCBump, new
+							org.drip.spline.params.SegmentCustomBuilderControl
+								(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+									new org.drip.spline.basis.PolynomialFunctionSetParams (4),
+										org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2),
+											new org.drip.spline.params.ResponseScalingShapeControl (true, new
+												org.drip.quant.function1D.QuadraticRationalShapeControl
+													(0.)), null));
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
 		}

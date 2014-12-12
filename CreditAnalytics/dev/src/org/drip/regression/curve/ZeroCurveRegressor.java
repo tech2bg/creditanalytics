@@ -137,7 +137,14 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 						if (null == (_zc = org.drip.state.creator.ZeroCurveBuilder.CreateZeroCurve (2,
 							"30/360", _dc.currency(), true, _lsCouponPeriod, _lsCouponPeriod.get
 								(_lsCouponPeriod.size() - 1).endDate(), _dtStart.addDays (2).julian(), _dc,
-									null, s_dblZSpread)))
+									null, s_dblZSpread, new
+										org.drip.spline.params.SegmentCustomBuilderControl
+											(org.drip.spline.stretch.MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+							new org.drip.spline.basis.PolynomialFunctionSetParams (4),
+								org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
+									org.drip.spline.params.ResponseScalingShapeControl (true, new
+										org.drip.quant.function1D.QuadraticRationalShapeControl (0.)),
+											null))))
 							return false;
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();

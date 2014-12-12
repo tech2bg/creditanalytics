@@ -111,7 +111,7 @@ public class CrossOvernightFloatingStream {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel().get (0)
+						aDeposit[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);
@@ -148,7 +148,7 @@ public class CrossOvernightFloatingStream {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aEDF[i].forwardLabel().get (0)
+						aEDF[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);
@@ -330,7 +330,7 @@ public class CrossOvernightFloatingStream {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aCFIC[i].forwardLabel().get (0)
+						aCFIC[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);

@@ -178,7 +178,7 @@ public class ShapeDFZeroLocalSmooth {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel().get (0)
+						aDeposit[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);
@@ -215,7 +215,7 @@ public class ShapeDFZeroLocalSmooth {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aEDF[i].forwardLabel().get (0)
+						aEDF[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);
@@ -384,7 +384,7 @@ public class ShapeDFZeroLocalSmooth {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aIRS[i].forwardLabel().get (0)
+						aIRS[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);

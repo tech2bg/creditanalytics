@@ -270,6 +270,61 @@ public class AnalyticsHelper {
 	}
 
 	/**
+	 * Compute the uncompounded OIS Rate from the LIBOR Swap Rate and the LIBOR Swap Rate - Fed Fund Basis.
+	 *  The calculation is from the following Bloomberg Publication:
+	 * 
+	 * 	- Lipman, H. and F. Mercurio (2012): OIS Discounting and Dual-Curve Stripping Methodology at
+	 * 		Bloomberg
+	 * 
+	 * @param dblLIBORSwapRate LIBOR Swap Rate
+	 * @param dblFedFundLIBORSwapBasis Fed Fund - LIBOR Swap Rate Basis
+	 * 
+	 * @return The Uncompounded OIS Rate
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public static final double OISFromLIBORSwapFedFundBasis (
+		final double dblLIBORSwapRate,
+		final double dblFedFundLIBORSwapBasis)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblLIBORSwapRate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblFedFundLIBORSwapBasis))
+			throw new java.lang.Exception
+				("AnalyticsHelper::OISFromLIBORSwapFedFundBasis => Invalid Inputs!");
+
+		double dblOISAnnuity = 1. + 0.25 * (4. * (java.lang.Math.sqrt (1. + (dblLIBORSwapRate * 180. / 365.))
+			- 1.) - dblFedFundLIBORSwapBasis);
+
+		return dblOISAnnuity * dblOISAnnuity * dblOISAnnuity * dblOISAnnuity - 1.;
+	}
+
+	/**
+	 * Compute the Daily Compounded OIS Rate from the LIBOR Swap Rate and the LIBOR Swap Rate - Fed Fund
+	 *  Basis. The calculation is from the following Bloomberg Publication:
+	 * 
+	 * 	- Lipman, H. and F. Mercurio (2012): OIS Discounting and Dual-Curve Stripping Methodology at
+	 * 		Bloomberg
+	 * 
+	 * @param dblLIBORSwapRate LIBOR Swap Rate
+	 * @param dblFedFundLIBORSwapBasis Fed Fund - LIBOR Swap Rate Basis
+	 * 
+	 * @return The Daily Compounded OIS Rate
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public static final double OISFromLIBORSwapFedFundBasis2 (
+		final double dblLIBORSwapRate,
+		final double dblFedFundLIBORSwapBasis)
+		throws java.lang.Exception
+	{
+		return 4. * (java.lang.Math.pow (1. + (OISFromLIBORSwapFedFundBasis (dblLIBORSwapRate,
+			dblFedFundLIBORSwapBasis) / 360.), 90.) - 1.);
+	}
+
+	/**
 	 * Return the standard on-the-run benchmark treasury string from the valuation and the maturity dates
 	 * 
 	 * @param dblValue the valuation date

@@ -39,15 +39,8 @@ package org.drip.state.curve;
 
 public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 	private org.drip.analytics.rates.DiscountCurve _dc = null;
-
-	private java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Double> _mapDF = new
-		java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>();
-
-	private java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Double> _mapZeroRate = new
-		java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>();
-
-	private java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Double> _mapYearFraction = new
-		java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>();
+	private org.drip.spline.stretch.MultiSegmentSequence _mssDF = null;
+	private org.drip.spline.stretch.MultiSegmentSequence _mssZeroRate = null;
 
 	private void updateMapEntries (
 		final double dblDate,
@@ -55,7 +48,9 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		final java.lang.String strDC,
 		final boolean bApplyCpnEOMAdj,
 		final java.lang.String strCalendar,
-		final double dblZCBump)
+		final double dblZCBump,
+		final java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Double> mapDF,
+		final java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Double> mapZeroRate)
 		throws java.lang.Exception
 	{
 		double dblYearFraction = org.drip.analytics.daycount.Convention.YearFraction (epoch().julian(),
@@ -66,11 +61,9 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		org.drip.analytics.date.JulianDate dt = new org.drip.analytics.date.JulianDate (dblDate);
 
 		if (0. == dblYearFraction) {
-			_mapDF.put (dt, 1.);
+			mapDF.put (dt, 1.);
 
-			_mapYearFraction.put (dt, 0.);
-
-			_mapZeroRate.put (dt, 0.);
+			mapZeroRate.put (dt, 0.);
 
 			return;
 		}
@@ -78,12 +71,10 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		double dblBumpedZeroRate = org.drip.analytics.support.AnalyticsHelper.DF2Yield (iFreq, _dc.df
 			(dblDate), dblYearFraction) + dblZCBump;
 
-		_mapDF.put (dt, org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFreq, dblBumpedZeroRate,
+		mapDF.put (dt, org.drip.analytics.support.AnalyticsHelper.Yield2DF (iFreq, dblBumpedZeroRate,
 			dblYearFraction));
 
-		_mapYearFraction.put (dt, dblYearFraction);
-
-		_mapZeroRate.put (dt, dblBumpedZeroRate);
+		mapZeroRate.put (dt, dblBumpedZeroRate);
 	}
 
 	/**
@@ -97,8 +88,9 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 	 * @param dblWorkoutDate Work-out date
 	 * @param dblCashPayDate Cash-Pay Date
 	 * @param dc Discount Curve
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblZCBump DC Bump
+	 * @param scbc Segment Custom Builder Control Parameters
 	 * 
 	 * @throws java.lang.Exception
 	 */
@@ -112,17 +104,17 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		final double dblWorkoutDate,
 		final double dblCashPayDate,
 		final org.drip.analytics.rates.DiscountCurve dc,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final double dblZCBump)
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
+		final double dblZCBump,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbc)
 		throws java.lang.Exception
 	{
-		super (dc.epoch().julian(), dc.currency(), null == quotingParams ? null :
-			quotingParams.coreCollateralizationParams());
+		super (dc.epoch().julian(), dc.currency(), null == vcp ? null : vcp.coreCollateralizationParams());
 
-		if (null == (_dc = dc) || null == lsCouponPeriod || 0 == lsCouponPeriod.size() ||
+		if (null == (_dc = dc) || null == lsCouponPeriod || 2 > lsCouponPeriod.size() ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblCashPayDate) ||
-					!org.drip.quant.common.NumberUtil.IsValid (dblZCBump))
+					!org.drip.quant.common.NumberUtil.IsValid (dblZCBump) || null == scbc)
 			throw new java.lang.Exception ("DerivedZeroRate ctr => Invalid date parameters!");
 
 		int iFreq = 0 == iFreqZC ? 2 : iFreqZC;
@@ -131,22 +123,65 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 
 		java.lang.String strDC = null == strDCZC || strDCZC.isEmpty() ? "30/360" : strDCZC;
 
-		if (null != quotingParams) {
-			strDC = quotingParams.yieldDayCount();
+		if (null != vcp) {
+			strDC = vcp.yieldDayCount();
 
-			iFreq = quotingParams.yieldFreq();
+			iFreq = vcp.yieldFreq();
 
-			bApplyCpnEOMAdj = quotingParams.applyYieldEOMAdj();
+			bApplyCpnEOMAdj = vcp.applyYieldEOMAdj();
 
-			strCalendar = quotingParams.yieldCalendar();
+			strCalendar = vcp.yieldCalendar();
 		}
 
+		java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Double> mapDF = new
+			java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>();
+
+		java.util.Map<org.drip.analytics.date.JulianDate, java.lang.Double> mapZeroRate = new
+			java.util.TreeMap<org.drip.analytics.date.JulianDate, java.lang.Double>();
+
 		for (org.drip.analytics.cashflow.CompositePeriod period : lsCouponPeriod)
-			updateMapEntries (period.payDate(), iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
+			updateMapEntries (period.payDate(), iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump, mapDF,
+				mapZeroRate);
 
-		updateMapEntries (dblWorkoutDate, iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
+		updateMapEntries (dblWorkoutDate, iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump, mapDF,
+			mapZeroRate);
 
-		updateMapEntries (dblCashPayDate, iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump);
+		updateMapEntries (dblCashPayDate, iFreq, strDC, bApplyCpnEOMAdj, strCalendar, dblZCBump, mapDF,
+			mapZeroRate);
+
+		int iNumNode = mapDF.size();
+
+		int iNode = 0;
+		double[] adblDF = new double[iNumNode];
+		double[] adblDate = new double[iNumNode];
+		double[] adblZeroRate = new double[iNumNode];
+
+		for (java.util.Map.Entry<org.drip.analytics.date.JulianDate, java.lang.Double> me :
+			mapDF.entrySet()) {
+			org.drip.analytics.date.JulianDate dt = me.getKey();
+
+			adblDF[iNode] = me.getValue();
+
+			adblDate[iNode] = dt.julian();
+
+			adblZeroRate[iNode++] = mapZeroRate.get (dt);
+		}
+
+		org.drip.spline.params.SegmentCustomBuilderControl[] aSCBC = new
+			org.drip.spline.params.SegmentCustomBuilderControl[adblDF.length - 1]; 
+
+		for (int i = 0; i < adblDF.length - 1; ++i)
+			aSCBC[i] = scbc;
+
+		_mssDF = org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+			("DF_STRETCH", adblDate, adblDF, aSCBC, null,
+				org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+					org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
+
+		_mssZeroRate = org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+			("ZERO_RATE_STRETCH", adblDate, adblZeroRate, aSCBC, null,
+				org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+					org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
 	}
 
 	@Override public double df (
@@ -158,13 +193,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 
 		if (dblDate <= epoch().julian()) return 1.;
 
-		java.lang.Double objDF = _mapDF.get (new org.drip.analytics.date.JulianDate (dblDate));
-
-		if (null == objDF)
-			throw new java.lang.Exception ("DerivedZeroCurve::df => No DF found for date " + new
-				org.drip.analytics.date.JulianDate (dblDate));
-
-		return objDF;
+		return _mssDF.responseValue (dblDate);
 	}
 
 	@Override public org.drip.analytics.rates.ForwardRateEstimator forwardRateEstimator (
@@ -178,16 +207,6 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 		final double dblDate,
 		final java.lang.String strManifestMeasure)
 	{
-		try {
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == _mapDF.get (new
-				org.drip.analytics.date.JulianDate (dblDate)))
-				return null;
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
 		return _dc.jackDDFDManifestMeasure (dblDate, strManifestMeasure);
 	}
 
@@ -200,13 +219,7 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 
 		if (dblDate <= epoch().julian()) return 1.;
 
-		java.lang.Double objZeroRate = _mapZeroRate.get (new org.drip.analytics.date.JulianDate (dblDate));
-
-		if (null == objZeroRate)
-			throw new java.lang.Exception ("DerivedZeroCurve::zeroRate => No Zero Rate found for date " + new
-				org.drip.analytics.date.JulianDate (dblDate));
-
-		return objZeroRate;
+		return _mssZeroRate.responseValue (dblDate);
 	}
 
 	@Override public java.lang.String latentStateQuantificationMetric()
@@ -266,15 +279,13 @@ public class DerivedZeroRate extends org.drip.analytics.rates.ZeroCurve {
 	@Override public org.drip.analytics.rates.DiscountCurve parallelShiftQuantificationMetric (
 		final double dblShift)
 	{
-		return (org.drip.analytics.rates.DiscountCurve) _dc.parallelShiftQuantificationMetric
-			(dblShift);
+		return (org.drip.analytics.rates.DiscountCurve) _dc.parallelShiftQuantificationMetric (dblShift);
 	}
 
 	@Override public org.drip.analytics.definition.Curve customTweakQuantificationMetric (
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
-		return (org.drip.analytics.rates.DiscountCurve) _dc.customTweakQuantificationMetric
-			(rvtp);
+		return (org.drip.analytics.rates.DiscountCurve) _dc.customTweakQuantificationMetric (rvtp);
 	}
 
 	@Override public java.lang.String currency()

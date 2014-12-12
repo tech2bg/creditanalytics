@@ -124,17 +124,6 @@ public class ProductTestSuite {
 
 		simpleBond.setCouponSetting (cpnParams);
 
-		org.drip.product.params.CurrencySetting ccyParams = org.drip.product.params.CurrencySetting.Create
-			(strCurrency);
-
-		if (!ccyParams.validate()) {
-			System.out.println ("CCY params for " + strName + " could not be validated!");
-
-			return null;
-		}
-
-		simpleBond.setCurrencySet (ccyParams);
-
 		simpleBond.setFloaterSetting (null);
 
 		org.drip.product.params.QuoteConvention mktConv = new org.drip.product.params.QuoteConvention (null,
@@ -148,18 +137,6 @@ public class ProductTestSuite {
 		}
 
 		simpleBond.setMarketConvention (mktConv);
-
-		org.drip.product.params.RatesSetting irValParams = new
-			org.drip.product.params.RatesSetting (strCurrency, strCurrency, strCurrency,
-				strCurrency);
-
-		if (!irValParams.validate()) {
-			System.out.println ("IR Val params for " + strName + " could not be validated!");
-
-			return null;
-		}
-
-		simpleBond.setRatesSetting (irValParams);
 
 		org.drip.product.params.CreditSetting crValParams = new
 			org.drip.product.params.CreditSetting (30, 0., true, strCC, true);
@@ -191,9 +168,8 @@ public class ProductTestSuite {
 
 		simpleBond.setStream (periodParams);
 
-		org.drip.product.params.NotionalSetting notlParams = new
-			org.drip.product.params.NotionalSetting (null, 100.,
-				org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
+		org.drip.product.params.NotionalSetting notlParams = new org.drip.product.params.NotionalSetting
+			(100., strCurrency, null, org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
 
 		if (!notlParams.validate()) {
 			System.out.println ("Notional params for " + strName + " could not be validated!");
@@ -237,17 +213,6 @@ public class ProductTestSuite {
 
 		bondTSY.setCouponSetting (cpnParams);
 
-		org.drip.product.params.CurrencySetting ccyParams = org.drip.product.params.CurrencySetting.Create
-			("USDTSY");
-
-		if (!ccyParams.validate()) {
-			System.out.println ("CCY params for " + strName + " could not be validated!");
-
-			return null;
-		}
-
-		bondTSY.setCurrencySet (ccyParams);
-
 		bondTSY.setFloaterSetting (null);
 
 		org.drip.product.params.QuoteConvention mktConv = new
@@ -262,20 +227,8 @@ public class ProductTestSuite {
 
 		bondTSY.setMarketConvention (mktConv);
 
-		org.drip.product.params.RatesSetting irValParams = new
-			org.drip.product.params.RatesSetting ("USDTSY", "USDTSY", "USDTSY", "USDTSY");
-
-		if (!irValParams.validate()) {
-			System.out.println ("Rates Valuation params for " + strName + " could not be validated!");
-
-			return null;
-		}
-
-		bondTSY.setRatesSetting (irValParams);
-
-		org.drip.product.params.CreditSetting crValParams = new
-			org.drip.product.params.CreditSetting (30, java.lang.Double.NaN, false, "",
-				true);
+		org.drip.product.params.CreditSetting crValParams = new org.drip.product.params.CreditSetting (30,
+			java.lang.Double.NaN, false, "", true);
 
 		if (!crValParams.validate()) {
 			System.out.println ("CR Val params for " + strName + " could not be validated!");
@@ -303,9 +256,8 @@ public class ProductTestSuite {
 
 		bondTSY.setStream (periodParams);
 
-		org.drip.product.params.NotionalSetting notlParams = new
-			org.drip.product.params.NotionalSetting (null, 100.,
-				org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
+		org.drip.product.params.NotionalSetting notlParams = new org.drip.product.params.NotionalSetting
+			(100., "USD", null, org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
 
 		if (!notlParams.validate()) {
 			System.out.println ("Notional params for " + strName + " could not be validated!");
@@ -2359,8 +2311,8 @@ public class ProductTestSuite {
 			System.exit (127);
 		}
 
-		if (!bond.setNotionalSetting (new org.drip.product.params.NotionalSetting
-			(org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblNotionalFactor), 1.,
+		if (!bond.setNotionalSetting (new org.drip.product.params.NotionalSetting (1, "USD",
+			org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblNotionalFactor),
 				org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false))) {
 			System.out.println ("Cannot initialize bond Notional params!");
 
@@ -2380,12 +2332,6 @@ public class ProductTestSuite {
 			System.exit (130);
 		}
 
-		if (!bond.setCurrencySet (org.drip.product.params.CurrencySetting.Create ("USD"))) {
-			System.out.println ("Cannot initialize bond currency params!");
-
-			System.exit (131);
-		}
-
 		if (!bond.setIdentifierSet (new org.drip.product.params.IdentifierSet ("US07942381EZ",
 			"07942381E", "IBM-US07942381EZ", "IBM"))) {
 			System.out.println ("Cannot initialize bond Identifier params!");
@@ -2398,12 +2344,6 @@ public class ProductTestSuite {
 				null, null), "REGULAR", dblStart + 2, 1., 3, "USD",
 					org.drip.analytics.daycount.Convention.DR_FOLL))) {
 			System.out.println ("Cannot initialize bond Valuation params!");
-
-			System.exit (133);
-		}
-
-		if (!bond.setRatesSetting (new org.drip.product.params.RatesSetting ("USD", "USD", "USD", "USD"))) {
-			System.out.println ("Cannot initialize bond Rates Valuation params!");
 
 			System.exit (133);
 		}

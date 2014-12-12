@@ -75,7 +75,7 @@ public class IBOR {
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 						aCalibComp[i] instanceof DualStreamComponent ? ((DualStreamComponent)
-							aCalibComp[i]).derivedStream().forwardLabel() : aCalibComp[i].forwardLabel().get (0)
+							aCalibComp[i]).derivedStream().forwardLabel() : aCalibComp[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);

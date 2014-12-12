@@ -110,7 +110,7 @@ public class OvernightArithmeticCompoundingConvexity {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel().get (0)
+						aDeposit[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);
@@ -429,7 +429,7 @@ public class OvernightArithmeticCompoundingConvexity {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aOIS[i].forwardLabel().get (0)
+						aOIS[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);

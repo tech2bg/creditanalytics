@@ -1591,7 +1591,7 @@ public class Stream {
 				if (p.startDate() < valParams.valueDate()) continue;
 
 				org.drip.quant.calculus.WengertJacobian jackDDFDManifestMeasure =
-					dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "Rate");
+					dcFunding.jackDDFDManifestMeasure (dblPeriodPayDate, "PV");
 
 				if (null == jackDDFDManifestMeasure) continue;
 
@@ -1599,9 +1599,10 @@ public class Stream {
 
 				if (0 == iNumQuote) continue;
 
-				if (null == jackDDirtyPVDManifestMeasure)
+				if (null == jackDDirtyPVDManifestMeasure) {
 					jackDDirtyPVDManifestMeasure = new org.drip.quant.calculus.WengertJacobian (1,
 						iNumQuote);
+				}
 
 				double dblPeriodNotional = p.notional (p.startDate(), p.endDate()) * p.fx (csqs);
 

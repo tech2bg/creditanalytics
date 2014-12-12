@@ -104,26 +104,6 @@ public interface BondProduct {
 	public abstract org.drip.product.params.CouponSetting couponSetting();
 
 	/**
-	 * Set the bond currency set
-	 * 
-	 * @param ccySet Bond currency set
-	 * 
-	 * @return True if succeeded
-	 */
-
-	public abstract boolean setCurrencySet (
-		final org.drip.product.params.CurrencySetting ccySet
-	);
-
-	/**
-	 * Retrieve the bond currency set
-	 * 
-	 * @return Bond Currency Set
-	 */
-
-	public abstract org.drip.product.params.CurrencySetting currencyParams();
-
-	/**
 	 * Set the bond floater setting
 	 * 
 	 * @param fltSetting Bond floater setting
@@ -181,26 +161,6 @@ public interface BondProduct {
 	 */
 
 	public abstract org.drip.product.params.QuoteConvention marketConvention();
-
-	/**
-	 * Ses the Bond Rates Setting
-	 * 
-	 * @param ratesSetting Bond Rates Setting
-	 * 
-	 * @return True if succeeded
-	 */
-
-	public abstract boolean setRatesSetting (
-		final org.drip.product.params.RatesSetting ratesSetting
-	);
-
-	/**
-	 * Retrieve the Bond Rates Setting
-	 * 
-	 * @return Bond Rates Setting
-	 */
-
-	public abstract org.drip.product.params.RatesSetting ratesSetting();
 
 	/**
 	 * Set the bond Credit Setting

@@ -578,7 +578,7 @@ public class ScenarioDiscountCurveBuilder {
 					org.drip.state.representation.LatentStateSpecification
 						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
 							org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-								mapForwardLabel.get (0))};
+								mapForwardLabel.get ("DERIVED"))};
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

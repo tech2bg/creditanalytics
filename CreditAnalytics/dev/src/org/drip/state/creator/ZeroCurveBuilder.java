@@ -59,8 +59,9 @@ public class ZeroCurveBuilder {
 	 * @param dblWorkoutDate Work-out date
 	 * @param dblCashPayDate Cash-Pay Date
 	 * @param dc Discount Curve
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param dblZCBump DC Bump
+	 * @param scbc Segment Custom Builder Control Parameters
 	 * 
 	 * @throws The new Zero Curve instance
 	 */
@@ -74,13 +75,13 @@ public class ZeroCurveBuilder {
 		final double dblWorkoutDate,
 		final double dblCashPayDate,
 		final org.drip.analytics.rates.DiscountCurve dc,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final double dblZCBump)
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
+		final double dblZCBump,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbc)
 	{
 		try {
-			return new org.drip.state.curve.DerivedZeroRate (iFreqZC, strDCZC, strCalendarZC,
-				bApplyEOMAdjZC, lsCouponPeriod, dblWorkoutDate, dblCashPayDate, dc, quotingParams,
-					dblZCBump);
+			return new org.drip.state.curve.DerivedZeroRate (iFreqZC, strDCZC, strCalendarZC, bApplyEOMAdjZC,
+				lsCouponPeriod, dblWorkoutDate, dblCashPayDate, dc, vcp, dblZCBump, scbc);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

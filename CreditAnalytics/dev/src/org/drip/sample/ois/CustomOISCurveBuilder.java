@@ -111,7 +111,7 @@ public class CustomOISCurveBuilder {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel().get (0)
+						aDeposit[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);
@@ -289,62 +289,6 @@ public class CustomOISCurveBuilder {
 	{
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			360,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
-		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"ON",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
-			null,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
-			0.
-		);
-
-		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			4,
-			"3M",
-			strCurrency,
-			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
 		CashSettleParams csp = new CashSettleParams (
 			0,
 			strCurrency,
@@ -354,13 +298,79 @@ public class CustomOISCurveBuilder {
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
+			java.lang.String strFixedTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
+				astrMaturityTenor[i],
+				"6M"
+			) ? astrMaturityTenor[i] : "6M";
+
+			java.lang.String strFloatingTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
+				astrMaturityTenor[i],
+				"3M"
+			) ? astrMaturityTenor[i] : "3M";
+
 			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-				"6M",
+				strFixedTenor,
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 				null,
 				adblCoupon[i],
 				0.,
 				strCurrency
+			);
+
+			UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
+				360,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				strCurrency,
+				false
+			);
+
+			UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+				2,
+				"Act/360",
+				false,
+				"Act/360",
+				false,
+				strCurrency,
+				false
+			);
+
+			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+				"ON",
+				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
+				null,
+				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+				null,
+				0.
+			);
+
+			CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+				4,
+				strFloatingTenor,
+				strCurrency,
+				null,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+				-1.,
+				null,
+				null,
+				null,
+				null
+			);
+
+			CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+				2,
+				strFixedTenor,
+				strCurrency,
+				null,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
+				1.,
+				null,
+				null,
+				null,
+				null
 			);
 
 			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
@@ -430,7 +440,7 @@ public class CustomOISCurveBuilder {
 					new LatentStateSpecification (
 						LatentStateStatic.LATENT_STATE_FORWARD,
 						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aOIS[i].forwardLabel().get (0)
+						aOIS[i].forwardLabel().get ("DERIVED")
 					)
 				}
 			);

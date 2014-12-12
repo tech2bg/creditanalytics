@@ -61,6 +61,7 @@ public class NotionalSetting implements org.drip.product.params.Validatable {
 	public static final int PERIOD_AMORT_EFFECTIVE = 3;
 
 	private boolean _bPriceOffOriginalNotional = false;
+	private java.lang.String _strDenominationCurrency = "";
 	private double _dblNotionalAmount = java.lang.Double.NaN;
 	private int _iPeriodAmortizationMode = PERIOD_AMORT_AT_START;
 	private org.drip.product.params.FactorSchedule _fsOutstanding = null;
@@ -68,27 +69,32 @@ public class NotionalSetting implements org.drip.product.params.Validatable {
 	/**
 	 * Construct the NotionalSetting from the notional schedule and the amount.
 	 * 
-	 * @param fsOutstanding Outsitanding Factor Schedule
+	 * @param fsOutstanding Outstanding Factor Schedule
 	 * @param dblNotionalAmount Notional Amount
+	 * @param strDenominationCurrency The Currency of Denomination
 	 * @param iPeriodAmortizationMode Period Amortization Proxy Mode
 	 * @param bPriceOffOriginalNotional Indicates whether the price is based off of the original notional
 	 */
 
 	public NotionalSetting (
-		final FactorSchedule fsOutstanding,
 		final double dblNotionalAmount,
+		final java.lang.String strDenominationCurrency,
+		final FactorSchedule fsOutstanding,
 		final int iPeriodAmortizationMode,
 		final boolean bPriceOffOriginalNotional)
 	{
 		_fsOutstanding = fsOutstanding;
 		_dblNotionalAmount = dblNotionalAmount;
 		_iPeriodAmortizationMode = iPeriodAmortizationMode;
+		_strDenominationCurrency = strDenominationCurrency;
 		_bPriceOffOriginalNotional = bPriceOffOriginalNotional;
 	}
 
 	@Override public boolean validate()
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotionalAmount)) return false;
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotionalAmount) || null ==
+			_strDenominationCurrency || _strDenominationCurrency.isEmpty())
+			return false;
 
 		if (null == _fsOutstanding) _fsOutstanding = FactorSchedule.BulletSchedule();
 
@@ -137,5 +143,16 @@ public class NotionalSetting implements org.drip.product.params.Validatable {
 	public org.drip.product.params.FactorSchedule outstandingFactorSchedule()
 	{
 		return _fsOutstanding;
+	}
+
+	/**
+	 * Currency in which the Notional is specified
+	 * 
+	 * @return The Currency of Denomination
+	 */
+
+	public java.lang.String denominationCurrency()
+	{
+		return _strDenominationCurrency;
 	}
 }

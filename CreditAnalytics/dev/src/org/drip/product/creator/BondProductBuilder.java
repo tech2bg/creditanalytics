@@ -1480,20 +1480,6 @@ public class BondProductBuilder {
 	}
 
 	/**
-	 * Get the Bond's Currency Parameters
-	 * 
-	 * @return BondCurrencyParams object
-	 */
-
-	public org.drip.product.params.CurrencySetting getCurrencyParams()
-	{
-		org.drip.product.params.CurrencySetting ccyParams = new org.drip.product.params.CurrencySetting
-			(_strTradeCurrency, _strRedemptionCurrency);
-
-		return ccyParams.validate() ? ccyParams : null;
-	}
-
-	/**
 	 * Get the Bond's Floater Parameters
 	 * 
 	 * @return BondFloaterParams object
@@ -1522,20 +1508,6 @@ public class BondProductBuilder {
 				org.drip.analytics.daycount.Convention.DR_ACTUAL);
 
 		return mktConv.validate() ? mktConv : null;
-	}
-
-	/**
-	 * Get the Bond's Rates Valuation Parameters
-	 * 
-	 * @return ComponentRatesValuationParams object
-	 */
-
-	public org.drip.product.params.RatesSetting getRatesValuationParams()
-	{
-		org.drip.product.params.RatesSetting irValParams = new org.drip.product.params.RatesSetting
-			(_strCouponCurrency, _strCouponCurrency, _strCouponCurrency, _strCouponCurrency);
-
-		return irValParams.validate() ? irValParams : null;
 	}
 
 	/**
@@ -1575,7 +1547,8 @@ public class BondProductBuilder {
 	public org.drip.product.params.NotionalSetting getNotionalParams()
 	{
 		org.drip.product.params.NotionalSetting notlParams = new org.drip.product.params.NotionalSetting
-			(null, 100., org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
+			(100., _strRedemptionCurrency, null,
+				org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
 
 		return notlParams.validate() ? notlParams : null;
 	}

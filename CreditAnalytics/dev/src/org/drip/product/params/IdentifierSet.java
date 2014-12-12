@@ -39,30 +39,10 @@ package org.drip.product.params;
  */
 
 public class IdentifierSet implements org.drip.product.params.Validatable {
-
-	/**
-	 * ISIN
-	 */
-
-	public java.lang.String _strISIN = "";
-
-	/**
-	 * CUSIP
-	 */
-
-	public java.lang.String _strCUSIP = "";
-
-	/**
-	 * component ID
-	 */
-
-	public java.lang.String _strID = "";
-
-	/**
-	 * Ticker
-	 */
-
-	public java.lang.String _strTicker = "";
+	private java.lang.String _strID = "";
+	private java.lang.String _strISIN = "";
+	private java.lang.String _strCUSIP = "";
+	private java.lang.String _strTicker = "";
 
 	/**
 	 * Construct the IdentifierSet from ISIN, CUSIP, ID, and ticker.
@@ -95,5 +75,49 @@ public class IdentifierSet implements org.drip.product.params.Validatable {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Retrieve the ID
+	 * 
+	 * @return The ID
+	 */
+
+	public java.lang.String id()
+	{
+		return _strID;
+	}
+
+	/**
+	 * Retrieve the ISIN
+	 * 
+	 * @return The ISIN
+	 */
+
+	public java.lang.String isin()
+	{
+		return _strISIN;
+	}
+
+	/**
+	 * Retrieve the CUSIP
+	 * 
+	 * @return The CUSIP
+	 */
+
+	public java.lang.String cusip()
+	{
+		return _strCUSIP;
+	}
+
+	/**
+	 * Retrieve the Ticker
+	 * 
+	 * @return The Ticker
+	 */
+
+	public java.lang.String ticker()
+	{
+		return _strTicker;
 	}
 }

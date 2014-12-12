@@ -130,7 +130,7 @@ public class CCBSStretchBuilder {
 
 		for (int i = 0; i < iNumCCSP; ++i) {
 			if (null == (aSegmentSpec[i] = aCCSP[i].derivedFundingForwardSpec (valParams, mktParams,
-				adblReferenceComponentBasis[i], adblSwapRate[i])))
+				adblReferenceComponentBasis[i], bBasisOnDerivedLeg, adblSwapRate[i])))
 				return null;
 		}
 

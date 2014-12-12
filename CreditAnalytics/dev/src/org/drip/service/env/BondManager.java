@@ -219,7 +219,7 @@ public class BondManager {
 		return null;
 	}
 
-	private static final org.drip.product.params.NotionalSetting ExtractAmortizationSchedule (
+	private static final org.drip.product.params.FactorSchedule ExtractAmortizationSchedule (
 		final java.sql.Statement stmt,
 		final java.lang.String strBondId)
 	{
@@ -245,15 +245,10 @@ public class BondManager {
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
-			return new org.drip.product.params.NotionalSetting
-				(org.drip.product.params.FactorSchedule.BulletSchedule(), 1.,
-					org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
+			return null;
 		}
 
-		if (0 == ldblAmortDates.size() || 0 == ldblAmortDates.size())
-			return new org.drip.product.params.NotionalSetting
-				(org.drip.product.params.FactorSchedule.BulletSchedule(), 1.,
-					org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
+		if (0 == ldblAmortDates.size() || 0 == ldblAmortDates.size()) return null;
 
 		double[] adblDate = new double[ldblAmortDates.size()];
 
@@ -267,10 +262,8 @@ public class BondManager {
 		for (double dblPrincipalPaydownFactor : ldblPrincipalPaydownFactors)
 			adblPrincipalPaydownFactor[i++] = dblPrincipalPaydownFactor;
 
-		return new org.drip.product.params.NotionalSetting
-			(org.drip.product.params.FactorSchedule.FromDateFactorDeltaArray (adblDate,
-				adblPrincipalPaydownFactor), 1.,
-					org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
+		return org.drip.product.params.FactorSchedule.FromDateFactorDeltaArray (adblDate,
+			adblPrincipalPaydownFactor);
 	}
 
 	/**
@@ -665,7 +658,7 @@ public class BondManager {
 
 		if (null == idParams) return null;
 
-		if (s_bBlog) System.out.println ("Working on making " + idParams._strCUSIP);
+		if (s_bBlog) System.out.println ("Working on making " + idParams.cusip());
 
 		org.drip.product.params.BondStream periodParams = bpb.getPeriodGenParams();
 
@@ -679,19 +672,11 @@ public class BondManager {
 
 		if (null == notlParams) return null;
 
-		org.drip.product.params.CurrencySetting ccyParams = bpb.getCurrencyParams();
-
-		if (null == ccyParams) return null;
-
 		org.drip.product.params.FloaterSetting fltParams = bpb.getFloaterParams();
 
 		org.drip.product.params.QuoteConvention mktConv = bpb.getMarketConvention();
 
 		if (null == mktConv) return null;
-
-		org.drip.product.params.RatesSetting irValParams = bpb.getRatesValuationParams();
-
-		if (null == irValParams) return null;
 
 		org.drip.product.params.CreditSetting crValParams = bpb.getCRValuationParams();
 
@@ -709,15 +694,11 @@ public class BondManager {
 
 		bond.setNotionalSetting (notlParams);
 
-		bond.setCurrencySet (ccyParams);
-
 		bond.setFloaterSetting (fltParams);
 
 		bond.setStream (periodParams);
 
 		bond.setMarketConvention (mktConv);
-
-		bond.setRatesSetting (irValParams);
 
 		bond.setCreditSetting (crValParams);
 
@@ -768,10 +749,13 @@ public class BondManager {
 
 				bond.setEmbeddedPutSchedule (ExtractEOS2 (stmt, strBondId, dblFirstExDate, true));
 
-				org.drip.product.params.NotionalSetting bnp = ExtractAmortizationSchedule (stmt,
+				org.drip.product.params.FactorSchedule fsEOS = ExtractAmortizationSchedule (stmt,
 					strBondId);
 
-				if (null != bnp) bond.setNotionalSetting (bnp);
+				if (null != fsEOS)
+					bond.setNotionalSetting (new org.drip.product.params.NotionalSetting (1.,
+						bond.principalCurrency(), fsEOS,
+							org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false));
 
 				return bond;
 			}
@@ -791,10 +775,12 @@ public class BondManager {
 
 				bond.setEmbeddedPutSchedule (ExtractEOS2 (stmt, strBondId, dblScheduleStart, true));
 
-				org.drip.product.params.NotionalSetting bnp = ExtractAmortizationSchedule (stmt,
-					strBondId);
+				org.drip.product.params.FactorSchedule fsEOS = ExtractAmortizationSchedule (stmt, strBondId);
 
-				if (null != bnp) bond.setNotionalSetting (bnp);
+				if (null != fsEOS)
+					bond.setNotionalSetting (new org.drip.product.params.NotionalSetting (1.,
+						bond.principalCurrency(), fsEOS,
+							org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false));
 
 				return bond;
 			}
@@ -951,27 +937,27 @@ public class BondManager {
 					bond.maturityDate().julian())
 					continue;
 
-				s_mapBonds.put (bond.identifierSet()._strCUSIP, bond);
+				s_mapBonds.put (bond.identifierSet().cusip(), bond);
 
-				s_mapBonds.put (bond.identifierSet()._strISIN, bond);
+				s_mapBonds.put (bond.identifierSet().isin(), bond);
 
 				java.util.SortedMap<java.lang.Double, java.lang.String> mapMatBond = s_mapTickerMatCUSIP.get
-					(bond.identifierSet()._strTicker);
+					(bond.identifierSet().ticker());
 
 				if (null == mapMatBond)
 					mapMatBond = new java.util.TreeMap<java.lang.Double, java.lang.String>();
 
-				mapMatBond.put (bond.maturityDate().julian(), bond.identifierSet()._strCUSIP);
+				mapMatBond.put (bond.maturityDate().julian(), bond.identifierSet().cusip());
 
-				s_mapTickerMatCUSIP.put (bond.identifierSet()._strTicker, mapMatBond);
+				s_mapTickerMatCUSIP.put (bond.identifierSet().ticker(), mapMatBond);
 
 				++iNumBonds;
 
 				if (bond.isFloater()) ++iNumFloaters;
 
 				if (s_bBlog)
-					System.out.println ("Loaded Bond[" + iNumBonds + "] = " +
-						bond.identifierSet()._strTicker + " " + bond.maturityDate());
+					System.out.println ("Loaded Bond[" + iNumBonds + "] = " + bond.identifierSet().ticker() +
+						" " + bond.maturityDate());
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

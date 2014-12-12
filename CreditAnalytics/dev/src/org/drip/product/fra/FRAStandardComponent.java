@@ -233,7 +233,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel> mapFRI =
 			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>();
 
-		mapFRI.put (name(), _fri);
+		mapFRI.put ("DERIVED", _fri);
 
 		return mapFRI;
 	}

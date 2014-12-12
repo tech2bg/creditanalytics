@@ -118,7 +118,7 @@ public class SingleStreamComponent extends org.drip.product.definition.Calibrata
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel> mapFRI =
 			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel> ();
 
-		mapFRI.put (name(), forwardLabel);
+		mapFRI.put ("DERIVED", forwardLabel);
 
 		return mapFRI;
 	}

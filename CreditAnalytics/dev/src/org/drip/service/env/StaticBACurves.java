@@ -69,13 +69,6 @@ public class StaticBACurves {
 
 		bondTSY.setCouponSetting (cpnParams);
 
-		org.drip.product.params.CurrencySetting ccyParams = org.drip.product.params.CurrencySetting.Create
-			(strCurrency + "TSY");
-
-		if (!ccyParams.validate()) return null;
-
-		bondTSY.setCurrencySet (ccyParams);
-
 		bondTSY.setFloaterSetting (null);
 
 		org.drip.product.params.QuoteConvention mktConv = new org.drip.product.params.QuoteConvention
@@ -85,14 +78,6 @@ public class StaticBACurves {
 		if (!mktConv.validate()) return null;
 
 		bondTSY.setMarketConvention (mktConv);
-
-		org.drip.product.params.RatesSetting bondIRValParams = new
-			org.drip.product.params.RatesSetting (strCurrency, strCurrency, strCurrency,
-				strCurrency);
-
-		if (!bondIRValParams.validate()) return null;
-
-		bondTSY.setRatesSetting (bondIRValParams);
 
 		org.drip.product.params.CreditSetting crValParams = new
 			org.drip.product.params.CreditSetting (30, java.lang.Double.NaN, false, "",
@@ -124,9 +109,8 @@ public class StaticBACurves {
 
 		bondTSY.setStream (periodParams);
 
-		org.drip.product.params.NotionalSetting notlParams = new
-			org.drip.product.params.NotionalSetting (null, 100.,
-				org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
+		org.drip.product.params.NotionalSetting notlParams = new org.drip.product.params.NotionalSetting
+			(100., strCurrency, null, org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false);
 
 		if (!notlParams.validate()) return null;
 

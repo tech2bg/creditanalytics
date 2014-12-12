@@ -197,6 +197,7 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	 * @param valParams Valuation Parameters
 	 * @param mktParams Market Parameters
 	 * @param dblReferenceComponentBasis The Reference Component Basis
+	 * @param bBasisOnDerivedLeg TRUE => Apply basis on the Derived Leg
 	 * @param dblSwapRate The Swap Rate
 	 * 
 	 * @return The Derived Forward/Funding Latent State Segment Specification
@@ -206,6 +207,7 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
 		final double dblReferenceComponentBasis,
+		final boolean bBasisOnDerivedLeg,
 		final double dblSwapRate)
 	{
 		double dblFX = 1.;
@@ -231,7 +233,7 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 			org.drip.state.identifier.FundingLabel fundingLabelDerived = compDerived.fundingLabel();
 
 			if (null != mapForwardLabel && 0 != mapForwardLabel.size())
-				forwardLabel = mapForwardLabel.get (0);
+				forwardLabel = mapForwardLabel.get ("DERIVED");
 
 			if (null != fundingLabelDerived) fundingLabel = fundingLabelDerived;
 		}
@@ -246,7 +248,8 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 									org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
 										forwardLabel)});
 
-			if (null != _fxFixingSetting) {
+			if (null != _fxFixingSetting && org.drip.param.period.FixingSetting.FIXING_PRESET_STATIC ==
+				_fxFixingSetting.type()) {
 				org.drip.quant.function1D.AbstractUnivariate auFX = mktParams.fxCurve (fxLabel()[0]);
 
 				if (null == auFX) return null;
@@ -262,12 +265,17 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOP = compReference.value
 			(valParams, null, mktParams, null);
 
-		if (null == mapOP || !mapOP.containsKey ("PV") || !mapOP.containsKey ("ReferenceCleanDV01"))
-			return null;
+		if (null == mapOP || !mapOP.containsKey ("PV") || !pqs.set ("SwapRate", dblSwapRate)) return null;
 
-		if (!pqs.set ("SwapRate", dblSwapRate) || !pqs.set ("PV", -1. * dblFX * (mapOP.get ("PV") + 10000. *
-			mapOP.get ("ReferenceCleanDV01") * dblReferenceComponentBasis)))
-			return null;
+		if (bBasisOnDerivedLeg) {
+			if (!mapOP.containsKey ("DerivedCleanDV01") || !pqs.set ("PV", dblFX * (mapOP.get ("PV") + 10000.
+				* mapOP.get ("DerivedCleanDV01") * dblReferenceComponentBasis)))
+				return null;
+		} else {
+			if (!mapOP.containsKey ("ReferenceCleanDV01") || !pqs.set ("PV", -1. * dblFX * (mapOP.get ("PV")
+				+ 10000. * mapOP.get ("ReferenceCleanDV01") * dblReferenceComponentBasis)))
+				return null;
+		}
 
 		try {
 			return new org.drip.state.inference.LatentStateSegmentSpec (compDerived, pqs);
@@ -309,12 +317,12 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.pricer.PricerParams pricerParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
+		final org.drip.param.valuation.ValuationCustomizationParams vcp)
 	{
 		long lStart = System.nanoTime();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapOutput = super.value
-			(valParams, pricerParams, csqs, quotingParams);
+			(valParams, pricerParams, csqs, vcp);
 
 		if (null == mapOutput) return null;
 

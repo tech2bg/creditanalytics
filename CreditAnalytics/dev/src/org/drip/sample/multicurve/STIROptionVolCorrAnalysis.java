@@ -774,7 +774,7 @@ public class STIROptionVolCorrAnalysis {
 	{
 		String strManifestMeasure = "FairPremium";
 
-		ForwardLabel fri = stir.forwardLabel().get (0);
+		ForwardLabel fri = stir.forwardLabel().get ("DERIVED");
 
 		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 
