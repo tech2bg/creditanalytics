@@ -359,7 +359,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 			(this, null, null, null, null, null, null, lsfc);
 
 		return irs.measureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0, "",
-			org.drip.analytics.daycount.Convention.DR_ACTUAL), null, csqs, null, "FixedDV01");
+			org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), null, csqs, null, "FixedDV01");
 	}
 
 	@Override public double estimateManifestMeasure (

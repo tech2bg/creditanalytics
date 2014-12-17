@@ -57,7 +57,19 @@ public class EnvManager {
 		org.drip.analytics.daycount.Convention.Init (strConfig);
 
 		if (!org.drip.service.env.StandardCDXManager.InitStandardCDXSeries()) {
-			System.out.println ("Cannot Initialize standard CDX indices!");
+			System.out.println ("EnvManager::InitEnv => Cannot Initialize standard CDX Indexes!");
+
+			return null;
+		}
+
+		if (!org.drip.market.definition.OvernightIndexContainer.Init()) {
+			System.out.println ("EnvManager::InitEnv => Cannot Initialize Overnight Indexes!");
+
+			return null;
+		}
+
+		if (!org.drip.market.definition.IBORIndexContainer.Init()) {
+			System.out.println ("EnvManager::InitEnv => Cannot Initialize IBOR Indexes!");
 
 			return null;
 		}

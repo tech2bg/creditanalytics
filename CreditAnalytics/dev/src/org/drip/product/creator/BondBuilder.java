@@ -153,7 +153,7 @@ public class BondBuilder {
 			strName, strName), new org.drip.product.params.CouponSetting (fsCoupon, "", dblCoupon,
 				java.lang.Double.NaN, java.lang.Double.NaN), null, new
 					org.drip.product.params.QuoteConvention (null, "", dtEffective.julian(), 100., 0,
-						strCurrency, org.drip.analytics.daycount.Convention.DR_ACTUAL), new
+						strCurrency, org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), new
 							org.drip.product.params.CreditSetting (30, java.lang.Double.NaN, true,
 								strCreditCurveName, true), new org.drip.product.params.TerminationSetting
 									(false, false, false), org.drip.product.params.BondStream.Create
@@ -209,7 +209,7 @@ public class BondBuilder {
 				java.lang.Double.NaN, java.lang.Double.NaN), new org.drip.product.params.FloaterSetting
 					(strRateIndex, "", dblSpread, java.lang.Double.NaN), new
 						org.drip.product.params.QuoteConvention (null, "", dtEffective.julian(), 100., 0,
-							strCurrency, org.drip.analytics.daycount.Convention.DR_ACTUAL), new
+							strCurrency, org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), new
 								org.drip.product.params.CreditSetting (30, java.lang.Double.NaN, true,
 									strCreditCurveName, true), new org.drip.product.params.TerminationSetting
 										(false, false, false), org.drip.product.params.BondStream.Create
@@ -347,7 +347,7 @@ public class BondBuilder {
 				(org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblCouponFactor), "",
 					1., java.lang.Double.NaN, java.lang.Double.NaN), null, new
 						org.drip.product.params.QuoteConvention (null, "", dtEffective.julian(), 100., 0,
-							strCurrency, org.drip.analytics.daycount.Convention.DR_ACTUAL), new
+							strCurrency, org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), new
 								org.drip.product.params.CreditSetting (30, java.lang.Double.NaN, true,
 									strCreditCurveName, true), new org.drip.product.params.TerminationSetting
 										(false, false, false), bfpgp, new

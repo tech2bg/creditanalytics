@@ -1402,7 +1402,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 	{
 		return BondWorkoutInfoFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dblPrice, null);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
 	/**
@@ -1497,7 +1497,7 @@ public class CreditAnalytics {
 		final double dblPrice) throws java.lang.Exception
 	{
 		return BondYieldFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dblPrice, null);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
 	/**
@@ -1586,7 +1586,7 @@ public class CreditAnalytics {
 		final double dblPrice) throws java.lang.Exception
 	{
 		return BondZSpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
-			0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dblPrice, null);
+			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
 	/**
@@ -1675,7 +1675,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondOASFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0,
-			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dblPrice, null);
+			"", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
 	/**
@@ -1765,7 +1765,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondISpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
-			0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dblPrice, null);
+			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
 	/**
@@ -1856,7 +1856,7 @@ public class CreditAnalytics {
 	{
 		return BondDiscountMarginFromPrice (strBondId,
 			org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0, "",
-				org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dblPrice, null);
+				org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
 	/**
@@ -1952,7 +1952,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondTSYSpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, dblPrice, null);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblPrice, null);
 	}
 
 	/**
@@ -2047,7 +2047,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondGSpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
-			0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, dblPrice, null);
+			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblPrice, null);
 	}
 
 	/**
@@ -2143,7 +2143,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondCreditBasisFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, cc, dblPrice, null);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, cc, dblPrice, null);
 	}
 
 	/**
@@ -2239,7 +2239,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondPECSFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0,
-			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, cc, dblPrice, null);
+			"", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, cc, dblPrice, null);
 	}
 
 	/**
@@ -2300,7 +2300,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondPriceFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, dblTSYSpread, null);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread, null);
 	}
 
 	/**
@@ -2357,7 +2357,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondYieldFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dcTSY, dcTSY, dblTSYSpread);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dcTSY, dcTSY, dblTSYSpread);
 	}
 
 	/**
@@ -2418,7 +2418,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondZSpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, dblTSYSpread, null);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread, null);
 	}
 
 	/**
@@ -2479,7 +2479,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondOASFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
-			0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, dblTSYSpread, null);
+			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread, null);
 	}
 
 	/**
@@ -2538,7 +2538,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondISpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, dblTSYSpread);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread);
 	}
 
 	/**
@@ -2598,7 +2598,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondISpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, dblTSYSpread);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread);
 	}
 
 	/**
@@ -2657,7 +2657,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondGSpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, dblTSYSpread);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread);
 	}
 
 	/**
@@ -2721,7 +2721,7 @@ public class CreditAnalytics {
 	{
 		return BondCreditBasisFromTSYSpread (strBondId,
 			org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0, "",
-				org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, cc, dblTSYSpread, null);
+				org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, cc, dblTSYSpread, null);
 	}
 
 	/**
@@ -2784,7 +2784,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondPECSFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, cc, dblTSYSpread,
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, cc, dblTSYSpread,
 				null);
 	}
 
@@ -2842,7 +2842,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondPriceFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
-			0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dblYield, null);
+			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblYield, null);
 	}
 
 	/**
@@ -2899,7 +2899,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondZSpreadFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
-			0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dblYield, null);
+			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblYield, null);
 	}
 
 	/**
@@ -2956,7 +2956,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondISpreadFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
-			0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dblYield, null);
+			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblYield, null);
 	}
 
 	/**
@@ -3014,7 +3014,7 @@ public class CreditAnalytics {
 	{
 		return BondDiscountMarginFromYield (strBondId,
 			org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0, "",
-				org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dblYield, null);
+				org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblYield, null);
 	}
 
 	/**
@@ -3075,7 +3075,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondGSpreadFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
-			0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, dcTSY, dblYield, null);
+			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblYield, null);
 	}
 
 	/**
@@ -3136,7 +3136,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondCreditBasisFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, cc, dblYield, null);
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, cc, dblYield, null);
 	}
 
 	/**
@@ -3197,7 +3197,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondPECSFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0,
-			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, cc, dblYield, null);
+			"", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, cc, dblYield, null);
 	}
 
 	/**
@@ -3254,7 +3254,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondCreditPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0,
-			"", org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, cc, null);
+			"", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, cc, null);
 	}
 
 	/**

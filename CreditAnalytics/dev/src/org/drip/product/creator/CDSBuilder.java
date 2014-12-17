@@ -77,7 +77,7 @@ public class CDSBuilder {
 
 			if (bAdjustDates)
 				dap = new org.drip.analytics.daycount.DateAdjustParams
-					(org.drip.analytics.daycount.Convention.DR_FOLL, strCalendar);
+					(org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING, strCalendar);
 
 			org.drip.product.definition.CreditDefaultSwap cds = new org.drip.product.credit.CDSComponent
 				(dtEffective.julian(), dtMaturity.julian(), dblCoupon, 4, "Act/360", "Act/360", "",

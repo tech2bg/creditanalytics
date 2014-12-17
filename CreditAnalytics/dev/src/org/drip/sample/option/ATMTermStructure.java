@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.TermStructure;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -18,7 +19,6 @@ import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -130,7 +130,7 @@ public class ATMTermStructure {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.

@@ -354,8 +354,8 @@ public class RatesClosesLoader {
 
 		try {
 			org.drip.analytics.daycount.DateAdjustParams dap = new
-				org.drip.analytics.daycount.DateAdjustParams (org.drip.analytics.daycount.Convention.DR_FOLL,
-					strCurrency);
+				org.drip.analytics.daycount.DateAdjustParams
+					(org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING, strCurrency);
 
 			org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 				org.drip.param.period.UnitCouponAccrualSetting (_mapFixedFrequency.get (strCurrency),

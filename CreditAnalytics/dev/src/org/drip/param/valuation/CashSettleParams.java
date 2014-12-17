@@ -41,7 +41,7 @@ package org.drip.param.valuation;
 public class CashSettleParams {
 	private int _iLag = 3;
 	private java.lang.String _strCalendar = "";
-	private int _iAdjustMode = org.drip.analytics.daycount.Convention.DR_FOLL;
+	private int _iAdjustMode = org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING;
 
 	/**
 	 * Construct the CashSettleParams object from the settle lag and the settle calendar objects

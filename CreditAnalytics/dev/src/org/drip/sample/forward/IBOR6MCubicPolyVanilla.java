@@ -3,6 +3,7 @@ package org.drip.sample.forward;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -52,7 +53,7 @@ public class IBOR6MCubicPolyVanilla {
 		final boolean bPrintMetric)
 		throws Exception
 	{
-		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strTenor);
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
@@ -189,7 +190,7 @@ public class IBOR6MCubicPolyVanilla {
 			"60Y"
 		};
 
-		ForwardCurve fc = IBOR.CustomIBORBuilderSample (
+		ForwardCurve fc = IBORCurve.CustomIBORBuilderSample (
 			dcEONIA,
 			null,
 			fri,
@@ -214,7 +215,7 @@ public class IBOR6MCubicPolyVanilla {
 		);
 
 		if (bPrintMetric)
-			IBOR.ForwardJack (
+			IBORCurve.ForwardJack (
 				dtValue,
 				"---- EURIBOR 6M VANILLA CUBIC POLYNOMIAL FORWARD CURVE SENSITIVITY ---",
 				fc,

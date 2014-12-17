@@ -188,6 +188,122 @@ public class DateEOMAdjustment {
 	}
 
 	/**
+	 * Construct a DateEOMAdjustment instance for the 30E/360 day-count
+	 * 
+	 * @param dblStart Start Date
+	 * @param dblEnd End Date
+	 * @param bApplyEOMAdj TRUE => Apply EOM Adjustment
+	 * 
+	 * @return DateEOMAdjustment instance
+	 */
+
+	public static final DateEOMAdjustment MakeDEOMA30E_360 (
+		final double dblStart,
+		final double dblEnd,
+		final boolean bApplyEOMAdj)
+	{
+		DateEOMAdjustment dm = new DateEOMAdjustment();
+
+		if (!bApplyEOMAdj) return dm;
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			return null;
+
+		try {
+			if (bApplyEOMAdj) {
+				if (31 == org.drip.analytics.date.JulianDate.Day (dblStart)) dm._iD1Adj = -1;
+
+				if (31 == org.drip.analytics.date.JulianDate.Day (dblEnd)) dm._iD2Adj = -1;
+			}
+
+			return dm;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Construct a DateEOMAdjustment instance for the 30E/360 ISDA day-count
+	 * 
+	 * @param dblStart Start Date
+	 * @param dblEnd End Date
+	 * @param bApplyEOMAdj TRUE => Apply EOM Adjustment
+	 * 
+	 * @return DateEOMAdjustment instance
+	 */
+
+	public static final DateEOMAdjustment MakeDEOMA30E_360_ISDA (
+		final double dblStart,
+		final double dblEnd,
+		final boolean bApplyEOMAdj)
+	{
+		DateEOMAdjustment dm = new DateEOMAdjustment();
+
+		if (!bApplyEOMAdj) return dm;
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			return null;
+
+		try {
+			if (bApplyEOMAdj) {
+				if (org.drip.analytics.date.JulianDate.IsEOM (dblStart))
+					dm._iD1Adj = 30 - org.drip.analytics.date.JulianDate.Day (dblStart);
+
+				if (org.drip.analytics.date.JulianDate.IsEOM (dblEnd))
+					dm._iD2Adj = 30 - org.drip.analytics.date.JulianDate.Day (dblEnd);
+			}
+
+			return dm;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Construct a DateEOMAdjustment instance for the 30E+/360 ISDA day-count
+	 * 
+	 * @param dblStart Start Date
+	 * @param dblEnd End Date
+	 * @param bApplyEOMAdj TRUE => Apply EOM Adjustment
+	 * 
+	 * @return DateEOMAdjustment instance
+	 */
+
+	public static final DateEOMAdjustment MakeDEOMA30EPLUS_360_ISDA (
+		final double dblStart,
+		final double dblEnd,
+		final boolean bApplyEOMAdj)
+	{
+		DateEOMAdjustment dm = new DateEOMAdjustment();
+
+		if (!bApplyEOMAdj) return dm;
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			return null;
+
+		try {
+			if (bApplyEOMAdj) {
+				if (31 == org.drip.analytics.date.JulianDate.Day (dblStart)) dm._iD1Adj = -1;
+
+				if (31 == org.drip.analytics.date.JulianDate.Day (dblStart)) dm._iD2Adj = +1;
+			}
+
+			return dm;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
 	 * Retrieve the Anterior Date Adjustment
 	 * 
 	 * @return The Anterior Date Adjustment

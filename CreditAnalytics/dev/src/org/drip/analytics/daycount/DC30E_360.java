@@ -67,7 +67,7 @@ public class DC30E_360 implements org.drip.analytics.daycount.DCFCalculator {
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA (dblStart, dblEnd, bApplyEOMAdj);
+		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA30E_360 (dblStart, dblEnd, bApplyEOMAdj);
 
 		if (null == dm)
 			throw new java.lang.Exception ("DC30E_360.yearFraction: Cannot create DateEOMAdjustment!");
@@ -88,7 +88,7 @@ public class DC30E_360 implements org.drip.analytics.daycount.DCFCalculator {
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA (dblStart, dblEnd, bApplyEOMAdj);
+		DateEOMAdjustment dm = DateEOMAdjustment.MakeDEOMA30E_360 (dblStart, dblEnd, bApplyEOMAdj);
 
 		if (null == dm)
 			throw new java.lang.Exception ("DC30E_360.daysAccrued: Cannot create DateEOMAdjustment!");

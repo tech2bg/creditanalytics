@@ -1,23 +1,10 @@
 
 package org.drip.sample.misc;
 
-/* 
- * Generic imports
- */
-
 import java.util.*;
-
-/* 
- * Credit Product imports
- */
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
-
-/* 
- * Credit Analytics API imports
- */
-
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -50,18 +37,12 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * DayCountAndCalendarAPI demonstrates Day-count and Calendar API FUnctionality. It does the following:
- * - Get all the holiday locations in CreditAnalytics, and all the holidays in the year according the
- * 		calendar set.
- * - Get all the week day/weekend holidays in the year according the calendar set.
- * - Calculate year fraction between 2 dates according to semi-annual, Act/360, and USD calendar.
- * - Adjust the date FORWARD according to the USD calendar.
- * - Roll to the PREVIOUS date according to the USD calendar.
+ * CalendarAPI demonstrates Calendar API Functionality.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class DayCountAndCalendarAPI {
+public class CalendarAPI {
 
 	/**
 	 * Sample demonstrating the calendar API
@@ -69,7 +50,7 @@ public class DayCountAndCalendarAPI {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	public static final void CalenderAPISample()
+	private static final void CalenderAPISample()
 		throws Exception
 	{
 		/*
@@ -148,50 +129,6 @@ public class DayCountAndCalendarAPI {
 			System.out.println (new JulianDate (dblDate).toOracleDate());
 	}
 
-	/**
-	 * Sample API demonstrating the day count functionality
-	 * 
-	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
-	 */
-
-	private static final void DayCountAPISample()
-		throws Exception
-	{
-		/*
-		 * List available day count
-		 */
-
-		String strDCList = CreditAnalytics.GetAvailableDC();
-
-		System.out.println (strDCList);
-
-		/*
-		 * Calculate year fraction between 2 dates according to semi-annual, Act/360, and USD calendar
-		 */
-
-		double dblYF = CreditAnalytics.YearFraction (JulianDate.CreateFromYMD (2013, 5, 30),
-			JulianDate.CreateFromYMD (2013, 6, 24), "30/360", false, "USD");
-
-		/*
-		 * Adjust the date FORWARD according to the USD calendar
-		 */
-
-		JulianDate dtAdjusted = CreditAnalytics.Adjust (JulianDate.CreateFromYMD (2011, 1, 16), "USD", 0);
-
-		/*
-		 * Roll to the PREVIOUS date according to the USD calendar
-		 */
-
-		JulianDate dtRoll = CreditAnalytics.RollDate
-			(JulianDate.CreateFromYMD (2011, 1, 16), "USD", Convention.DR_PREV);
-
-		System.out.println ("YearFract: " + dblYF + "; Adjusted: " + dtAdjusted + "; Rolled: " + dtRoll);
-
-		System.out.println ("Accrual Days: " + dblYF * 360);
-
-		System.out.println ("YearFract: " + dblYF * 0.0675 * 1000000);
-	}
-
 	public static final void main (
 		final String astrArgs[])
 		throws Exception
@@ -202,8 +139,6 @@ public class DayCountAndCalendarAPI {
 
 		CreditAnalytics.Init (strConfig);
 
-		// CalenderAPISample();
-
-		DayCountAPISample();
+		CalenderAPISample();
 	}
 }

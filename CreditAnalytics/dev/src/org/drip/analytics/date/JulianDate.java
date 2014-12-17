@@ -342,7 +342,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	 *  
 	 * @param dblJulianIn double representing the Julian date
 	 * 
-	 * @return integer representing the year
+	 * @return integer representing the day
 	 * 
 	 * @throws java.lang.Exception thrown if input date is invalid
 	 */
@@ -1233,7 +1233,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 
 		try {
 			return new JulianDate (org.drip.analytics.daycount.Convention.RollDate (dtNew.julian(),
-				org.drip.analytics.daycount.Convention.DR_FOLL, strCalendarSet));
+				org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING, strCalendarSet));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -1302,7 +1302,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 
 		try {
 			return new JulianDate (org.drip.analytics.daycount.Convention.RollDate (dtNew.julian(),
-				org.drip.analytics.daycount.Convention.DR_FOLL, strCalendarSet));
+				org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING, strCalendarSet));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -6,6 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -129,7 +130,7 @@ public class FRAStd {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -372,7 +373,7 @@ public class FRAStd {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -382,7 +383,7 @@ public class FRAStd {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -512,7 +513,7 @@ public class FRAStd {
 
 		return ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"QUARTIC_FWD" + strBasisTenor,
-			ForwardLabel.Create (strCurrency, "LIBOR", strBasisTenor),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strBasisTenor),
 			valParams,
 			null,
 			mktParams,
@@ -665,7 +666,7 @@ public class FRAStd {
 
 		Map<String, ForwardCurve> mapFC = MakeFC (dtToday, strCurrency, dc);
 
-		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strTenor);
 
 		JulianDate dtForward = dtToday.addTenor (strTenor);
 

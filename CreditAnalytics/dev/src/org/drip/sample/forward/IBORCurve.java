@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -51,12 +52,12 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /**
- * IBOR illustrates the Construction and Usage of the IBOR Forward Curve.
+ * IBORCurve illustrates the Construction and Usage of the IBOR Forward Curve.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class IBOR {
+public class IBORCurve {
 	private static final LatentStateStretchSpec ConstructStretch (
 		final String strStretchName,
 		final CalibratableFixedIncomeComponent[] aCalibComp,
@@ -345,7 +346,7 @@ public class IBOR {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -355,7 +356,7 @@ public class IBOR {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.

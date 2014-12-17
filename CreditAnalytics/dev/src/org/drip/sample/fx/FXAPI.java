@@ -114,7 +114,7 @@ public class FXAPI {
 		}
 
 		ValuationParams valParams = ValuationParams.CreateValParams (JulianDate.Today(), 0, "USD",
-			Convention.DR_ACTUAL);
+			Convention.DATE_ROLL_ACTUAL);
 
 		/*
 		 * Create the FX forward instrument

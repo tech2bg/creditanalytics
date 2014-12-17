@@ -3,13 +3,13 @@ package org.drip.sample.ccbs;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.sample.forward.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
-import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -621,10 +621,10 @@ public class CAD3M6MUSD3M6M {
 			scbcCubic
 		);
 
-		ForwardCurve fc6MReference = IBOR.CustomIBORBuilderSample (
+		ForwardCurve fc6MReference = IBORCurve.CustomIBORBuilderSample (
 			dcReference,
 			null,
-			ForwardLabel.Standard (strReferenceCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strReferenceCurrency).ForwardStateLabel ("6M"),
 			scbcCubic,
 			s_astrUSD6MDepositTenor,
 			s_adblUSD6MDepositQuote,
@@ -645,10 +645,10 @@ public class CAD3M6MUSD3M6M {
 			false
 		);
 
-		ForwardCurve fc6MDerived = IBOR.CustomIBORBuilderSample (
+		ForwardCurve fc6MDerived = IBORCurve.CustomIBORBuilderSample (
 			dcDerived,
 			null,
-			ForwardLabel.Standard (strDerivedCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strDerivedCurrency).ForwardStateLabel ("6M"),
 			scbcCubic,
 			s_astrCAD6MDepositTenor,
 			s_adblCAD6MDepositQuote,
@@ -669,10 +669,10 @@ public class CAD3M6MUSD3M6M {
 			false
 		);
 
-		ForwardCurve fc3MReference = IBOR.CustomIBORBuilderSample (
+		ForwardCurve fc3MReference = IBORCurve.CustomIBORBuilderSample (
 			dcReference,
 			fc6MReference,
-			ForwardLabel.Standard (strReferenceCurrency + "-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction (strReferenceCurrency).ForwardStateLabel ("3M"),
 			scbcCubic,
 			s_astrUSD3MDepositTenor,
 			s_adblUSD3MDepositQuote,

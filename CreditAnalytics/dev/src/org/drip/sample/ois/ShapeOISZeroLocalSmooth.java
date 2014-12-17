@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.OvernightIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -156,7 +157,7 @@ public class ShapeOISZeroLocalSmooth {
 					aiDay[i],
 					strCurrency
 				),
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
 				strCurrency
 			);
 
@@ -258,7 +259,7 @@ public class ShapeOISZeroLocalSmooth {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 				null,
 				0.
@@ -413,7 +414,7 @@ public class ShapeOISZeroLocalSmooth {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 				null,
 				0.

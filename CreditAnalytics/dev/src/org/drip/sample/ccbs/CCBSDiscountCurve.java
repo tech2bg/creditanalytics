@@ -6,6 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -99,7 +100,7 @@ public class CCBSDiscountCurve {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel ("6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -109,7 +110,7 @@ public class CCBSDiscountCurve {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -225,7 +226,7 @@ public class CCBSDiscountCurve {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.

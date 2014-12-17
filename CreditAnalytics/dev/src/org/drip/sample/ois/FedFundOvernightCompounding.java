@@ -10,6 +10,7 @@ import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.output.CompositePeriodCouponMetrics;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.OvernightIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.period.*;
@@ -83,7 +84,7 @@ public class FedFundOvernightCompounding {
 					aiDay[i],
 					strCurrency
 				),
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
 				strCurrency
 			);
 
@@ -185,7 +186,7 @@ public class FedFundOvernightCompounding {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 				null,
 				0.
@@ -340,7 +341,7 @@ public class FedFundOvernightCompounding {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 				null,
 				0.
@@ -718,7 +719,7 @@ public class FedFundOvernightCompounding {
 
 		JulianDate dtCustomOISMaturity = dtToday.addTenor ("4M");
 
-		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
+		ForwardLabel fri = OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel();
 
 		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
@@ -746,7 +747,7 @@ public class FedFundOvernightCompounding {
 			"ON",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 			null,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.

@@ -51,31 +51,37 @@ public class Convention {
 	 * Date Roll Actual
 	 */
 
-	public static final int DR_ACTUAL = 0;
+	public static final int DATE_ROLL_ACTUAL = 0;
 
 	/**
 	 * Date Roll Following
 	 */
 
-	public static final int DR_FOLL = 1;
+	public static final int DATE_ROLL_FOLLOWING = 1;
 
 	/**
 	 * Date Roll Modified Following
 	 */
 
-	public static final int DR_MOD_FOLL = 2;
+	public static final int DATE_ROLL_MODIFIED_FOLLOWING = 2;
+
+	/**
+	 * Date Roll Modified Following Bi-monthly
+	 */
+
+	public static final int DATE_ROLL_MODIFIED_FOLLOWING_BIMONTHLY = 4;
 
 	/**
 	 * Date Roll Previous
 	 */
 
-	public static final int DR_PREV = 4;
+	public static final int DATE_ROLL_PREVIOUS = 8;
 
 	/**
 	 * Date Roll Modified Previous
 	 */
 
-	public static final int DR_MOD_PREV = 8;
+	public static final int DATE_ROLL_MODIFIED_PREVIOUS = 16;
 
 	/**
 	 * Week Day Holiday
@@ -97,9 +103,10 @@ public class Convention {
 	private static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>
 		s_mapLocHols = null;
 
-	private static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.daycount.DCFCalculator>
-		s_mapDCCalc = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.daycount.DCFCalculator>();
+	private static
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.daycount.DCFCalculator>
+			s_mapDCCalc = new
+				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.daycount.DCFCalculator>();
 
 	private static final boolean UpdateDCCalcMap (
 		final org.drip.analytics.daycount.DCFCalculator dcfCalc)
@@ -112,6 +119,8 @@ public class Convention {
 
 	private static final boolean SetDCCalc()
 	{
+		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DC1_1())) return false;
+
 		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DC28_360())) return false;
 
 		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DC30_360())) return false;
@@ -121,6 +130,10 @@ public class Convention {
 		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DC30_Act())) return false;
 
 		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DC30E_360())) return false;
+
+		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DC30E_360_ISDA())) return false;
+
+		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DC30EPLUS_360_ISDA())) return false;
 
 		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DCAct_360())) return false;
 
@@ -545,39 +558,8 @@ public class Convention {
 	{
 		java.lang.StringBuffer sbDCSet = new java.lang.StringBuffer();
 
-		sbDCSet.append ("30/365;ISMA 30/365;ISDA SWAPS:30/365;ISDA30/365;ISDA 30E/365;");
-
-		sbDCSet.append ("30/360;30U/360;30/360;Bond basis;30/360 US;US MUNI: 30/360;MUNI30/360;ISDA30/360;");
-
-		sbDCSet.append ("30E/360;30/360 ICMA;30S/360;Eurobond basis;Eurobond basis (ISDA 2006);Special German;");
-
-		sbDCSet.append ("ISMA 30/360;30E/360 ISDA;Eurobond basis (ISDA 2000);German;German:30/360;Ger:30/360;");
-
-		sbDCSet.append ("ISDA SWAPS:30/360;ISDA 30E/360;");
-
-		sbDCSet.append ("Actual/Actual;Actual/Actual ICMA;Act/Act ICMA;ISMA-99;Act/Act ISMA;");
-
-		sbDCSet.append ("ISMA 30/Act;30/Act;ISMA 30/Act;ISDA SWAPS:30/Act;ISDA30/Act;ISDA 30E/ACT;");
-
-		sbDCSet.append ("Actual/Actual ISDA;Actual/Actual;Act/Act;Actual/365;US:WIT Act/Act;");
-
-		sbDCSet.append ("Actual/365 Fixed;Act/365 Fixed;A/365 Fixed;A/365F;Act/365F;English;Act/365;");
-
-		sbDCSet.append ("Actual/365 JGB;Actual/365 JGB (NL);NL/365;");
-
-		sbDCSet.append ("Actual/360 Fixed;Act/360;A/360;French;US:WIB Act/360;");
-
-		sbDCSet.append ("Actual/365L;ISMA-Year;Actual/Actual AFB;");
-
-		sbDCSet.append ("28/360;");
-
-		sbDCSet.append ("NL/360;");
-
-		sbDCSet.append ("NL/Act;");
-
-		sbDCSet.append ("Act/364;");
-
-		sbDCSet.append ("BUS252;BUS DAYS252;BUS/252;");
+		for (java.lang.String strDC : s_mapDCCalc.keySet())
+			sbDCSet.append (strDC + " | ");
 
 		return sbDCSet.toString();
 	}
@@ -680,14 +662,15 @@ public class Convention {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Convention::RollDate => Cannot roll a NaN date");
 
-		if (null == strCalendarSet || strCalendarSet.isEmpty() || DR_ACTUAL == iRollMode) return dblDate;
+		if (null == strCalendarSet || strCalendarSet.isEmpty() || DATE_ROLL_ACTUAL == iRollMode)
+			return dblDate;
 
 		double dblRolledDate = dblDate;
 
-		if (DR_FOLL == iRollMode) {
+		if (DATE_ROLL_FOLLOWING == iRollMode) {
 			while (IsHoliday (dblRolledDate, strCalendarSet))
 				++dblRolledDate;
-		} else if (DR_MOD_FOLL == iRollMode) {
+		} else if (DATE_ROLL_MODIFIED_FOLLOWING == iRollMode) {
 			while (IsHoliday (dblRolledDate, strCalendarSet))
 				++dblRolledDate;
 
@@ -696,12 +679,24 @@ public class Convention {
 				while (IsHoliday (dblRolledDate, strCalendarSet))
 					--dblRolledDate;
 			}
+		} else if (DATE_ROLL_MODIFIED_FOLLOWING_BIMONTHLY == iRollMode) {
+			while (IsHoliday (dblRolledDate, strCalendarSet))
+				++dblRolledDate;
+
+			int iOriginalDay = org.drip.analytics.date.JulianDate.Day (dblDate);
+
+			int iRolledDay = org.drip.analytics.date.JulianDate.Day (dblRolledDate);
+
+			if ((15 < iOriginalDay && 15 > iRolledDay) || (15 > iOriginalDay && 15 < iRolledDay)) {
+				while (IsHoliday (dblRolledDate, strCalendarSet))
+					--dblRolledDate;
+			}
 		}
 
-		if (DR_PREV == iRollMode) {
+		if (DATE_ROLL_PREVIOUS == iRollMode) {
 			while (IsHoliday (dblRolledDate, strCalendarSet))
 				--dblRolledDate;
-		} else if (DR_MOD_PREV == iRollMode) {
+		} else if (DATE_ROLL_MODIFIED_PREVIOUS == iRollMode) {
 			while (IsHoliday (dblRolledDate, strCalendarSet))
 				--dblRolledDate;
 
@@ -923,7 +918,7 @@ public class Convention {
         final java.lang.String strCalendar)
         throws java.lang.Exception
     {
-        return Adjust (dblDate + iNumDays, strCalendar, DR_FOLL);
+        return Adjust (dblDate + iNumDays, strCalendar, DATE_ROLL_FOLLOWING);
     }
 
 	public static void main (

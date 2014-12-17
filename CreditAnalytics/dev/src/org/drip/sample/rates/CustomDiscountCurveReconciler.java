@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -111,7 +112,7 @@ public class CustomDiscountCurveReconciler {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -272,7 +273,7 @@ public class CustomDiscountCurveReconciler {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.

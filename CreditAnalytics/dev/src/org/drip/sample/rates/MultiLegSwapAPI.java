@@ -11,6 +11,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -97,7 +98,7 @@ public class MultiLegSwapAPI {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -172,7 +173,7 @@ public class MultiLegSwapAPI {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -404,7 +405,7 @@ public class MultiLegSwapAPI {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			ForwardLabel.Standard ("USD-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction ("USD").ForwardStateLabel ("3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.03
@@ -414,7 +415,7 @@ public class MultiLegSwapAPI {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			ForwardLabel.Standard ("USD-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction ("USD").ForwardStateLabel ("3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.05
@@ -424,7 +425,7 @@ public class MultiLegSwapAPI {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			ForwardLabel.Standard ("USD-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction ("USD").ForwardStateLabel ("3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.07
@@ -528,7 +529,12 @@ public class MultiLegSwapAPI {
 		 * Set up the valuation and the market parameters
 		 */
 
-		ValuationParams valParams = ValuationParams.CreateValParams (dtValue, 0, "", Convention.DR_ACTUAL);
+		ValuationParams valParams = ValuationParams.CreateValParams (
+			dtValue,
+			0,
+			"",
+			Convention.DATE_ROLL_ACTUAL
+		);
 
 		double dblUSDABCFXRate = 1.;
 

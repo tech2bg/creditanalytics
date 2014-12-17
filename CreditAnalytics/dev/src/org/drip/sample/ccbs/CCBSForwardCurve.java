@@ -6,6 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -16,7 +17,7 @@ import org.drip.product.params.*;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.FlatUnivariate;
-import org.drip.sample.forward.IBOR;
+import org.drip.sample.forward.IBORCurve;
 import org.drip.spline.params.SegmentCustomBuilderControl;
 import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
@@ -99,7 +100,7 @@ public class CCBSForwardCurve {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel ("6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -109,7 +110,7 @@ public class CCBSForwardCurve {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -306,7 +307,7 @@ public class CCBSForwardCurve {
 		ForwardCurve fc3MDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			llsc,
 			new LatentStateStretchSpec[] {stretchSpec},
-			ForwardLabel.Standard (strDerivedCurrency + "-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction (strDerivedCurrency).ForwardStateLabel ("3M"),
 			valParams,
 			null,
 			MarketParamsBuilder.Create (
@@ -358,7 +359,7 @@ public class CCBSForwardCurve {
 						FormatUtil.FormatDouble (fc3MDerived.forward (rc.maturityDate()), 1, 4, 100.) + "%");
 		}
 
-		IBOR.ForwardJack (
+		IBORCurve.ForwardJack (
 			dtValue,
 			"---- CCBS DERIVED QUOTE FORWARD CURVE SENSITIVITY ---",
 			fc3MDerived,

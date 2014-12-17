@@ -743,7 +743,7 @@ public class BondManager {
 				double dblFirstExDate = bond.marketConvention().settleDate
 					(org.drip.param.valuation.ValuationParams.CreateValParams (new
 						org.drip.analytics.date.JulianDate (dblScheduleStart), 0, "",
-							org.drip.analytics.daycount.Convention.DR_ACTUAL));
+							org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL));
 
 				bond.setEmbeddedCallSchedule (ExtractEOS2 (stmt, strBondId, dblFirstExDate, false));
 

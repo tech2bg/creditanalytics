@@ -613,8 +613,6 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 		double dblParSwapRate = mapMeasures.get ("SwapRate");
 
-		System.out.println ("\tRUNNING FLOATING");
-
 		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasureFloating =
 			_floatDerived.jackDDirtyPVDManifestMeasure (valParams, pricerParams, csqs, quotingParams);
 
@@ -623,8 +621,6 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		int iNumQuote = jackDDirtyPVDManifestMeasureFloating.numParameters();
 
 		if (0 == iNumQuote) return null;
-
-		System.out.println ("\tRUNNING FIXED");
 
 		org.drip.quant.calculus.WengertJacobian jackDDirtyPVDManifestMeasureFixed =
 			_fixReference.jackDDirtyPVDManifestMeasure (valParams, pricerParams, csqs, quotingParams);

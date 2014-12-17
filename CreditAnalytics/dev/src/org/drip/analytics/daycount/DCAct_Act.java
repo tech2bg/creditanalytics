@@ -117,31 +117,24 @@ public class DCAct_Act implements org.drip.analytics.daycount.DCFCalculator {
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		int iDaysOC = 0;
 		int iNumLeapDays = 0;
 		int iNumNonLeapDays = 0;
+
+		int iYearStart = org.drip.analytics.date.JulianDate.Year (dblStart);
+
+		int iYearEnd = org.drip.analytics.date.JulianDate.Year (dblEnd);
+
+		if (iYearStart == iYearEnd) return (int) (dblEnd - dblStart);
 
 		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblStart))
 			iNumLeapDays += org.drip.analytics.date.JulianDate.DaysRemaining (dblStart);
 		else
 			iNumNonLeapDays += org.drip.analytics.date.JulianDate.DaysRemaining (dblStart);
 
-		int iYearStart = org.drip.analytics.date.JulianDate.Year (dblStart);
-
-		int iYearEnd = org.drip.analytics.date.JulianDate.Year (dblEnd);
-
 		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblEnd))
 			iNumLeapDays += org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd);
 		else
 			iNumNonLeapDays += org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd);
-
-		if (!org.drip.analytics.date.JulianDate.IsLeapYear (dblStart))
-			iDaysOC -= 365;
-		else
-			iDaysOC -= (org.drip.analytics.date.JulianDate.ContainsFeb29 (dblStart, dblEnd,
-				org.drip.analytics.date.JulianDate.RIGHT_INCLUDE) ? 365 : 366);
-
-		if (iYearEnd == iYearStart) return iDaysOC;
 
 		for (int iYear = iYearStart + 1; iYear < iYearEnd; ++iYear) {
 			double dblYear = org.drip.analytics.date.JulianDate.toJulian (iYear,
@@ -153,6 +146,6 @@ public class DCAct_Act implements org.drip.analytics.daycount.DCFCalculator {
 				iNumNonLeapDays += 365;
 		}
 
-		return iDaysOC + iNumLeapDays + iNumNonLeapDays;
+		return iNumLeapDays + iNumNonLeapDays;
 	}
 }

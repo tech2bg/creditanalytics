@@ -5,12 +5,10 @@ import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.period.ComposableFloatingUnitSetting;
-import org.drip.param.period.CompositePeriodSetting;
-import org.drip.param.period.FixingSetting;
-import org.drip.param.period.UnitCouponAccrualSetting;
+import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
@@ -92,7 +90,7 @@ public class FloatFloatFloatFloatAnalysis {
 			iTenorInMonthsReference + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonthsReference + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -102,7 +100,7 @@ public class FloatFloatFloatFloatAnalysis {
 			iTenorInMonthsDerived + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonthsDerived + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -350,13 +348,13 @@ public class FloatFloatFloatFloatAnalysis {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 
-		ForwardLabel fri3MReference = ForwardLabel.Create (strReferenceCurrency, "LIBOR", "3M");
+		ForwardLabel fri3MReference = IBORIndexContainer.IndexFromJurisdiction (strReferenceCurrency).ForwardStateLabel ("3M");
 
-		ForwardLabel fri6MReference = ForwardLabel.Create (strReferenceCurrency, "LIBOR", "6M");
+		ForwardLabel fri6MReference = IBORIndexContainer.IndexFromJurisdiction (strReferenceCurrency).ForwardStateLabel ("6M");
 
-		ForwardLabel fri3MDerived = ForwardLabel.Create (strDerivedCurrency, "LIBOR", "3M");
+		ForwardLabel fri3MDerived = IBORIndexContainer.IndexFromJurisdiction (strDerivedCurrency).ForwardStateLabel ("3M");
 
-		ForwardLabel fri6MDerived = ForwardLabel.Create (strDerivedCurrency, "LIBOR", "6M");
+		ForwardLabel fri6MDerived = IBORIndexContainer.IndexFromJurisdiction (strDerivedCurrency).ForwardStateLabel ("6M");
 
 		FundingLabel fundingLabelReference = FundingLabel.Standard (strReferenceCurrency);
 

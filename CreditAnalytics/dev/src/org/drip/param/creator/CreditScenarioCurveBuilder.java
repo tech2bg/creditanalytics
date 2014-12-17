@@ -88,7 +88,7 @@ public class CreditScenarioCurveBuilder {
 
 		if (null == ccsc || !ccsc.cookScenarioCC (strName,
 			org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0, "",
-				org.drip.analytics.daycount.Convention.DR_ACTUAL), dc, null, adblQuotes, dblRecovery,
+				org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, null, adblQuotes, dblRecovery,
 					astrCalibMeasure, null, null, bFlat,
 						org.drip.param.definition.ScenarioCreditCurve.CC_BASE))
 			return null;

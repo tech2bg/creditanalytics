@@ -9,6 +9,7 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.OvernightIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.period.*;
@@ -84,7 +85,7 @@ public class CrossOvernightFloatingStream {
 					aiDay[i],
 					strCurrency
 				),
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
 				strCurrency
 			);
 
@@ -223,7 +224,7 @@ public class CrossOvernightFloatingStream {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 				null,
 				0.
@@ -554,7 +555,7 @@ public class CrossOvernightFloatingStream {
 
 		JulianDate dtCustomOISMaturity = dtToday.addTenor ("4M");
 
-		ForwardLabel fri = OvernightFRIBuilder.JurisdictionFRI (strCurrency);
+		ForwardLabel fri = OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel();
 
 		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
 			360,
@@ -570,7 +571,7 @@ public class CrossOvernightFloatingStream {
 			"ON",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 			null,
-			OvernightFRIBuilder.JurisdictionFRI (strCurrency),
+			OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.

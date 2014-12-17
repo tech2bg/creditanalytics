@@ -6,6 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -17,7 +18,6 @@ import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
-import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -147,7 +147,7 @@ public class ForwardCurveDerivedBasis {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -391,7 +391,7 @@ public class ForwardCurveDerivedBasis {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -401,7 +401,7 @@ public class ForwardCurveDerivedBasis {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -586,7 +586,7 @@ public class ForwardCurveDerivedBasis {
 
 		ForwardCurve fcxMQuartic = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"QUARTIC_FWD" + strBasisTenor,
-			ForwardLabel.Create (strCurrency, "LIBOR", strBasisTenor),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strBasisTenor),
 			valParams,
 			null,
 			mktParams,

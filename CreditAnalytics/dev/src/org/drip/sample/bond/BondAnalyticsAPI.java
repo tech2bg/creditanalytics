@@ -13,6 +13,7 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.definition.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -26,7 +27,6 @@ import org.drip.product.creator.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
-import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -103,7 +103,7 @@ public class BondAnalyticsAPI {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -545,7 +545,12 @@ public class BondAnalyticsAPI {
 			 * Construct Valuation Parameters
 			 */
 
-			ValuationParams valParams = ValuationParams.CreateValParams (JulianDate.Today(), 0, "", Convention.DR_ACTUAL);
+			ValuationParams valParams = ValuationParams.CreateValParams (
+				JulianDate.Today(),
+				0,
+				"",
+				Convention.DATE_ROLL_ACTUAL
+			);
 
 			ProductQuote cquote = QuoteBuilder.CreateProductQuote();
 
@@ -651,7 +656,7 @@ public class BondAnalyticsAPI {
 		 * Valuation Parameters
 		 */
 
-		ValuationParams valParams = ValuationParams.CreateValParams (JulianDate.Today(), 0, "USD", Convention.DR_ACTUAL);
+		ValuationParams valParams = ValuationParams.CreateValParams (JulianDate.Today(), 0, "USD", Convention.DATE_ROLL_ACTUAL);
 
 		/*
 		 * Theoretical Price

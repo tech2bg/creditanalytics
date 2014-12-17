@@ -12,6 +12,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.definition.*;
 import org.drip.param.market.MultiSidedQuote;
 import org.drip.param.valuation.*;
@@ -31,7 +32,6 @@ import org.drip.product.credit.BondComponent;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
-import org.drip.state.identifier.ForwardLabel;
 
 /*!
  * Copyright (C) 2014 Lakshmi Krishnamurthy
@@ -97,7 +97,7 @@ public class YAS {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -427,7 +427,7 @@ public class YAS {
 
 		System.out.println ("\n--------");
 
-		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DR_ACTUAL);
+		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DATE_ROLL_ACTUAL);
 
 		double dblPrice = 0.97828;
 

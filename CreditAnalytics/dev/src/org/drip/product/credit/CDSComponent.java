@@ -111,6 +111,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				double dblPeriodNotional = notional (dblStartDate, dblValueDate);
 
 				if (bFirstPeriod) {
+					dblAccrualDays = 0.;
 					bFirstPeriod = false;
 
 					if (dblStartDate < dblValueDate) {

@@ -6,6 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -89,7 +90,7 @@ public class CrossFloatCrossFloat {
 			iTenorInMonthsReference + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonthsReference + "M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonthsReference + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -99,7 +100,7 @@ public class CrossFloatCrossFloat {
 			iTenorInMonthsDerived + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCouponCurrency + "-LIBOR-" + iTenorInMonthsDerived + "M"),
+			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonthsDerived + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -225,7 +226,7 @@ public class CrossFloatCrossFloat {
 			dblUSDFundingRate
 		);
 
-		ForwardLabel friEUR3M = ForwardLabel.Create ("EUR", "LIBOR", "3M");
+		ForwardLabel friEUR3M = IBORIndexContainer.IndexFromJurisdiction ("EUR").ForwardStateLabel ("3M");
 
 		ForwardCurve fcEUR3M = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
@@ -237,7 +238,7 @@ public class CrossFloatCrossFloat {
 			)
 		);
 
-		ForwardLabel friEUR6M = ForwardLabel.Create ("EUR", "LIBOR", "6M");
+		ForwardLabel friEUR6M = IBORIndexContainer.IndexFromJurisdiction ("EUR").ForwardStateLabel ("6M");
 
 		ForwardCurve fcEUR6M = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,

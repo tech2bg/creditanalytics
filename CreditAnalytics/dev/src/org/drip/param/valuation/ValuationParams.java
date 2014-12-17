@@ -87,7 +87,8 @@ public class ValuationParams {
 		final org.drip.analytics.date.JulianDate dtValue,
 		final java.lang.String strCalendar)
 	{
-		return CreateValParams (dtValue, 2, strCalendar, org.drip.analytics.daycount.Convention.DR_FOLL);
+		return CreateValParams (dtValue, 2, strCalendar,
+			org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING);
 	}
 
 	/**

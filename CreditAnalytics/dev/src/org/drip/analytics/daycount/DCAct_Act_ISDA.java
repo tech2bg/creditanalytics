@@ -91,10 +91,18 @@ public class DCAct_Act_ISDA implements org.drip.analytics.daycount.DCFCalculator
 		if (null == dm)
 			throw new java.lang.Exception ("DCAct_Act_ISDA.daysAccrued: Cannot create DateEOMAdjustment!");
 
-		return (org.drip.analytics.date.JulianDate.DaysRemaining (dblStart) - dm.anterior()) +
-			(org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd) + dm.posterior()) +
-				org.drip.analytics.date.JulianDate.Year (dblEnd) -
-					org.drip.analytics.date.JulianDate.Year (dblStart) -
-						(org.drip.analytics.date.JulianDate.IsLeapYear (dblStart) ? 366 : 365);
+		int iDaysAccrued = 0;
+
+		int iStartYear = org.drip.analytics.date.JulianDate.Year (dblStart);
+
+		int iEndYear = org.drip.analytics.date.JulianDate.Year (dblEnd);
+
+		if (iEndYear == iStartYear) iDaysAccrued -= 0 == iEndYear % 4 ? 366 : 365;
+
+		for (int iYear = iStartYear + 1; iYear < iEndYear; ++iYear)
+			iDaysAccrued += 0 == iYear % 4 ? 366 : 365;
+
+		return iDaysAccrued + org.drip.analytics.date.JulianDate.DaysRemaining (dblStart) - dm.anterior() +
+			org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd) + dm.posterior();
 	}
 }

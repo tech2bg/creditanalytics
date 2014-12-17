@@ -6,6 +6,7 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -88,7 +89,7 @@ public class CrossFixedPlainFloatAnalysis {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strPayCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			IBORIndexContainer.IndexFromJurisdiction (strPayCurrency).ForwardStateLabel (iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			null,
 			0.
@@ -273,7 +274,7 @@ public class CrossFixedPlainFloatAnalysis {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 
-		ForwardLabel fri3M = ForwardLabel.Create ("USD", "LIBOR", "3M");
+		ForwardLabel fri3M = IBORIndexContainer.IndexFromJurisdiction ("USD").ForwardStateLabel ("3M");
 
 		DiscountCurve dcUSDCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
+import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
@@ -118,7 +119,7 @@ public class FRAMktVolAnalysis {
 		String strTenor = "6M";
 		String strCurrency = "EUR";
 
-		ForwardLabel fri = ForwardLabel.Standard (strCurrency + "-LIBOR-" + strTenor);
+		ForwardLabel fri = IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strTenor);
 
 		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 

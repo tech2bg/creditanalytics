@@ -1505,7 +1505,7 @@ public class BondProductBuilder {
 	{
 		org.drip.product.params.QuoteConvention mktConv = new org.drip.product.params.QuoteConvention (null,
 			_strCalculationType, _dtFirstSettle.julian(), _dblRedemptionValue, 0, "",
-				org.drip.analytics.daycount.Convention.DR_ACTUAL);
+				org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL);
 
 		return mktConv.validate() ? mktConv : null;
 	}

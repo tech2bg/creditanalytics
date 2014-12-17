@@ -128,7 +128,7 @@ public class ProductTestSuite {
 
 		org.drip.product.params.QuoteConvention mktConv = new org.drip.product.params.QuoteConvention (null,
 			"", dtEffective.julian(), 1., 0, strCurrency,
-				org.drip.analytics.daycount.Convention.DR_MOD_FOLL);
+				org.drip.analytics.daycount.Convention.DATE_ROLL_MODIFIED_FOLLOWING);
 
 		if (!mktConv.validate()) {
 			System.out.println ("IR Val params for " + strName + " could not be validated!");
@@ -217,7 +217,7 @@ public class ProductTestSuite {
 
 		org.drip.product.params.QuoteConvention mktConv = new
 			org.drip.product.params.QuoteConvention (null, "", dt.julian(), 1., 3, "USD",
-				org.drip.analytics.daycount.Convention.DR_MOD_FOLL);
+				org.drip.analytics.daycount.Convention.DATE_ROLL_MODIFIED_FOLLOWING);
 
 		if (!mktConv.validate()) {
 			System.out.println ("Valuation params for " + strName + " could not be validated!");
@@ -2342,7 +2342,7 @@ public class ProductTestSuite {
 		if (!bond.setMarketConvention (new org.drip.product.params.QuoteConvention (new
 			org.drip.param.valuation.ValuationCustomizationParams ("30/360", 2, true, null, "DKK", false,
 				null, null), "REGULAR", dblStart + 2, 1., 3, "USD",
-					org.drip.analytics.daycount.Convention.DR_FOLL))) {
+					org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING))) {
 			System.out.println ("Cannot initialize bond Valuation params!");
 
 			System.exit (133);
