@@ -10,7 +10,6 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
@@ -21,6 +20,7 @@ import org.drip.quant.calculus.WengertJacobian;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -70,16 +70,6 @@ public class RatesAnalyticsAPI {
 		final double dblCoupon)
 		throws Exception
 	{
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -94,9 +84,8 @@ public class RatesAnalyticsAPI {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -159,7 +148,6 @@ public class RatesAnalyticsAPI {
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsFloatingStreamEdgeDate,
 				cpsFloating,
-				ucasFloating,
 				cfusFloating
 			)
 		);
@@ -232,23 +220,12 @@ public class RatesAnalyticsAPI {
 		adblCompCalibValue[5] = .0023;
 		adblCompCalibValue[6] = .0026;
 
-		UnitCouponAccrualSetting ucas = new UnitCouponAccrualSetting (
-			4,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			"USD",
-			false
-		);
-
 		ComposableFloatingUnitSetting cfus = new ComposableFloatingUnitSetting (
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction ("USD").ForwardStateLabel ("3M"),
+			ForwardLabel.Create ("USD", "3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -291,7 +268,6 @@ public class RatesAnalyticsAPI {
 							new JulianDate (adblMaturity[i]).addBusDays (2, "USD")
 						),
 						cps,
-						ucas,
 						cfus
 					)
 				),

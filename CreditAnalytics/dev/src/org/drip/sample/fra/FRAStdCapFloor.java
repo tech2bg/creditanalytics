@@ -6,7 +6,6 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -106,16 +105,6 @@ public class FRAStdCapFloor {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -130,9 +119,8 @@ public class FRAStdCapFloor {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -198,7 +186,6 @@ public class FRAStdCapFloor {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -349,23 +336,12 @@ public class FRAStdCapFloor {
 	{
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -382,23 +358,12 @@ public class FRAStdCapFloor {
 			null
 		);
 
-		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (iTenorInMonths + "M"),
+			ForwardLabel.Create (strCurrency, iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -440,7 +405,6 @@ public class FRAStdCapFloor {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsReferenceStreamEdgeDate,
 					cpsReference,
-					ucasReference,
 					cfusReference
 				)
 			);
@@ -449,7 +413,6 @@ public class FRAStdCapFloor {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsDerivedStreamEdgeDate,
 					cpsDerived,
-					ucasDerived,
 					cfusDerived
 				)
 			);
@@ -517,7 +480,7 @@ public class FRAStdCapFloor {
 
 		return ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"QUARTIC_FWD" + strBasisTenor,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strBasisTenor),
+			ForwardLabel.Create (strCurrency, strBasisTenor),
 			valParams,
 			null,
 			mktParams,
@@ -696,19 +659,9 @@ public class FRAStdCapFloor {
 
 		Map<String, ForwardCurve> mapFC = MakeFC (dtToday, strCurrency, dc);
 
-		ForwardLabel fri = IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strTenor);
+		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
 		JulianDate dtEffective = dtToday.addTenor (strTenor);
-
-		UnitCouponAccrualSetting ucas = new UnitCouponAccrualSetting (
-			4,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
 
 		ComposableFloatingUnitSetting cfus = new ComposableFloatingUnitSetting (
 			strTenor,
@@ -716,7 +669,6 @@ public class FRAStdCapFloor {
 			null,
 			fri,
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -746,7 +698,6 @@ public class FRAStdCapFloor {
 					dtEffective.addTenorAndAdjust (strTenor, strCurrency)
 				),
 				cps,
-				ucas,
 				cfus
 			)
 		);

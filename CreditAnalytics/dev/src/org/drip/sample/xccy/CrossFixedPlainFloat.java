@@ -6,7 +6,6 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -65,16 +64,6 @@ public class CrossFixedPlainFloat {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strPayCurrency,
-			false
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -89,9 +78,8 @@ public class CrossFixedPlainFloat {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strPayCurrency).ForwardStateLabel (iTenorInMonths + "M"),
+			ForwardLabel.Create (strPayCurrency, iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -152,7 +140,6 @@ public class CrossFixedPlainFloat {
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsFloatingStreamEdgeDate,
 				cpsFloating,
-				ucasFloating,
 				cfusFloating
 			)
 		);
@@ -206,7 +193,7 @@ public class CrossFixedPlainFloat {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 
-		ForwardLabel fri3MUSD = IBORIndexContainer.IndexFromJurisdiction ("USD").ForwardStateLabel ("3M");
+		ForwardLabel fri3MUSD = ForwardLabel.Create ("USD", "3M");
 
 		DiscountCurve dcUSDCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,

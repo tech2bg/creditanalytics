@@ -656,10 +656,6 @@ public class ProductTestSuite {
 		adblCompCalibValue[28] = .0409;
 		adblCompCalibValue[29] = .0409;
 
-		org.drip.param.period.UnitCouponAccrualSetting ucasFloating = new
-			org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false, "Act/360", false, "USD",
-				true);
-
 		org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 			org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360", false, "USD",
 				true);
@@ -667,9 +663,8 @@ public class ProductTestSuite {
 		org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 			org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
-					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-3M"),
-						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, null,
-							0.);
+					org.drip.state.identifier.ForwardLabel.Standard ("USD-3M"),
+						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, 0.);
 
 		org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
 			org.drip.param.period.ComposableFixedUnitSetting ("6M",
@@ -678,13 +673,13 @@ public class ProductTestSuite {
 
 		org.drip.param.period.CompositePeriodSetting cpsFloating = new
 			org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null,
-				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1., null,
-					null, null, null);
+				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1.,
+					null, null, null, null);
 
 		org.drip.param.period.CompositePeriodSetting cpsFixed = new
 			org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null,
-				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1., null,
-					null, null, null);
+				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
+					null, null, null, null);
 
 		for (int i = 0; i < 15; ++i) {
 			adblRate[i + 15] = 0.02;
@@ -703,7 +698,7 @@ public class ProductTestSuite {
 
 			org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
 				(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-					(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+					(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
 
 			org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
 				(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsFixedStreamEdgeDate,
@@ -1265,10 +1260,6 @@ public class ProductTestSuite {
 		final int iTestDetail)
 		throws java.lang.Exception
 	{
-		org.drip.param.period.UnitCouponAccrualSetting ucasFloating = new
-			org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false, "Act/360", false, "USD",
-				true);
-
 		org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 			org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360", false, "USD",
 				true);
@@ -1276,9 +1267,8 @@ public class ProductTestSuite {
 		org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 			org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
-					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-3M"),
-						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, null,
-							0.);
+					org.drip.state.identifier.ForwardLabel.Standard ("USD-3M"),
+						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, 0.);
 
 		org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
 			org.drip.param.period.ComposableFixedUnitSetting ("6M",
@@ -1307,7 +1297,7 @@ public class ProductTestSuite {
 
 		org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
 			(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-				(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+				(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
 
 		org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
 			(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsFixedStreamEdgeDate,
@@ -2286,12 +2276,12 @@ public class ProductTestSuite {
 			org.drip.param.market.LatentStateFixingsContainer();
 
 		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
-			org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"), 0.0402);
+			org.drip.state.identifier.ForwardLabel.Standard ("USD-6M"), 0.0402);
 
-		org.drip.product.params.BondStream bpgp = org.drip.product.params.BondStream.Create (dblStart + 3653.,
-			dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, 0.01, "30/360", "30/360", null, null,
-				null, null, null, null, null, null, "IGNORE", false, "USD", "USD",
-					org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-6M"),
+		org.drip.product.params.BondStream bpgp = org.drip.product.params.BondStream.Create (dblStart +
+			3653., dblStart, dblStart + 3653., dblStart + 182., dblStart, 2, 0.01, "30/360", "30/360", null,
+				null, null, null, null, null, null, null, "IGNORE", false, "USD", "USD",
+					org.drip.state.identifier.ForwardLabel.Standard ("USD-6M"),
 						org.drip.state.identifier.CreditLabel.Standard ("IBM"));
 
 		org.drip.product.credit.BondComponent bond = new org.drip.product.credit.BondComponent();

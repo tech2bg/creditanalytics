@@ -45,7 +45,6 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 	 * 
 	 * @param dblStartDate Accrual Start Date
 	 * @param dblEndDate Accrual End Date
-	 * @param ucas Coupon/Accrual Setting
 	 * @param refIndexPeriod The Reference Index Period
 	 * @param dblSpread The Floater Spread
 	 * 
@@ -55,16 +54,16 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 	public ComposableUnitFloatingPeriod (
 		final double dblStartDate,
 		final double dblEndDate,
-		final org.drip.param.period.UnitCouponAccrualSetting ucas,
 		final org.drip.analytics.cashflow.ReferenceIndexPeriod refIndexPeriod,
 		final double dblSpread)
 		throws java.lang.Exception
 	{
-		super (dblStartDate, dblEndDate, ucas);
+		super (dblStartDate, dblEndDate, refIndexPeriod.forwardLabel().ucas());
 
-		if (null == (_refIndexPeriod = refIndexPeriod) || !org.drip.quant.common.NumberUtil.IsValid
-			(_dblSpread = dblSpread))
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblSpread = dblSpread))
 			throw new java.lang.Exception ("ComposableUnitFloatingPeriod ctr: Invalid Inputs");
+
+		_refIndexPeriod = refIndexPeriod;
 	}
 
 	/**

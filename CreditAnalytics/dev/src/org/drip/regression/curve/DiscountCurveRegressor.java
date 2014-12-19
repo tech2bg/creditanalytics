@@ -210,22 +210,17 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					org.drip.param.period.CompositePeriodSetting cpsFloating = null;
 					org.drip.param.period.UnitCouponAccrualSetting ucasFixed = null;
 					org.drip.param.period.ComposableFixedUnitSetting cfusFixed = null;
-					org.drip.param.period.UnitCouponAccrualSetting ucasFloating = null;
 					org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = null;
 
 					try {
-						ucasFloating = new org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360",
-							false, "Act/360", false, _strCurrency, true);
-
 						ucasFixed = new org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false,
 							"Act/360", false, _strCurrency, true);
 
 						cfusFloating = new org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
-								null, org.drip.state.identifier.ForwardLabel.Standard (_strCurrency +
-									"-LIBOR-3M"),
-										org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-							null, 0.);
+								null, org.drip.state.identifier.ForwardLabel.Standard (_strCurrency + "-3M"),
+									org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+							0.);
 
 						cfusFixed = new org.drip.param.period.ComposableFixedUnitSetting ("6M",
 							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
@@ -266,7 +261,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 
 							org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
 								(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-									(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+									(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
 
 							org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
 								(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit
@@ -282,7 +277,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					}
 
 					_lsfc.add (_dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Standard
-						(_strCurrency + "_LIBOR-6M"), 0.0042);
+						(_strCurrency + "-6M"), 0.0042);
 
 					return true;
 				}

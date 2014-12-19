@@ -11,7 +11,6 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -84,23 +83,12 @@ public class MultiLegSwapAPI {
 
 		// Deposit Calibration
 
-		UnitCouponAccrualSetting ucasDeposit = new UnitCouponAccrualSetting (
-			4,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		ComposableFloatingUnitSetting cfusDeposit = new ComposableFloatingUnitSetting (
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("3M"),
+			ForwardLabel.Create (strCurrency, "3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -137,7 +125,6 @@ public class MultiLegSwapAPI {
 							new JulianDate (adblDate[i] = dtStart.addTenor (astrDepositTenor[i]).julian())
 						),
 						cpsDeposit,
-						ucasDeposit,
 						cfusDeposit
 					)
 				),
@@ -148,16 +135,6 @@ public class MultiLegSwapAPI {
 		}
 
 		// IRS Calibration
-
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true
-		);
 
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
@@ -173,9 +150,8 @@ public class MultiLegSwapAPI {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -237,7 +213,6 @@ public class MultiLegSwapAPI {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -391,23 +366,12 @@ public class MultiLegSwapAPI {
 
 		Stream[] aFloatStream = new Stream[3];
 
-		UnitCouponAccrualSetting ucasFloat = new UnitCouponAccrualSetting (
-			4,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			"USD",
-			false
-		);
-
 		ComposableFloatingUnitSetting cfusFloat3Y = new ComposableFloatingUnitSetting (
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction ("USD").ForwardStateLabel ("3M"),
+			ForwardLabel.Create ("USD", "3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.03
 		);
 
@@ -415,9 +379,8 @@ public class MultiLegSwapAPI {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction ("USD").ForwardStateLabel ("3M"),
+			ForwardLabel.Create ("USD", "3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.05
 		);
 
@@ -425,9 +388,8 @@ public class MultiLegSwapAPI {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction ("USD").ForwardStateLabel ("3M"),
+			ForwardLabel.Create ("USD", "3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.07
 		);
 
@@ -453,7 +415,6 @@ public class MultiLegSwapAPI {
 					null
 				),
 				cpsFloat,
-				ucasFloat,
 				cfusFloat3Y
 			)
 		);
@@ -467,7 +428,6 @@ public class MultiLegSwapAPI {
 					null
 				),
 				cpsFloat,
-				ucasFloat,
 				cfusFloat5Y
 			)
 		);
@@ -481,7 +441,6 @@ public class MultiLegSwapAPI {
 					null
 				),
 				cpsFloat,
-				ucasFloat,
 				cfusFloat7Y
 			)
 		);

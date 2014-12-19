@@ -7,7 +7,6 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -85,23 +84,12 @@ public class CustomDiscountCurveBuilder {
 	{
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
-		UnitCouponAccrualSetting ucas = new UnitCouponAccrualSetting (
-			4,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		ComposableFloatingUnitSetting cfus = new ComposableFloatingUnitSetting (
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("3M"),
+			ForwardLabel.Create (strCurrency, "3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -134,7 +122,6 @@ public class CustomDiscountCurveBuilder {
 							dtEffective.addBusDays (aiDay[i], strCurrency)
 						),
 						cps,
-						ucas,
 						cfus
 					)
 				),
@@ -235,16 +222,6 @@ public class CustomDiscountCurveBuilder {
 	{
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -259,9 +236,8 @@ public class CustomDiscountCurveBuilder {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -325,7 +301,6 @@ public class CustomDiscountCurveBuilder {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);

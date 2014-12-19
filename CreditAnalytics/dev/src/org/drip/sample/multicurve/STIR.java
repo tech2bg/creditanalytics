@@ -6,7 +6,6 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -105,16 +104,6 @@ public class STIR {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -129,9 +118,8 @@ public class STIR {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -197,7 +185,6 @@ public class STIR {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -344,33 +331,12 @@ public class STIR {
 	{
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
-		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -378,9 +344,8 @@ public class STIR {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (iTenorInMonths + "M"),
+			ForwardLabel.Create (strCurrency, iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -435,7 +400,6 @@ public class STIR {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsReferenceStreamEdgeDate,
 					cpsReference,
-					ucasReference,
 					cfusReference
 				)
 			);
@@ -444,7 +408,6 @@ public class STIR {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsDerivedStreamEdgeDate,
 					cpsDerived,
-					ucasDerived,
 					cfusDerived
 				)
 			);
@@ -513,7 +476,7 @@ public class STIR {
 
 		return ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"QUARTIC_FWD" + strBasisTenor,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strBasisTenor),
+			ForwardLabel.Create (strCurrency, strBasisTenor),
 			valParams,
 			null,
 			mktParams,
@@ -649,16 +612,6 @@ public class STIR {
 
 		int iTenorInMonths = AnalyticsHelper.TenorToMonths (fri.tenor());
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -675,7 +628,6 @@ public class STIR {
 			null,
 			fri,
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -738,7 +690,6 @@ public class STIR {
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsFloatingStreamEdgeDate,
 				cpsFloating,
-				ucasFloating,
 				cfusFloating
 			)
 		);
@@ -813,7 +764,7 @@ public class STIR {
 
 		Map<String, ForwardCurve> mapFC = MakeFC (dtToday, strCurrency, dc);
 
-		ForwardLabel fri = IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strTenor);
+		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
 		FixFloatComponent stir = CreateSTIR (
 			dtToday.addTenor (strTenor),

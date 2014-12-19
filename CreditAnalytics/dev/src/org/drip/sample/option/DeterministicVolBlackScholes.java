@@ -6,7 +6,6 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -18,6 +17,7 @@ import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.SABRLIBORCapVolatility;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -105,16 +105,6 @@ public class DeterministicVolBlackScholes {
 	{
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -129,9 +119,8 @@ public class DeterministicVolBlackScholes {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -195,7 +184,6 @@ public class DeterministicVolBlackScholes {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);

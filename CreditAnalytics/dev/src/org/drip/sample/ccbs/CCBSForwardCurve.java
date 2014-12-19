@@ -6,7 +6,6 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -76,33 +75,12 @@ public class CCBSForwardCurve {
 	{
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCouponCurrency,
-			true
-		);
-
-		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCouponCurrency,
-			true
-		);
-
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCouponCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -110,9 +88,8 @@ public class CCBSForwardCurve {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonths + "M"),
+			ForwardLabel.Create (strCouponCurrency, iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -163,7 +140,6 @@ public class CCBSForwardCurve {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsReferenceStreamEdgeDate,
 					cpsReference,
-					ucasReference,
 					cfusReference
 				)
 			);
@@ -172,7 +148,6 @@ public class CCBSForwardCurve {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsDerivedStreamEdgeDate,
 					cpsDerived,
-					ucasDerived,
 					cfusDerived
 				)
 			);
@@ -307,7 +282,7 @@ public class CCBSForwardCurve {
 		ForwardCurve fc3MDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			llsc,
 			new LatentStateStretchSpec[] {stretchSpec},
-			IBORIndexContainer.IndexFromJurisdiction (strDerivedCurrency).ForwardStateLabel ("3M"),
+			ForwardLabel.Create (strDerivedCurrency, "3M"),
 			valParams,
 			null,
 			MarketParamsBuilder.Create (

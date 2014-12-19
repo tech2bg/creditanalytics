@@ -46,7 +46,6 @@ public class ReferenceIndexPeriod {
 	 * 
 	 * @param dblStartDate The Reference Period Start Date
 	 * @param dblEndDate The Reference Period End Date
-	 * @param dblFixingDate The Reference Period Fixing Date
 	 * @param forwardLabel The Period Forward Label
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
@@ -55,15 +54,18 @@ public class ReferenceIndexPeriod {
 	public ReferenceIndexPeriod (
 		final double dblStartDate,
 		final double dblEndDate,
-		final double dblFixingDate,
 		final org.drip.state.identifier.ForwardLabel forwardLabel)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) || _dblEndDate <=
-				_dblStartDate || !org.drip.quant.common.NumberUtil.IsValid (_dblFixingDate = dblFixingDate)
+				_dblStartDate || !org.drip.quant.common.NumberUtil.IsValid (_dblFixingDate = dblStartDate)
 					|| null == (_forwardLabel = forwardLabel))
 			throw new java.lang.Exception ("ReferenceIndexPeriod ctr: Invalid Inputs");
+
+		org.drip.analytics.daycount.DateAdjustParams dapFixing = _forwardLabel.floaterIndex().spotLagDAP();
+
+		_dblFixingDate = null == dapFixing ? dblStartDate : dapFixing.roll (dblStartDate);
 	}
 
 	/**

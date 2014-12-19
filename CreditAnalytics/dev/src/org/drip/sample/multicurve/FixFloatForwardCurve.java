@@ -6,7 +6,6 @@ import java.util.*;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -18,6 +17,7 @@ import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -105,16 +105,6 @@ public class FixFloatForwardCurve {
 	{
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -129,9 +119,8 @@ public class FixFloatForwardCurve {
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -197,7 +186,6 @@ public class FixFloatForwardCurve {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -322,16 +310,6 @@ public class FixFloatForwardCurve {
 	{
 		FixFloatComponent[] aFFC = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -346,9 +324,8 @@ public class FixFloatForwardCurve {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (iTenorInMonths + "M"),
+			ForwardLabel.Create (strCurrency, iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -412,7 +389,6 @@ public class FixFloatForwardCurve {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -496,7 +472,7 @@ public class FixFloatForwardCurve {
 
 		ForwardCurve fcxMCubic = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"CUBIC_FWD" + strBasisTenor,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strBasisTenor),
+			ForwardLabel.Create (strCurrency, strBasisTenor),
 			valParams,
 			null,
 			mktParams,
@@ -532,7 +508,7 @@ public class FixFloatForwardCurve {
 
 		ForwardCurve fcxMQuartic = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"QUARTIC_FWD" + strBasisTenor,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strBasisTenor),
+			ForwardLabel.Create (strCurrency, strBasisTenor),
 			valParams,
 			null,
 			mktParams,
@@ -568,7 +544,7 @@ public class FixFloatForwardCurve {
 
 		ForwardCurve fcxMKLKHyper = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"KLKHYPER_FWD" + strBasisTenor,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strBasisTenor),
+			ForwardLabel.Create (strCurrency, strBasisTenor),
 			valParams,
 			null,
 			mktParams,

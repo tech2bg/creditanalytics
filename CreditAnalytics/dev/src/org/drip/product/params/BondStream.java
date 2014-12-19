@@ -153,10 +153,10 @@ public class BondStream extends org.drip.product.rates.Stream {
 						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
 							forwardLabel,
 								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-					null, dblCoupon);
+					dblCoupon);
 
 				lsCouponPeriod = org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-					(lsStreamEdgeDate, cps, ucas, cfus);
+					(lsStreamEdgeDate, cps, cfus);
 			}
 
 			return new BondStream (lsCouponPeriod, dblFinalMaturity, strMaturityType);

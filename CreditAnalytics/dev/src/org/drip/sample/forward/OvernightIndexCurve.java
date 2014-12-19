@@ -7,8 +7,6 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.OvernightIndex;
-import org.drip.market.definition.OvernightIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -19,8 +17,7 @@ import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
-import org.drip.state.identifier.ForwardLabel;
-import org.drip.state.identifier.FundingLabel;
+import org.drip.state.identifier.*;
 import org.drip.state.inference.*;
 import org.drip.state.representation.LatentStateSpecification;
 
@@ -73,8 +70,6 @@ public class OvernightIndexCurve {
 	{
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
-		OvernightIndex oi = OvernightIndexContainer.IndexFromJurisdiction (strCurrency);
-
 		for (int i = 0; i < aiDay.length; ++i)
 			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
 				dtEffective,
@@ -82,7 +77,7 @@ public class OvernightIndexCurve {
 					aiDay[i],
 					strCurrency
 				),
-				null != oi ? oi.ForwardStateLabel() : ForwardLabel.Create (strCurrency, "OIS", "ON"),
+				ForwardLabel.Create (strCurrency, "ON"),
 				strCurrency
 			);
 
@@ -143,16 +138,6 @@ public class OvernightIndexCurve {
 	{
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			360,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -169,8 +154,6 @@ public class OvernightIndexCurve {
 			0
 		);
 
-		OvernightIndex oi = OvernightIndexContainer.IndexFromJurisdiction (strCurrency);
-
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			java.lang.String strFixedTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
 				astrMaturityTenor[i],
@@ -186,9 +169,8 @@ public class OvernightIndexCurve {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				null != oi ? oi.ForwardStateLabel() : ForwardLabel.Create (strCurrency, "OIS", "ON"),
+				ForwardLabel.Create (strCurrency, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null,
 				0.
 			);
 
@@ -245,7 +227,6 @@ public class OvernightIndexCurve {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -295,8 +276,6 @@ public class OvernightIndexCurve {
 			0
 		);
 
-		OvernightIndex oi = OvernightIndexContainer.IndexFromJurisdiction (strCurrency);
-
 		for (int i = 0; i < astrStartTenor.length; ++i) {
 			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
 
@@ -319,16 +298,6 @@ public class OvernightIndexCurve {
 				strCurrency
 			);
 
-			UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-				360,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				strCurrency,
-				false
-			);
-
 			UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 				2,
 				"Act/360",
@@ -343,9 +312,8 @@ public class OvernightIndexCurve {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				null != oi ? oi.ForwardStateLabel() : ForwardLabel.Create (strCurrency, "OIS", "ON"),
+				ForwardLabel.Create (strCurrency, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null,
 				0.
 			);
 
@@ -393,7 +361,6 @@ public class OvernightIndexCurve {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);

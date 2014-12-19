@@ -299,10 +299,6 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 
 		org.drip.analytics.date.JulianDate dtStart = epoch().addDays (2);
 
-		org.drip.param.period.UnitCouponAccrualSetting ucasFloating = new
-			org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false, "Act/360", false,
-				strCurrency, true);
-
 		org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 			org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360", false,
 				strCurrency, true);
@@ -310,9 +306,8 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 			org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
-					org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
-						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, null,
-							0.);
+					org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-3M"),
+						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, 0.);
 
 		org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
 			org.drip.param.period.ComposableFixedUnitSetting ("6M",
@@ -341,7 +336,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 
 		org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
 			(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-				(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+				(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
 
 		org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
 			(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsFixedStreamEdgeDate,

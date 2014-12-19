@@ -29,15 +29,17 @@ package org.drip.market.definition;
  */
 
 /**
- * IBORIndex contains the definitions of the IBOR indexes of different jurisdictions.
+ * FloaterIndex contains the definitions of the floating rate indexes of different jurisdictions.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class IBORIndex extends org.drip.market.definition.FloaterIndex {
-	private int _iSpotLag = 0;
-	private java.lang.String _strLongestMaturity = "";
-	private java.lang.String _strShortestMaturity = "";
+public class FloaterIndex {
+	private java.lang.String _strName = "";
+	private int _iAccrualCompoundingRule = -1;
+	private java.lang.String _strCalendar = "";
+	private java.lang.String _strCurrency = "";
+	private java.lang.String _strDayCount = "";
 
 	/**
 	 * IBORIndex Constructor
@@ -46,63 +48,91 @@ public class IBORIndex extends org.drip.market.definition.FloaterIndex {
 	 * @param strCurrency Index Currency
 	 * @param strDayCount Index Day Count
 	 * @param strCalendar Index Holiday Calendar
-	 * @param iSpotLag Index Spot Lag
-	 * @param strShortestMaturity Index Shortest Maturity
-	 * @param strLongestMaturity Index Longest Maturity
 	 * @param iAccrualCompoundingRule Accrual Compounding Rule
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
 
-	public IBORIndex (
+	public FloaterIndex (
 		final java.lang.String strName,
 		final java.lang.String strCurrency,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar,
-		final int iSpotLag,
-		final java.lang.String strShortestMaturity,
-		final java.lang.String strLongestMaturity,
 		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
-		super (strName, strCurrency, strDayCount, strCalendar, iAccrualCompoundingRule);
+		if (null == (_strName = strName) || _strName.isEmpty() || null == (_strCurrency = strCurrency) ||
+			_strCurrency.isEmpty() || null == (_strDayCount = strDayCount) || _strDayCount.isEmpty() ||
+				!org.drip.analytics.support.CompositePeriodBuilder.ValidateCompoundingRule
+					(_iAccrualCompoundingRule = iAccrualCompoundingRule))
+			throw new java.lang.Exception ("FloaterIndex ctr: Invalid Inputs");
 
-		if (0 > (_iSpotLag = iSpotLag)) throw new java.lang.Exception ("IBORIndex ctr: Invalid Inputs");
-
-		_strLongestMaturity = strLongestMaturity;
-		_strShortestMaturity = strShortestMaturity;
+		_strCalendar = strCalendar;
 	}
 
 	/**
-	 * Retrieve the Index Spot Lag
+	 * Retrieve the Index Name
 	 * 
-	 * @return The Index Spot Lag
+	 * @return The Index Name
 	 */
 
-	public int spotLag()
+	public java.lang.String name()
 	{
-		return _iSpotLag;
+		return _strName;
 	}
 
 	/**
-	 * Retrieve the Index Shortest Maturity
+	 * Retrieve the Index Holiday Calendar
 	 * 
-	 * @return The Index Shortest Maturity
+	 * @return The Index Holiday Calendar
 	 */
 
-	public java.lang.String shortestMaturity()
+	public java.lang.String calendar()
 	{
-		return _strShortestMaturity;
+		return _strCalendar;
 	}
 
 	/**
-	 * Retrieve the Longest Maturity
+	 * Retrieve the Index Currency
 	 * 
-	 * @return The Index Longest Maturity
+	 * @return The Index Currency
 	 */
 
-	public java.lang.String longestMaturity()
+	public java.lang.String currency()
 	{
-		return _strLongestMaturity;
+		return _strCurrency;
+	}
+
+	/**
+	 * Retrieve the Index Day Count Convention
+	 * 
+	 * @return The Index Day Count Convention
+	 */
+
+	public java.lang.String dayCount()
+	{
+		return _strDayCount;
+	}
+
+	/**
+	 * Retrieve the Accrual Compounding Rule
+	 * 
+	 * @return The Accrual Compounding Rule
+	 */
+
+	public int accrualCompoundingRule()
+	{
+		return _iAccrualCompoundingRule;
+	}
+
+	/**
+	 * Retrieve the Spot Lag DAP
+	 * 
+	 * @return The Spot Lag DAP
+	 */
+
+	public org.drip.analytics.daycount.DateAdjustParams spotLagDAP()
+	{
+		return null;
 	}
 }

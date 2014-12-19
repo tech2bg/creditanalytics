@@ -5,7 +5,6 @@ import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -64,16 +63,6 @@ public class FixFloatFixFloat {
 		final int iTenorInMonths)
 		throws Exception
 	{
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strPayCurrency,
-			false
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -88,9 +77,8 @@ public class FixFloatFixFloat {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonths + "M"),
+			ForwardLabel.Create (strCouponCurrency, iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -151,7 +139,6 @@ public class FixFloatFixFloat {
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsFloatingStreamEdgeDate,
 				cpsFloating,
-				ucasFloating,
 				cfusFloating
 			)
 		);
@@ -203,9 +190,9 @@ public class FixFloatFixFloat {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 
-		ForwardLabel fri3MUSD = IBORIndexContainer.IndexFromJurisdiction ("USD").ForwardStateLabel ("3M");
+		ForwardLabel fri3MUSD = ForwardLabel.Create ("USD", "3M");
 
-		ForwardLabel fri3MEUR = IBORIndexContainer.IndexFromJurisdiction ("EUR").ForwardStateLabel ("3M");
+		ForwardLabel fri3MEUR = ForwardLabel.Create ("EUR", "3M");
 
 		FundingLabel fundingLabelUSD = FundingLabel.Standard ("USD");
 

@@ -346,11 +346,7 @@ public class RatesClosesLoader {
 
 		java.lang.String strFixedDC = _mapFixedDC.get (strCurrency);
 
-		java.lang.String strFloatingDC = _mapFloatingDC.get (strCurrency);
-
 		boolean bApplyEOMAdjustmentFixed = "30/360".equalsIgnoreCase (strFixedDC);
-
-		boolean bApplyEOMAdjustmentFloating = "30/360".equalsIgnoreCase (strFloatingDC);
 
 		try {
 			org.drip.analytics.daycount.DateAdjustParams dap = new
@@ -381,18 +377,13 @@ public class RatesClosesLoader {
 				(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsFixedStreamEdgeDate,
 					cpsFixed, ucasFixed, cfusFixed));
 
-			org.drip.param.period.UnitCouponAccrualSetting ucasFloating = new
-				org.drip.param.period.UnitCouponAccrualSetting (_mapFloatingFrequency.get (strCurrency),
-					strFloatingDC, bApplyEOMAdjustmentFloating, strFloatingDC, bApplyEOMAdjustmentFloating,
-						strCurrency, false);
-
 			org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 				org.drip.param.period.ComposableFloatingUnitSetting (_mapFloatingTenor.get (strCurrency),
 					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
-						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
-							_mapFloatingTenor.get (strCurrency)),
+						org.drip.state.identifier.ForwardLabel.Create (strCurrency, _mapFloatingTenor.get
+							(strCurrency)),
 								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null, 0.);
+				0.);
 
 			org.drip.param.period.CompositePeriodSetting cpsFloating = new
 				org.drip.param.period.CompositePeriodSetting (_mapFloatingFrequency.get (strCurrency),
@@ -406,7 +397,7 @@ public class RatesClosesLoader {
 
 			org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
 				(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-					(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+					(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
 				(fixStream, floatingStream, new org.drip.param.valuation.CashSettleParams (0, strCurrency,
@@ -442,8 +433,6 @@ public class RatesClosesLoader {
 
 		java.lang.String strFixedDC = _mapFixedDC.get (strCurrency);
 
-		java.lang.String strFloatingDC = _mapFloatingDC.get (strCurrency);
-
 		try {
 			org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 				org.drip.param.period.UnitCouponAccrualSetting (_mapFixedFrequency.get (strCurrency),
@@ -468,16 +457,12 @@ public class RatesClosesLoader {
 				(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit (lsFixedStreamEdgeDate,
 					cpsFixed, ucasFixed, cfusFixed));
 
-			org.drip.param.period.UnitCouponAccrualSetting ucasFloating = new
-				org.drip.param.period.UnitCouponAccrualSetting (360, strFloatingDC, false, strFloatingDC,
-					false, strCurrency, false);
-
 			org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 				org.drip.param.period.ComposableFloatingUnitSetting ("ON",
 					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT, null,
-						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR", "ON"),
+						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "ON"),
 							org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-								null, 0.);
+								0.);
 
 			org.drip.param.period.CompositePeriodSetting cpsFloating = new
 				org.drip.param.period.CompositePeriodSetting (_mapFloatingFrequency.get (strCurrency),
@@ -491,7 +476,7 @@ public class RatesClosesLoader {
 
 			org.drip.product.rates.Stream floatStream = new org.drip.product.rates.Stream
 				(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-					(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+					(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
 
 			org.drip.product.rates.FixFloatComponent irs = new org.drip.product.rates.FixFloatComponent
 				(fixStream, floatStream, new org.drip.param.valuation.CashSettleParams (0, strCurrency, 0));

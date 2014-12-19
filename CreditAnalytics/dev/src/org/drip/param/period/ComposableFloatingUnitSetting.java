@@ -34,11 +34,10 @@ package org.drip.param.period;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposableFloatingUnitSetting extends org.drip.param.period.ComposableUnitSetting {
+public class ComposableFloatingUnitSetting extends org.drip.param.period.ComposableUnitBuilderSetting {
 	private int _iReferencePeriodArrearsType = -1;
 	private double _dblSpread = java.lang.Double.NaN;
 	private org.drip.state.identifier.ForwardLabel _forwardLabel = null;
-	private org.drip.analytics.daycount.DateAdjustParams _dapForwardFixing = null;
 
 	/**
 	 * ComposableFloatingUnitSetting constructor
@@ -48,7 +47,6 @@ public class ComposableFloatingUnitSetting extends org.drip.param.period.Composa
 	 * @param dapEdge Date Adjust Parameter Settings for the Edge Dates
 	 * @param forwardLabel Forward Label
 	 * @param iReferencePeriodArrearsType Reference Period Arrears Type
-	 * @param dapForwardFixing Date Adjust Parameter Settings for the Forward Fixing Date
 	 * @param dblSpread Floater Spread
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
@@ -60,7 +58,6 @@ public class ComposableFloatingUnitSetting extends org.drip.param.period.Composa
 		final org.drip.analytics.daycount.DateAdjustParams dapEdge,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final int iReferencePeriodArrearsType,
-		final org.drip.analytics.daycount.DateAdjustParams dapForwardFixing,
 		final double dblSpread)
 		throws java.lang.Exception
 	{
@@ -70,7 +67,6 @@ public class ComposableFloatingUnitSetting extends org.drip.param.period.Composa
 			dblSpread))
 			throw new java.lang.Exception ("ComposableFloatingUnitSetting ctr: Invalid Inputs");
 
-		_dapForwardFixing = dapForwardFixing;
 		_iReferencePeriodArrearsType = iReferencePeriodArrearsType;
 	}
 
@@ -94,17 +90,6 @@ public class ComposableFloatingUnitSetting extends org.drip.param.period.Composa
 	public int referencePeriodArrearsType()
 	{
 		return _iReferencePeriodArrearsType;
-	}
-
-	/**
-	 * Retrieve the Forward Fixing Date Adjust Parameters
-	 * 
-	 * @return The Forward Fixing Date Adjust Parameters
-	 */
-
-	public org.drip.analytics.daycount.DateAdjustParams dapForwardFixing()
-	{
-		return _dapForwardFixing;
 	}
 
 	/**

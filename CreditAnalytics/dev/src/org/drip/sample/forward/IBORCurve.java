@@ -7,7 +7,6 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -178,16 +177,6 @@ public class IBORCurve {
 
 		int iTenorInMonths = new Integer (fri.tenor().split ("M")[0]);
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -204,7 +193,6 @@ public class IBORCurve {
 			null,
 			fri,
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -276,7 +264,6 @@ public class IBORCurve {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -322,33 +309,12 @@ public class IBORCurve {
 
 		int iTenorInMonths = new Integer (fri.tenor().split ("M")[0]);
 
-		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
-		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("6M"),
+			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -356,9 +322,8 @@ public class IBORCurve {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (iTenorInMonths + "M"),
+			ForwardLabel.Create (strCurrency, iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -407,7 +372,6 @@ public class IBORCurve {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsReferenceStreamEdgeDate,
 					cpsReference,
-					ucasReference,
 					cfusReference
 				)
 			);
@@ -415,9 +379,7 @@ public class IBORCurve {
 			Stream derivedStream = new Stream (
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsDerivedStreamEdgeDate,
-					cpsDerived,
-					ucasDerived,
-					cfusDerived
+					cpsDerived,					cfusDerived
 				)
 			);
 

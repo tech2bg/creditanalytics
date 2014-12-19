@@ -95,17 +95,12 @@ public class EODCurves {
 						(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit
 							(lsFixedStreamEdgeDate, cpsFixed, ucasFixed, cfusFixed));
 
-					org.drip.param.period.UnitCouponAccrualSetting ucasFloating = new
-						org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false, "Act/360",
-							false, strCurrency, false);
-
 					org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 						org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-								null, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "LIBOR",
-									"3M"),
-										org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-						null, 0.);
+								null, org.drip.state.identifier.ForwardLabel.Create (strCurrency, "3M"),
+									org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+						0.);
 
 					org.drip.param.period.CompositePeriodSetting cpsFloating = new
 						org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null,
@@ -118,7 +113,7 @@ public class EODCurves {
 
 					org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
 						(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-							(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+							(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
 
 					org.drip.product.rates.FixFloatComponent irs = new
 						org.drip.product.rates.FixFloatComponent (fixStream, floatingStream, null);
@@ -1183,8 +1178,8 @@ public class EODCurves {
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new
 			org.drip.param.market.LatentStateFixingsContainer();
 
-		lsfc.add (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
-			"-LIBOR-6M"), 0.0042);
+		lsfc.add (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-6M"),
+			0.0042);
 
 		org.drip.param.definition.ScenarioDiscountCurve ircsg = BuildEODIRCurve (lsfc, stmt, dtEOD,
 			strCurrency, strInstrType, strCurveName);
@@ -1334,7 +1329,7 @@ public class EODCurves {
 			return false;
 
 		mpc.addFixings (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
-			"-LIBOR-6M"), 0.0042);
+			"-6M"), 0.0042);
 
 		if (!LoadEODIRToMPC (mpc, stmt, dtEOD, strCurrency, "swap", strCurrency)) {
 			if (s_bStatBlog) System.out.println ("Cannot load Full DC for " + strCurrency);

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -66,33 +65,12 @@ public class FloatFloatFloatFloatAnalysis {
 		final int iTenorInMonthsDerived)
 		throws Exception
 	{
-		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
-			12 / iTenorInMonthsReference,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCouponCurrency,
-			false
-		);
-
-		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
-			12 / iTenorInMonthsDerived,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCouponCurrency,
-			false
-		);
-
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			iTenorInMonthsReference + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonthsReference + "M"),
+			ForwardLabel.Create (strCouponCurrency, iTenorInMonthsReference + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -100,9 +78,8 @@ public class FloatFloatFloatFloatAnalysis {
 			iTenorInMonthsDerived + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonthsDerived + "M"),
+			ForwardLabel.Create (strCouponCurrency, iTenorInMonthsDerived + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -158,7 +135,6 @@ public class FloatFloatFloatFloatAnalysis {
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsReferenceStreamEdgeDate,
 				cpsReference,
-				ucasReference,
 				cfusReference
 			)
 		);
@@ -167,7 +143,6 @@ public class FloatFloatFloatFloatAnalysis {
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsDerivedStreamEdgeDate,
 				cpsDerived,
-				ucasDerived,
 				cfusDerived
 			)
 		);
@@ -348,13 +323,13 @@ public class FloatFloatFloatFloatAnalysis {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 
-		ForwardLabel fri3MReference = IBORIndexContainer.IndexFromJurisdiction (strReferenceCurrency).ForwardStateLabel ("3M");
+		ForwardLabel fri3MReference = ForwardLabel.Create (strReferenceCurrency, "3M");
 
-		ForwardLabel fri6MReference = IBORIndexContainer.IndexFromJurisdiction (strReferenceCurrency).ForwardStateLabel ("6M");
+		ForwardLabel fri6MReference = ForwardLabel.Create (strReferenceCurrency, "6M");
 
-		ForwardLabel fri3MDerived = IBORIndexContainer.IndexFromJurisdiction (strDerivedCurrency).ForwardStateLabel ("3M");
+		ForwardLabel fri3MDerived = ForwardLabel.Create (strDerivedCurrency, "3M");
 
-		ForwardLabel fri6MDerived = IBORIndexContainer.IndexFromJurisdiction (strDerivedCurrency).ForwardStateLabel ("6M");
+		ForwardLabel fri6MDerived = ForwardLabel.Create (strDerivedCurrency, "6M");
 
 		FundingLabel fundingLabelReference = FundingLabel.Standard (strReferenceCurrency);
 

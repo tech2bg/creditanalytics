@@ -39,37 +39,11 @@ package org.drip.state.identifier;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ForwardLabel implements org.drip.product.params.Validatable,
-	org.drip.state.identifier.LatentStateLabel {
-	private java.lang.String _strIndex = "";
+public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel {
 	private java.lang.String _strTenor = "";
 	private java.lang.String _strCurrency = "";
 	private java.lang.String _strFullyQualifiedName = "";
-
-	/**
-	 * Create from the Currency, the Index, and the Tenor
-	 * 
-	 * @param strCurrency Currency
-	 * @param strIndex Index
-	 * @param strTenor Tenor
-	 * 
-	 * @return ForwardLabel Instance
-	 */
-
-	public static final ForwardLabel Create (
-		final java.lang.String strCurrency,
-		final java.lang.String strIndex,
-		final java.lang.String strTenor)
-	{
-		try {
-			return new ForwardLabel (strCurrency, strIndex, strTenor, strCurrency + "-" + strIndex + "-" +
-				strTenor);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
+	private org.drip.market.definition.FloaterIndex _floaterIndex = null;
 
 	/**
 	 * Construct a ForwardLabel from the corresponding Fully Qualified Name
@@ -86,10 +60,18 @@ public class ForwardLabel implements org.drip.product.params.Validatable,
 
 		java.lang.String[] astr = strFullyQualifiedName.split ("-");
 
-		if (null == astr || 3 != astr.length) return null;
+		if (null == astr || 2 != astr.length) return null;
+
+		java.lang.String strTenor = astr[1];
+		java.lang.String strCurrency = astr[0];
+
+		org.drip.market.definition.FloaterIndex floaterIndex = "ON".equalsIgnoreCase (strTenor) ||
+			"1D".equalsIgnoreCase (strTenor) ?
+				org.drip.market.definition.OvernightIndexContainer.IndexFromJurisdiction (strCurrency) :
+					org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction (strCurrency);
 
 		try {
-			return new ForwardLabel (astr[0], astr[1], astr[2], strFullyQualifiedName);
+			return new ForwardLabel (strCurrency, strTenor, strFullyQualifiedName, floaterIndex);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -98,26 +80,42 @@ public class ForwardLabel implements org.drip.product.params.Validatable,
 	}
 
 	/**
+	 * Create from the Currency and the Tenor
+	 * 
+	 * @param strCurrency Currency
+	 * @param strTenor Tenor
+	 * 
+	 * @return ForwardLabel Instance
+	 */
+
+	public static final ForwardLabel Create (
+		final java.lang.String strCurrency,
+		final java.lang.String strTenor)
+	{
+		return Standard (strCurrency + "-" + strTenor);
+	}
+
+	/**
 	 * ForwardLabel constructor
 	 * 
 	 * @param strCurrency Currency
-	 * @param strIndex Index
 	 * @param strTenor Tenor
 	 * @param strFullyQualifiedName The Fully Qualified Name
+	 * @param floaterIndex The Floater Index Details
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
 	private ForwardLabel (
 		final java.lang.String strCurrency,
-		final java.lang.String strIndex,
 		final java.lang.String strTenor,
-		final java.lang.String strFullyQualifiedName)
+		final java.lang.String strFullyQualifiedName,
+		final org.drip.market.definition.FloaterIndex floaterIndex)
 		throws java.lang.Exception
 	{
-		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() || null == (_strIndex = strIndex)
-			|| _strIndex.isEmpty() || null == (_strTenor = strTenor) || _strTenor.isEmpty() || null ==
-				(_strFullyQualifiedName = strFullyQualifiedName) || _strFullyQualifiedName.isEmpty())
+		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() || null == (_strTenor = strTenor)
+			|| _strTenor.isEmpty() || null == (_strFullyQualifiedName = strFullyQualifiedName) ||
+				_strFullyQualifiedName.isEmpty() || null == (_floaterIndex = floaterIndex))
 			throw new java.lang.Exception ("ForwardLabel ctr: Invalid Inputs");
 	}
 
@@ -130,17 +128,6 @@ public class ForwardLabel implements org.drip.product.params.Validatable,
 	public java.lang.String currency()
 	{
 		return _strCurrency;
-	}
-
-	/**
-	 * Retrieve the Index
-	 * 
-	 * @return The Index
-	 */
-
-	public java.lang.String index()
-	{
-		return _strIndex;
 	}
 
 	/**
@@ -165,6 +152,38 @@ public class ForwardLabel implements org.drip.product.params.Validatable,
 		return "ON".equalsIgnoreCase (_strTenor) || "1D".equalsIgnoreCase (_strTenor);
 	}
 
+	/**
+	 * Retrieve the Floater Index
+	 * 
+	 * @return The Floater Index
+	 */
+
+	public org.drip.market.definition.FloaterIndex floaterIndex()
+	{
+		return _floaterIndex;
+	}
+
+	/**
+	 * Retrieve a Unit Coupon Accrual Setting
+	 * 
+	 * @return Unit Coupon Accrual Setting
+	 */
+
+	public org.drip.param.period.UnitCouponAccrualSetting ucas()
+	{
+		java.lang.String strDayCount = _floaterIndex.dayCount();
+
+		try {
+			return new org.drip.param.period.UnitCouponAccrualSetting (overnight() ? 360 : 12 /
+				org.drip.analytics.support.AnalyticsHelper.TenorToMonths (_strTenor), strDayCount, false,
+					strDayCount, false, _floaterIndex.currency(), false);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	@Override public java.lang.String fullyQualifiedName()
 	{
 		return _strFullyQualifiedName;
@@ -175,12 +194,5 @@ public class ForwardLabel implements org.drip.product.params.Validatable,
 	{
 		return null == lslOther || !(lslOther instanceof org.drip.state.identifier.ForwardLabel) ? false :
 			_strFullyQualifiedName.equalsIgnoreCase (lslOther.fullyQualifiedName());
-	}
-
-	@Override public boolean validate()
-	{
-		return null != _strCurrency && !_strCurrency.isEmpty() && null != _strIndex && !_strIndex.isEmpty()
-			&& null != _strTenor && !_strTenor.isEmpty() && null != _strFullyQualifiedName &&
-				!_strFullyQualifiedName.isEmpty();
 	}
 }

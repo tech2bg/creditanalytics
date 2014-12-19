@@ -29,25 +29,25 @@ package org.drip.param.period;
  */
 
 /**
- * ComposableUnitSetting contains the composable unit details. Currently it holds the coupon currency, the
- * 	fixed coupon, and the basis.
+ * ComposableUnitBuilderSetting contains the composable unit builder details. Currently it holds the coupon
+ *  currency, the fixed coupon, and the basis.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposableUnitSetting {
+public class ComposableUnitBuilderSetting {
 	private java.lang.String _strTenor = "";
 	private int _iEdgeDateSequenceScheme = -1;
 	private org.drip.analytics.daycount.DateAdjustParams _dapEdge = null;
 
-	protected ComposableUnitSetting (
+	protected ComposableUnitBuilderSetting (
 		final java.lang.String strTenor,
 		final int iEdgeDateSequenceScheme,
 		final org.drip.analytics.daycount.DateAdjustParams dapEdge)
 		throws java.lang.Exception
 	{
 		if (null == (_strTenor = strTenor) || _strTenor.isEmpty())
-			throw new java.lang.Exception ("ComposableUnitSetting ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ComposableUnitBuilderSetting ctr: Invalid Inputs");
 
 		_dapEdge = dapEdge;
 		_iEdgeDateSequenceScheme = iEdgeDateSequenceScheme;

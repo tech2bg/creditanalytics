@@ -7,7 +7,6 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.OvernightIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -20,7 +19,7 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.ExponentialTensionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
-import org.drip.state.identifier.FundingLabel;
+import org.drip.state.identifier.*;
 import org.drip.state.inference.*;
 import org.drip.state.representation.LatentStateSpecification;
 
@@ -94,7 +93,7 @@ public class OISCurveQuoteSensitivity {
 					aiDay[i],
 					strCurrency
 				),
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				strCurrency
 			);
 
@@ -155,16 +154,6 @@ public class OISCurveQuoteSensitivity {
 	{
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			360,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -196,9 +185,8 @@ public class OISCurveQuoteSensitivity {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null,
 				0.
 			);
 
@@ -255,7 +243,6 @@ public class OISCurveQuoteSensitivity {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -327,16 +314,6 @@ public class OISCurveQuoteSensitivity {
 				strCurrency
 			);
 
-			UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-				360,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				strCurrency,
-				false
-			);
-
 			UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 				2,
 				"Act/360",
@@ -351,9 +328,8 @@ public class OISCurveQuoteSensitivity {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null,
 				0.
 			);
 
@@ -401,7 +377,6 @@ public class OISCurveQuoteSensitivity {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);

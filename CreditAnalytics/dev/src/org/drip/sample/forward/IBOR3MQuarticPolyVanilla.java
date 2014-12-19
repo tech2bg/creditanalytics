@@ -3,7 +3,6 @@ package org.drip.sample.forward;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -61,7 +60,7 @@ public class IBOR3MQuarticPolyVanilla {
 		String strTenor = "3M";
 		String strCurrency = "EUR";
 
-		ForwardLabel fri = IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strTenor);
+		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,

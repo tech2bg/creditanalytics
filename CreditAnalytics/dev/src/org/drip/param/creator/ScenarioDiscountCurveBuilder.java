@@ -82,10 +82,6 @@ public class ScenarioDiscountCurveBuilder {
 				org.drip.product.definition.CalibratableFixedIncomeComponent comp = null;
 
 				if (bIsIRS) {
-					org.drip.param.period.UnitCouponAccrualSetting ucasFloating = new
-						org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false, "Act/360",
-							false, strCurrency, true);
-
 					org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 						org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360",
 							false, strCurrency, true);
@@ -93,10 +89,9 @@ public class ScenarioDiscountCurveBuilder {
 					org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 						org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
-								null, org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
-									"-LIBOR-3M"),
-										org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-						null, 0.);
+								null, org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-3M"),
+									org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+						0.);
 
 					org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
 						org.drip.param.period.ComposableFixedUnitSetting ("6M",
@@ -125,7 +120,7 @@ public class ScenarioDiscountCurveBuilder {
 
 					org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
 						(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-							(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+							(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
 
 					org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
 						(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit
@@ -133,17 +128,12 @@ public class ScenarioDiscountCurveBuilder {
 
 					comp = new org.drip.product.rates.FixFloatComponent (fixedStream, floatingStream, null);
 				} else {
-					org.drip.param.period.UnitCouponAccrualSetting ucasDeposit = new
-						org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false, "Act/360",
-							false, strCurrency, false);
-
 					org.drip.param.period.ComposableFloatingUnitSetting cfusDeposit = new
 						org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
-								null, org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
-									"-LIBOR-3M"),
-										org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-						null, 0.);
+								null, org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-3M"),
+									org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+						0.);
 
 					org.drip.param.period.CompositePeriodSetting cpsDeposit = new
 						org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null,
@@ -154,7 +144,7 @@ public class ScenarioDiscountCurveBuilder {
 						org.drip.product.rates.Stream
 							(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
 								(org.drip.analytics.support.CompositePeriodBuilder.EdgePair (dtEffective,
-									dtMaturity), cpsDeposit, ucasDeposit, cfusDeposit)), null);
+									dtMaturity), cpsDeposit, cfusDeposit)), null);
 				}
 
 				lsCompDENSE.add (comp);

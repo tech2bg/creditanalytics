@@ -277,15 +277,10 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 
 			int iFreq = 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths (strTenor);
 
-			org.drip.param.period.UnitCouponAccrualSetting ucas = new
-				org.drip.param.period.UnitCouponAccrualSetting (iFreq, _strDayCount, false, _strDayCount,
-					false, _strCurrency, false);
-
 			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
 				org.drip.param.period.ComposableFloatingUnitSetting (strTenor,
 					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null, _fri,
-						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, null,
-							0.);
+						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, 0.);
 
 			org.drip.param.period.CompositePeriodSetting cps = new
 				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, _strCurrency, null,
@@ -297,7 +292,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 
 			return org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
 				(org.drip.analytics.support.CompositePeriodBuilder.EdgePair (dtEffective,
-					dtEffective.addTenorAndAdjust (strTenor, _strCalendar)), cps, ucas, cfus);
+					dtEffective.addTenorAndAdjust (strTenor, _strCalendar)), cps, cfus);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

@@ -9,7 +9,6 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.OvernightIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.period.*;
@@ -85,7 +84,7 @@ public class CrossOvernightFloatingStream {
 					aiDay[i],
 					strCurrency
 				),
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				strCurrency
 			);
 
@@ -183,16 +182,6 @@ public class CrossOvernightFloatingStream {
 	{
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			360,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -224,9 +213,8 @@ public class CrossOvernightFloatingStream {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null,
 				0.
 			);
 
@@ -283,7 +271,6 @@ public class CrossOvernightFloatingStream {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -555,25 +542,14 @@ public class CrossOvernightFloatingStream {
 
 		JulianDate dtCustomOISMaturity = dtToday.addTenor ("4M");
 
-		ForwardLabel fri = OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel();
-
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			360,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
+		ForwardLabel fri = ForwardLabel.Create (strCurrency, "ON");
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			"ON",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 			null,
-			OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+			ForwardLabel.Create (strCurrency, "ON"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -613,7 +589,6 @@ public class CrossOvernightFloatingStream {
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsFloatingStreamEdgeDate,
 				cpsFloatingGeometric,
-				ucasFloating,
 				cfusFloating
 			)
 		);
@@ -621,7 +596,6 @@ public class CrossOvernightFloatingStream {
 		List<CompositePeriod> lsArithmeticFloatPeriods = CompositePeriodBuilder.FloatingCompositeUnit (
 			lsFloatingStreamEdgeDate,
 			cpsFloatingArithmetic,
-			ucasFloating,
 			cfusFloating
 		);
 

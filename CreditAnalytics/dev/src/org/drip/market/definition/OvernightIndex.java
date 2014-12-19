@@ -34,11 +34,8 @@ package org.drip.market.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public class OvernightIndex {
+public class OvernightIndex extends org.drip.market.definition.FloaterIndex {
 	private int _iPublicationLag = 0;
-	private java.lang.String _strName = "";
-	private java.lang.String _strCurrency = "";
-	private java.lang.String _strDayCount = "";
 	private java.lang.String _strReferenceLag = "";
 
 	/**
@@ -47,8 +44,10 @@ public class OvernightIndex {
 	 * @param strName Index Name
 	 * @param strCurrency Index Currency
 	 * @param strDayCount Index Day Count
+	 * @param strCalendar Index Holiday Calendar
 	 * @param strReferenceLag Index Reference Lag
 	 * @param iPublicationLag Index Publication Lag
+	 * @param iAccrualCompoundingRule Accrual Compounding Rule
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
@@ -57,49 +56,18 @@ public class OvernightIndex {
 		final java.lang.String strName,
 		final java.lang.String strCurrency,
 		final java.lang.String strDayCount,
+		final java.lang.String strCalendar,
 		final java.lang.String strReferenceLag,
-		final int iPublicationLag)
+		final int iPublicationLag,
+		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
-		if (null == (_strName = strName) || _strName.isEmpty() || null == (_strCurrency = strCurrency) ||
-			_strCurrency.isEmpty() || null == (_strDayCount = strDayCount) || _strDayCount.isEmpty() || null
-				== (_strReferenceLag = strReferenceLag) || _strReferenceLag.isEmpty())
+		super (strName, strCurrency, strDayCount, strCalendar, iAccrualCompoundingRule);
+
+		if (null == (_strReferenceLag = strReferenceLag) || _strReferenceLag.isEmpty())
 			throw new java.lang.Exception ("OvernightIndex ctr => Invalid Inputs!");
 
 		_iPublicationLag = iPublicationLag;
-	}
-
-	/**
-	 * Retrieve the Index Name
-	 * 
-	 * @return The Index Name
-	 */
-
-	public java.lang.String name()
-	{
-		return _strName;
-	}
-
-	/**
-	 * Retrieve the Index Currency
-	 * 
-	 * @return The Index Currency
-	 */
-
-	public java.lang.String currency()
-	{
-		return _strCurrency;
-	}
-
-	/**
-	 * Retrieve the Index Day Count Convention
-	 * 
-	 * @return The Index Day Count Convention
-	 */
-
-	public java.lang.String dayCount()
-	{
-		return _strDayCount;
 	}
 
 	/**
@@ -122,18 +90,5 @@ public class OvernightIndex {
 	public int publicationLag()
 	{
 		return _iPublicationLag;
-	}
-
-	/**
-	 * Generate the Forward Label corresponding to the specified Tenor
-	 * 
-	 * @param strTenor The Specified Tenor
-	 * 
-	 * @return The Forward Label corresponding to the specified Tenor
-	 */
-
-	public org.drip.state.identifier.ForwardLabel ForwardStateLabel()
-	{
-		return org.drip.state.identifier.ForwardLabel.Create (_strCurrency, _strName, "ON");
 	}
 }

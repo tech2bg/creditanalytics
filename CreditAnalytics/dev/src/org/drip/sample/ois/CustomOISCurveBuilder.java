@@ -7,7 +7,6 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.OvernightIndexContainer;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -85,7 +84,7 @@ public class CustomOISCurveBuilder {
 					aiDay[i],
 					strCurrency
 				),
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				strCurrency
 			);
 
@@ -146,16 +145,6 @@ public class CustomOISCurveBuilder {
 	{
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			360,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -187,9 +176,8 @@ public class CustomOISCurveBuilder {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null,
 				0.
 			);
 
@@ -246,7 +234,6 @@ public class CustomOISCurveBuilder {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -318,16 +305,6 @@ public class CustomOISCurveBuilder {
 				strCurrency
 			);
 
-			UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-				360,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				strCurrency,
-				false
-			);
-
 			UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 				2,
 				"Act/360",
@@ -342,9 +319,8 @@ public class CustomOISCurveBuilder {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null,
 				0.
 			);
 
@@ -392,7 +368,6 @@ public class CustomOISCurveBuilder {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);

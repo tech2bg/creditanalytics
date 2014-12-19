@@ -35,7 +35,7 @@ package org.drip.param.period;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ComposableFixedUnitSetting extends org.drip.param.period.ComposableUnitSetting {
+public class ComposableFixedUnitSetting extends org.drip.param.period.ComposableUnitBuilderSetting {
 	private double _dblBasis = java.lang.Double.NaN;
 	private java.lang.String _strCouponCurrency = "";
 	private double _dblFixedCoupon = java.lang.Double.NaN;

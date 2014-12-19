@@ -13,7 +13,6 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.definition.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -27,6 +26,7 @@ import org.drip.product.creator.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -79,16 +79,6 @@ public class BondAnalyticsAPI {
 		final double dblCoupon)
 		throws Exception
 	{
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			4,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -103,9 +93,8 @@ public class BondAnalyticsAPI {
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("3M"),
+			ForwardLabel.Create (strCurrency, "3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -168,7 +157,6 @@ public class BondAnalyticsAPI {
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsFloatingStreamEdgeDate,
 				cpsFloating,
-				ucasFloating,
 				cfusFloating
 			)
 		);
@@ -350,7 +338,7 @@ public class BondAnalyticsAPI {
 			bond = BondBuilder.CreateSimpleFloater ( // Simple Floating Rate Bond
 				strName,		// Name
 				"USD",			// Currency
-				"USD-LIBOR-6M", // Rate Index
+				"USD-6M", // Rate Index
 				strCreditCurve, // Credit Curve
 				0.01,			// Floating Spread
 				2,				// Coupon Frequency

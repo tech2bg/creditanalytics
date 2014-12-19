@@ -7,7 +7,6 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -82,7 +81,7 @@ public class FedFundLIBORSwap {
 					aiDay[i],
 					strCurrency
 				),
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				strCurrency
 			);
 
@@ -143,16 +142,6 @@ public class FedFundLIBORSwap {
 	{
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			360,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
 			"Act/360",
@@ -184,9 +173,8 @@ public class FedFundLIBORSwap {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null,
 				0.
 			);
 
@@ -243,7 +231,6 @@ public class FedFundLIBORSwap {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -315,16 +302,6 @@ public class FedFundLIBORSwap {
 				strCurrency
 			);
 
-			UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-				360,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
-				strCurrency,
-				false
-			);
-
 			UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 				2,
 				"Act/360",
@@ -339,9 +316,8 @@ public class FedFundLIBORSwap {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+				ForwardLabel.Create (strCurrency, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null,
 				0.
 			);
 
@@ -389,7 +365,6 @@ public class FedFundLIBORSwap {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);
@@ -742,33 +717,12 @@ public class FedFundLIBORSwap {
 	{
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
-		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
-			12 / iTenorInMonths,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-6M"),
+			ForwardLabel.Standard (strCurrency + "-6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -776,9 +730,8 @@ public class FedFundLIBORSwap {
 			iTenorInMonths + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-" + iTenorInMonths + "M"),
+			ForwardLabel.Standard (strCurrency + "-" + iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -833,7 +786,6 @@ public class FedFundLIBORSwap {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsReferenceStreamEdgeDate,
 					cpsReference,
-					ucasReference,
 					cfusReference
 				)
 			);
@@ -842,7 +794,6 @@ public class FedFundLIBORSwap {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsDerivedStreamEdgeDate,
 					cpsDerived,
-					ucasDerived,
 					cfusDerived
 				)
 			);
@@ -895,7 +846,7 @@ public class FedFundLIBORSwap {
 
 		return ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
 			"CUBIC_FWD" + strBasisTenor,
-			ForwardLabel.Create (strCurrency, "LIBOR", strBasisTenor),
+			ForwardLabel.Create (strCurrency, strBasisTenor),
 			valParams,
 			null,
 			mktParams,
@@ -917,33 +868,12 @@ public class FedFundLIBORSwap {
 	{
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
-			4,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
-		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
-			360,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
-
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"3M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+			ForwardLabel.Standard (strCurrency + "-3M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -951,9 +881,8 @@ public class FedFundLIBORSwap {
 			"ON",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 			null,
-			OvernightIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel(),
+			ForwardLabel.Create (strCurrency, "ON"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -1008,7 +937,6 @@ public class FedFundLIBORSwap {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsReferenceStreamEdgeDate,
 					cpsReference,
-					ucasReference,
 					cfusReference
 				)
 			);
@@ -1017,7 +945,6 @@ public class FedFundLIBORSwap {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsDerivedStreamEdgeDate,
 					cpsDerived,
-					ucasDerived,
 					cfusDerived
 				)
 			);
@@ -1046,16 +973,6 @@ public class FedFundLIBORSwap {
 		throws Exception
 	{
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
-
-		UnitCouponAccrualSetting ucasFloating = new UnitCouponAccrualSetting (
-			4,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false
-		);
 
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
 			2,
@@ -1088,9 +1005,8 @@ public class FedFundLIBORSwap {
 				"3M",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 				null,
-				IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel ("3M"),
+				ForwardLabel.Create (strCurrency, "3M"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null,
 				0.
 			);
 
@@ -1147,7 +1063,6 @@ public class FedFundLIBORSwap {
 				CompositePeriodBuilder.FloatingCompositeUnit (
 					lsFloatingStreamEdgeDate,
 					cpsFloating,
-					ucasFloating,
 					cfusFloating
 				)
 			);

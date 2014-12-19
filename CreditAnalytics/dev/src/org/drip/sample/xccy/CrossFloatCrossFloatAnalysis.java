@@ -6,7 +6,6 @@ import java.util.List;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -67,33 +66,12 @@ public class CrossFloatCrossFloatAnalysis {
 		final int iTenorInMonthsDerived)
 		throws Exception
 	{
-		UnitCouponAccrualSetting ucasReference = new UnitCouponAccrualSetting (
-			12 / iTenorInMonthsReference,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCouponCurrency,
-			false
-		);
-
-		UnitCouponAccrualSetting ucasDerived = new UnitCouponAccrualSetting (
-			12 / iTenorInMonthsDerived,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCouponCurrency,
-			false
-		);
-
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			iTenorInMonthsReference + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonthsReference + "M"),
+			ForwardLabel.Create (strCouponCurrency, iTenorInMonthsReference + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -101,9 +79,8 @@ public class CrossFloatCrossFloatAnalysis {
 			iTenorInMonthsDerived + "M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			IBORIndexContainer.IndexFromJurisdiction (strCouponCurrency).ForwardStateLabel (iTenorInMonthsDerived + "M"),
+			ForwardLabel.Create (strCouponCurrency, iTenorInMonthsDerived + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			null,
 			0.
 		);
 
@@ -159,7 +136,6 @@ public class CrossFloatCrossFloatAnalysis {
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsReferenceStreamEdgeDate,
 				cpsReference,
-				ucasReference,
 				cfusReference
 			)
 		);
@@ -168,7 +144,6 @@ public class CrossFloatCrossFloatAnalysis {
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsDerivedStreamEdgeDate,
 				cpsDerived,
-				ucasDerived,
 				cfusDerived
 			)
 		);
@@ -309,7 +284,7 @@ public class CrossFloatCrossFloatAnalysis {
 			dblUSDFundingRate
 		);
 
-		ForwardLabel friEUR3M = IBORIndexContainer.IndexFromJurisdiction ("EUR").ForwardStateLabel ("3M");
+		ForwardLabel friEUR3M = ForwardLabel.Create ("EUR", "3M");
 
 		ForwardCurve fcEUR3M = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,
@@ -321,7 +296,7 @@ public class CrossFloatCrossFloatAnalysis {
 			)
 		);
 
-		ForwardLabel friEUR6M = IBORIndexContainer.IndexFromJurisdiction ("EUR").ForwardStateLabel ("6M");
+		ForwardLabel friEUR6M = ForwardLabel.Create ("EUR", "6M");
 
 		ForwardCurve fcEUR6M = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
 			dtToday,

@@ -125,21 +125,17 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 					org.drip.param.period.CompositePeriodSetting cpsFloating = null;
 					org.drip.param.period.UnitCouponAccrualSetting ucasFixed = null;
 					org.drip.param.period.ComposableFixedUnitSetting cfusFixed = null;
-					org.drip.param.period.UnitCouponAccrualSetting ucasFloating = null;
 					org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = null;
 
 					try {
-						ucasFloating = new org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360",
-							false, "Act/360", false, "USD", true);
-
 						ucasFixed = new org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false,
 							"Act/360", false, "USD", true);
 
 						cfusFloating = new org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
-								null, org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-3M"),
+								null, org.drip.state.identifier.ForwardLabel.Standard ("USD-3M"),
 									org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-							null, 0.);
+							0.);
 
 						cfusFixed = new org.drip.param.period.ComposableFixedUnitSetting ("6M",
 							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
@@ -175,7 +171,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 
 							org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
 								(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-									(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+									(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
 
 							org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
 								(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit
@@ -192,7 +188,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 					}
 
 					lsfc.add (dtStart.addDays (2), org.drip.state.identifier.ForwardLabel.Standard
-						("USD-LIBOR-6M"), 0.0042);
+						("USD-6M"), 0.0042);
 
 					return null != (dcIRS = org.drip.param.creator.ScenarioDiscountCurveBuilder.NonlinearBuild
 						(dtStart, "USD",

@@ -526,21 +526,16 @@ public class StaticBACurves {
 		org.drip.param.period.CompositePeriodSetting cpsFloating = null;
 		org.drip.param.period.UnitCouponAccrualSetting ucasFixed = null;
 		org.drip.param.period.ComposableFixedUnitSetting cfusFixed = null;
-		org.drip.param.period.UnitCouponAccrualSetting ucasFloating = null;
 		org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = null;
 
 		try {
-			ucasFloating = new org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false,
-				"Act/360", false, strCurrency, true);
-
 			ucasFixed = new org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360",
 				false, strCurrency, true);
 
 			cfusFloating = new org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
-					org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
-						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, null,
-							0.);
+					org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-3M"),
+						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, 0.);
 
 			cfusFixed = new org.drip.param.period.ComposableFixedUnitSetting ("6M",
 				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null, 0., 0.,
@@ -575,7 +570,7 @@ public class StaticBACurves {
 
 				org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
 					(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-						(lsFloatingStreamEdgeDate, cpsFloating, ucasFloating, cfusFloating));
+						(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
 
 				org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
 					(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit
@@ -593,12 +588,12 @@ public class StaticBACurves {
 		long lStart = System.nanoTime();
 
 		if (!mpc.addFixings (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
-			"-LIBOR-6M"), 0.0042))
+			"-6M"), 0.0042))
 			return false;
 
 		try {
 			if (!mpc.addFixings (org.drip.analytics.date.JulianDate.CreateFromYMD (2010, 12, 14),
-				org.drip.state.identifier.ForwardLabel.Standard ("USD-LIBOR-3M"), 0.0042))
+				org.drip.state.identifier.ForwardLabel.Standard ("USD-3M"), 0.0042))
 				return false;
 
 			(irsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurrency,

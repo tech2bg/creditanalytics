@@ -104,16 +104,12 @@ public class SingleStreamComponentBuilder {
 			org.drip.product.rates.SingleStreamComponent[iNumContract];
 
 		try {
-			org.drip.param.period.UnitCouponAccrualSetting ucas = new
-				org.drip.param.period.UnitCouponAccrualSetting (4, "Act/360", false, "Act/360", false,
-					strCurrency, false);
-
 			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
 				org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
-						org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-LIBOR-3M"),
+						org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-3M"),
 							org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-								null, 0.);
+								0.);
 
 			org.drip.param.period.CompositePeriodSetting cps = new
 				org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null,
@@ -132,7 +128,7 @@ public class SingleStreamComponentBuilder {
 					org.drip.product.rates.Stream
 						(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
 							(org.drip.analytics.support.CompositePeriodBuilder.EdgePair (dtStart,
-								dtMaturity), cps, ucas, cfus)), csp);
+								dtMaturity), cps, cfus)), csp);
 
 				aSSC[i].setPrimaryCode (MakeBaseEDFCode (dtStart.julian()));
 
@@ -165,7 +161,7 @@ public class SingleStreamComponentBuilder {
 		final java.lang.String strCurrency)
 	{
 		org.drip.state.identifier.ForwardLabel friDeposit = null != fri ? fri :
-			org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-LIBOR-3M");
+			org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-3M");
 
 		java.lang.String strTenor = friDeposit.tenor();
 
@@ -178,17 +174,13 @@ public class SingleStreamComponentBuilder {
 			int iFreq = bIsON ? 360 : 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths
 				(strTenor);
 
-			org.drip.param.period.UnitCouponAccrualSetting ucas = new
-				org.drip.param.period.UnitCouponAccrualSetting (iFreq, "Act/360", false, "Act/360", false,
-					strCurrency, false);
-
 			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
 				org.drip.param.period.ComposableFloatingUnitSetting (strTenor, bIsON ?
 					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT :
 						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
 							friDeposit,
 								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				null, 0.);
+				0.);
 
 			org.drip.param.period.CompositePeriodSetting cps = new
 				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null,
@@ -199,7 +191,7 @@ public class SingleStreamComponentBuilder {
 				org.drip.product.rates.SingleStreamComponent (strCode, new org.drip.product.rates.Stream
 					(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
 						(org.drip.analytics.support.CompositePeriodBuilder.EdgePair (dtEffective,
-							dtMaturity), cps, ucas, cfus)), new org.drip.param.valuation.CashSettleParams (0,
+							dtMaturity), cps, cfus)), new org.drip.param.valuation.CashSettleParams (0,
 								strCurrency, 0));
 
 			sscDeposit.setPrimaryCode (strCode);

@@ -3,7 +3,6 @@ package org.drip.sample.forward;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
-import org.drip.market.definition.IBORIndexContainer;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.ExponentialTensionSetParams;
@@ -52,7 +51,7 @@ public class IBOR6MCubicKLKHyperbolic {
 		final String strTenor)
 		throws Exception
 	{
-		ForwardLabel fri = IBORIndexContainer.IndexFromJurisdiction (strCurrency).ForwardStateLabel (strTenor);
+		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,
