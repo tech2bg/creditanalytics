@@ -1,8 +1,11 @@
 
 package org.drip.sample.ccbs;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
+import org.drip.analytics.support.CompositePeriodBuilder;
+import org.drip.market.definition.FloaterIndex;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.sample.forward.*;
 import org.drip.service.api.CreditAnalytics;
@@ -578,7 +581,7 @@ public class NOK3M6MUSD3M6M {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtValue = JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11);
+		JulianDate dtValue = DateUtil.CreateFromYMD (2012, DateUtil.DECEMBER, 11);
 
 		String strReferenceCurrency = "USD";
 		String strDerivedCurrency = "NOK";
@@ -589,6 +592,14 @@ public class NOK3M6MUSD3M6M {
 			SegmentInelasticDesignControl.Create (2, 2),
 			new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
 			null
+		);
+
+		FloaterIndex fiNOK = new FloaterIndex (
+			"NOIS",
+			strDerivedCurrency,
+			"Act/360",
+			"NOK",
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		DiscountCurve dcReference = OvernightIndexCurve.MakeDC (
@@ -603,7 +614,8 @@ public class NOK3M6MUSD3M6M {
 			s_adblUSDOISFutureQuote,
 			s_astrUSDLongEndOISMaturityTenor,
 			s_adblUSDLongEndOISQuote,
-			scbcCubic
+			scbcCubic,
+			null
 		);
 
 		ForwardCurve fc6MReference = IBORCurve.CustomIBORBuilderSample (
@@ -666,13 +678,14 @@ public class NOK3M6MUSD3M6M {
 			s_adblNOKOISFutureQuote,
 			s_astrNOKLongEndOISMaturityTenor,
 			s_adblNOKLongEndOISQuote,
-			scbcCubic
+			scbcCubic,
+			fiNOK
 		);
 
 		ForwardCurve fc6MDerived = IBORCurve.CustomIBORBuilderSample (
 			dcDerived,
 			null,
-			ForwardLabel.Create (strDerivedCurrency, "6M"),
+			ForwardLabel.Create (strDerivedCurrency, "6M", fiNOK),
 			scbcCubic,
 			s_astrNOK6MDepositTenor,
 			s_adblNOK6MDepositQuote,

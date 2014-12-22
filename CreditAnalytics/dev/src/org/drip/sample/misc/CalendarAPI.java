@@ -3,6 +3,7 @@ package org.drip.sample.misc;
 
 import java.util.*;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.service.api.CreditAnalytics;
@@ -104,7 +105,7 @@ public class CalendarAPI {
 		int[] aiWkendDays = CreditAnalytics.GetWeekendDays ("USD,GBP");
 
 		for (int i = 0; i < aiWkendDays.length; ++i)
-			System.out.println (JulianDate.DayChars (aiWkendDays[i]));
+			System.out.println (DateUtil.DayChars (aiWkendDays[i]));
 
 		System.out.println ("USD,GBP has " + aiWkendDays.length + " weekend days");
 
@@ -112,11 +113,11 @@ public class CalendarAPI {
 		 * Check if the given day is a holiday
 		 */
 
-		boolean bIsHoliday = CreditAnalytics.IsHoliday ("USD,GBP", JulianDate.CreateFromYMD (2011, 12, 28));
+		boolean bIsHoliday = CreditAnalytics.IsHoliday ("USD,GBP", DateUtil.CreateFromYMD (2011, 12, 28));
 
-		System.out.println (JulianDate.CreateFromYMD (2011, 12, 28) + " is a USD,GBP holiday? " + bIsHoliday);
+		System.out.println (DateUtil.CreateFromYMD (2011, 12, 28) + " is a USD,GBP holiday? " + bIsHoliday);
 
-		JulianDate dtToday = JulianDate.Today();
+		JulianDate dtToday = DateUtil.Today();
 
 		/*
 		 * List all the holidays between the specified days according to the calendar set

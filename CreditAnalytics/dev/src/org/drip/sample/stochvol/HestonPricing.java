@@ -3,6 +3,7 @@ package org.drip.sample.stochvol;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
@@ -83,7 +84,6 @@ public class HestonPricing {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -141,7 +141,8 @@ public class HestonPricing {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -158,7 +159,6 @@ public class HestonPricing {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -171,7 +171,6 @@ public class HestonPricing {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -346,7 +345,7 @@ public class HestonPricing {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
+		JulianDate dtToday = DateUtil.Today();
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 

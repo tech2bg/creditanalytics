@@ -110,14 +110,11 @@ public class IBORCurve {
 
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[astrMaturityTenor.length];
 
-		String strCurrency = fri.currency();
-
 		for (int i = 0; i < astrMaturityTenor.length; ++i)
-			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addTenor (astrMaturityTenor[i]),
-				fri,
-				strCurrency
+				fri
 			);
 
 		return aDeposit;
@@ -184,7 +181,8 @@ public class IBORCurve {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -201,7 +199,6 @@ public class IBORCurve {
 			fri.tenor(),
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -237,7 +234,6 @@ public class IBORCurve {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -332,7 +328,6 @@ public class IBORCurve {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -345,7 +340,6 @@ public class IBORCurve {
 			iTenorInMonths + "M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,

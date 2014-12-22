@@ -3,6 +3,7 @@ package org.drip.sample.collateral;
 
 import java.util.Map;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
@@ -62,7 +63,7 @@ public class DomesticCollateralForeignForex {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today();
+		JulianDate dtToday = DateUtil.Today();
 
 		String strDomesticCurrency = "USD";
 		String strForeignCurrency = "EUR";

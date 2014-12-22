@@ -5,6 +5,7 @@ package org.drip.sample.rates;
  * Credit Product imports
  */
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.valuation.*;
@@ -146,7 +147,7 @@ public class TreasuryCurveAPI {
 
 		for (int i = 0; i < aTSYBond.length; ++i) {
 			double dblPrice = aTSYBond[i].priceFromBumpedDC (
-				new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
+				new ValuationParams (DateUtil.Today(), DateUtil.Today(), "USD"),
 				MarketParamsBuilder.Discount (dcTSY),
 				aTSYBond[i].maturityDate().julian(),
 				1.,
@@ -157,7 +158,7 @@ public class TreasuryCurveAPI {
 				FormatUtil.FormatDouble (dblPrice, 2, 3, 100.));
 
 			double dblYield = aTSYBond[i].yieldFromPrice (
-				new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
+				new ValuationParams (DateUtil.Today(), DateUtil.Today(), "USD"),
 				MarketParamsBuilder.Discount (dcTSY),
 				null,
 				dblPrice
@@ -209,7 +210,7 @@ public class TreasuryCurveAPI {
 		long lTime = System.nanoTime();
 
 		Bond[] aTSYBond = CreateOnTheRunTSYBondSet (
-			JulianDate.Today(),
+			DateUtil.Today(),
 			astrTSYName,
 			aiMaturityYear,
 			adblCoupon
@@ -220,7 +221,7 @@ public class TreasuryCurveAPI {
 		 */
 
 		DiscountCurve dcTSY = BuildOnTheRunTSYDiscountCurve (
-			JulianDate.Today(),
+			DateUtil.Today(),
 			aTSYBond,
 			adblCalibYield
 		);
@@ -239,7 +240,7 @@ public class TreasuryCurveAPI {
 		System.out.println ("\n----\n");
 
 		double[] adblYield = GetOnTheRunYield (
-			JulianDate.Today(),
+			DateUtil.Today(),
 			dcTSY,
 			aTSYBond
 		);
@@ -271,8 +272,8 @@ public class TreasuryCurveAPI {
 			0.0375,
 			2,
 			"Act/Act",
-			JulianDate.Today(),
-			JulianDate.Today().addYears (iOffTheRunMaturityYears),	// off-the-run
+			DateUtil.Today(),
+			DateUtil.Today().addYears (iOffTheRunMaturityYears),	// off-the-run
 			null,
 			null
 		);
@@ -282,7 +283,7 @@ public class TreasuryCurveAPI {
 		 */
 
 		double dblPrice = bondOffTheRun.priceFromBumpedDC (
-			new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
+			new ValuationParams (DateUtil.Today(), DateUtil.Today(), "USD"),
 			MarketParamsBuilder.Discount (dcTSY),
 			bondOffTheRun.maturityDate().julian(),
 			1.,
@@ -296,7 +297,7 @@ public class TreasuryCurveAPI {
 		 */
 
 		double dblYieldOffTheRun = bondOffTheRun.yieldFromPrice (
-			new ValuationParams (JulianDate.Today(), JulianDate.Today(), "USD"),
+			new ValuationParams (DateUtil.Today(), DateUtil.Today(), "USD"),
 			MarketParamsBuilder.Discount (dcTSY),
 			null,
 			dblPrice

@@ -62,20 +62,21 @@ public class EODCurves {
 
 		try {
 			if (bTSY)
-				return org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit
-					(dtEffective.addDays (2), dtEffective.addDays (2).addTenorAndAdjust (strTenor,
-						strCurrency), null, strCurrency);
+				return org.drip.product.creator.SingleStreamComponentBuilder.Deposit (dtEffective.addDays
+					(2), dtEffective.addDays (2).addTenorAndAdjust (strTenor, strCurrency),
+						org.drip.state.identifier.ForwardLabel.Create (strCurrency, strTenor));
 
 			if ("M".equalsIgnoreCase (strInstrCode))
-				return org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit
-					(dtEffective.addDays (2), dtEffective.addDays (2).addTenorAndAdjust (strTenor,
-						strCurrency), null, strCurrency);
+				return org.drip.product.creator.SingleStreamComponentBuilder.Deposit (dtEffective.addDays
+					(2), dtEffective.addDays (2).addTenorAndAdjust (strTenor, strCurrency),
+						org.drip.state.identifier.ForwardLabel.Create (strCurrency, strTenor));
 
 			if ("S".equalsIgnoreCase (strInstrCode)) {
 				try {
 					org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 						org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360",
-							false, strCurrency, false);
+							false, strCurrency, false,
+								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 					org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
 						org.drip.param.period.ComposableFixedUnitSetting (strTenor,
@@ -83,9 +84,8 @@ public class EODCurves {
 								null, 0., 0., strCurrency);
 
 					org.drip.param.period.CompositePeriodSetting cpsFixed = new
-						org.drip.param.period.CompositePeriodSetting (2, strTenor, strCurrency, null,
-							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-						1., null, null, null, null);
+						org.drip.param.period.CompositePeriodSetting (2, strTenor, strCurrency, null, 1.,
+							null, null, null, null);
 
 					java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
 						org.drip.analytics.support.CompositePeriodBuilder.OvernightEdgeDates (dtEffective,
@@ -103,9 +103,8 @@ public class EODCurves {
 						0.);
 
 					org.drip.param.period.CompositePeriodSetting cpsFloating = new
-						org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null,
-							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-						1., null, null, null, null);
+						org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null, 1., null,
+							null, null, null);
 
 					java.util.List<java.lang.Double> lsFloatingStreamEdgeDate =
 						org.drip.analytics.support.CompositePeriodBuilder.OvernightEdgeDates (dtEffective,

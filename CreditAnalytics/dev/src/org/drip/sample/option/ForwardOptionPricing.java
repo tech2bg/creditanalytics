@@ -3,6 +3,7 @@ package org.drip.sample.option;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
@@ -72,14 +73,13 @@ public class ForwardOptionPricing {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aCalibComp[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
-				null,
-				strCurrency
+				ForwardLabel.Create (strCurrency, "3M")
 			);
 
-		CalibratableFixedIncomeComponent[] aEDF = SingleStreamComponentBuilder.GenerateFuturesPack (
+		CalibratableFixedIncomeComponent[] aEDF = SingleStreamComponentBuilder.FuturesPack (
 			dtEffective,
 			iNumFutures,
 			strCurrency
@@ -113,7 +113,8 @@ public class ForwardOptionPricing {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -130,7 +131,6 @@ public class ForwardOptionPricing {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -143,7 +143,6 @@ public class ForwardOptionPricing {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -319,7 +318,7 @@ public class ForwardOptionPricing {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
+		JulianDate dtToday = DateUtil.Today();
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 

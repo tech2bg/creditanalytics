@@ -7,6 +7,7 @@ package org.drip.sample.rates;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.DiscountCurve;
@@ -97,7 +98,6 @@ public class MultiLegSwapAPI {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -143,7 +143,8 @@ public class MultiLegSwapAPI {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -169,7 +170,6 @@ public class MultiLegSwapAPI {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -182,7 +182,6 @@ public class MultiLegSwapAPI {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -275,7 +274,8 @@ public class MultiLegSwapAPI {
 			"Act/360",
 			false,
 			"USD",
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFixedUnitSetting cfusFixed3Y = new ComposableFixedUnitSetting (
@@ -310,7 +310,6 @@ public class MultiLegSwapAPI {
 			"6M",
 			"USD",
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -398,7 +397,6 @@ public class MultiLegSwapAPI {
 			"3M",
 			"USD",
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -461,7 +459,7 @@ public class MultiLegSwapAPI {
 	private static final void MultiLegSwapSample()
 		throws Exception
 	{
-		JulianDate dtValue = JulianDate.Today();
+		JulianDate dtValue = DateUtil.Today();
 
 		/*
 		 * Create the Discount Curve from the rates instruments

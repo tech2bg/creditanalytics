@@ -142,7 +142,7 @@ public class FactorSchedule {
 		double[] adblFactor = new double[1];
 		adblFactor[0] = 1.;
 
-		adblDate[0] = org.drip.analytics.date.JulianDate.CreateFromYMD (1900, 1, 1).julian();
+		adblDate[0] = org.drip.analytics.date.DateUtil.CreateFromYMD (1900, 1, 1).julian();
 
 		try {
 			return new FactorSchedule (adblDate, adblFactor);

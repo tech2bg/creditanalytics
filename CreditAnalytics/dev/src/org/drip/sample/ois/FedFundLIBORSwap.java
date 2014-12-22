@@ -3,6 +3,7 @@ package org.drip.sample.ois;
 
 import java.util.*;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
@@ -75,14 +76,13 @@ public class FedFundLIBORSwap {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],
 					strCurrency
 				),
-				ForwardLabel.Create (strCurrency, "ON"),
-				strCurrency
+				ForwardLabel.Create (strCurrency, "ON")
 			);
 
 		return aDeposit;
@@ -149,7 +149,8 @@ public class FedFundLIBORSwap {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -192,7 +193,6 @@ public class FedFundLIBORSwap {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -205,7 +205,6 @@ public class FedFundLIBORSwap {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -309,7 +308,8 @@ public class FedFundLIBORSwap {
 				"Act/360",
 				false,
 				strCurrency,
-				false
+				false,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 			);
 
 			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -326,7 +326,6 @@ public class FedFundLIBORSwap {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -339,7 +338,6 @@ public class FedFundLIBORSwap {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -740,7 +738,6 @@ public class FedFundLIBORSwap {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -753,7 +750,6 @@ public class FedFundLIBORSwap {
 			iTenorInMonths + "M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -891,7 +887,6 @@ public class FedFundLIBORSwap {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -904,7 +899,6 @@ public class FedFundLIBORSwap {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -981,7 +975,8 @@ public class FedFundLIBORSwap {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -1024,7 +1019,6 @@ public class FedFundLIBORSwap {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -1037,7 +1031,6 @@ public class FedFundLIBORSwap {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -1102,7 +1095,7 @@ public class FedFundLIBORSwap {
 
 		String strCurrency = "USD";
 
-		JulianDate dtToday = JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11);
+		JulianDate dtToday = DateUtil.CreateFromYMD (2012, DateUtil.DECEMBER, 11);
 
 		DiscountCurve dcOIS = OISDiscountCurve (
 			dtToday,

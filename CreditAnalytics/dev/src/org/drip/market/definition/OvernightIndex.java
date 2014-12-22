@@ -91,4 +91,11 @@ public class OvernightIndex extends org.drip.market.definition.FloaterIndex {
 	{
 		return _iPublicationLag;
 	}
+
+	@Override public org.drip.analytics.daycount.DateAdjustParams spotLagDAP()
+	{
+		return "ON".equalsIgnoreCase (_strReferenceLag) ? null : new
+			org.drip.analytics.daycount.DateAdjustParams
+				(org.drip.analytics.daycount.Convention.DATE_ROLL_PREVIOUS, 1, calendar());
+	}
 }

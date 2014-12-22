@@ -1,6 +1,7 @@
 
 package org.drip.sample.multicurve;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.BasisCurve;
 import org.drip.param.creator.ScenarioBasisCurveBuilder;
@@ -54,7 +55,7 @@ public class CustomBasisCurveBuilder {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today();
+		JulianDate dtToday = DateUtil.Today();
 
 		String[] astrTenor = new String[] {
 			"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"

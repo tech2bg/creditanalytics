@@ -8,6 +8,7 @@ package org.drip.sample.bond;
 import java.util.*;
 
 import org.drip.analytics.cashflow.*;
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
@@ -96,7 +97,7 @@ public class BondLiveAndEODAPI {
 		 */
 
 		System.out.println ("EOD Yield From Price: " + FormatUtil.FormatDouble
-			(CreditAnalytics.BondEODYieldFromPrice (strISIN, JulianDate.CreateFromYMD (2011, 12, 16), 1.), 2, 3, 100.));
+			(CreditAnalytics.BondEODYieldFromPrice (strISIN, DateUtil.CreateFromYMD (2011, 12, 16), 1.), 2, 3, 100.));
 	}
 
 	/*
@@ -107,7 +108,7 @@ public class BondLiveAndEODAPI {
 
 	private static final void BondEODSample()
 	{
-		JulianDate dtEOD = JulianDate.CreateFromYMD (2012, 1, 13);
+		JulianDate dtEOD = DateUtil.CreateFromYMD (2012, 1, 13);
 
 		String strISIN = "US78490FUS63"; // Short dated floater 9/15/2012
 		// String strISIN = "US78442GGV23"; // Long dated floater
@@ -147,7 +148,7 @@ public class BondLiveAndEODAPI {
 		int iNumBonds = 0;
 		String strTicker = "SLMA";
 
-		JulianDate dtToday = JulianDate.Today();
+		JulianDate dtToday = DateUtil.Today();
 
 		ExplicitBootDiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.05);
 
@@ -211,7 +212,7 @@ public class BondLiveAndEODAPI {
 
 			System.out.println (
 				strISIN + FIELD_SEPARATOR + bond.ticker() + FIELD_SEPARATOR +
-				FormatUtil.FormatDouble (bond.couponMetrics (JulianDate.Today().julian(), null, null).rate(), 2, 3, 100.) + FIELD_SEPARATOR +
+				FormatUtil.FormatDouble (bond.couponMetrics (DateUtil.Today().julian(), null, null).rate(), 2, 3, 100.) + FIELD_SEPARATOR +
 				bond.maturityDate() + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (CreditAnalytics.GetBondDoubleField (strISIN, "OutstandingAmount"), 10, 0, 1.)
 			);
@@ -236,7 +237,7 @@ public class BondLiveAndEODAPI {
 		Map<JulianDate, Double> mapOutstandingNotional = CreditAnalytics.GetIssuerAggregateOutstandingNotional (dtToday, strTicker, adtAscending);
 
 		for (Map.Entry<JulianDate, Double> me : mapOutstandingNotional.entrySet())
-			System.out.println ("[" + JulianDate.Today() + "=>" + me.getKey() + "] = " + me.getValue());
+			System.out.println ("[" + DateUtil.Today() + "=>" + me.getKey() + "] = " + me.getValue());
 	}
 
 	/*
@@ -273,7 +274,7 @@ public class BondLiveAndEODAPI {
 
 		Bond bond = CreditAnalytics.GetBond (strISIN);
 
-		JulianDate dtToday = JulianDate.Today();
+		JulianDate dtToday = DateUtil.Today();
 
 		ExplicitBootDiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (dtToday, "USD", null, 0.03);
 
@@ -415,7 +416,7 @@ public class BondLiveAndEODAPI {
 
 		System.out.println ("Credit Risky Price: " + FormatUtil.FormatDouble (dblBondCreditPrice, 2, 3, 100.));
 
-		System.out.println ("Valuation Date: " + JulianDate.Today());
+		System.out.println ("Valuation Date: " + DateUtil.Today());
 
 		System.out.println ("Effective Date: " + dtEffective);
 
@@ -439,8 +440,8 @@ public class BondLiveAndEODAPI {
 
 		for (LossQuadratureMetrics dp : bond.lossFlow (valParams, pricerParams, mktParams))
 			System.out.println (
-				JulianDate.fromJulian (dp.start()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (dp.end()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (dp.start()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (dp.end()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +

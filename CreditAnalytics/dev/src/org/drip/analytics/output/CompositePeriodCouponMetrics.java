@@ -95,25 +95,25 @@ public class CompositePeriodCouponMetrics {
 			dblAmount += dblUnitAmount;
 			_dblDCF += dblUnitDCF;
 
-			_dblCollateralCredit = convAdj.collateralCredit() * dblUnitDCF;
+			_dblCollateralCredit += convAdj.collateralCredit() * dblUnitDCF;
 
-			_dblCollateralForward = convAdj.collateralForward() * dblUnitDCF;
+			_dblCollateralForward += convAdj.collateralForward() * dblUnitDCF;
 
-			_dblCollateralFunding = convAdj.collateralFunding() * dblUnitDCF;
+			_dblCollateralFunding += convAdj.collateralFunding() * dblUnitDCF;
 
-			_dblCollateralFX = convAdj.collateralFX() * dblUnitDCF;
+			_dblCollateralFX += convAdj.collateralFX() * dblUnitDCF;
 
-			_dblCreditForward = convAdj.creditForward() * dblUnitDCF;
+			_dblCreditForward += convAdj.creditForward() * dblUnitDCF;
 
-			_dblCreditFunding = convAdj.creditFunding() * dblUnitDCF;
+			_dblCreditFunding += convAdj.creditFunding() * dblUnitDCF;
 
-			_dblCreditFX = convAdj.creditFX() * dblUnitDCF;
+			_dblCreditFX += convAdj.creditFX() * dblUnitDCF;
 
-			_dblForwardFunding = convAdj.forwardFunding() * dblUnitDCF;
+			_dblForwardFunding += convAdj.forwardFunding() * dblUnitDCF;
 
-			_dblForwardFX = convAdj.forwardFX() * dblUnitDCF;
+			_dblForwardFX += convAdj.forwardFX() * dblUnitDCF;
 
-			_dblFundingFX = convAdj.fundingFX() * dblUnitDCF;
+			_dblFundingFX += convAdj.fundingFX() * dblUnitDCF;
 		}
 
 		_dblCollateralCredit /= _dblDCF;

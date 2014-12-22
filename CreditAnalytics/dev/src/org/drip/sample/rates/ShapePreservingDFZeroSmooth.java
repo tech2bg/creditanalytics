@@ -3,6 +3,7 @@ package org.drip.sample.rates;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
@@ -109,11 +110,10 @@ public class ShapePreservingDFZeroSmooth {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
-				null,
-				strCurrency
+				ForwardLabel.Create (strCurrency, "3M")
 			);
 
 		return aDeposit;
@@ -214,7 +214,8 @@ public class ShapePreservingDFZeroSmooth {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -240,7 +241,6 @@ public class ShapePreservingDFZeroSmooth {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -253,7 +253,6 @@ public class ShapePreservingDFZeroSmooth {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -423,7 +422,7 @@ public class ShapePreservingDFZeroSmooth {
 		 * Construct the Array of EDF Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.GenerateFuturesPack (
+		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.FuturesPack (
 			dtSpot,
 			8,
 			strCurrency
@@ -753,7 +752,7 @@ public class ShapePreservingDFZeroSmooth {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 
 		String strCurrency = "USD";
 

@@ -98,7 +98,6 @@ public class CCBSDiscountCurve {
 			"6M",
 			strPayCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1. * dblNotional,
 			null,
 			null,
@@ -112,7 +111,6 @@ public class CCBSDiscountCurve {
 			iTenorInMonths + "M",
 			strPayCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1. * dblNotional,
 			null,
 			null,
@@ -184,7 +182,8 @@ public class CCBSDiscountCurve {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -210,7 +209,6 @@ public class CCBSDiscountCurve {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -223,7 +221,6 @@ public class CCBSDiscountCurve {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,

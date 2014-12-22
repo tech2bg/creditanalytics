@@ -301,7 +301,7 @@ public class CreditCurveScenarioGenerator {
 				astrCalibMeasure, lsfc, quotingParams, bFlat)))
 				return null;
 
-			mapTenorCC.put (org.drip.analytics.date.JulianDate.fromJulian
+			mapTenorCC.put (org.drip.analytics.date.DateUtil.FromJulian
 				(_aCalibInst[i].maturityDate().julian()), cc);
 		}
 

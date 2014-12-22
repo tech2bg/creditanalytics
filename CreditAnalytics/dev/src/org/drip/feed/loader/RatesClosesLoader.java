@@ -351,12 +351,13 @@ public class RatesClosesLoader {
 		try {
 			org.drip.analytics.daycount.DateAdjustParams dap = new
 				org.drip.analytics.daycount.DateAdjustParams
-					(org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING, strCurrency);
+					(org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING, 1, strCurrency);
 
 			org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 				org.drip.param.period.UnitCouponAccrualSetting (_mapFixedFrequency.get (strCurrency),
 					strFixedDC, bApplyEOMAdjustmentFixed, strFixedDC, bApplyEOMAdjustmentFixed, strCurrency,
-						false);
+						false,
+							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
 				org.drip.param.period.ComposableFixedUnitSetting (_mapFixedTenor.get (strCurrency),
@@ -365,9 +366,7 @@ public class RatesClosesLoader {
 
 			org.drip.param.period.CompositePeriodSetting cpsFixed = new
 				org.drip.param.period.CompositePeriodSetting (_mapFixedFrequency.get (strCurrency),
-					_mapFixedTenor.get (strCurrency), strCurrency, null,
-						org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-							1., null, null, null, null);
+					_mapFixedTenor.get (strCurrency), strCurrency, null, 1., null, null, null, null);
 
 			java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
 				org.drip.analytics.support.CompositePeriodBuilder.OvernightEdgeDates (dtEffective,
@@ -387,9 +386,7 @@ public class RatesClosesLoader {
 
 			org.drip.param.period.CompositePeriodSetting cpsFloating = new
 				org.drip.param.period.CompositePeriodSetting (_mapFloatingFrequency.get (strCurrency),
-					_mapFloatingTenor.get (strCurrency), strCurrency, null,
-						org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-							-1., null, null, null, null);
+					_mapFloatingTenor.get (strCurrency), strCurrency, null, -1., null, null, null, null);
 
 			java.util.List<java.lang.Double> lsFloatingStreamEdgeDate =
 				org.drip.analytics.support.CompositePeriodBuilder.OvernightEdgeDates (dtEffective,
@@ -436,7 +433,8 @@ public class RatesClosesLoader {
 		try {
 			org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 				org.drip.param.period.UnitCouponAccrualSetting (_mapFixedFrequency.get (strCurrency),
-					strFixedDC, false, strFixedDC, false, strCurrency, false);
+					strFixedDC, false, strFixedDC, false, strCurrency, false,
+						org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
 				org.drip.param.period.ComposableFixedUnitSetting (_mapFixedTenor.get (strCurrency),
@@ -445,9 +443,7 @@ public class RatesClosesLoader {
 
 			org.drip.param.period.CompositePeriodSetting cpsFixed = new
 				org.drip.param.period.CompositePeriodSetting (_mapFixedFrequency.get (strCurrency),
-					_mapFixedTenor.get (strCurrency), strCurrency, null,
-						org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-							1., null, null, null, null);
+					_mapFixedTenor.get (strCurrency), strCurrency, null, 1., null, null, null, null);
 
 			java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
 				org.drip.analytics.support.CompositePeriodBuilder.OvernightEdgeDates (dtEffective,
@@ -466,9 +462,7 @@ public class RatesClosesLoader {
 
 			org.drip.param.period.CompositePeriodSetting cpsFloating = new
 				org.drip.param.period.CompositePeriodSetting (_mapFloatingFrequency.get (strCurrency),
-					_mapFloatingTenor.get (strCurrency), strCurrency, null,
-						org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-							-1., null, null, null, null);
+					_mapFloatingTenor.get (strCurrency), strCurrency, null, -1., null, null, null, null);
 
 			java.util.List<java.lang.Double> lsFloatingStreamEdgeDate =
 				org.drip.analytics.support.CompositePeriodBuilder.OvernightEdgeDates (dtEffective,
@@ -972,8 +966,9 @@ public class RatesClosesLoader {
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			aCalibComp[i] = org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit (dtEffective,
-				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency), null, strCurrency);
+			aCalibComp[i] = org.drip.product.creator.SingleStreamComponentBuilder.Deposit (dtEffective,
+				dtEffective.addTenorAndAdjust (astrTenor[i], strCurrency),
+					org.drip.state.identifier.ForwardLabel.Create (strCurrency, astrTenor[i]));
 
 		return aCalibComp;
 	}
@@ -1236,7 +1231,7 @@ public class RatesClosesLoader {
 
 		java.util.List<java.lang.Double> lsSwapQuote = new java.util.ArrayList<java.lang.Double>();
 
-		org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.JulianDate.CreateFromMDY
+		org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.DateUtil.CreateFromMDY
 			(astrCOBRecord[0], "/");
 
 		if (null == dt) return null;
@@ -1309,10 +1304,10 @@ public class RatesClosesLoader {
 
 		java.util.List<java.lang.Double> lsSwapQuote2 = new java.util.ArrayList<java.lang.Double>();
 
-		org.drip.analytics.date.JulianDate dt1 = org.drip.analytics.date.JulianDate.CreateFromMDY
+		org.drip.analytics.date.JulianDate dt1 = org.drip.analytics.date.DateUtil.CreateFromMDY
 			(astrCOBRecord1[0], "/");
 
-		org.drip.analytics.date.JulianDate dt2 = org.drip.analytics.date.JulianDate.CreateFromMDY
+		org.drip.analytics.date.JulianDate dt2 = org.drip.analytics.date.DateUtil.CreateFromMDY
 			(astrCOBRecord2[0], "/");
 
 		if (null == dt1 || null == dt2) return null;
@@ -1690,7 +1685,7 @@ public class RatesClosesLoader {
 						System.out.println ("\tCDX: " + astrCDXName[i - 1]);
 					}
 				} else {
-					org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.JulianDate.CreateFromMDY
+					org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.DateUtil.CreateFromMDY
 						(astrCDXCloses[0], "/");
 
 					if (null == dt) continue;

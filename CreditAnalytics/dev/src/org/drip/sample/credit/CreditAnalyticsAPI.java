@@ -6,6 +6,7 @@ package org.drip.sample.credit;
  */
 
 import org.drip.analytics.cashflow.*;
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
@@ -71,7 +72,7 @@ public class CreditAnalyticsAPI {
 	private static final void CreditCurveAPISample()
 		throws Exception
 	{
-		JulianDate dtStart = JulianDate.Today();
+		JulianDate dtStart = DateUtil.Today();
 
 		JulianDate dt10Y = dtStart.addYears (10);
 
@@ -113,7 +114,7 @@ public class CreditAnalyticsAPI {
 	private static void CreateCreditCurveFromCDSInstruments()
 		throws Exception
 	{
-		JulianDate dtStart = JulianDate.Today();
+		JulianDate dtStart = DateUtil.Today();
 
 		/*
 		 * Populate the instruments, the calibration measures, and the calibration quotes
@@ -187,7 +188,7 @@ public class CreditAnalyticsAPI {
 	private static final void CDSAPISample()
 		throws Exception
 	{
-		JulianDate dtStart = JulianDate.Today();
+		JulianDate dtStart = DateUtil.Today();
 
 		/*
 		 * Flat Discount Curve
@@ -235,8 +236,8 @@ public class CreditAnalyticsAPI {
 
 		for (LossQuadratureMetrics dp : cds.lossFlow (valParams, pricerParams, mktParams))
 			System.out.println (
-				JulianDate.fromJulian (dp.start()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (dp.end()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (dp.start()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (dp.end()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveNotional(), 1, 0, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveRecovery(), 1, 2, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dp.effectiveDF(), 1, 4, 1.)  + FIELD_SEPARATOR +

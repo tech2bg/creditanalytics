@@ -74,6 +74,8 @@ public class OvernightIndexDefinition {
 
 		DisplayJurisdictionOvernightSetting ("AUD");
 
+		DisplayJurisdictionOvernightSetting ("BRL");
+
 		DisplayJurisdictionOvernightSetting ("CAD");
 
 		DisplayJurisdictionOvernightSetting ("CZK");

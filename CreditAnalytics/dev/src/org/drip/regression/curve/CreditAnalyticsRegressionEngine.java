@@ -59,9 +59,9 @@ public class CreditAnalyticsRegressionEngine extends org.drip.regression.core.Re
 
 	@Override public boolean initRegressionEnv()
 	{
-		return super.initRegressionEnv() && org.drip.analytics.support.Logger.Init
-			("c:\\DRIP\\CreditAnalytics\\Config.xml") && org.drip.analytics.daycount.Convention.Init
-				("c:\\DRIP\\CreditAnalytics\\Config.xml");
+		org.drip.service.api.CreditAnalytics.Init ("");
+
+		return super.initRegressionEnv();
 	}
 
 	public static void main (

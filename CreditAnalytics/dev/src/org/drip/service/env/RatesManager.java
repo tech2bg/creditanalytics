@@ -212,6 +212,6 @@ public class RatesManager {
 		java.sql.Statement stmt = org.drip.service.env.EnvManager.InitEnv
 			("c:\\Lakshmi\\BondAnal\\Config.xml");
 
-		LoadFullIRCurves (mpc, stmt, org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 6, 30));
+		LoadFullIRCurves (mpc, stmt, org.drip.analytics.date.DateUtil.CreateFromYMD (2011, 6, 30));
 	}
 }

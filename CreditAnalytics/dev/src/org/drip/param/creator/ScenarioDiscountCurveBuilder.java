@@ -84,7 +84,8 @@ public class ScenarioDiscountCurveBuilder {
 				if (bIsIRS) {
 					org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 						org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360",
-							false, strCurrency, true);
+							false, strCurrency, true,
+								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 					org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 						org.drip.param.period.ComposableFloatingUnitSetting ("3M",
@@ -99,14 +100,12 @@ public class ScenarioDiscountCurveBuilder {
 								null, 0., 0., strCurrency);
 
 					org.drip.param.period.CompositePeriodSetting cpsFloating = new
-						org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null,
-							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-						-1., null, null, null, null);
+						org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null, -1., null,
+							null, null, null);
 
 					org.drip.param.period.CompositePeriodSetting cpsFixed = new
-						org.drip.param.period.CompositePeriodSetting (2, "6M", strCurrency, null,
-							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-						1., null, null, null, null);
+						org.drip.param.period.CompositePeriodSetting (2, "6M", strCurrency, null, 1., null,
+							null, null, null);
 
 					java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
 						org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dtEffective,
@@ -136,9 +135,8 @@ public class ScenarioDiscountCurveBuilder {
 						0.);
 
 					org.drip.param.period.CompositePeriodSetting cpsDeposit = new
-						org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null,
-							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-						1., null, null, null, null);
+						org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null, 1., null,
+							null, null, null);
 
 					comp = new org.drip.product.rates.SingleStreamComponent ("DEPOSIT_" + dtMaturity, new
 						org.drip.product.rates.Stream

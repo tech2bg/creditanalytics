@@ -3,6 +3,7 @@ package org.drip.sample.multicurve;
 
 import java.util.*;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
@@ -70,14 +71,13 @@ public class STIRVolCorrAnalysis {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFutures];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aCalibComp[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
-				null,
-				strCurrency
+				ForwardLabel.Create (strCurrency, "3M")
 			);
 
-		CalibratableFixedIncomeComponent[] aEDF = SingleStreamComponentBuilder.GenerateFuturesPack (
+		CalibratableFixedIncomeComponent[] aEDF = SingleStreamComponentBuilder.FuturesPack (
 			dtEffective,
 			iNumFutures,
 			strCurrency
@@ -111,7 +111,8 @@ public class STIRVolCorrAnalysis {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -128,7 +129,6 @@ public class STIRVolCorrAnalysis {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -141,7 +141,6 @@ public class STIRVolCorrAnalysis {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -358,7 +357,6 @@ public class STIRVolCorrAnalysis {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -371,7 +369,6 @@ public class STIRVolCorrAnalysis {
 			iTenorInMonths + "M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -611,7 +608,8 @@ public class STIRVolCorrAnalysis {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -637,7 +635,6 @@ public class STIRVolCorrAnalysis {
 			fri.tenor(),
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -650,7 +647,6 @@ public class STIRVolCorrAnalysis {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -753,7 +749,7 @@ public class STIRVolCorrAnalysis {
 		String strTenor = "3M";
 		String strCurrency = "EUR";
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust ("0D", strCurrency);
+		JulianDate dtToday = DateUtil.Today().addTenorAndAdjust ("0D", strCurrency);
 
 		/*
 		 * Construct the Discount Curve using its instruments and quotes

@@ -50,8 +50,8 @@ public class Weekend {
 	public static final Weekend StandardWeekend()
 	{
 		try {
-			return new Weekend (new int[] {org.drip.analytics.date.JulianDate.SUNDAY,
-				org.drip.analytics.date.JulianDate.SATURDAY});
+			return new Weekend (new int[] {org.drip.analytics.date.DateUtil.SUNDAY,
+				org.drip.analytics.date.DateUtil.SATURDAY});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

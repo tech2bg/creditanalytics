@@ -557,7 +557,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 			if (!org.drip.quant.common.NumberUtil.IsValid (brdb._dblCoupon = rs.getDouble ("Coupon")))
 				return null;
 
-			brdb._dtMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
+			brdb._dtMaturity = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
 				("Maturity"));
 
 			brdb._strSeries = rs.getString ("Series");
@@ -600,31 +600,27 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 
 			brdb._dblRedemptionValue = rs.getDouble ("RedemptionValue");
 
-			brdb._dtNextCouponDate = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
-				(rs.getDate ("NextCouponDate"));
+			brdb._dtNextCouponDate = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+				("NextCouponDate"));
 
-			if (null == (brdb._dtAnnounce =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("AnnounceDate"))))
+			if (null == (brdb._dtAnnounce = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry
+				(rs.getDate ("AnnounceDate"))))
 				return null;
 
-			if (null == (brdb._dtFirstSettle =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("FirstSettleDate"))))
+			if (null == (brdb._dtFirstSettle = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry
+				(rs.getDate ("FirstSettleDate"))))
 				return null;
 
-			if (null == (brdb._dtFirstCoupon =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("FirstCouponDate"))))
+			if (null == (brdb._dtFirstCoupon = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry
+				(rs.getDate ("FirstCouponDate"))))
 				return null;
 
 			if (null == (brdb._dtInterestAccrualStart =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("AccrualStartDate"))))
+				org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate ("AccrualStartDate"))))
 				return null;
 
-			if (null == (brdb._dtIssue = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
-				(rs.getDate ("IssueDate"))))
+			if (null == (brdb._dtIssue = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+				("IssueDate"))))
 				return null;
 
 			brdb._bIsCallable = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
@@ -654,8 +650,8 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 
 			brdb._strSecurityType = rs.getString ("SecurityType");
 
-			brdb._dtPrevCouponDate = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
-				(rs.getDate ("PrevCouponDate"));
+			brdb._dtPrevCouponDate = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+				("PrevCouponDate"));
 
 			brdb._strBBGUniqueID = rs.getString ("BBUniqueID");
 
@@ -693,9 +689,8 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 
 			brdb._strIssuer = rs.getString ("Issuer");
 
-			brdb._dtPenultimateCouponDate =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("PenultimateCouponDate"));
+			brdb._dtPenultimateCouponDate = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry
+				(rs.getDate ("PenultimateCouponDate"));
 
 			brdb._strFloatCouponConvention = rs.getString ("FloatCouponConvention");
 
@@ -713,8 +708,8 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 
 			brdb._strFloatCouponConvention = rs.getString ("FloatCouponConvention");
 
-			brdb._dtFinalMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
-				(rs.getDate ("FinalMaturity"));
+			brdb._dtFinalMaturity = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+				("FinalMaturity"));
 
 			brdb._bIsPrivatePlacement = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("PrivatePlacement"));
@@ -824,22 +819,21 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 
 		_dblRedemptionValue = new java.lang.Double (mapJSON.get ("redemptionvalue"));
 
-		_dtAnnounce = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
-			("announcedate"), "-");
+		_dtAnnounce = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD (mapJSON.get ("announcedate"),
+			"-");
 
-		_dtFirstSettle = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
+		_dtFirstSettle = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD (mapJSON.get
 			("firstsettledate"), "-");
 
-		_dtFirstCoupon = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
+		_dtFirstCoupon = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD (mapJSON.get
 			("firstcoupondate"), "-");
 
-		_dtInterestAccrualStart = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD
-			(mapJSON.get ("interestaccrualstartdate"), "-");
+		_dtInterestAccrualStart = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD (mapJSON.get
+			("interestaccrualstartdate"), "-");
 
-		_dtIssue = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
-			("issuedate"), "-");
+		_dtIssue = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD (mapJSON.get ("issuedate"), "-");
 
-		_dtNextCouponDate = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
+		_dtNextCouponDate = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD (mapJSON.get
 			("nextcoupondate"), "-");
 
 		_bIsCallable = new java.lang.Boolean (mapJSON.get ("iscallable"));
@@ -866,7 +860,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 
 		_strSecurityType = mapJSON.get ("securitytype");
 
-		_dtPrevCouponDate = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
+		_dtPrevCouponDate = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD (mapJSON.get
 			("prevcoupondate"), "-");
 
 		_strBBGUniqueID = mapJSON.get ("bbguniqueid");
@@ -893,8 +887,8 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 
 		_strIssuer = mapJSON.get ("issuer");
 
-		_dtPenultimateCouponDate = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD
-			(mapJSON.get ("penultimatecoupondate"), "-");
+		_dtPenultimateCouponDate = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD (mapJSON.get
+			("penultimatecoupondate"), "-");
 
 		_strFloatCouponConvention = mapJSON.get ("floatcouponconvention");
 
@@ -908,7 +902,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 
 		_strCDRSettleCode = mapJSON.get ("cdrsettlecode");
 
-		_dtFinalMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
+		_dtFinalMaturity = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD (mapJSON.get
 			("finalmaturitydate"), "-");
 
 		_bIsPrivatePlacement = new java.lang.Boolean (mapJSON.get ("isprivateplacement"));
@@ -935,8 +929,8 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 
 		_dblCoupon = new java.lang.Double (mapJSON.get ("coupon"));
 
-		_dtMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
-			("maturitydate"), "-");
+		_dtMaturity = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD (mapJSON.get ("maturitydate"),
+			"-");
 	}
 
 	/**
@@ -1406,8 +1400,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 		final java.lang.String strAnnounce)
 	{
 		try {
-			_dtAnnounce = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
-				(strAnnounce.trim());
+			_dtAnnounce = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate (strAnnounce.trim());
 
 			return true;
 		} catch (java.lang.Exception e) {
@@ -1429,7 +1422,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 		final java.lang.String strFirstSettle)
 	{
 		try {
-			_dtFirstSettle = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
+			_dtFirstSettle = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
 				(strFirstSettle.trim());
 
 			return true;
@@ -1452,7 +1445,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 		final java.lang.String strFirstCoupon)
 	{
 		try {
-			_dtFirstCoupon = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
+			_dtFirstCoupon = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
 				(strFirstCoupon.trim());
 
 			return true;
@@ -1475,7 +1468,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 		final java.lang.String strInterestAccrualStart)
 	{
 		try {
-			_dtInterestAccrualStart = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
+			_dtInterestAccrualStart = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
 				(strInterestAccrualStart.trim());
 
 			return true;
@@ -1499,8 +1492,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 		final java.lang.String strIssue)
 	{
 		try {
-			_dtIssue = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
-				(strIssue.trim());
+			_dtIssue = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate (strIssue.trim());
 
 			return true;
 		} catch (java.lang.Exception e) {
@@ -1522,7 +1514,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 		final java.lang.String strNextCouponDate)
 	{
 		try {
-			_dtNextCouponDate = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
+			_dtNextCouponDate = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
 				(strNextCouponDate.trim());
 
 			return true;
@@ -1754,7 +1746,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 		final java.lang.String strPrevCouponDate)
 	{
 		try {
-			_dtPrevCouponDate = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
+			_dtPrevCouponDate = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
 				(strPrevCouponDate.trim());
 
 			return true;
@@ -2000,9 +1992,8 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 		final java.lang.String strPenultimateCouponDate)
 	{
 		try {
-			_dtPenultimateCouponDate =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
-					(strPenultimateCouponDate.trim());
+			_dtPenultimateCouponDate = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
+				(strPenultimateCouponDate.trim());
 
 			return true;
 		} catch (java.lang.Exception e) {
@@ -2144,7 +2135,7 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 		final java.lang.String strFinalMaturity)
 	{
 		try {
-			_dtFinalMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
+			_dtFinalMaturity = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
 				(strFinalMaturity.trim());
 
 			return true;
@@ -2395,9 +2386,8 @@ public class BondRefDataBuilder implements org.drip.product.params.Validatable {
 		final java.lang.String strMaturity)
 	{
 		try {
-			if (null == (_dtMaturity =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
-					(strMaturity.trim())))
+			if (null == (_dtMaturity = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
+				(strMaturity.trim())))
 				return false;
 
 			return true;

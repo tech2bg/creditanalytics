@@ -8,6 +8,7 @@ package org.drip.sample.bond;
 import java.util.List;
 
 import org.drip.analytics.cashflow.*;
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
@@ -86,7 +87,8 @@ public class BondAnalyticsAPI {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -112,7 +114,6 @@ public class BondAnalyticsAPI {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -125,7 +126,6 @@ public class BondAnalyticsAPI {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -213,11 +213,10 @@ public class BondAnalyticsAPI {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aCompCalib[i] = SingleStreamComponentBuilder.Deposit (
 				dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
-				null,
-				strCurrency
+				ForwardLabel.Create (strCurrency, astrCashTenor[i])
 			);
 		}
 
@@ -289,7 +288,7 @@ public class BondAnalyticsAPI {
 		double[] adblFactor = new double[] {1., 1.0, 1.0, 1.0, 1.0};
 		// double[] adblFactor = new double[] {1., 0.9, 0.8, 0.7, 0.6};
 
-		JulianDate dtEOSStart = JulianDate.Today().addDays (2);
+		JulianDate dtEOSStart = DateUtil.Today().addDays (2);
 
 		for (int i = 0; i < 5; ++i)
 			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
@@ -310,7 +309,7 @@ public class BondAnalyticsAPI {
 		double[] adblFactor = new double[] {1., 1.0, 1.0, 1.0, 1.0};
 		// double[] adblFactor = new double[] {1., 0.9, 0.8, 0.7, 0.6};
 
-		JulianDate dtEOSStart = JulianDate.Today().addDays (2);
+		JulianDate dtEOSStart = DateUtil.Today().addDays (2);
 
 		for (int i = 0; i < 5; ++i)
 			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
@@ -343,8 +342,8 @@ public class BondAnalyticsAPI {
 				0.01,			// Floating Spread
 				2,				// Coupon Frequency
 				"30/360",		// Day Count
-				JulianDate.CreateFromYMD (2008, 9, 21), // Effective
-				JulianDate.CreateFromYMD (2023, 9, 20),	// Maturity
+				DateUtil.CreateFromYMD (2008, 9, 21), // Effective
+				DateUtil.CreateFromYMD (2023, 9, 20),	// Maturity
 				MakeFSPrincipal(),		// Principal Schedule
 				MakeFSCoupon());		// Coupon Schedule
 		else if (BondBuilder.BOND_TYPE_SIMPLE_FIXED == iBondType)
@@ -355,8 +354,8 @@ public class BondAnalyticsAPI {
 				0.05,			// Bond Coupon
 				2,				// Coupon Frequency
 				"30/360",		// Day Count
-				JulianDate.CreateFromYMD (2008, 9, 21), // Effective
-				JulianDate.CreateFromYMD (2023, 9, 20),	// Maturity
+				DateUtil.CreateFromYMD (2008, 9, 21), // Effective
+				DateUtil.CreateFromYMD (2023, 9, 20),	// Maturity
 				MakeFSPrincipal(),		// Principal Schedule
 				MakeFSCoupon());		// Coupon Schedule
 		else if (BondBuilder.BOND_TYPE_SIMPLE_FROM_CF == iBondType) {	// Bond from custom coupon and principal flows
@@ -365,7 +364,7 @@ public class BondAnalyticsAPI {
 			double[] adblPrincipalAmount = new double[NUM_CF_ENTRIES];
 			JulianDate[] adt = new JulianDate[NUM_CF_ENTRIES];
 
-			JulianDate dtEffective = JulianDate.CreateFromYMD (2008, 9, 20);
+			JulianDate dtEffective = DateUtil.CreateFromYMD (2008, 9, 20);
 
 			for (int i = 0; i < NUM_CF_ENTRIES; ++i) {
 				adt[i] = dtEffective.addMonths (6 * (i + 1));
@@ -398,7 +397,7 @@ public class BondAnalyticsAPI {
 			EmbeddedOptionSchedule eosPut = null;
 			EmbeddedOptionSchedule eosCall = null;
 
-			JulianDate dtEOSStart = JulianDate.Today().addDays (2);
+			JulianDate dtEOSStart = DateUtil.Today().addDays (2);
 
 			for (int i = 0; i < 5; ++i) {
 				adblPutFactor[i] = 0.9;
@@ -408,10 +407,10 @@ public class BondAnalyticsAPI {
 			}
 
 			if (bEOSAmerican) {		// Creation of the American call and put schedule
-				eosCall = EmbeddedOptionSchedule.FromAmerican (JulianDate.Today().julian() + 1, adblDate,
+				eosCall = EmbeddedOptionSchedule.FromAmerican (DateUtil.Today().julian() + 1, adblDate,
 					adblCallFactor, false, 30, false, Double.NaN, "", Double.NaN);
 
-				eosPut = EmbeddedOptionSchedule.FromAmerican (JulianDate.Today().julian(), adblDate,
+				eosPut = EmbeddedOptionSchedule.FromAmerican (DateUtil.Today().julian(), adblDate,
 					adblPutFactor, true, 30, false, Double.NaN, "", Double.NaN);
 			} else {		// Creation of the European call and put schedule
 				eosCall = new EmbeddedOptionSchedule (adblDate, adblCallFactor, false, 30, false, Double.NaN, "", Double.NaN);
@@ -476,19 +475,19 @@ public class BondAnalyticsAPI {
 		 * Base Discount Curve
 		 */
 
-		DiscountCurve dc = MakeDiscountCurve (JulianDate.Today());
+		DiscountCurve dc = MakeDiscountCurve (DateUtil.Today());
 
 		/*
 		 * Treasury Discount Curve
 		 */
 
-		DiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "USD", null, 0.03);
+		DiscountCurve dcTSY = DiscountCurveBuilder.CreateFromFlatRate (DateUtil.Today(), "USD", null, 0.03);
 
 		/*
 		 * Credit Curve
 		 */
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().julian(), strCreditCurve, "USD", 0.01, 0.4);
+		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (DateUtil.Today().julian(), strCreditCurve, "USD", 0.01, 0.4);
 
 		for (int i = 0; i < aBond.length; ++i) {
 			System.out.println ("\nBOND #" + i + "; " + aBond[i].name());
@@ -507,9 +506,9 @@ public class BondAnalyticsAPI {
 
 			for (CompositePeriod p : aBond[i].couponPeriods())
 				System.out.println (
-					JulianDate.fromJulian (p.startDate()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.endDate()) + FIELD_SEPARATOR +
-					JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
+					DateUtil.FromJulian (p.startDate()) + FIELD_SEPARATOR +
+					DateUtil.FromJulian (p.endDate()) + FIELD_SEPARATOR +
+					DateUtil.FromJulian (p.payDate()) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (dc.df (p.payDate()), 1, 4, 1.) + FIELD_SEPARATOR +
 					FormatUtil.FormatDouble (cc.survival (p.payDate()), 1, 4, 1.)
@@ -526,7 +525,7 @@ public class BondAnalyticsAPI {
 				null,	// TSY quotes
 				null,	// BOND ID
 				null,	// Bond market quote
-				AnalyticsHelper.CreateFixingsObject (aBond[i], JulianDate.Today(), 0.04)	// Fixings
+				AnalyticsHelper.CreateFixingsObject (aBond[i], DateUtil.Today(), 0.04)	// Fixings
 			);
 
 			/*
@@ -534,7 +533,7 @@ public class BondAnalyticsAPI {
 			 */
 
 			ValuationParams valParams = ValuationParams.CreateValParams (
-				JulianDate.Today(),
+				DateUtil.Today(),
 				0,
 				"",
 				Convention.DATE_ROLL_ACTUAL
@@ -555,7 +554,7 @@ public class BondAnalyticsAPI {
 
 			WorkoutInfo wi = aBond[i].exerciseYieldFromPrice (valParams, mktParams, null, dblPrice);
 
-			System.out.println ("\tWorkout Date: " + JulianDate.fromJulian (wi.date()));
+			System.out.println ("\tWorkout Date: " + DateUtil.FromJulian (wi.date()));
 
 			System.out.println ("\tWorkout Factor: " + wi.factor());
 
@@ -620,19 +619,19 @@ public class BondAnalyticsAPI {
 		 */
 
 		Bond bond = BondBuilder.CreateSimpleFixed ("CCCalibBond", "DKK", "CC", 0.05, 2, "30/360",
-			JulianDate.CreateFromYMD (2008, 9, 21), JulianDate.CreateFromYMD (2023, 9, 20), null, null);
+			DateUtil.CreateFromYMD (2008, 9, 21), DateUtil.CreateFromYMD (2023, 9, 20), null, null);
 
 		/*
 		 * Discount Curve
 		 */
 
-		DiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "DKK", null, 0.04);
+		DiscountCurve dc = DiscountCurveBuilder.CreateFromFlatRate (DateUtil.Today(), "DKK", null, 0.04);
 
 		/*
 		 * Credit Curve
 		 */
 
-		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (JulianDate.Today().julian(), "CC", "USD", 0.01, 0.4);
+		CreditCurve cc = CreditCurveBuilder.FromFlatHazard (DateUtil.Today().julian(), "CC", "USD", 0.01, 0.4);
 
 		/*
 		 * Component Market Parameters Container
@@ -644,7 +643,7 @@ public class BondAnalyticsAPI {
 		 * Valuation Parameters
 		 */
 
-		ValuationParams valParams = ValuationParams.CreateValParams (JulianDate.Today(), 0, "USD", Convention.DATE_ROLL_ACTUAL);
+		ValuationParams valParams = ValuationParams.CreateValParams (DateUtil.Today(), 0, "USD", Convention.DATE_ROLL_ACTUAL);
 
 		/*
 		 * Theoretical Price
@@ -659,7 +658,7 @@ public class BondAnalyticsAPI {
 		 * CDS calibration instrument
 		 */
 
-		CreditDefaultSwap cds = CDSBuilder.CreateCDS (JulianDate.Today(), JulianDate.Today().addTenor ("5Y"),
+		CreditDefaultSwap cds = CDSBuilder.CreateCDS (DateUtil.Today(), DateUtil.Today().addTenor ("5Y"),
 			0.1, "DKK", 0.40, "CC", "DKK", true);
 
 		/*
@@ -686,7 +685,7 @@ public class BondAnalyticsAPI {
 
 		CreditCurve ccCalib = CreditScenarioCurveBuilder.CreateCreditCurve (
 				"CC", 					// Name
-				JulianDate.Today(), 	// Date
+				DateUtil.Today(), 	// Date
 				aCalibInst,				// Calibration instruments
 				dc,						// Discount Curve
 				adblQuotes,				// Component Quotes
@@ -698,7 +697,7 @@ public class BondAnalyticsAPI {
 		 * Calculate the survival probability, and recover the input quotes
 		 */
 
-		System.out.println ("Surv (2021, 1, 14): " + ccCalib.survival (JulianDate.CreateFromYMD (2021, 1, 14)));
+		System.out.println ("Surv (2021, 1, 14): " + ccCalib.survival (DateUtil.CreateFromYMD (2021, 1, 14)));
 
 		/*
 		 * Calibrated Component Market Parameters Container

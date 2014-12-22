@@ -5,6 +5,7 @@ package org.drip.sample.misc;
  * Generic imports
  */
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 
 /* 
@@ -145,15 +146,15 @@ public class DayCountAPI {
 		System.out.println (strDCList + "\n--------------------\n");
 
 		DayCountSequence (
-			JulianDate.CreateFromYMD (2013, 5, 30),
-			JulianDate.CreateFromYMD (2013, 6, 24)
+			DateUtil.CreateFromYMD (2013, 5, 30),
+			DateUtil.CreateFromYMD (2013, 6, 24)
 		);
 
 		System.out.println ("\n--------------------\n");
 
 		DayCountSequence (
-			JulianDate.CreateFromYMD (2010, 12, 30),
-			JulianDate.CreateFromYMD (2012, 12, 30)
+			DateUtil.CreateFromYMD (2010, 12, 30),
+			DateUtil.CreateFromYMD (2012, 12, 30)
 		);
 	}
 }

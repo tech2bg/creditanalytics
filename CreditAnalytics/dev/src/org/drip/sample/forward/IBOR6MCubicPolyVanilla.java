@@ -1,6 +1,7 @@
 
 package org.drip.sample.forward;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
@@ -235,7 +236,7 @@ public class IBOR6MCubicPolyVanilla {
 		CreditAnalytics.Init ("");
 
 		Make6MForward (
-			JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11),
+			DateUtil.CreateFromYMD (2012, DateUtil.DECEMBER, 11),
 			"EUR",
 			"6M",
 			true

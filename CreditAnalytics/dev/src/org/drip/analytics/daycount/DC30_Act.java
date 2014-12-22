@@ -73,12 +73,11 @@ public class DC30_Act implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == dm)
 			throw new java.lang.Exception ("DC30_Act.yearFraction: Cannot create DateEOMAdjustment!");
 
-		return org.drip.analytics.date.JulianDate.Year (dblEnd) - org.drip.analytics.date.JulianDate.Year
-			(dblStart) + (30. * (org.drip.analytics.date.JulianDate.Month (dblEnd) -
-				org.drip.analytics.date.JulianDate.Month (dblStart)) +
-					(org.drip.analytics.date.JulianDate.Day (dblEnd) -
-						org.drip.analytics.date.JulianDate.Day (dblStart) + dm.posterior() - dm.anterior()))
-							/ actactParams.freq() / (actactParams.end() - actactParams.start());
+		return org.drip.analytics.date.DateUtil.Year (dblEnd) - org.drip.analytics.date.DateUtil.Year
+			(dblStart) + (30. * (org.drip.analytics.date.DateUtil.Month (dblEnd) -
+				org.drip.analytics.date.DateUtil.Month (dblStart)) + (org.drip.analytics.date.DateUtil.Day
+					(dblEnd) - org.drip.analytics.date.DateUtil.Day (dblStart) + dm.posterior() -
+						dm.anterior())) / actactParams.freq() / (actactParams.end() - actactParams.start());
 	}
 
 	@Override public int daysAccrued (
@@ -97,10 +96,10 @@ public class DC30_Act implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == dm)
 			throw new java.lang.Exception ("DC30_Act.daysAccrued: Cannot create DateEOMAdjustment!");
 
-		return 360 * (org.drip.analytics.date.JulianDate.Year (dblEnd) -
-			org.drip.analytics.date.JulianDate.Year (dblStart)) + 30 *
-				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
-					(dblStart)) + org.drip.analytics.date.JulianDate.Day (dblEnd) -
-						org.drip.analytics.date.JulianDate.Day (dblStart) + dm.posterior() - dm.anterior();
+		return 360 * (org.drip.analytics.date.DateUtil.Year (dblEnd) - org.drip.analytics.date.DateUtil.Year
+			(dblStart)) + 30 * (org.drip.analytics.date.DateUtil.Month (dblEnd) -
+				org.drip.analytics.date.DateUtil.Month (dblStart)) + org.drip.analytics.date.DateUtil.Day
+					(dblEnd) - org.drip.analytics.date.DateUtil.Day (dblStart) + dm.posterior() -
+						dm.anterior();
 	}
 }

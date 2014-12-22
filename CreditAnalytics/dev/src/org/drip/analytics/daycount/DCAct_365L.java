@@ -74,14 +74,14 @@ public class DCAct_365L implements org.drip.analytics.daycount.DCFCalculator {
 			throw new java.lang.Exception ("DCAct_365L.yearFraction: Cannot create DateEOMAdjustment!");
 
 		if (1 == actactParams.freq()) {
-			if (org.drip.analytics.date.JulianDate.ContainsFeb29 (dblStart, dblEnd,
-				org.drip.analytics.date.JulianDate.RIGHT_INCLUDE))
+			if (org.drip.analytics.date.DateUtil.ContainsFeb29 (dblStart, dblEnd,
+				org.drip.analytics.date.DateUtil.RIGHT_INCLUDE))
 				return (dblEnd - dblStart + dm.posterior() - dm.anterior()) / 366.;
 
 			return (dblEnd - dblStart + dm.posterior() - dm.anterior()) / 365.;
 		}
 
-		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblEnd))
+		if (org.drip.analytics.date.DateUtil.IsLeapYear (dblEnd))
 			return (dblEnd - dblStart + dm.posterior() - dm.anterior()) / 366.;
 
 		return (dblEnd - dblStart + dm.posterior() - dm.anterior()) / 365.;
@@ -104,14 +104,14 @@ public class DCAct_365L implements org.drip.analytics.daycount.DCFCalculator {
 			throw new java.lang.Exception ("DCAct_365L.daysAccrued: Cannot create DateEOMAdjustment!");
 
 		if (1 == actactParams.freq()) {
-			if (org.drip.analytics.date.JulianDate.ContainsFeb29 (dblStart, dblEnd,
-				org.drip.analytics.date.JulianDate.RIGHT_INCLUDE))
+			if (org.drip.analytics.date.DateUtil.ContainsFeb29 (dblStart, dblEnd,
+				org.drip.analytics.date.DateUtil.RIGHT_INCLUDE))
 				return (int) (dblEnd - dblStart + dm.posterior() - dm.anterior());
 
 			return (int) (dblEnd - dblStart + dm.posterior() - dm.anterior());
 		}
 
-		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblEnd))
+		if (org.drip.analytics.date.DateUtil.IsLeapYear (dblEnd))
 			return (int) (dblEnd - dblStart + dm.posterior() - dm.anterior());
 
 		return (int) (dblEnd - dblStart + dm.posterior() - dm.anterior());

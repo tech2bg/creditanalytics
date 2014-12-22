@@ -11,18 +11,14 @@ import java.util.Random;
  * Credit Product imports
  */
 
-import org.drip.analytics.date.JulianDate;
+
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.rates.ExplicitBootDiscountCurve;
 import org.drip.param.valuation.*;
 import org.drip.product.definition.*;
 import org.drip.product.params.*;
-
-/*
- * Credit Analytics API
- */
-
 import org.drip.product.creator.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
@@ -93,9 +89,9 @@ public class FXAPI {
 		 * Create a the USD and EUR discount curves
 		 */
 
-		ExplicitBootDiscountCurve dcUSD = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "USD", null, 0.05);
+		ExplicitBootDiscountCurve dcUSD = DiscountCurveBuilder.CreateFromFlatRate (DateUtil.Today(), "USD", null, 0.05);
 
-		ExplicitBootDiscountCurve dcEUR = DiscountCurveBuilder.CreateFromFlatRate (JulianDate.Today(), "EUR", null, 0.04);
+		ExplicitBootDiscountCurve dcEUR = DiscountCurveBuilder.CreateFromFlatRate (DateUtil.Today(), "EUR", null, 0.04);
 
 		double dblFXSpot = 1.40;
 		double dblFXFwdMarket = 1.40;
@@ -108,19 +104,19 @@ public class FXAPI {
 
 			adblFXFwd[i] = dblFXSpot - (i + 1) * 0.01 * rand.nextDouble();
 
-			adblNodes[i] = JulianDate.Today().addYears (i + 1).julian();
+			adblNodes[i] = DateUtil.Today().addYears (i + 1).julian();
 
 			System.out.println (cp.code() + "[" + (i + 1) + "]=" + FormatUtil.FormatDouble (adblFXFwd[i], 1, 3, 100.));
 		}
 
-		ValuationParams valParams = ValuationParams.CreateValParams (JulianDate.Today(), 0, "USD",
+		ValuationParams valParams = ValuationParams.CreateValParams (DateUtil.Today(), 0, "USD",
 			Convention.DATE_ROLL_ACTUAL);
 
 		/*
 		 * Create the FX forward instrument
 		 */
 
-		FXForward fxfwd = FXForwardBuilder.CreateFXForward (cp, JulianDate.Today(), "1Y");
+		FXForward fxfwd = FXForwardBuilder.CreateFXForward (cp, DateUtil.Today(), "1Y");
 
 		/*
 		 * Calculate the FX forward outright
@@ -161,7 +157,7 @@ public class FXAPI {
 		 */
 
 		FXForwardCurve fxCurve = FXForwardCurveBuilder.CreateFXForwardCurve
-			(cp, JulianDate.Today(), dblFXSpot, adblNodes, adblFXFwd, abIsPIP);
+			(cp, DateUtil.Today(), dblFXSpot, adblNodes, adblFXFwd, abIsPIP);
 
 		/*
 		 * Calculate the array of the USD basis
@@ -208,7 +204,7 @@ public class FXAPI {
 		 */
 
 		FXBasisCurve fxUSDBasisCurve = FXBasisCurveBuilder.CreateFXBasisCurve
-			(cp, JulianDate.Today(), dblFXSpot, adblNodes, adblFullUSDBasis, false);
+			(cp, DateUtil.Today(), dblFXSpot, adblNodes, adblFullUSDBasis, false);
 
 		/*
 		 * Re-calculate the array of FX Forward from USD Basis Curve
@@ -225,7 +221,7 @@ public class FXAPI {
 		 */
 
 		FXBasisCurve fxEURBasisCurve = FXBasisCurveBuilder.CreateFXBasisCurve
-			(cp, JulianDate.Today(), dblFXSpot, adblNodes, adblFullEURBasis, false);
+			(cp, DateUtil.Today(), dblFXSpot, adblNodes, adblFullEURBasis, false);
 
 		/*
 		 * Re-calculate the array of FX Forward from EUR Basis Curve

@@ -290,15 +290,15 @@ public class BondProductBuilder {
 
 			bpb._strTicker = rs.getString ("Ticker");
 
-			if (!org.drip.quant.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * rs.getDouble ("Coupon"))) {
+			if (!org.drip.quant.common.NumberUtil.IsValid (bpb._dblCoupon = 0.01 * rs.getDouble ("Coupon")))
+			{
 				System.out.println ("Invalid coupon for ISIN " + bpb._strISIN);
 
 				return null;
 			}
 
-			if (null == (bpb._dtMaturity =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("Maturity")))) {
+			if (null == (bpb._dtMaturity = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+				("Maturity")))) {
 				System.out.println ("Invalid maturity for ISIN " + bpb._strISIN);
 
 				return null;
@@ -316,39 +316,34 @@ public class BondProductBuilder {
 
 			bpb._dblRedemptionValue = rs.getDouble ("RedemptionValue");
 
-			if (null == (bpb._dtAnnounce =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("AnnounceDate")))) {
+			if (null == (bpb._dtAnnounce = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+				("AnnounceDate")))) {
 				System.out.println ("Invalid announce date for ISIN " + DES (bpb));
 
 				return null;
 			}
 
-			if (null == (bpb._dtFirstSettle =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("FirstSettleDate")))) {
+			if (null == (bpb._dtFirstSettle = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry
+				(rs.getDate ("FirstSettleDate")))) {
 				System.out.println ("Invalid first settle date for ISIN " + DES (bpb));
 
 				return null;
 			}
 
-			if (null == (bpb._dtFirstCoupon =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("FirstCouponDate")))) {
+			if (null == (bpb._dtFirstCoupon = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry
+				(rs.getDate ("FirstCouponDate")))) {
 				if (m_bBlog) System.out.println ("Invalid first coupon date for ISIN " + DES (bpb));
 			}
 
-			if (null == (bpb._dtInterestAccrualStart =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("AccrualStartDate")))) {
+			if (null == (bpb._dtInterestAccrualStart = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry
+				(rs.getDate ("AccrualStartDate")))) {
 				System.out.println ("Invalid accrual start date for " + DES (bpb));
 
 				return null;
 			}
 
-			if (null == (bpb._dtIssue =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rs.getDate
-					("IssueDate")))) {
+			if (null == (bpb._dtIssue = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+				("IssueDate")))) {
 				System.out.println ("Invalid issue date for " + DES (bpb));
 
 				return null;
@@ -400,8 +395,8 @@ public class BondProductBuilder {
 
 			// bpb._dblCurrentCoupon = 0.01 * rs.getDouble ("CurrentCoupon");
 
-			bpb._dtFinalMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
-				(rs.getDate ("FinalMaturity"));
+			bpb._dtFinalMaturity = org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+				("FinalMaturity"));
 
 			bpb._bIsPerpetual = org.drip.quant.common.StringUtil.ParseFromUnitaryString (rs.getString
 				("Perpetual"));
@@ -472,7 +467,7 @@ public class BondProductBuilder {
 			(mapJSON.get ("coupon"))))
 			return null;
 
-		if (null == (bpb._dtMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD
+		if (null == (bpb._dtMaturity = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD
 			(mapJSON.get ("maturity"), "-")))
 			return null;
 
@@ -509,11 +504,11 @@ public class BondProductBuilder {
 			return null;
 		}
 
-		if (null == (bpb._dtFirstCoupon = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD
+		if (null == (bpb._dtFirstCoupon = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD
 			(mapJSON.get ("firstCpnDate"), "-")))
 			return null;
 
-		if (null == (bpb._dtIssue = org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD
+		if (null == (bpb._dtIssue = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD
 			(mapJSON.get ("issueDate"), "-")))
 			return null;
 
@@ -532,9 +527,8 @@ public class BondProductBuilder {
 
 			// bpb._dblCurrentCoupon = 0.01 * rs.getDouble ("CurrentCoupon");
 
-			if (null == (bpb._dtFinalMaturity =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianFromYYYYMMDD (mapJSON.get
-					("finalMaturityDt"), "-")))
+			if (null == (bpb._dtFinalMaturity = org.drip.analytics.date.DateUtil.MakeJulianFromYYYYMMDD
+				(mapJSON.get ("finalMaturityDt"), "-")))
 				return null;
 
 			bpb._bIsPerpetual = java.lang.Boolean.parseBoolean (mapJSON.get ("perpetual"));
@@ -663,9 +657,8 @@ public class BondProductBuilder {
 		final java.lang.String strMaturity)
 	{
 		try {
-			if (null == (_dtMaturity =
-				org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
-					(strMaturity.trim())))
+			if (null == (_dtMaturity = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
+				(strMaturity.trim())))
 				return false;
 
 			return true;
@@ -808,8 +801,7 @@ public class BondProductBuilder {
 		final java.lang.String strAnnounce)
 	{
 		try {
-			_dtAnnounce = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
-				(strAnnounce.trim());
+			_dtAnnounce = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate (strAnnounce.trim());
 
 			return true;
 		} catch (java.lang.Exception e) {
@@ -831,7 +823,7 @@ public class BondProductBuilder {
 		final java.lang.String strFirstSettle)
 	{
 		try {
-			_dtFirstSettle = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
+			_dtFirstSettle = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
 				(strFirstSettle.trim());
 
 			return true;
@@ -854,7 +846,7 @@ public class BondProductBuilder {
 		final java.lang.String strFirstCoupon)
 	{
 		try {
-			_dtFirstCoupon = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
+			_dtFirstCoupon = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
 				(strFirstCoupon.trim());
 
 			return true;
@@ -877,7 +869,7 @@ public class BondProductBuilder {
 		final java.lang.String strInterestAccrualStart)
 	{
 		try {
-			_dtInterestAccrualStart = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
+			_dtInterestAccrualStart = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
 				(strInterestAccrualStart.trim());
 
 			return true;
@@ -901,8 +893,7 @@ public class BondProductBuilder {
 		final java.lang.String strIssue)
 	{
 		try {
-			_dtIssue = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
-				(strIssue.trim());
+			_dtIssue = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate (strIssue.trim());
 
 			return true;
 		} catch (java.lang.Exception e) {
@@ -1128,7 +1119,7 @@ public class BondProductBuilder {
 		final java.lang.String strFinalMaturity)
 	{
 		try {
-			_dtFinalMaturity = org.drip.analytics.support.AnalyticsHelper.MakeJulianDateFromBBGDate
+			_dtFinalMaturity = org.drip.analytics.date.DateUtil.MakeJulianDateFromBBGDate
 				(strFinalMaturity.trim());
 
 			return true;

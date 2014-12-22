@@ -3,6 +3,7 @@ package org.drip.sample.fra;
 
 import java.util.Map;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.MarketParamsBuilder;
@@ -178,7 +179,7 @@ public class FRAMktVolAnalysis {
 		String strTenor = "6M";
 		String strCurrency = "EUR";
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtToday,

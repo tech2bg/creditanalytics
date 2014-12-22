@@ -70,11 +70,11 @@ public class DC30_365 implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == dm)
 			throw new java.lang.Exception ("DC30_365.yearFraction: Cannot create DateEOMAdjustment!");
 
-		return (365.* (org.drip.analytics.date.JulianDate.Year (dblEnd) -
-			org.drip.analytics.date.JulianDate.Year (dblStart)) + 30. *
-				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
-					(dblStart) + dm.posterior() - dm.anterior()) + (org.drip.analytics.date.JulianDate.Day
-						(dblEnd) - org.drip.analytics.date.JulianDate.Day (dblStart))) / 365.;
+		return (365.* (org.drip.analytics.date.DateUtil.Year (dblEnd) - org.drip.analytics.date.DateUtil.Year
+			(dblStart)) + 30. * (org.drip.analytics.date.DateUtil.Month (dblEnd) -
+				org.drip.analytics.date.DateUtil.Month (dblStart) + dm.posterior() - dm.anterior()) +
+					(org.drip.analytics.date.DateUtil.Day (dblEnd) - org.drip.analytics.date.DateUtil.Day
+						(dblStart))) / 365.;
 	}
 
 	@Override public int daysAccrued (
@@ -90,10 +90,10 @@ public class DC30_365 implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == dm)
 			throw new java.lang.Exception ("DC30_365.daysAccrued: Cannot create DateEOMAdjustment!");
 
-		return 365 * (org.drip.analytics.date.JulianDate.Year (dblEnd) -
-			org.drip.analytics.date.JulianDate.Year (dblStart)) + 30 *
-				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
-					(dblStart) + dm.posterior() - dm.anterior()) + (org.drip.analytics.date.JulianDate.Day
-						(dblEnd) - org.drip.analytics.date.JulianDate.Day (dblStart));
+		return 365 * (org.drip.analytics.date.DateUtil.Year (dblEnd) - org.drip.analytics.date.DateUtil.Year
+			(dblStart)) + 30 * (org.drip.analytics.date.DateUtil.Month (dblEnd) -
+				org.drip.analytics.date.DateUtil.Month (dblStart) + dm.posterior() - dm.anterior()) +
+					(org.drip.analytics.date.DateUtil.Day (dblEnd) - org.drip.analytics.date.DateUtil.Day
+						(dblStart));
 	}
 }

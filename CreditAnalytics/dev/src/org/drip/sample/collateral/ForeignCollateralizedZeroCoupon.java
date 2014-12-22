@@ -1,6 +1,7 @@
 
 package org.drip.sample.collateral;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.param.valuation.CollateralizationParams;
@@ -87,7 +88,7 @@ public class ForeignCollateralizedZeroCoupon {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today();
+		JulianDate dtToday = DateUtil.Today();
 
 		String strMaturityTenor = "5Y";
 		String strDomesticCurrency = "USD";

@@ -1797,8 +1797,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (dblValueDate >= dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::priceFromBumpedDC => Val date " +
-				org.drip.analytics.date.JulianDate.fromJulian (dblValueDate) + " greater than Work-out " +
-					org.drip.analytics.date.JulianDate.fromJulian (dblWorkoutDate));
+				org.drip.analytics.date.DateUtil.FromJulian (dblValueDate) + " greater than Work-out " +
+					org.drip.analytics.date.DateUtil.FromJulian (dblWorkoutDate));
 
 		double dblPVFromDC = 0.;
 		boolean bTerminateCouponFlow = false;
@@ -1900,8 +1900,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 
 		if (dblValueDate >= dblWorkoutDate + LEFT_EOS_SNIP)
 			throw new java.lang.Exception ("BondComponent::priceFromBumpedCC => Val date " +
-				org.drip.analytics.date.JulianDate.fromJulian (dblValueDate) + " greater than Work-out " +
-					org.drip.analytics.date.JulianDate.fromJulian (dblWorkoutDate));
+				org.drip.analytics.date.DateUtil.FromJulian (dblValueDate) + " greater than Work-out " +
+					org.drip.analytics.date.DateUtil.FromJulian (dblWorkoutDate));
 
 		org.drip.analytics.definition.CreditCurve cc = bFlat ? ccIn.flatCurve (dblCreditBasis, true, null !=
 			_creditSetting && !_creditSetting.useCurveRecovery() ? _creditSetting.recovery() :
@@ -11940,8 +11940,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		throws java.lang.Exception
 	{
 		for (org.drip.analytics.cashflow.CompositePeriod period : couponPeriods())
-			System.out.println ("\t" + org.drip.analytics.date.JulianDate.fromJulian (period.startDate()) +
-				"->" + org.drip.analytics.date.JulianDate.fromJulian (period.endDate()) + "    " +
+			System.out.println ("\t" + org.drip.analytics.date.DateUtil.FromJulian (period.startDate()) +
+				"->" + org.drip.analytics.date.DateUtil.FromJulian (period.endDate()) + "    " +
 					period.accrualDCF (period.endDate()));
 	}
 }

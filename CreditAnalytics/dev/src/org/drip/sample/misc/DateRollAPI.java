@@ -1,6 +1,7 @@
 
 package org.drip.sample.misc;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.service.api.CreditAnalytics;
@@ -35,12 +36,12 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * DateRoll demonstrates Date Roll Functionality.
+ * DateRollAPI demonstrates Date Roll Functionality.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class DateRoll {
+public class DateRollAPI {
 	public static final void main (
 		final String astrArgs[])
 		throws Exception
@@ -51,13 +52,14 @@ public class DateRoll {
 
 		CreditAnalytics.Init (strConfig);
 
-		JulianDate dt = JulianDate.CreateFromYMD (2012, JulianDate.FEBRUARY, 5);
+		JulianDate dt = DateUtil.CreateFromYMD (2012, DateUtil.FEBRUARY, 5);
 
 		System.out.println ("\tDATE_ROLL_ACTUAL                      : " + dt + " -> " + new JulianDate (
 			Convention.RollDate (
 					dt.julian(),
 					Convention.DATE_ROLL_ACTUAL,
-					"USD"
+					"USD",
+					1
 				)
 			)
 		);
@@ -66,7 +68,8 @@ public class DateRoll {
 			Convention.RollDate (
 					dt.julian(),
 					Convention.DATE_ROLL_FOLLOWING,
-					"USD"
+					"USD",
+					1
 				)
 			)
 		);
@@ -75,7 +78,8 @@ public class DateRoll {
 			Convention.RollDate (
 					dt.julian(),
 					Convention.DATE_ROLL_MODIFIED_FOLLOWING,
-					"USD"
+					"USD",
+					1
 				)
 			)
 		);
@@ -84,7 +88,8 @@ public class DateRoll {
 			Convention.RollDate (
 					dt.julian(),
 					Convention.DATE_ROLL_MODIFIED_FOLLOWING_BIMONTHLY,
-					"USD"
+					"USD",
+					1
 				)
 			)
 		);
@@ -93,7 +98,8 @@ public class DateRoll {
 			Convention.RollDate (
 					dt.julian(),
 					Convention.DATE_ROLL_PREVIOUS,
-					"USD"
+					"USD",
+					1
 				)
 			)
 		);
@@ -102,7 +108,8 @@ public class DateRoll {
 			Convention.RollDate (
 					dt.julian(),
 					Convention.DATE_ROLL_MODIFIED_PREVIOUS,
-					"USD"
+					"USD",
+					1
 				)
 			)
 		);

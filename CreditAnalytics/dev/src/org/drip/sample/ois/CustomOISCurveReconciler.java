@@ -3,6 +3,7 @@ package org.drip.sample.ois;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
@@ -75,14 +76,13 @@ public class CustomOISCurveReconciler {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],
 					strCurrency
 				),
-				ForwardLabel.Create (strCurrency, "ON"),
-				strCurrency
+				ForwardLabel.Create (strCurrency, "ON")
 			);
 
 		return aDeposit;
@@ -149,7 +149,8 @@ public class CustomOISCurveReconciler {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -192,7 +193,6 @@ public class CustomOISCurveReconciler {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -205,7 +205,6 @@ public class CustomOISCurveReconciler {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -309,7 +308,8 @@ public class CustomOISCurveReconciler {
 				"Act/360",
 				false,
 				strCurrency,
-				false
+				false,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 			);
 
 			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -326,7 +326,6 @@ public class CustomOISCurveReconciler {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -339,7 +338,6 @@ public class CustomOISCurveReconciler {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -908,7 +906,7 @@ public class CustomOISCurveReconciler {
 
 		String strCurrency = "EUR";
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 
 		/*
 		 * Runs the full spline linear discount curve builder sample using the overnight index discount curve.

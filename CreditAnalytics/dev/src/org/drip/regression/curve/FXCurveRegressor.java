@@ -95,7 +95,7 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 
 					java.util.Random rand = new java.util.Random();
 
-					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
+					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.DateUtil.Today();
 
 					for (int i = 0; i < NUM_FX_NODES; ++i) {
 						_abIsPIP[i] = false;
@@ -110,7 +110,7 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 
 				@Override public boolean execRegression()
 				{
-					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
+					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.DateUtil.Today();
 
 					if (null == (_fxfwd = org.drip.product.creator.FXForwardBuilder.CreateFXForward (_cp,
 						dtToday, "18M")))
@@ -147,7 +147,7 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 
 				@Override public boolean preRegression()
 				{
-					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
+					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.DateUtil.Today();
 
 					if (null == (_dcUSD = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(dtToday, "USD", null, 0.05)))
@@ -220,7 +220,7 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 
 				@Override public boolean preRegression()
 				{
-					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
+					org.drip.analytics.date.JulianDate dtToday = org.drip.analytics.date.DateUtil.Today();
 
 					if (null == (_dcUSD = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate
 						(dtToday, "USD", null, 0.05)))
@@ -272,7 +272,7 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 
 					try {
 						org.drip.analytics.date.JulianDate dtToday =
-							org.drip.analytics.date.JulianDate.Today();
+							org.drip.analytics.date.DateUtil.Today();
 
 						org.drip.product.params.CurrencyPair cp = new org.drip.product.params.CurrencyPair
 							("EUR", "USD", "USD", 10000.);

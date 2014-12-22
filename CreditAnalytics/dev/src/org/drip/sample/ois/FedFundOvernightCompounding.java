@@ -4,6 +4,7 @@ package org.drip.sample.ois;
 import java.util.*;
 
 import org.drip.analytics.cashflow.CompositePeriod;
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.LatentStateStatic;
@@ -77,14 +78,13 @@ public class FedFundOvernightCompounding {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],
 					strCurrency
 				),
-				ForwardLabel.Create (strCurrency, "ON"),
-				strCurrency
+				ForwardLabel.Create (strCurrency, "ON")
 			);
 
 		return aDeposit;
@@ -151,7 +151,8 @@ public class FedFundOvernightCompounding {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -194,7 +195,6 @@ public class FedFundOvernightCompounding {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -207,7 +207,6 @@ public class FedFundOvernightCompounding {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -311,7 +310,8 @@ public class FedFundOvernightCompounding {
 				"Act/360",
 				false,
 				strCurrency,
-				false
+				false,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 			);
 
 			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -328,7 +328,6 @@ public class FedFundOvernightCompounding {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -341,7 +340,6 @@ public class FedFundOvernightCompounding {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -680,7 +678,7 @@ public class FedFundOvernightCompounding {
 
 		String strCurrency = "USD";
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust (
+		JulianDate dtToday = DateUtil.Today().addTenorAndAdjust (
 			"0D",
 			strCurrency
 		);
@@ -705,7 +703,8 @@ public class FedFundOvernightCompounding {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -731,7 +730,6 @@ public class FedFundOvernightCompounding {
 			"ON",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -744,7 +742,6 @@ public class FedFundOvernightCompounding {
 			"ON",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
 			-1.,
 			null,
 			null,
@@ -757,7 +754,6 @@ public class FedFundOvernightCompounding {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,

@@ -77,7 +77,8 @@ public class RatesAnalyticsAPI {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -103,7 +104,6 @@ public class RatesAnalyticsAPI {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -116,7 +116,6 @@ public class RatesAnalyticsAPI {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -188,7 +187,7 @@ public class RatesAnalyticsAPI {
 		double adblCompCalibValue[] = new double[NUM_DC_INSTR];
 		CalibratableFixedIncomeComponent aCompCalib[] = new CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
-		JulianDate dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6);
+		JulianDate dtStart = org.drip.analytics.date.DateUtil.CreateFromYMD (2011, 4, 6);
 
 		// First 7 instruments - cash calibration
 
@@ -234,7 +233,6 @@ public class RatesAnalyticsAPI {
 			"3M",
 			"USD",
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -252,11 +250,10 @@ public class RatesAnalyticsAPI {
 			adblRate[i] = 0.01;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aCompCalib[i] = SingleStreamComponentBuilder.Deposit (
 				dtCashEffective, // Effective
 				new JulianDate (adblMaturity[i]).addBusDays (2, "USD"), // Maturity
-				null, // FRI
-				"USD"
+				ForwardLabel.Create ("USD", "3M")
 			);
 
 			aCompCalib[i] = new SingleStreamComponent (
@@ -288,7 +285,7 @@ public class RatesAnalyticsAPI {
 		adblCompCalibValue[13] = .0134;
 		adblCompCalibValue[14] = .0160;
 
-		CalibratableFixedIncomeComponent[] aEDF = SingleStreamComponentBuilder.GenerateFuturesPack (dtStart, 8, "USD");
+		CalibratableFixedIncomeComponent[] aEDF = SingleStreamComponentBuilder.FuturesPack (dtStart, 8, "USD");
 
 		for (int i = 0; i < 8; ++i) {
 			adblRate[i + 7] = 0.01;

@@ -4,6 +4,7 @@ package org.drip.sample.ois;
 import java.util.*;
 
 import org.drip.analytics.cashflow.CompositePeriod;
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
@@ -77,14 +78,13 @@ public class OvernightArithmeticCompoundingConvexity {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],
 					strCurrency
 				),
-				ForwardLabel.Create (strCurrency, "ON"),
-				strCurrency
+				ForwardLabel.Create (strCurrency, "ON")
 			);
 
 		return aDeposit;
@@ -151,7 +151,8 @@ public class OvernightArithmeticCompoundingConvexity {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -194,7 +195,6 @@ public class OvernightArithmeticCompoundingConvexity {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -207,7 +207,6 @@ public class OvernightArithmeticCompoundingConvexity {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -283,7 +282,8 @@ public class OvernightArithmeticCompoundingConvexity {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -300,7 +300,6 @@ public class OvernightArithmeticCompoundingConvexity {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -313,7 +312,6 @@ public class OvernightArithmeticCompoundingConvexity {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -701,7 +699,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 
 		String strCurrency = "USD";
 
@@ -729,7 +727,6 @@ public class OvernightArithmeticCompoundingConvexity {
 			"ON",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,

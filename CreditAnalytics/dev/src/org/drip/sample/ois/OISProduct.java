@@ -76,14 +76,13 @@ public class OISProduct {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],
 					strCurrency
 				),
-				ForwardLabel.Create (strCurrency, "ON"),
-				strCurrency
+				ForwardLabel.Create (strCurrency, "ON")
 			);
 
 		return aDeposit;
@@ -150,7 +149,8 @@ public class OISProduct {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -193,7 +193,6 @@ public class OISProduct {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -206,7 +205,6 @@ public class OISProduct {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -281,7 +279,8 @@ public class OISProduct {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -321,7 +320,6 @@ public class OISProduct {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -334,7 +332,6 @@ public class OISProduct {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -437,7 +434,8 @@ public class OISProduct {
 				"Act/360",
 				false,
 				strCurrency,
-				false
+				false,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 			);
 
 			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -454,7 +452,6 @@ public class OISProduct {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -467,7 +464,6 @@ public class OISProduct {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -566,7 +562,8 @@ public class OISProduct {
 				"Act/360",
 				false,
 				strCurrency,
-				false
+				false,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 			);
 
 			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -583,7 +580,6 @@ public class OISProduct {
 				"ON",
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -596,7 +592,6 @@ public class OISProduct {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -984,7 +979,7 @@ public class OISProduct {
 
 		String strCurrency = "EUR";
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = org.drip.analytics.date.DateUtil.Today().addTenor ("0D");
 
 		DiscountCurve dcIndex = CustomOISCurveBuilderSample (
 			dtToday,
@@ -1009,7 +1004,8 @@ public class OISProduct {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusCustomFloating = new ComposableFloatingUnitSetting (
@@ -1035,7 +1031,6 @@ public class OISProduct {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -1048,7 +1043,6 @@ public class OISProduct {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,

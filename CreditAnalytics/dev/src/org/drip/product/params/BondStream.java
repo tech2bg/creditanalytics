@@ -122,15 +122,15 @@ public class BondStream extends org.drip.product.rates.Stream {
 
 			org.drip.param.period.UnitCouponAccrualSetting ucas = new
 				org.drip.param.period.UnitCouponAccrualSetting (iFreq, strCouponDCAdj, bCouponEOMAdj,
-					strAccrualDCAdj, bAccrualEOMAdj, strCurrency, true);
+					strAccrualDCAdj, bAccrualEOMAdj, strCurrency, true,
+						org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			java.lang.String strTenor = (12 / iFreq) + "M";
 			java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCouponPeriod = null;
 
 			org.drip.param.period.CompositePeriodSetting cps = new
-				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null,
-					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
-						null, null, null, null);
+				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null, 1., null,
+					null, null, null);
 
 			java.util.List<java.lang.Double> lsStreamEdgeDate = bPeriodsFromForward ?
 				org.drip.analytics.support.CompositePeriodBuilder.ForwardEdgeDates (dtEffective, dtMaturity,

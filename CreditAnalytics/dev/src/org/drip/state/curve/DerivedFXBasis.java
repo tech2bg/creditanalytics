@@ -91,7 +91,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 		for (int i = 0; i < adblFXBasis.length; ++i) {
 			if (!org.drip.quant.common.NumberUtil.IsValid (adblDate[i]) || adblDate[i] <= _dblSpotDate)
 				throw new java.lang.Exception ("DerivedFXBasis ctr: Invalid params: Node date " +
-					org.drip.analytics.date.JulianDate.fromJulian (adblDate[i]) + " before spot " + dtSpot);
+					org.drip.analytics.date.DateUtil.FromJulian (adblDate[i]) + " before spot " + dtSpot);
 
 			_adblDate[i] = adblDate[i];
 			_adblFXBasis[i] = adblFXBasis[i];
@@ -158,7 +158,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 
 				if (null == fxfwd) {
 					System.out.println ("DerivedFXBasis::getFullFXFwd => Cannot make fxfwd at maturity " +
-						org.drip.analytics.date.JulianDate.fromJulian (_adblDate[i]));
+						org.drip.analytics.date.DateUtil.FromJulian (_adblDate[i]));
 
 					return null;
 				}
@@ -178,7 +178,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 					if (null == dcBasisAdj) {
 						System.out.println
 							("DerivedFXBasis::getFullFXFwd => Cannot create bootstrapped/full denom curve at node "
-								+ org.drip.analytics.date.JulianDate.fromJulian (_adblDate[i]));
+								+ org.drip.analytics.date.DateUtil.FromJulian (_adblDate[i]));
 
 						return null;
 					}
@@ -199,7 +199,7 @@ public class DerivedFXBasis extends org.drip.analytics.definition.FXBasisCurve {
 					if (null == dcBasisAdj) {
 						System.out.println
 							("DerivedFXBasis::getFullFXFwd => Cannot create bootstrapped/full num curve at node "
-								+ org.drip.analytics.date.JulianDate.fromJulian (_adblDate[i]));
+								+ org.drip.analytics.date.DateUtil.FromJulian (_adblDate[i]));
 
 						return null;
 					}

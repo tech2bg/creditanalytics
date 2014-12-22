@@ -8,6 +8,7 @@ package org.drip.sample.bloomberg;
 import java.util.List;
 
 import org.drip.analytics.cashflow.*;
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.rates.DiscountCurve;
@@ -77,7 +78,8 @@ public class CDSW {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -103,7 +105,6 @@ public class CDSW {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -116,7 +117,6 @@ public class CDSW {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -204,11 +204,10 @@ public class CDSW {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aCompCalib[i] = SingleStreamComponentBuilder.Deposit (
 				dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
-				null,
-				strCurrency
+				ForwardLabel.Create (strCurrency, astrCashTenor[i])
 			);
 		}
 
@@ -328,7 +327,7 @@ public class CDSW {
 	{
 		CreditAnalytics.Init ("");
 
-		JulianDate dtCurve = JulianDate.Today();
+		JulianDate dtCurve = DateUtil.Today();
 
 		JulianDate dtValue = dtCurve.addDays (1);
 
@@ -476,9 +475,9 @@ public class CDSW {
 
 		for (CompositePeriod p : cds.couponPeriods())
 			System.out.println (
-				JulianDate.fromJulian (p.startDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.endDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.startDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.endDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.payDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF(), 1, 2, 0.01 * dblNotional) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dc.df (p.payDate()), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (cc.survival (p.payDate()), 1, 4, 1.)

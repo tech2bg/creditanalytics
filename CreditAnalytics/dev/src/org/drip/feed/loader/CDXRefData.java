@@ -73,7 +73,7 @@ public class CDXRefData {
 		if (s_bBlog) System.out.println ("Curve Name: " + strCurveName);
 
 		org.drip.analytics.date.JulianDate dtIssueDate =
-			org.drip.analytics.support.AnalyticsHelper.MakeJulianFromDDMMMYY
+			org.drip.analytics.date.DateUtil.MakeJulianFromDDMMMYY
 				(org.drip.quant.common.StringUtil.ProcessInputForNULL (astrArgs[5], false), "-");
 
 		if (null == dtIssueDate) {
@@ -85,7 +85,7 @@ public class CDXRefData {
 		if (s_bBlog) System.out.println ("Issue Date: " + dtIssueDate);
 
 		org.drip.analytics.date.JulianDate dtMaturityDate =
-			org.drip.analytics.support.AnalyticsHelper.MakeJulianFromDDMMMYY
+			org.drip.analytics.date.DateUtil.MakeJulianFromDDMMMYY
 				(org.drip.quant.common.StringUtil.ProcessInputForNULL (astrArgs[6], false), "-");
 
 		if (null == dtMaturityDate) {

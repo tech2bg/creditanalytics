@@ -1,19 +1,18 @@
 
-package org.drip.sample.fra;
+package org.drip.sample.futures;
 
-import java.util.*;
+import java.util.Map;
 
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.rates.*;
-import org.drip.param.creator.*;
+import org.drip.analytics.date.*;
+import org.drip.analytics.rates.DiscountCurve;
+import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
-import org.drip.product.fra.FRAMarketComponent;
-import org.drip.quant.function1D.FlatUnivariate;
-import org.drip.sample.forward.*;
+import org.drip.product.creator.SingleStreamComponentBuilder;
+import org.drip.product.rates.SingleStreamComponent;
+import org.drip.sample.forward.OvernightIndexCurve;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.state.identifier.*;
+import org.drip.state.identifier.ForwardLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -43,12 +42,13 @@ import org.drip.state.identifier.*;
  */
 
 /**
- * FRAMkt contains the demonstration of the Market Multi-Curve FRA product sample.
+ * EONIAFutures contains the demonstration of the construction and the Valuation of the EONIA Futures
+ * 	Contract.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAMkt {
+public class EONIAFutures {
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -59,48 +59,24 @@ public class FRAMkt {
 
 		CreditAnalytics.Init ("");
 
-		String strTenor = "6M";
 		String strCurrency = "EUR";
-		double dblEURIBOR6MVol = 0.37;
-		double dblEONIAVol = 0.37;
-		double dblEONIAEURIBOR6MCorrelation = 0.8;
 
-		JulianDate dtToday = DateUtil.Today().addTenorAndAdjust (
-			"0D",
-			strCurrency
-		);
+		JulianDate dtToday = DateUtil.Today();
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtToday,
 			strCurrency
 		);
 
-		ForwardCurve fcEURIBOR6M = IBOR6MQuarticPolyVanilla.Make6MForward (
+		SingleStreamComponent eoniaFutures = SingleStreamComponentBuilder.Deposit (
 			dtToday,
-			strCurrency,
-			strTenor
-		);
-
-		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
-
-		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
-
-		JulianDate dtForward = dtToday.addTenor (strTenor);
-
-		FRAMarketComponent fra = new FRAMarketComponent (
-			1.,
-			strCurrency,
-			fri.fullyQualifiedName(),
-			strCurrency,
-			dtForward.julian(),
-			fri,
-			0.006,
-			"Act/360"
+			dtToday.addTenor ("1M"),
+			ForwardLabel.Create (strCurrency, "ON")
 		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
 			dcEONIA,
-			fcEURIBOR6M,
+			null,
 			null,
 			null,
 			null,
@@ -115,25 +91,14 @@ public class FRAMkt {
 			strCurrency
 		);
 
-		mktParams.setForwardCurveVolSurface (
-			fri,
-			new FlatUnivariate (dblEURIBOR6MVol)
+		Map<String, Double> mapEONIAFuturesOutput = eoniaFutures.value (
+			valParams,
+			null,
+			mktParams,
+			null
 		);
 
-		mktParams.setFundingCurveVolSurface (
-			fundingLabel,
-			new FlatUnivariate (dblEONIAVol)
-		);
-
-		mktParams.setForwardFundingCorrSurface (
-			fri,
-			fundingLabel,
-			new FlatUnivariate (dblEONIAEURIBOR6MCorrelation)
-		);
-
-		Map<String, Double> mapFRAOutput = fra.value (valParams, null, mktParams, null);
-
-		for (Map.Entry<String, Double> me : mapFRAOutput.entrySet())
+		for (Map.Entry<String, Double> me : mapEONIAFuturesOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 	}
 }

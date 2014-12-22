@@ -37,7 +37,6 @@ package org.drip.param.period;
 public class CompositePeriodSetting {
 	private int _iFreq = -1;
 	private java.lang.String _strTenor = "";
-	private int _iAccrualCompoundingRule = -1;
 	private java.lang.String _strPayCurrency = "";
 	private double _dblBaseNotional = java.lang.Double.NaN;
 	private org.drip.product.params.FactorSchedule _fsCoupon = null;
@@ -53,7 +52,6 @@ public class CompositePeriodSetting {
 	 * @param strTenor The Period Tenor
 	 * @param strPayCurrency The Pay Currency
 	 * @param dapPay Composite Pay Date Adjust Parameters
-	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
 	 * @param dblBaseNotional The Period Base Notional
 	 * @param fsCoupon The Period Coupon Schedule
 	 * @param fsNotional The Period Notional Schedule
@@ -68,7 +66,6 @@ public class CompositePeriodSetting {
 		final java.lang.String strTenor,
 		final java.lang.String strPayCurrency,
 		final org.drip.analytics.daycount.DateAdjustParams dapPay,
-		final int iAccrualCompoundingRule,
 		final double dblBaseNotional,
 		final org.drip.product.params.FactorSchedule fsCoupon,
 		final org.drip.product.params.FactorSchedule fsNotional,
@@ -78,9 +75,7 @@ public class CompositePeriodSetting {
 	{
 		if (0 >= (_iFreq = iFreq) || null == (_strTenor = strTenor) || _strTenor.isEmpty() || null ==
 			(_strPayCurrency = strPayCurrency) || _strPayCurrency.isEmpty() ||
-				!org.drip.analytics.support.CompositePeriodBuilder.ValidateCompoundingRule
-					(_iAccrualCompoundingRule = iAccrualCompoundingRule) ||
-						!org.drip.quant.common.NumberUtil.IsValid (_dblBaseNotional = dblBaseNotional))
+				!org.drip.quant.common.NumberUtil.IsValid (_dblBaseNotional = dblBaseNotional))
 			throw new java.lang.Exception ("CompositePeriodSetting ctr: Invalid Inputs");
 
 		_dapPay = dapPay;
@@ -136,17 +131,6 @@ public class CompositePeriodSetting {
 	public org.drip.analytics.daycount.DateAdjustParams dapPay()
 	{
 		return _dapPay;
-	}
-
-	/**
-	 * Retrieve the Accrual Compounding Rule
-	 * 
-	 * @return The Accrual Compounding Rule
-	 */
-
-	public int accrualCompoundingRule()
-	{
-		return _iAccrualCompoundingRule;
 	}
 
 	/**

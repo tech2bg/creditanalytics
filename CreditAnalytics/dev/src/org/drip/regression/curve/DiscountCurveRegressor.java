@@ -97,8 +97,8 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					double adblDate[] = new double[NUM_DC_INSTR];
 					double adblRate[] = new double[NUM_DC_INSTR];
 
-					if (null == (_dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2010,
-						org.drip.analytics.date.JulianDate.MAY, 12)))
+					if (null == (_dtStart = org.drip.analytics.date.DateUtil.CreateFromYMD (2010,
+						org.drip.analytics.date.DateUtil.MAY, 12)))
 						return false;
 
 					adblDate[0] = _dtStart.addDays (3).julian(); // ON
@@ -128,10 +128,9 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 						adblRate[i] = java.lang.Double.NaN;
 
 						try {
-							_aCompCalib[i] =
-								org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit
-									(_dtStart.addDays (2), new org.drip.analytics.date.JulianDate
-										(adblDate[i]), null, _strCurrency);
+							_aCompCalib[i] = org.drip.product.creator.SingleStreamComponentBuilder.Deposit
+								(_dtStart.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i]),
+									org.drip.state.identifier.ForwardLabel.Create (_strCurrency, "3M"));
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 
@@ -150,7 +149,7 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 					org.drip.analytics.date.JulianDate dtEDFStart = _dtStart;
 
 					org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
-						org.drip.product.creator.SingleStreamComponentBuilder.GenerateFuturesPack (_dtStart, 8,
+						org.drip.product.creator.SingleStreamComponentBuilder.FuturesPack (_dtStart, 8,
 							_strCurrency);
 
 					for (int i = 0; i < 8; ++i) {
@@ -214,7 +213,8 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 
 					try {
 						ucasFixed = new org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false,
-							"Act/360", false, _strCurrency, true);
+							"Act/360", false, _strCurrency, true,
+								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 						cfusFloating = new org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
@@ -227,14 +227,10 @@ public class DiscountCurveRegressor implements org.drip.regression.core.Regresso
 								null, 0., 0., _strCurrency);
 
 						cpsFloating = new org.drip.param.period.CompositePeriodSetting (4, "3M",
-							_strCurrency, null,
-								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-							-1., null, null, null, null);
+							_strCurrency, null, -1., null, null, null, null);
 
-						cpsFixed = new org.drip.param.period.CompositePeriodSetting (2, "6M",
-							_strCurrency, null,
-								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-							1., null, null, null, null);
+						cpsFixed = new org.drip.param.period.CompositePeriodSetting (2, "6M", _strCurrency,
+							null, 1., null, null, null, null);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
 

@@ -52,30 +52,10 @@ public class SingleStreamComponentBuilder {
 	public static java.lang.String MakeBaseEDFCode (
 		final double dblEffective)
 	{
-		int iMonth = 0;
-		java.lang.String strEDFCode = "ED";
-
 		try {
-			iMonth = org.drip.analytics.date.JulianDate.Month (dblEffective);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		if (org.drip.analytics.date.JulianDate.MARCH == iMonth)
-			strEDFCode = strEDFCode + "H";
-		else if (org.drip.analytics.date.JulianDate.JUNE == iMonth)
-			strEDFCode = strEDFCode + "M";
-		else if (org.drip.analytics.date.JulianDate.SEPTEMBER == iMonth)
-			strEDFCode = strEDFCode + "U";
-		else if (org.drip.analytics.date.JulianDate.DECEMBER == iMonth)
-			strEDFCode = strEDFCode + "Z";
-		else
-			return null;
-
-		try {
-			return strEDFCode + (org.drip.analytics.date.JulianDate.Year (dblEffective) % 10);
+			return "ED" + org.drip.analytics.date.DateUtil.CodeFromMonth
+				(org.drip.analytics.date.DateUtil.Month (dblEffective)) +
+					(org.drip.analytics.date.DateUtil.Year (dblEffective) % 10);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -93,7 +73,7 @@ public class SingleStreamComponentBuilder {
 	 * @return Array of EDF product
 	 */
 
-	public static org.drip.product.rates.SingleStreamComponent[] GenerateFuturesPack (
+	public static org.drip.product.rates.SingleStreamComponent[] FuturesPack (
 		final org.drip.analytics.date.JulianDate dt,
 		final int iNumContract,
 		final java.lang.String strCurrency)
@@ -112,9 +92,8 @@ public class SingleStreamComponentBuilder {
 								0.);
 
 			org.drip.param.period.CompositePeriodSetting cps = new
-				org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null,
-					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
-						null, null, null, null);
+				org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null, 1., null, null,
+					null, null);
 
 			org.drip.param.valuation.CashSettleParams csp = new org.drip.param.valuation.CashSettleParams (0,
 				strCurrency, 0);
@@ -144,31 +123,28 @@ public class SingleStreamComponentBuilder {
 	}
 
 	/**
-	 * Create a Deposit product from effective and maturity dates, and the Currency
+	 * Create a Deposit Product from the Effective and the Maturity Dates, and the Forward Label
 	 * 
 	 * @param dtEffective Effective date
 	 * @param dtMaturity Maturity
 	 * @param fri The Floating Rate Index
-	 * @param strCurrency Currency
 	 * 
 	 * @return Deposit product
 	 */
 
-	public static final org.drip.product.rates.SingleStreamComponent CreateDeposit (
+	public static final org.drip.product.rates.SingleStreamComponent Deposit (
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
-		final org.drip.state.identifier.ForwardLabel fri,
-		final java.lang.String strCurrency)
+		final org.drip.state.identifier.ForwardLabel fri)
 	{
-		org.drip.state.identifier.ForwardLabel friDeposit = null != fri ? fri :
-			org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-3M");
+		java.lang.String strTenor = fri.tenor();
 
-		java.lang.String strTenor = friDeposit.tenor();
+		java.lang.String strCurrency = fri.currency();
 
 		boolean bIsON = "ON".equalsIgnoreCase (strTenor);
 
-		java.lang.String strCode = "DEPOSIT::" + friDeposit.fullyQualifiedName() + "::{" + dtEffective + "->"
-			+ dtMaturity + "}";
+		java.lang.String strCode = "DEPOSIT::" + fri.fullyQualifiedName() + "::{" + dtEffective + "->" +
+			dtMaturity + "}";
 
 		try {
 			int iFreq = bIsON ? 360 : 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths
@@ -178,14 +154,13 @@ public class SingleStreamComponentBuilder {
 				org.drip.param.period.ComposableFloatingUnitSetting (strTenor, bIsON ?
 					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT :
 						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
-							friDeposit,
+							fri,
 								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 				0.);
 
 			org.drip.param.period.CompositePeriodSetting cps = new
-				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null,
-					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
-						null, null, null, null);
+				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null, 1., null,
+					null, null, null);
 
 			org.drip.product.rates.SingleStreamComponent sscDeposit = new
 				org.drip.product.rates.SingleStreamComponent (strCode, new org.drip.product.rates.Stream

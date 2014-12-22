@@ -396,7 +396,7 @@ class BondRefData {
 			("c:\\Lakshmi\\BondAnal\\Config.xml");
 
 		org.drip.service.env.RatesManager.LoadFullIRCurves (mpc, stmt,
-			org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 6, 30));
+			org.drip.analytics.date.DateUtil.CreateFromYMD (2011, 6, 30));
 
 		UploadBondFromFODATA ("C:\\Lakshmi\\RefDataAndMarks\\17Jan2012\\Bloomberg_Instrument_80Y.csv", stmt,
 			mpc);

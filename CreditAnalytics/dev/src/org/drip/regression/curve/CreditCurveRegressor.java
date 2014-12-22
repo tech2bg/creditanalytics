@@ -91,8 +91,8 @@ public class CreditCurveRegressor implements org.drip.regression.core.RegressorS
 				{
 					_strCurrency = "USD";
 
-					if (null == (_dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2010,
-						org.drip.analytics.date.JulianDate.MAY, 12)))
+					if (null == (_dtStart = org.drip.analytics.date.DateUtil.CreateFromYMD (2010,
+						org.drip.analytics.date.DateUtil.MAY, 12)))
 						return false;
 
 					if (null == (_dc = org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatRate

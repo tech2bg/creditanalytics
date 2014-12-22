@@ -3,6 +3,7 @@ package org.drip.sample.rates;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
@@ -95,7 +96,6 @@ public class TemplatedDiscountCurveBuilder {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -152,7 +152,8 @@ public class TemplatedDiscountCurveBuilder {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -178,7 +179,6 @@ public class TemplatedDiscountCurveBuilder {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -191,7 +191,6 @@ public class TemplatedDiscountCurveBuilder {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -550,7 +549,7 @@ public class TemplatedDiscountCurveBuilder {
 
 		String strCurrency = "EUR";
 
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust (
+		JulianDate dtToday = DateUtil.Today().addTenorAndAdjust (
 			"0D",
 			strCurrency
 		);

@@ -41,21 +41,25 @@ package org.drip.analytics.daycount;
 
 public class DateAdjustParams {
 	private int _iRollMode = 0;
+	private int _iNumDaysToRoll = -1;
 	private java.lang.String _strCalendar = "";
 
 	/**
 	 * Create a DateAdjustParams instance from the roll mode and the calendar
 	 * 
 	 * @param iRollMode Roll Mode
+	 * @param iNumDaysToRoll Number of Days to Roll
 	 * @param strCalendar Calendar
 	 */
 
 	public DateAdjustParams (
 		final int iRollMode,
+		final int iNumDaysToRoll,
 		final java.lang.String strCalendar)
 	{
 		_iRollMode = iRollMode;
 		_strCalendar = strCalendar;
+		_iNumDaysToRoll = iNumDaysToRoll;
 	}
 
 	/**
@@ -85,7 +89,7 @@ public class DateAdjustParams {
 	 * 
 	 * @param dblDate Input date
 	 * 
-	 * @return New JulianDate double
+	 * @return The Rolled Date
 	 * 
 	 * @throws java.lang.Exception Thrown if the date cannot be rolled
 	 */
@@ -94,6 +98,7 @@ public class DateAdjustParams {
 		final double dblDate)
 		throws java.lang.Exception
 	{
-		return org.drip.analytics.daycount.Convention.RollDate (dblDate, _iRollMode, _strCalendar);
+		return org.drip.analytics.daycount.Convention.RollDate (dblDate, _iRollMode, _strCalendar,
+			_iNumDaysToRoll);
 	}
 }

@@ -7,19 +7,11 @@ package org.drip.sample.credit;
 
 import java.util.*;
 
-/*
- * Credit Product imports
- */
-
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.product.definition.*;
-
-/*
- * Credit Analytics API imports
- */
-
 import org.drip.product.creator.*;
 import org.drip.service.api.CreditAnalytics;
 
@@ -78,7 +70,7 @@ public class CDSLiveAndEODAPI {
 	private static final void CreditCurveEODAPISample()
 		throws Exception
 	{
-		JulianDate dt = JulianDate.CreateFromYMD (2011, 7, 21);
+		JulianDate dt = DateUtil.CreateFromYMD (2011, 7, 21);
 
 		/*
 		 * Retrieves all the CDS curves available for the given EOD
@@ -96,7 +88,7 @@ public class CDSLiveAndEODAPI {
 
 		CreditCurve ccEOD = CreditAnalytics.LoadEODCDSCreditCurve ("813796", "USD", dt);
 
-		JulianDate dt10Y = JulianDate.Today().addYears (10);
+		JulianDate dt10Y = DateUtil.Today().addYears (10);
 
 		System.out.println ("CCFromEOD[" + dt10Y.toString() + "]; Survival=" + ccEOD.survival ("10Y") +
 			"; Hazard=" + ccEOD.hazard ("10Y"));
@@ -116,7 +108,7 @@ public class CDSLiveAndEODAPI {
 		 */
 
 		Map<JulianDate, CreditCurve> mapCC = CreditAnalytics.LoadEODCDSCreditCurves ("813796", "USD",
-			JulianDate.CreateFromYMD (2011, 7, 14), dt);
+			DateUtil.CreateFromYMD (2011, 7, 14), dt);
 
 		/*
 		 * Displays their 5Y CDS quote
@@ -139,13 +131,13 @@ public class CDSLiveAndEODAPI {
 
 	private static final void CDSEODMeasuresAPISample()
 	{
-		JulianDate dtEOD = JulianDate.CreateFromYMD (2011, 7, 21); // EOD
+		JulianDate dtEOD = DateUtil.CreateFromYMD (2011, 7, 21); // EOD
 
 		/*
 		 * Create a spot starting CDS based off of a specific credit curve
 		 */
 
-		CreditDefaultSwap cds = CDSBuilder.CreateSNAC (JulianDate.Today(), "5Y", 0.1, "813796");
+		CreditDefaultSwap cds = CDSBuilder.CreateSNAC (DateUtil.Today(), "5Y", 0.1, "813796");
 
 		/*
 		 * Calculate the EOD CDS measures

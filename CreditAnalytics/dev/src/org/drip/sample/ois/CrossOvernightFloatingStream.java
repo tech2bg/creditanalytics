@@ -3,12 +3,12 @@ package org.drip.sample.ois;
 
 import java.util.*;
 
-import org.drip.analytics.cashflow.CompositePeriod;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.FloaterIndex;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.period.*;
@@ -78,14 +78,13 @@ public class CrossOvernightFloatingStream {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],
 					strCurrency
 				),
-				ForwardLabel.Create (strCurrency, "ON"),
-				strCurrency
+				ForwardLabel.Create (strCurrency, "ON")
 			);
 
 		return aDeposit;
@@ -189,7 +188,8 @@ public class CrossOvernightFloatingStream {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -232,7 +232,6 @@ public class CrossOvernightFloatingStream {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -245,7 +244,6 @@ public class CrossOvernightFloatingStream {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -371,7 +369,7 @@ public class CrossOvernightFloatingStream {
 		 * Construct the Array of EDF Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.GenerateFuturesPack (
+		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.FuturesPack (
 			dtSpot,
 			4,
 			strCurrency
@@ -511,24 +509,17 @@ public class CrossOvernightFloatingStream {
 		return lsfc;
 	}
 
-	public static final void main (
-		final String[] astrArgs)
+	public static final Map<String, Double> CompoundingRun (
+		final ForwardLabel fri)
 		throws Exception
 	{
-
 		double dblOISVol = 0.3;
 		double dblUSDFundingVol = 0.3;
 		double dblUSDFundingUSDOISCorrelation = 0.3;
 
-		/*
-		 * Initialize the Credit Analytics Library
-		 */
+		String strCurrency = fri.currency();
 
-		CreditAnalytics.Init ("");
-
-		String strCurrency = "USD";
-
-		JulianDate dtToday = JulianDate.Today().addTenorAndAdjust (
+		JulianDate dtToday = org.drip.analytics.date.DateUtil.Today().addTenorAndAdjust (
 			"0D",
 			strCurrency
 		);
@@ -542,41 +533,25 @@ public class CrossOvernightFloatingStream {
 
 		JulianDate dtCustomOISMaturity = dtToday.addTenor ("4M");
 
-		ForwardLabel fri = ForwardLabel.Create (strCurrency, "ON");
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			360,
+			"ON",
+			strCurrency,
+			null,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			"ON",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 			null,
-			ForwardLabel.Create (strCurrency, "ON"),
+			fri,
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			0.
-		);
-
-		CompositePeriodSetting cpsFloatingGeometric = new CompositePeriodSetting (
-			360,
-			"ON",
-			strCurrency,
-			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFloatingArithmetic = new CompositePeriodSetting (
-			360,
-			"ON",
-			strCurrency,
-			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC,
-			-1.,
-			null,
-			null,
-			null,
-			null
 		);
 
 		List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.OvernightEdgeDates (
@@ -585,21 +560,13 @@ public class CrossOvernightFloatingStream {
 			strCurrency
 		);
 
-		Stream floatStreamGeometric = new Stream (
+		Stream floatStream = new Stream (
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsFloatingStreamEdgeDate,
-				cpsFloatingGeometric,
+				cpsFloating,
 				cfusFloating
 			)
 		);
-
-		List<CompositePeriod> lsArithmeticFloatPeriods = CompositePeriodBuilder.FloatingCompositeUnit (
-			lsFloatingStreamEdgeDate,
-			cpsFloatingArithmetic,
-			cfusFloating
-		);
-
-		Stream floatStreamArithmetic = new Stream (lsArithmeticFloatPeriods);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
 			dc,
@@ -614,31 +581,75 @@ public class CrossOvernightFloatingStream {
 				dtToday,
 				fri,
 				0.003,
-				-1.)
-			);
+				-1.
+			)
+		);
 
-		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
+		ValuationParams valParams = new ValuationParams (
+			dtToday,
+			dtToday,
+			strCurrency
+		);
 
 		FundingLabel fundingLabelUSD = FundingLabel.Standard ("USD");
 
-		mktParams.setFundingCurveVolSurface (fundingLabelUSD, new FlatUnivariate (dblUSDFundingVol));
+		mktParams.setFundingCurveVolSurface (
+			fundingLabelUSD,
+			new FlatUnivariate (
+				dblUSDFundingVol
+			)
+		);
 
-		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblOISVol));
+		mktParams.setForwardCurveVolSurface (
+			fri,
+			new FlatUnivariate (dblOISVol)
+		);
 
-		mktParams.setForwardFundingCorrSurface (fri, fundingLabelUSD, new FlatUnivariate (dblUSDFundingUSDOISCorrelation));
+		mktParams.setForwardFundingCorrSurface (
+			fri,
+			fundingLabelUSD,
+			new FlatUnivariate (dblUSDFundingUSDOISCorrelation)
+		);
 
-		Map<String, Double> mapGeometricOutput = floatStreamGeometric.value (
+		return floatStream.value (
 			valParams,
 			null,
 			mktParams,
 			null
 		);
+	}
 
-		Map<String, Double> mapArithmeticOutput = floatStreamArithmetic.value (
-			valParams,
-			null,
-			mktParams,
-			null
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		/*
+		 * Initialize the Credit Analytics Library
+		 */
+
+		CreditAnalytics.Init ("");
+
+		String strCurrency = "USD";
+
+		Map<String, Double> mapArithmeticOutput = CompoundingRun (
+			ForwardLabel.Create (
+				strCurrency,
+				"ON"
+			)
+		);
+
+		Map<String, Double> mapGeometricOutput = CompoundingRun (
+			ForwardLabel.Create (
+				strCurrency,
+				"ON",
+				new FloaterIndex (
+					strCurrency + " ON",
+					strCurrency,
+					"Act/360",
+					strCurrency,
+					CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
+				)
+			)
 		);
 
 		System.out.println ("\n\t-----------------------------------");

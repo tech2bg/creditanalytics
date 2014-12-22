@@ -66,27 +66,26 @@ public class DateEOMAdjustment {
 			return null;
 
 		try {
-			if (org.drip.analytics.date.JulianDate.FEBRUARY == org.drip.analytics.date.JulianDate.Month
-				(dblStart) && org.drip.analytics.date.JulianDate.IsEOM (dblStart) &&
-					org.drip.analytics.date.JulianDate.FEBRUARY ==
-						org.drip.analytics.date.JulianDate.Month (dblEnd) &&
-							org.drip.analytics.date.JulianDate.IsEOM (dblEnd))
-				dm._iD2Adj = (28 == org.drip.analytics.date.JulianDate.DaysInMonth
-					(org.drip.analytics.date.JulianDate.Month (dblEnd),
-						org.drip.analytics.date.JulianDate.Year (dblEnd)) ? 2 : 1);
+			if (org.drip.analytics.date.DateUtil.FEBRUARY == org.drip.analytics.date.DateUtil.Month
+				(dblStart) && org.drip.analytics.date.DateUtil.IsEOM (dblStart) &&
+					org.drip.analytics.date.DateUtil.FEBRUARY == org.drip.analytics.date.DateUtil.Month
+						(dblEnd) && org.drip.analytics.date.DateUtil.IsEOM (dblEnd))
+				dm._iD2Adj = (28 == org.drip.analytics.date.DateUtil.DaysInMonth
+					(org.drip.analytics.date.DateUtil.Month (dblEnd),
+						org.drip.analytics.date.DateUtil.Year (dblEnd)) ? 2 : 1);
 
-			if (org.drip.analytics.date.JulianDate.FEBRUARY == org.drip.analytics.date.JulianDate.Month
-				(dblStart) && org.drip.analytics.date.JulianDate.IsEOM (dblStart))
-				dm._iD1Adj = (28 == org.drip.analytics.date.JulianDate.DaysInMonth
-					(org.drip.analytics.date.JulianDate.Month (dblStart),
-						org.drip.analytics.date.JulianDate.Year (dblStart)) ? 2 : 1);
+			if (org.drip.analytics.date.DateUtil.FEBRUARY == org.drip.analytics.date.DateUtil.Month
+				(dblStart) && org.drip.analytics.date.DateUtil.IsEOM (dblStart))
+				dm._iD1Adj = (28 == org.drip.analytics.date.DateUtil.DaysInMonth
+					(org.drip.analytics.date.DateUtil.Month (dblStart), org.drip.analytics.date.DateUtil.Year
+						(dblStart)) ? 2 : 1);
 
-			if (31 == org.drip.analytics.date.JulianDate.Day (dblEnd) + dm._iD2Adj && (30 ==
-				org.drip.analytics.date.JulianDate.Day (dblStart) + dm._iD1Adj || 31 ==
-					org.drip.analytics.date.JulianDate.Day (dblStart) + dm._iD1Adj))
+			if (31 == org.drip.analytics.date.DateUtil.Day (dblEnd) + dm._iD2Adj && (30 ==
+				org.drip.analytics.date.DateUtil.Day (dblStart) + dm._iD1Adj || 31 ==
+					org.drip.analytics.date.DateUtil.Day (dblStart) + dm._iD1Adj))
 				dm._iD2Adj -= 1;
 
-			if (31 == org.drip.analytics.date.JulianDate.Day (dblStart) + dm._iD1Adj) dm._iD1Adj -= 1;
+			if (31 == org.drip.analytics.date.DateUtil.Day (dblStart) + dm._iD1Adj) dm._iD1Adj -= 1;
 
 			return dm;
 		} catch (java.lang.Exception e) {
@@ -120,21 +119,21 @@ public class DateEOMAdjustment {
 			return null;
 
 		try {
-			if (31 == org.drip.analytics.date.JulianDate.Day (dblStart)) dm._iD1Adj -= 1;
+			if (31 == org.drip.analytics.date.DateUtil.Day (dblStart)) dm._iD1Adj -= 1;
 
-			if (!org.drip.analytics.date.JulianDate.IsLeapYear (dblStart)) {
-				if (org.drip.analytics.date.JulianDate.FEBRUARY == org.drip.analytics.date.JulianDate.Month
-					(dblStart) && 28 == org.drip.analytics.date.JulianDate.Day (dblStart))
+			if (!org.drip.analytics.date.DateUtil.IsLeapYear (dblStart)) {
+				if (org.drip.analytics.date.DateUtil.FEBRUARY == org.drip.analytics.date.DateUtil.Month
+					(dblStart) && 28 == org.drip.analytics.date.DateUtil.Day (dblStart))
 					dm._iD1Adj += 2;
 			} else {
-				if (org.drip.analytics.date.JulianDate.FEBRUARY == org.drip.analytics.date.JulianDate.Month
-					(dblStart) && 29 == org.drip.analytics.date.JulianDate.Day (dblStart))
+				if (org.drip.analytics.date.DateUtil.FEBRUARY == org.drip.analytics.date.DateUtil.Month
+					(dblStart) && 29 == org.drip.analytics.date.DateUtil.Day (dblStart))
 					dm._iD1Adj += 1;
 			}
 
-			if (31 == org.drip.analytics.date.JulianDate.Day (dblEnd) && (30 ==
-				org.drip.analytics.date.JulianDate.Day (dblStart) || 31 ==
-					org.drip.analytics.date.JulianDate.Day (dblStart)))
+			if (31 == org.drip.analytics.date.DateUtil.Day (dblEnd) && (30 ==
+				org.drip.analytics.date.DateUtil.Day (dblStart) || 31 ==
+					org.drip.analytics.date.DateUtil.Day (dblStart)))
 				dm._iD2Adj -= 1;
 
 			return dm;
@@ -170,13 +169,13 @@ public class DateEOMAdjustment {
 
 		try {
 			if (bApplyEOMAdj) {
-				if (org.drip.analytics.date.JulianDate.IsEOM (dblStart))
-					dm._iD1Adj = 30 - org.drip.analytics.date.JulianDate.Day (dblStart);
+				if (org.drip.analytics.date.DateUtil.IsEOM (dblStart))
+					dm._iD1Adj = 30 - org.drip.analytics.date.DateUtil.Day (dblStart);
 
-				if (org.drip.analytics.date.JulianDate.IsEOM (dblEnd) &&
-					(org.drip.analytics.date.JulianDate.FEBRUARY != org.drip.analytics.date.JulianDate.Month
+				if (org.drip.analytics.date.DateUtil.IsEOM (dblEnd) &&
+					(org.drip.analytics.date.DateUtil.FEBRUARY != org.drip.analytics.date.DateUtil.Month
 						(dblEnd)))
-					dm._iD2Adj = 30 - org.drip.analytics.date.JulianDate.Day (dblEnd);
+					dm._iD2Adj = 30 - org.drip.analytics.date.DateUtil.Day (dblEnd);
 			}
 
 			return dm;
@@ -212,9 +211,9 @@ public class DateEOMAdjustment {
 
 		try {
 			if (bApplyEOMAdj) {
-				if (31 == org.drip.analytics.date.JulianDate.Day (dblStart)) dm._iD1Adj = -1;
+				if (31 == org.drip.analytics.date.DateUtil.Day (dblStart)) dm._iD1Adj = -1;
 
-				if (31 == org.drip.analytics.date.JulianDate.Day (dblEnd)) dm._iD2Adj = -1;
+				if (31 == org.drip.analytics.date.DateUtil.Day (dblEnd)) dm._iD2Adj = -1;
 			}
 
 			return dm;
@@ -250,11 +249,11 @@ public class DateEOMAdjustment {
 
 		try {
 			if (bApplyEOMAdj) {
-				if (org.drip.analytics.date.JulianDate.IsEOM (dblStart))
-					dm._iD1Adj = 30 - org.drip.analytics.date.JulianDate.Day (dblStart);
+				if (org.drip.analytics.date.DateUtil.IsEOM (dblStart))
+					dm._iD1Adj = 30 - org.drip.analytics.date.DateUtil.Day (dblStart);
 
-				if (org.drip.analytics.date.JulianDate.IsEOM (dblEnd))
-					dm._iD2Adj = 30 - org.drip.analytics.date.JulianDate.Day (dblEnd);
+				if (org.drip.analytics.date.DateUtil.IsEOM (dblEnd))
+					dm._iD2Adj = 30 - org.drip.analytics.date.DateUtil.Day (dblEnd);
 			}
 
 			return dm;
@@ -290,9 +289,9 @@ public class DateEOMAdjustment {
 
 		try {
 			if (bApplyEOMAdj) {
-				if (31 == org.drip.analytics.date.JulianDate.Day (dblStart)) dm._iD1Adj = -1;
+				if (31 == org.drip.analytics.date.DateUtil.Day (dblStart)) dm._iD1Adj = -1;
 
-				if (31 == org.drip.analytics.date.JulianDate.Day (dblStart)) dm._iD2Adj = +1;
+				if (31 == org.drip.analytics.date.DateUtil.Day (dblStart)) dm._iD2Adj = +1;
 			}
 
 			return dm;

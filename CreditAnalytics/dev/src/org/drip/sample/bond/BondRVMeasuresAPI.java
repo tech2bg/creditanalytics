@@ -7,6 +7,7 @@ package org.drip.sample.bond;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.rates.DiscountCurve;
@@ -77,7 +78,8 @@ public class BondRVMeasuresAPI {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -103,7 +105,6 @@ public class BondRVMeasuresAPI {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -116,7 +117,6 @@ public class BondRVMeasuresAPI {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -204,11 +204,10 @@ public class BondRVMeasuresAPI {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aCompCalib[i] = SingleStreamComponentBuilder.Deposit (
 				dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
-				null,
-				strCurrency
+				ForwardLabel.Create (strCurrency, astrCashTenor[i])
 			);
 		}
 
@@ -412,9 +411,9 @@ public class BondRVMeasuresAPI {
 	private static final void BondRVMeasuresSample()
 		throws Exception
 	{
-		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 27);
+		JulianDate dtCurve = DateUtil.CreateFromYMD (2013, 6, 27);
 
-		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 1);
+		JulianDate dtSettle = DateUtil.CreateFromYMD (2013, 7, 1);
 
 		/*
 		 * Create the discount curve from rates instruments.
@@ -453,8 +452,8 @@ public class BondRVMeasuresAPI {
 				0.0875,			// Bond Coupon
 				2, 				// Frequency
 				"30/360",		// Day Count
-				JulianDate.CreateFromYMD (2010, 3, 17), // Effective
-				JulianDate.CreateFromYMD (2015, 4, 1),	// Maturity
+				DateUtil.CreateFromYMD (2010, 3, 17), // Effective
+				DateUtil.CreateFromYMD (2015, 4, 1),	// Maturity
 				null,		// Principal Schedule
 				null);
 

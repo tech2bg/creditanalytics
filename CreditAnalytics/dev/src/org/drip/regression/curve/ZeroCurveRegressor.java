@@ -80,8 +80,8 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 
 				@Override public boolean preRegression()
 				{
-					if (null == (_dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2010,
-						org.drip.analytics.date.JulianDate.MAY, 12)))
+					if (null == (_dtStart = org.drip.analytics.date.DateUtil.CreateFromYMD (2010,
+						org.drip.analytics.date.DateUtil.MAY, 12)))
 						return false;
 
 					final int NUM_DC_NODES = 5;
@@ -103,7 +103,8 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 					try {
 						org.drip.param.period.UnitCouponAccrualSetting ucas = new
 							org.drip.param.period.UnitCouponAccrualSetting (2, "30/360", false, "30/360",
-								false, "ZAR", false);
+								false, "ZAR", false,
+									org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 						org.drip.param.period.ComposableFixedUnitSetting cfus = new
 							org.drip.param.period.ComposableFixedUnitSetting ("6M",
@@ -111,9 +112,8 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 							null, s_dblZSpread, 0., "ZAR");
 
 						org.drip.param.period.CompositePeriodSetting cps = new
-							org.drip.param.period.CompositePeriodSetting (2, "6M", "ZAR", null,
-								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-							1., null, null,null, null);
+							org.drip.param.period.CompositePeriodSetting (2, "6M", "ZAR", null, 1., null,
+								null, null, null);
 
 						java.util.List<java.lang.Double> lsStreamEdgeDate =
 							org.drip.analytics.support.CompositePeriodBuilder.RegularEdgeDates (_dtStart,
@@ -172,8 +172,8 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				@Override public boolean preRegression()
 				{
 					org.drip.analytics.date.JulianDate dtStart =
-						org.drip.analytics.date.JulianDate.CreateFromYMD (2008,
-							org.drip.analytics.date.JulianDate.SEPTEMBER, 25);
+						org.drip.analytics.date.DateUtil.CreateFromYMD (2008,
+							org.drip.analytics.date.DateUtil.SEPTEMBER, 25);
 
 					for (int i = 0; i < NUM_DF_NODES; ++i)
 						_adblDate[i] = dtStart.addMonths (6 * i + 6).julian();
@@ -228,8 +228,8 @@ public class ZeroCurveRegressor implements org.drip.regression.core.RegressorSet
 				@Override public boolean preRegression()
 				{
 					org.drip.analytics.date.JulianDate dtStart =
-						org.drip.analytics.date.JulianDate.CreateFromYMD (2008,
-							org.drip.analytics.date.JulianDate.SEPTEMBER, 25);
+						org.drip.analytics.date.DateUtil.CreateFromYMD (2008,
+							org.drip.analytics.date.DateUtil.SEPTEMBER, 25);
 
 					for (int i = 0; i < NUM_DF_NODES; ++i)
 						_adblDate[i] = dtStart.addMonths (6 * i + 6).julian();

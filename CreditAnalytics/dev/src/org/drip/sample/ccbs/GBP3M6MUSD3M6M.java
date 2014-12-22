@@ -1,6 +1,7 @@
 
 package org.drip.sample.ccbs;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
@@ -581,7 +582,7 @@ public class GBP3M6MUSD3M6M {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtValue = JulianDate.CreateFromYMD (2012, JulianDate.DECEMBER, 11);
+		JulianDate dtValue = DateUtil.CreateFromYMD (2012, DateUtil.DECEMBER, 11);
 
 		String strReferenceCurrency = "USD";
 		String strDerivedCurrency = "GBP";
@@ -606,7 +607,8 @@ public class GBP3M6MUSD3M6M {
 			s_adblUSDOISFutureQuote,
 			s_astrUSDLongEndOISMaturityTenor,
 			s_adblUSDLongEndOISQuote,
-			scbcCubic
+			scbcCubic,
+			null
 		);
 
 		ForwardCurve fc6MReference = IBORCurve.CustomIBORBuilderSample (
@@ -669,7 +671,8 @@ public class GBP3M6MUSD3M6M {
 			s_adblGBPOISFutureQuote,
 			s_astrGBPLongEndOISMaturityTenor,
 			s_adblGBPLongEndOISQuote,
-			scbcCubic
+			scbcCubic,
+			null
 		);
 
 		ForwardCurve fc6MDerived = IBORCurve.CustomIBORBuilderSample (

@@ -424,7 +424,7 @@ public class Convention {
 		return mapHols;
 	}
 
-	private static final boolean isLocSpecificHoliday (
+	private static final boolean LocationHoliday (
 		final java.lang.String strCalendarSet,
 		final double dblDate,
 		final int iHolType)
@@ -450,7 +450,7 @@ public class Convention {
 				for (org.drip.analytics.holiday.Base hol : lh.holidays()) {
 					try {
 						if (null != hol && (int) dblDate == (int) hol.dateInYear
-							(org.drip.analytics.date.JulianDate.Year (dblDate), true))
+							(org.drip.analytics.date.DateUtil.Year (dblDate), true))
 							return true;
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();
@@ -591,7 +591,7 @@ public class Convention {
 	{
 		if ("BUS252".equalsIgnoreCase (strDayCount) || "BUS DAYS252".equalsIgnoreCase (strDayCount) ||
 			"BUS/252".equalsIgnoreCase (strDayCount))
-			return BusDays (dblStart, dblEnd, strCalendar) / 252.;
+			return BusinessDays (dblStart, dblEnd, strCalendar) / 252.;
 
 		org.drip.analytics.daycount.DCFCalculator dfcCalc = s_mapDCCalc.get (strDayCount);
 
@@ -631,7 +631,7 @@ public class Convention {
 	{
 		if ("BUS252".equalsIgnoreCase (strDayCount) || "BUS DAYS252".equalsIgnoreCase (strDayCount) ||
 			"BUS/252".equalsIgnoreCase (strDayCount))
-			return BusDays (dblStart, dblEnd, strCalendar);
+			return BusinessDays (dblStart, dblEnd, strCalendar);
 
 		org.drip.analytics.daycount.DCFCalculator dfcCalc = s_mapDCCalc.get (strDayCount);
 
@@ -647,8 +647,9 @@ public class Convention {
 	 * @param dblDate Date to be rolled
 	 * @param iRollMode Roll Mode (one of DR_ACT, DR_FOLL, DR_MOD_FOLL, DR_PREV, or DR_MOD_PREV)
 	 * @param strCalendarSet Calendar Set to calculate the holidays by
+	 * @param iNumDaysToRoll The Number of Days to Roll
 	 * 
-	 * @return The rolled date
+	 * @return The Rolled Date
 	 * 
 	 * @throws java.lang.Exception Thrown if the date cannot be rolled
 	 */
@@ -656,36 +657,45 @@ public class Convention {
 	public static final double RollDate (
 		final double dblDate,
 		final int iRollMode,
-		final java.lang.String strCalendarSet)
+		final java.lang.String strCalendarSet,
+		int iNumDaysToRoll)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
-			throw new java.lang.Exception ("Convention::RollDate => Cannot roll a NaN date");
+		if (0 > iNumDaysToRoll || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
+			throw new java.lang.Exception ("Convention::RollDate => Invalid Inputs");
 
 		if (null == strCalendarSet || strCalendarSet.isEmpty() || DATE_ROLL_ACTUAL == iRollMode)
-			return dblDate;
+			return dblDate + iNumDaysToRoll;
 
 		double dblRolledDate = dblDate;
 
-		if (DATE_ROLL_FOLLOWING == iRollMode) {
-			while (IsHoliday (dblRolledDate, strCalendarSet))
-				++dblRolledDate;
-		} else if (DATE_ROLL_MODIFIED_FOLLOWING == iRollMode) {
-			while (IsHoliday (dblRolledDate, strCalendarSet))
-				++dblRolledDate;
+		while (0 != iNumDaysToRoll) {
+			if (DATE_ROLL_FOLLOWING == iRollMode || DATE_ROLL_MODIFIED_FOLLOWING == iRollMode ||
+				DATE_ROLL_MODIFIED_FOLLOWING_BIMONTHLY == iRollMode) {
+				while (IsHoliday (dblRolledDate, strCalendarSet))
+					++dblRolledDate;
+			}
 
-			if (org.drip.analytics.date.JulianDate.Month (dblDate) !=
-				org.drip.analytics.date.JulianDate.Month (dblRolledDate)) {
+			if (DATE_ROLL_PREVIOUS == iRollMode || DATE_ROLL_MODIFIED_PREVIOUS == iRollMode) {
 				while (IsHoliday (dblRolledDate, strCalendarSet))
 					--dblRolledDate;
 			}
-		} else if (DATE_ROLL_MODIFIED_FOLLOWING_BIMONTHLY == iRollMode) {
-			while (IsHoliday (dblRolledDate, strCalendarSet))
-				++dblRolledDate;
 
-			int iOriginalDay = org.drip.analytics.date.JulianDate.Day (dblDate);
+			--iNumDaysToRoll;
+		}
 
-			int iRolledDay = org.drip.analytics.date.JulianDate.Day (dblRolledDate);
+		if (DATE_ROLL_MODIFIED_FOLLOWING == iRollMode) {
+			if (org.drip.analytics.date.DateUtil.Month (dblDate) != org.drip.analytics.date.DateUtil.Month
+				(dblRolledDate)) {
+				while (IsHoliday (dblRolledDate, strCalendarSet))
+					--dblRolledDate;
+			}
+		}
+
+		if (DATE_ROLL_MODIFIED_FOLLOWING_BIMONTHLY == iRollMode) {
+			int iOriginalDay = org.drip.analytics.date.DateUtil.Day (dblDate);
+
+			int iRolledDay = org.drip.analytics.date.DateUtil.Day (dblRolledDate);
 
 			if ((15 < iOriginalDay && 15 > iRolledDay) || (15 > iOriginalDay && 15 < iRolledDay)) {
 				while (IsHoliday (dblRolledDate, strCalendarSet))
@@ -693,15 +703,9 @@ public class Convention {
 			}
 		}
 
-		if (DATE_ROLL_PREVIOUS == iRollMode) {
-			while (IsHoliday (dblRolledDate, strCalendarSet))
-				--dblRolledDate;
-		} else if (DATE_ROLL_MODIFIED_PREVIOUS == iRollMode) {
-			while (IsHoliday (dblRolledDate, strCalendarSet))
-				--dblRolledDate;
-
-			if (org.drip.analytics.date.JulianDate.Month (dblDate) !=
-				org.drip.analytics.date.JulianDate.Month (dblRolledDate)) {
+		if (DATE_ROLL_MODIFIED_PREVIOUS == iRollMode) {
+			if (org.drip.analytics.date.DateUtil.Month (dblDate) != org.drip.analytics.date.DateUtil.Month
+				(dblRolledDate)) {
 				while (IsHoliday (dblRolledDate, strCalendarSet))
 					++dblRolledDate;
 			}
@@ -731,7 +735,7 @@ public class Convention {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Convention::IsHoliday => Cannot a NaN date for holiday!");
 
-		return isLocSpecificHoliday ((null == strCalendar || strCalendar.isEmpty() || "".equalsIgnoreCase
+		return LocationHoliday ((null == strCalendar || strCalendar.isEmpty() || "".equalsIgnoreCase
 			(strCalendar)) ? "USD" : strCalendar, dblDate, iHolType);
 	}
 
@@ -766,30 +770,28 @@ public class Convention {
 	 * @throws java.lang.Exception Thrown if it cannot be evaluated
 	 */
 
-	public static final int BusDays (
+	public static final int BusinessDays (
 		final double dblStart,
 		final double dblFinish,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblStart) || !org.drip.quant.common.NumberUtil.IsValid
-			(dblFinish))
-			throw new java.lang.Exception ("Convention::BusDays => Cannot a NaN date for a bus day!");
+			(dblFinish) || dblStart > dblFinish)
+			throw new java.lang.Exception ("Convention::BusinessDays => Invalid Inputs");
+
+		if (dblStart == dblFinish) return 0;
 
 		int iNumBusDays = 0;
-		double dblEnd = dblFinish;
-		double dblBegin = dblStart;
+		double dblDate = dblStart + 1;
 
-		if (dblBegin > dblEnd) {
-			dblEnd = dblStart;
-			dblBegin = dblFinish;
+		while (dblDate <= dblFinish) {
+			if (!IsHoliday (dblDate, strCalendar)) ++iNumBusDays;
+
+			++dblDate;
 		}
 
-		while (dblBegin != dblEnd) {
-			if (!IsHoliday (dblBegin++, strCalendar)) ++iNumBusDays;
-		}
-
-		return dblBegin > dblEnd ? -1 * iNumBusDays : iNumBusDays;
+		return iNumBusDays;
 	}
 
 	/**
@@ -927,16 +929,16 @@ public class Convention {
 	{
 		Convention.Init ("c:\\DRIP\\CreditProduct\\Config.xml");
 
-		double dblDate = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 5, 5).julian();
+		double dblDate = org.drip.analytics.date.DateUtil.CreateFromYMD (2011, 5, 5).julian();
 
 		org.drip.analytics.holiday.Locale lh = s_mapLocHols.get ("HKD");
 
 		System.out.println (lh.weekendDays());
 
 		for (org.drip.analytics.holiday.Base hol : lh.holidays()) {
-			double dblHoliday = hol.dateInYear (org.drip.analytics.date.JulianDate.Year (dblDate), true);
+			double dblHoliday = hol.dateInYear (org.drip.analytics.date.DateUtil.Year (dblDate), true);
 
-			System.out.println (dblHoliday + "=" + org.drip.analytics.date.JulianDate.fromJulian
+			System.out.println (dblHoliday + "=" + org.drip.analytics.date.DateUtil.FromJulian
 				(dblHoliday));
 		}
 	}

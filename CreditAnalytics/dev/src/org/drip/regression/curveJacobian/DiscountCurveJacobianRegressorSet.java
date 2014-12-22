@@ -73,7 +73,7 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 					java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_DC_INSTR];
 					aCompCalib = new org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_DC_INSTR];
 
-					if (null == (dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6)))
+					if (null == (dtStart = org.drip.analytics.date.DateUtil.CreateFromYMD (2011, 4, 6)))
 						return false;
 
 					adblDate[0] = dtStart.addDays ((int)(365.25 * 1 + 2)).julian(); // 4Y
@@ -129,7 +129,8 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 
 					try {
 						ucasFixed = new org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false,
-							"Act/360", false, "USD", true);
+							"Act/360", false, "USD", true,
+								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 						cfusFloating = new org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
@@ -142,11 +143,9 @@ public class DiscountCurveJacobianRegressorSet implements org.drip.regression.co
 								null, 0., 0., "USD");
 
 						cpsFloating = new org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null,
-							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 							-1., null, null, null, null);
 
 						cpsFixed = new org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null,
-							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 							1., null, null, null, null);
 					} catch (java.lang.Exception e) {
 						e.printStackTrace();

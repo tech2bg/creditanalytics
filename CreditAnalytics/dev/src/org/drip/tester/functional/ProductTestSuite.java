@@ -581,8 +581,9 @@ public class ProductTestSuite {
 			adblRate[i] = 0.02;
 			astrCalibMeasure[i] = "Rate";
 
-			aCompCalib[i] = org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit (dt.addDays
-				(2), new org.drip.analytics.date.JulianDate (adblDate[i]), null, "USD");
+			aCompCalib[i] = org.drip.product.creator.SingleStreamComponentBuilder.Deposit (dt.addDays (2),
+				new org.drip.analytics.date.JulianDate (adblDate[i]),
+					org.drip.state.identifier.ForwardLabel.Create ("USD", "3M"));
 		}
 
 		// Next 8 instruments - EDF calibration
@@ -598,7 +599,7 @@ public class ProductTestSuite {
 		adblCompCalibValue[14] = .0160;
 
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
-			org.drip.product.creator.SingleStreamComponentBuilder.GenerateFuturesPack (dt, 8, "USD");
+			org.drip.product.creator.SingleStreamComponentBuilder.FuturesPack (dt, 8, "USD");
 
 		for (int i = 0; i < 8; ++i) {
 			adblRate[i + 7] = 0.02;
@@ -658,7 +659,7 @@ public class ProductTestSuite {
 
 		org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 			org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360", false, "USD",
-				true);
+				true, org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 		org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 			org.drip.param.period.ComposableFloatingUnitSetting ("3M",
@@ -672,14 +673,10 @@ public class ProductTestSuite {
 					"USD");
 
 		org.drip.param.period.CompositePeriodSetting cpsFloating = new
-			org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null,
-				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1.,
-					null, null, null, null);
+			org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null, -1., null, null, null, null);
 
 		org.drip.param.period.CompositePeriodSetting cpsFixed = new
-			org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null,
-				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1.,
-					null, null, null, null);
+			org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null, 1., null, null, null, null);
 
 		for (int i = 0; i < 15; ++i) {
 			adblRate[i + 15] = 0.02;
@@ -1061,8 +1058,8 @@ public class ProductTestSuite {
 		throws java.lang.Exception
 	{
 		org.drip.product.definition.CalibratableFixedIncomeComponent cash =
-			org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit (dt.addDays (2), dt.addDays
-				(10), null, "USD");
+			org.drip.product.creator.SingleStreamComponentBuilder.Deposit (dt.addDays (2), dt.addDays (10),
+				org.drip.state.identifier.ForwardLabel.Create ("USD", "3M"));
 
 		org.drip.analytics.output.ComponentMeasures cashOut = cash.measures (new
 			org.drip.param.valuation.ValuationParams (dt, dt, "USD"), null, mpc, null);
@@ -1161,7 +1158,7 @@ public class ProductTestSuite {
 		throws java.lang.Exception
 	{
 		org.drip.product.definition.CalibratableFixedIncomeComponent[] aEDF =
-			org.drip.product.creator.SingleStreamComponentBuilder.GenerateFuturesPack (dt, 1, "USD");
+			org.drip.product.creator.SingleStreamComponentBuilder.FuturesPack (dt, 1, "USD");
 		
 		org.drip.product.definition.CalibratableFixedIncomeComponent edf = aEDF[0];
 
@@ -1262,7 +1259,7 @@ public class ProductTestSuite {
 	{
 		org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
 			org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360", false, "USD",
-				true);
+				true, org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 		org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
 			org.drip.param.period.ComposableFloatingUnitSetting ("3M",
@@ -1276,14 +1273,10 @@ public class ProductTestSuite {
 					"USD");
 
 		org.drip.param.period.CompositePeriodSetting cpsFloating = new
-			org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null,
-				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1., null,
-					null, null, null);
+			org.drip.param.period.CompositePeriodSetting (4, "3M", "USD", null, -1., null, null, null, null);
 
 		org.drip.param.period.CompositePeriodSetting cpsFixed = new
-			org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null,
-				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1., null,
-					null, null, null);
+			org.drip.param.period.CompositePeriodSetting (2, "6M", "USD", null, 1., null, null, null, null);
 
 		java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
 			org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dt.addDays (2), dt.addDays
@@ -2275,7 +2268,7 @@ public class ProductTestSuite {
 		org.drip.param.market.LatentStateFixingsContainer lsfc = new
 			org.drip.param.market.LatentStateFixingsContainer();
 
-		lsfc.add (org.drip.analytics.date.JulianDate.Today().addDays (2),
+		lsfc.add (org.drip.analytics.date.DateUtil.Today().addDays (2),
 			org.drip.state.identifier.ForwardLabel.Standard ("USD-6M"), 0.0402);
 
 		org.drip.product.params.BondStream bpgp = org.drip.product.params.BondStream.Create (dblStart +
@@ -2764,7 +2757,7 @@ public class ProductTestSuite {
 		final long lSleepTime)
 		throws java.lang.Exception
 	{
-		org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.JulianDate.Today();
+		org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.DateUtil.Today();
 
 		org.drip.param.definition.ScenarioMarketParams mpc =
 			org.drip.param.creator.MarketParamsBuilder.CreateMarketParams();

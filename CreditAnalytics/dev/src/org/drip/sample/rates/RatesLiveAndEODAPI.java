@@ -7,10 +7,7 @@ package org.drip.sample.rates;
 
 import java.util.*;
 
-/*
- * Credit Product imports
- */
-
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
@@ -82,7 +79,7 @@ public class RatesLiveAndEODAPI {
 		 * Pulls all the closing rates curve names (of any type, incl.TSY) that exist for a given date.
 		 */
 
-		JulianDate dt1 = JulianDate.CreateFromYMD (2011, 12, 16); // Date of interest
+		JulianDate dt1 = DateUtil.CreateFromYMD (2011, 12, 16); // Date of interest
 
 		Set<String> setstrIRCurves = CreditAnalytics.GetEODIRCurveNames (dt1); // Set of IR curves
 
@@ -98,7 +95,7 @@ public class RatesLiveAndEODAPI {
 
 		// Calculate the discount factor to an arbitrary date using the constructed curve.
 
-		System.out.println ("DF (2021, 1, 14): " + dc.df (JulianDate.CreateFromYMD (2021, 1, 14)));
+		System.out.println ("DF (2021, 1, 14): " + dc.df (DateUtil.CreateFromYMD (2021, 1, 14)));
 
 		// Retrieve the components whose quotes went into constructing the curve
 
@@ -109,7 +106,7 @@ public class RatesLiveAndEODAPI {
 		for (int i = 0; i < aCC.length; ++i)
 			System.out.println (aCC[i].primaryCode() + " => " + dc.manifestMeasure (aCC[i].primaryCode()));
 
-		JulianDate dt2 = JulianDate.CreateFromYMD (2012, 1, 17);
+		JulianDate dt2 = DateUtil.CreateFromYMD (2012, 1, 17);
 
 		/*
 		 * Load all the rates curves available between the dates for the currency specified.
@@ -136,7 +133,7 @@ public class RatesLiveAndEODAPI {
 
 		// Discount factor for the Closing Cash curve
 
-		System.out.println ("DF (2021, 1, 14): " + dcCash.df (JulianDate.CreateFromYMD (2021, 1, 14)));
+		System.out.println ("DF (2021, 1, 14): " + dcCash.df (DateUtil.CreateFromYMD (2021, 1, 14)));
 
 		// Display the component named codes and the corresponding quotes
 
@@ -169,7 +166,7 @@ public class RatesLiveAndEODAPI {
 
 		// Discount factor for the Closing EDF curve
 
-		if (null != dcTSY) System.out.println ("DF (2021, 1, 14): " + dcTSY.df (JulianDate.CreateFromYMD (2021, 1, 14)));
+		if (null != dcTSY) System.out.println ("DF (2021, 1, 14): " + dcTSY.df (DateUtil.CreateFromYMD (2021, 1, 14)));
 
 		// Display the component named codes and the corresponding quotes
 
@@ -205,7 +202,7 @@ public class RatesLiveAndEODAPI {
 
 		// Discount factor for the Closing IRS curve
 
-		System.out.println ("DF (2021, 1, 14): " + dcIRS.df (JulianDate.CreateFromYMD (2021, 1, 14)));
+		System.out.println ("DF (2021, 1, 14): " + dcIRS.df (DateUtil.CreateFromYMD (2021, 1, 14)));
 
 		// Display the component named codes and the corresponding quotes
 
@@ -248,7 +245,7 @@ public class RatesLiveAndEODAPI {
 
 		// Discount factor for the Closing TSY curve
 
-		System.out.println ("DF (2021, 1, 14): " + dcTSY.df (JulianDate.CreateFromYMD (2021, 1, 14)));
+		System.out.println ("DF (2021, 1, 14): " + dcTSY.df (DateUtil.CreateFromYMD (2021, 1, 14)));
 
 		// Display the component named codes and the corresponding quotes
 

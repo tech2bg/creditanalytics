@@ -7,6 +7,7 @@ package org.drip.sample.credit;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
@@ -82,7 +83,8 @@ public class CDSBasketAPI {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -108,7 +110,6 @@ public class CDSBasketAPI {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -121,7 +122,6 @@ public class CDSBasketAPI {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -209,11 +209,10 @@ public class CDSBasketAPI {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aCompCalib[i] = SingleStreamComponentBuilder.Deposit (
 				dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
-				null,
-				strCurrency
+				ForwardLabel.Create (strCurrency, astrCashTenor[i])
 			);
 		}
 
@@ -292,9 +291,9 @@ public class CDSBasketAPI {
 	public static final void BasketBondAPISample()
 		throws Exception
 	{
-		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 27);
+		JulianDate dtCurve = DateUtil.CreateFromYMD (2013, 6, 27);
 
-		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 1);
+		JulianDate dtSettle = DateUtil.CreateFromYMD (2013, 7, 1);
 
 		/*
 		 * Build the IR Curve from the Rates' instruments

@@ -66,9 +66,10 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 					double adblCompCalibValue[] = new double[NUM_CASH_INSTR];
 					aWJComp = new org.drip.quant.calculus.WengertJacobian[NUM_CASH_INSTR];
 					java.lang.String astrCalibMeasure[] = new java.lang.String[NUM_CASH_INSTR];
-					aCompCalib = new org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_CASH_INSTR];
+					aCompCalib = new
+						org.drip.product.definition.CalibratableFixedIncomeComponent[NUM_CASH_INSTR];
 
-					if (null == (dtStart = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 4, 6)))
+					if (null == (dtStart = org.drip.analytics.date.DateUtil.CreateFromYMD (2011, 4, 6)))
 						return false;
 
 					adblDate[0] = dtStart.addDays (3).julian(); // ON
@@ -98,10 +99,9 @@ public class CashJacobianRegressorSet implements org.drip.regression.core.Regres
 						astrCalibMeasure[i] = "Rate";
 
 						try {
-							aCompCalib[i] =
-								org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit
-									(dtStart.addDays (2), new org.drip.analytics.date.JulianDate
-										(adblDate[i]), null, "USD");
+							aCompCalib[i] = org.drip.product.creator.SingleStreamComponentBuilder.Deposit
+								(dtStart.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i]),
+									org.drip.state.identifier.ForwardLabel.Create ("USD", "3M"));
 						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 

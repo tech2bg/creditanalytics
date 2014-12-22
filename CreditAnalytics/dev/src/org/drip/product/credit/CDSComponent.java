@@ -428,7 +428,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 		org.drip.param.period.UnitCouponAccrualSetting ucas = new
 			org.drip.param.period.UnitCouponAccrualSetting (iFreq, strCouponDC, _bApplyCpnEOMAdj,
-				strAccrualDC, _bApplyAccEOMAdj, _strCouponCurrency, true);
+				strAccrualDC, _bApplyAccEOMAdj, _strCouponCurrency, true,
+					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 		org.drip.param.period.ComposableFixedUnitSetting cfus = new
 			org.drip.param.period.ComposableFixedUnitSetting (strTenor,
@@ -436,10 +437,9 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 					_strCouponCurrency);
 
 		org.drip.param.period.CompositePeriodSetting cps = new org.drip.param.period.CompositePeriodSetting
-			(iFreq, strTenor, _strCouponCurrency, null,
-				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-					_dblNotional = dblNotional, null, _notlSchedule, null, null == _crValParams ? null :
-						org.drip.state.identifier.CreditLabel.Standard (_crValParams.creditCurveName()));
+			(iFreq, strTenor, _strCouponCurrency, null, _dblNotional = dblNotional, null, _notlSchedule,
+				null, null == _crValParams ? null : org.drip.state.identifier.CreditLabel.Standard
+					(_crValParams.creditCurveName()));
 
 		java.util.List<java.lang.Double> lsStreamEdgeDate =
 			org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (new
@@ -475,7 +475,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	{
 		if (null != _strName && !_strName.isEmpty()) return _strName;
 
-		return "CDS=" + org.drip.analytics.date.JulianDate.fromJulian (_dblMaturity);
+		return "CDS=" + org.drip.analytics.date.DateUtil.FromJulian (_dblMaturity);
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> couponCurrency()

@@ -7,6 +7,7 @@ package org.drip.sample.bond;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.rates.DiscountCurve;
@@ -87,7 +88,8 @@ public class BondBasketAPI {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -113,7 +115,6 @@ public class BondBasketAPI {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -126,7 +127,6 @@ public class BondBasketAPI {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -214,11 +214,10 @@ public class BondBasketAPI {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aCompCalib[i] = SingleStreamComponentBuilder.Deposit (
 				dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
-				null,
-				strCurrency
+				ForwardLabel.Create (strCurrency, astrCashTenor[i])
 			);
 		}
 
@@ -341,7 +340,7 @@ public class BondBasketAPI {
 		double[] adblFactor = new double[] {1., 1.0, 1.0, 1.0, 1.0};
 		// double[] adblFactor = new double[] {1., 0.9, 0.8, 0.7, 0.6};
 
-		JulianDate dtEOSStart = JulianDate.Today().addDays (2);
+		JulianDate dtEOSStart = DateUtil.Today().addDays (2);
 
 		for (int i = 0; i < 5; ++i)
 			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
@@ -362,7 +361,7 @@ public class BondBasketAPI {
 		double[] adblFactor = new double[] {1., 1.0, 1.0, 1.0, 1.0};
 		// double[] adblFactor = new double[] {1., 0.9, 0.8, 0.7, 0.6};
 
-		JulianDate dtEOSStart = JulianDate.Today().addDays (2);
+		JulianDate dtEOSStart = DateUtil.Today().addDays (2);
 
 		for (int i = 0; i < 5; ++i)
 			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
@@ -379,9 +378,9 @@ public class BondBasketAPI {
 	private static final void BasketBondAPISample()
 		throws Exception
 	{
-		JulianDate dtCurve = JulianDate.CreateFromYMD (2013, 6, 27);
+		JulianDate dtCurve = DateUtil.CreateFromYMD (2013, 6, 27);
 
-		JulianDate dtSettle = JulianDate.CreateFromYMD (2013, 7, 1);
+		JulianDate dtSettle = DateUtil.CreateFromYMD (2013, 7, 1);
 
 		/*
 		 * Build the IR Curve from the Rates' instruments
@@ -430,8 +429,8 @@ public class BondBasketAPI {
                 0.09,                                      // Bond Coupon
                 2,                                                            // Frequency
                 "30/360",                             // Day Count
-                JulianDate.CreateFromYMD (2011, 2, 23), // Effective
-                JulianDate.CreateFromYMD (2021, 3, 1),               // Maturity
+                DateUtil.CreateFromYMD (2011, 2, 23), // Effective
+                DateUtil.CreateFromYMD (2021, 3, 1),               // Maturity
                 null,                       // Principal Schedule
                 null);
 
@@ -442,8 +441,8 @@ public class BondBasketAPI {
                 0.09,                                      // Bond Coupon
                 2,                                                            // Frequency
                 "30/360",                             // Day Count
-                JulianDate.CreateFromYMD (2011, 2, 23), // Effective
-                JulianDate.CreateFromYMD (2021, 3, 1),               // Maturity
+                DateUtil.CreateFromYMD (2011, 2, 23), // Effective
+                DateUtil.CreateFromYMD (2021, 3, 1),               // Maturity
                 null,                       // Principal Schedule
                 null);
 
@@ -454,21 +453,21 @@ public class BondBasketAPI {
                 0.09,                                      // Bond Coupon
                 2,                                                            // Frequency
                 "30/360",                             // Day Count
-                JulianDate.CreateFromYMD (2011, 2, 23), // Effective
-                JulianDate.CreateFromYMD (2021, 3, 1),               // Maturity
+                DateUtil.CreateFromYMD (2011, 2, 23), // Effective
+                DateUtil.CreateFromYMD (2021, 3, 1),               // Maturity
                 null,                       // Principal Schedule
                 null);
 
 		BondComponent bond4 = BondBuilder.CreateSimpleFloater ( // Simple Floating Rate Bond
 				"FLOATER1",		// Name
 				"USD",			// Currency
-				"USD-LIBOR-6M",	// Rate Index
+				"USD-6M",	// Rate Index
                 "",            	// Credit Curve - Empty for now
 				0.01,			// Floating Spread
 				2,				// Coupon Frequency
 				"30/360",		// Day Count
-				JulianDate.CreateFromYMD (2008, 9, 21), // Effective
-				JulianDate.CreateFromYMD (2023, 9, 20),	// Maturity
+				DateUtil.CreateFromYMD (2008, 9, 21), // Effective
+				DateUtil.CreateFromYMD (2023, 9, 20),	// Maturity
 				MakeFSPrincipal(),		// Principal Schedule
 				MakeFSCoupon());		// Coupon Schedule
 

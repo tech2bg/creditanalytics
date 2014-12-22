@@ -178,6 +178,17 @@ public abstract class ComposableUnitPeriod {
 	}
 
 	/**
+	 * Retrieve the Accrual Compounding Rule
+	 * 
+	 * @return The Accrual Compounding Rule
+	 */
+
+	public int accrualCompoundingRule()
+	{
+		return _ucas.accrualCompoundingRule();
+	}
+
+	/**
 	 * Retrieve the Period Full Coupon DCF
 	 * 
 	 * @return The Period Full Coupon DCF

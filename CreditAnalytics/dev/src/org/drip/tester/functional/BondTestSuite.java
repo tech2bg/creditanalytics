@@ -106,10 +106,9 @@ public class BondTestSuite {
 		java.sql.Statement stmt = org.drip.service.env.EnvManager.InitEnv
 			("c:\\Lakshmi\\java\\BondAnal\\Config.xml");
 
-		org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 1,
-			3);
+		org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.DateUtil.CreateFromYMD (2011, 1, 3);
 
-		org.drip.analytics.date.JulianDate dtEnd = org.drip.analytics.date.JulianDate.CreateFromYMD (2011, 6,
+		org.drip.analytics.date.JulianDate dtEnd = org.drip.analytics.date.DateUtil.CreateFromYMD (2011, 6,
 			30);
 
 		if ("-eodcdssetmeasures".equalsIgnoreCase (astrArgs[0])) {

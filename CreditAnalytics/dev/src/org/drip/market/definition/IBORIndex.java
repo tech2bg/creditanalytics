@@ -105,4 +105,10 @@ public class IBORIndex extends org.drip.market.definition.FloaterIndex {
 	{
 		return _strLongestMaturity;
 	}
+
+	@Override public org.drip.analytics.daycount.DateAdjustParams spotLagDAP()
+	{
+		return new org.drip.analytics.daycount.DateAdjustParams
+			(org.drip.analytics.daycount.Convention.DATE_ROLL_PREVIOUS, _iSpotLag, calendar());
+	}
 }

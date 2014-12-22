@@ -1,6 +1,7 @@
 
 package org.drip.sample.stochvol;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.MarketSurface;
 import org.drip.param.creator.ScenarioMarketSurfaceBuilder;
@@ -105,7 +106,7 @@ public class CallVolSurface {
 		final String[] astrArgs)
 		throws Exception
 	{
-		JulianDate dtStart = JulianDate.Today();
+		JulianDate dtStart = DateUtil.Today();
 
 		double[] adblStrikeATMFactorCalib = new double[] {0.8, 0.9, 1.0, 1.1, 1.2};
 		String[] astrMaturityTenorCalib = new String[] {"12M", "24M", "36M", "48M", "60M"};

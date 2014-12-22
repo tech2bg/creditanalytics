@@ -127,7 +127,7 @@ public class Locale {
 		if (null == strDate || strDate.isEmpty()) return false;
 
 		org.drip.analytics.date.JulianDate dtStaticHoliday =
-			org.drip.analytics.date.JulianDate.CreateFromDDMMMYYYY (strDate);
+			org.drip.analytics.date.DateUtil.CreateFromDDMMMYYYY (strDate);
 
 		if (null == dtStaticHoliday) return false;
 

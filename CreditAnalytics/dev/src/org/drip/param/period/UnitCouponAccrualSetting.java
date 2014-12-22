@@ -38,6 +38,7 @@ package org.drip.param.period;
 
 public class UnitCouponAccrualSetting {
 	private int _iFreq = -1;
+	private int _iAccrualCompoundingRule = -1;
 	private java.lang.String _strCalendar = "";
 	private java.lang.String _strCouponDC = "";
 	private java.lang.String _strAccrualDC = "";
@@ -55,6 +56,7 @@ public class UnitCouponAccrualSetting {
 	 * @param bAccrualEOMAdjustment Accrual EOM Adjustment Flag
 	 * @param strCalendar Calendar
 	 * @param bCouponDCFOffOfFreq Compute Full Coupon DCF from the Frequency
+	 * @param iAccrualCompoundingRule The Accrual Compounding Rule
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
@@ -66,12 +68,15 @@ public class UnitCouponAccrualSetting {
 		final java.lang.String strAccrualDC,
 		final boolean bAccrualEOMAdjustment,
 		final java.lang.String strCalendar,
-		final boolean bCouponDCFOffOfFreq)
+		final boolean bCouponDCFOffOfFreq,
+		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
 		if (0 >= (_iFreq = iFreq) || null == (_strCouponDC = strCouponDC) || _strCouponDC.isEmpty() || null
 			== (_strAccrualDC = strAccrualDC) || _strAccrualDC.isEmpty() || null == (_strCalendar =
-				strCalendar) || _strCalendar.isEmpty())
+				strCalendar) || _strCalendar.isEmpty() ||
+					!org.drip.analytics.support.CompositePeriodBuilder.ValidateCompoundingRule
+						(_iAccrualCompoundingRule = iAccrualCompoundingRule))
 			throw new java.lang.Exception ("UnitCouponAccrualSetting ctr: Invalid Inputs");
 
 		_bCouponDCFOffOfFreq = bCouponDCFOffOfFreq;
@@ -154,5 +159,16 @@ public class UnitCouponAccrualSetting {
 	public java.lang.String calendar()
 	{
 		return _strCalendar;
+	}
+
+	/**
+	 * Retrieve the Accrual Compounding Rule
+	 * 
+	 * @return The Accrual Compounding Rule
+	 */
+
+	public int accrualCompoundingRule()
+	{
+		return _iAccrualCompoundingRule;
 	}
 }

@@ -3,6 +3,7 @@ package org.drip.sample.rates;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
@@ -98,7 +99,6 @@ public class CustomDiscountCurveBuilder {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -229,7 +229,8 @@ public class CustomDiscountCurveBuilder {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -255,7 +256,6 @@ public class CustomDiscountCurveBuilder {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -268,7 +268,6 @@ public class CustomDiscountCurveBuilder {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -419,7 +418,7 @@ public class CustomDiscountCurveBuilder {
 		 * Construct the Array of EDF Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.GenerateFuturesPack (
+		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.FuturesPack (
 			dtSpot,
 			8,
 			strCurrency
@@ -573,7 +572,7 @@ public class CustomDiscountCurveBuilder {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today().addTenor ("0D");
+		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 
 		String strCurrency = "USD";
 

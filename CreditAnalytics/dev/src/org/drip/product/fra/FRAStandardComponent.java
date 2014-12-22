@@ -284,8 +284,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 
 			org.drip.param.period.CompositePeriodSetting cps = new
 				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, _strCurrency, null,
-					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-						_dblNotional, null, null, null, null);
+					_dblNotional, null, null, null, null);
 
 			org.drip.analytics.date.JulianDate dtEffective = new org.drip.analytics.date.JulianDate
 				(_dblEffectiveDate);

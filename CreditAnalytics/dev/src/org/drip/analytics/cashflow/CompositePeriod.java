@@ -61,13 +61,15 @@ public abstract class CompositePeriod {
 
 		org.drip.analytics.daycount.DateAdjustParams dapPay = cps.dapPay();
 
-		_dblPayDate = _lsCUP.get (_lsCUP.size() - 1).endDate();
+		org.drip.analytics.cashflow.ComposableUnitPeriod cupFinal = _lsCUP.get (_lsCUP.size() - 1);
+
+		_iAccrualCompoundingRule = cupFinal.accrualCompoundingRule();
+
+		_dblPayDate = cupFinal.endDate();
 
 		if (null != dapPay) _dblPayDate = dapPay.roll (_dblPayDate);
 
 		_strPayCurrency = cps.payCurrency();
-
-		_iAccrualCompoundingRule = cps.accrualCompoundingRule();
 
 		_dblBaseNotional = cps.baseNotional();
 

@@ -88,7 +88,6 @@ public class FloatFloatFloatFloatAnalysis {
 			iTenorInMonthsReference + "M",
 			strPayCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -105,7 +104,6 @@ public class FloatFloatFloatFloatAnalysis {
 			iTenorInMonthsDerived + "M",
 			strPayCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -319,7 +317,7 @@ public class FloatFloatFloatFloatAnalysis {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today();
+		JulianDate dtToday = org.drip.analytics.date.DateUtil.Today();
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 

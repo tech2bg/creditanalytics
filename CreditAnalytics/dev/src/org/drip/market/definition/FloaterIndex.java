@@ -133,6 +133,7 @@ public class FloaterIndex {
 
 	public org.drip.analytics.daycount.DateAdjustParams spotLagDAP()
 	{
-		return null;
+		return new org.drip.analytics.daycount.DateAdjustParams
+			(org.drip.analytics.daycount.Convention.DATE_ROLL_PREVIOUS, 1, _strCalendar);
 	}
 }

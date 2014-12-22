@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.FloaterIndex;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -65,20 +66,20 @@ public class OvernightIndexCurve {
 	private static final SingleStreamComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final String strCurrency,
-		final int[] aiDay)
+		final int[] aiDay,
+		final FloaterIndex fi)
 		throws Exception
 	{
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],
 					strCurrency
 				),
-				ForwardLabel.Create (strCurrency, "ON"),
-				strCurrency
+				null == fi ? ForwardLabel.Create (strCurrency, "ON") : ForwardLabel.Create (strCurrency, "ON", fi)
 			);
 
 		return aDeposit;
@@ -133,7 +134,8 @@ public class OvernightIndexCurve {
 		final JulianDate dtEffective,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
-		final String strCurrency)
+		final String strCurrency,
+		final FloaterIndex fi)
 		throws Exception
 	{
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
@@ -145,7 +147,8 @@ public class OvernightIndexCurve {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		CashSettleParams csp = new CashSettleParams (
@@ -169,7 +172,7 @@ public class OvernightIndexCurve {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				ForwardLabel.Create (strCurrency, "ON"),
+				null == fi ? ForwardLabel.Create (strCurrency, "ON") : ForwardLabel.Create (strCurrency, "ON", fi),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 				0.
 			);
@@ -188,7 +191,6 @@ public class OvernightIndexCurve {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -201,7 +203,6 @@ public class OvernightIndexCurve {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -265,7 +266,8 @@ public class OvernightIndexCurve {
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
-		final String strCurrency)
+		final String strCurrency,
+		final FloaterIndex fi)
 		throws Exception
 	{
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
@@ -305,14 +307,15 @@ public class OvernightIndexCurve {
 				"Act/360",
 				false,
 				strCurrency,
-				false
+				false,
+				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 			);
 
 			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				ForwardLabel.Create (strCurrency, "ON"),
+				null == fi ? ForwardLabel.Create (strCurrency, "ON") : ForwardLabel.Create (strCurrency, "ON", fi),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 				0.
 			);
@@ -322,7 +325,6 @@ public class OvernightIndexCurve {
 				strFloatingTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				-1.,
 				null,
 				null,
@@ -335,7 +337,6 @@ public class OvernightIndexCurve {
 				strFixedTenor,
 				strCurrency,
 				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 				1.,
 				null,
 				null,
@@ -440,7 +441,8 @@ public class OvernightIndexCurve {
 		final double[] adblOISFutureQuote,
 		final String[] astrLongEndOISMaturityTenor,
 		final double[] adblLongEndOISQuote,
-		final SegmentCustomBuilderControl scbc)
+		final SegmentCustomBuilderControl scbc,
+		final FloaterIndex fi)
 		throws Exception
 	{
 		/*
@@ -450,7 +452,8 @@ public class OvernightIndexCurve {
 		SingleStreamComponent[] aDeposit = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			strCurrency,
-			aiDepositMaturityDays
+			aiDepositMaturityDays,
+			fi
 		);
 
 		/*
@@ -470,7 +473,8 @@ public class OvernightIndexCurve {
 			dtSpot,
 			astrShortEndOISMaturityTenor,
 			adblShortEndOISQuote,
-			strCurrency
+			strCurrency,
+			fi
 		);
 
 		/*
@@ -492,7 +496,8 @@ public class OvernightIndexCurve {
 			astrOISFutureMaturityTenor,
 			astrOISFutureTenor,
 			adblOISFutureQuote,
-			strCurrency
+			strCurrency,
+			fi
 		);
 
 		/*
@@ -513,7 +518,8 @@ public class OvernightIndexCurve {
 			dtSpot,
 			astrLongEndOISMaturityTenor,
 			adblLongEndOISQuote,
-			strCurrency
+			strCurrency,
+			fi
 		);
 
 		/*
@@ -709,7 +715,8 @@ public class OvernightIndexCurve {
 			adblOISFutureQuote,
 			astrLongEndOISMaturityTenor,
 			adblLongEndOISQuote,
-			scbcCubic
+			scbcCubic,
+			null
 		);
 	}
 }

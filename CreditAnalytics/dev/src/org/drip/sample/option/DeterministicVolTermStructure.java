@@ -1,6 +1,7 @@
 
 package org.drip.sample.option;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.VolatilityTermStructure;
 import org.drip.param.creator.*;
@@ -105,7 +106,7 @@ public class DeterministicVolTermStructure {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = org.drip.analytics.date.JulianDate.Today();
+		JulianDate dtToday = DateUtil.Today();
 
 		String[] astrMaturityTenor = new String[] {"01Y", "02Y", "03Y", "04Y", "05Y", "06Y", "07Y", "08Y", "09Y"};
 		double[] adblImpliedCallVolatility = new double[] {0.700, 0.672, 0.661, 0.596, 0.551, 0.518, 0.492, 0.471, 0.452};

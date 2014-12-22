@@ -56,8 +56,8 @@ public class DateTime {
 
 		java.util.Date dtNow = new java.util.Date();
 
-		_dblDate = JulianDate.toJulian (org.drip.quant.common.DateUtil.GetYear (dtNow),
-			org.drip.quant.common.DateUtil.GetMonth (dtNow), org.drip.quant.common.DateUtil.GetDate (dtNow));
+		_dblDate = org.drip.analytics.date.DateUtil.ToJulian (org.drip.analytics.date.DateUtil.Year (dtNow),
+			org.drip.analytics.date.DateUtil.Month (dtNow), org.drip.analytics.date.DateUtil.Day (dtNow));
 	}
 
 	/**

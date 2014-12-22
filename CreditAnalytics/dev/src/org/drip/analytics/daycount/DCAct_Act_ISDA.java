@@ -70,12 +70,12 @@ public class DCAct_Act_ISDA implements org.drip.analytics.daycount.DCFCalculator
 		if (null == dm)
 			throw new java.lang.Exception ("DCAct_Act_ISDA.yearFraction: Cannot create DateEOMAdjustment!");
 
-		return ((org.drip.analytics.date.JulianDate.DaysRemaining (dblStart) - dm.anterior()) /
-			(org.drip.analytics.date.JulianDate.IsLeapYear (dblStart) ? 366. : 365.)) +
-				((org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd) + dm.posterior()) /
-					(org.drip.analytics.date.JulianDate.IsLeapYear (dblEnd) ? 366. : 365.)) +
-						org.drip.analytics.date.JulianDate.Year (dblEnd) -
-							org.drip.analytics.date.JulianDate.Year (dblStart) - 1;
+		return ((org.drip.analytics.date.DateUtil.DaysRemaining (dblStart) - dm.anterior()) /
+			(org.drip.analytics.date.DateUtil.IsLeapYear (dblStart) ? 366. : 365.)) +
+				((org.drip.analytics.date.DateUtil.DaysElapsed (dblEnd) + dm.posterior()) /
+					(org.drip.analytics.date.DateUtil.IsLeapYear (dblEnd) ? 366. : 365.)) +
+						org.drip.analytics.date.DateUtil.Year (dblEnd) -
+							org.drip.analytics.date.DateUtil.Year (dblStart) - 1;
 	}
 
 	@Override public int daysAccrued (
@@ -93,16 +93,16 @@ public class DCAct_Act_ISDA implements org.drip.analytics.daycount.DCFCalculator
 
 		int iDaysAccrued = 0;
 
-		int iStartYear = org.drip.analytics.date.JulianDate.Year (dblStart);
+		int iStartYear = org.drip.analytics.date.DateUtil.Year (dblStart);
 
-		int iEndYear = org.drip.analytics.date.JulianDate.Year (dblEnd);
+		int iEndYear = org.drip.analytics.date.DateUtil.Year (dblEnd);
 
 		if (iEndYear == iStartYear) iDaysAccrued -= 0 == iEndYear % 4 ? 366 : 365;
 
 		for (int iYear = iStartYear + 1; iYear < iEndYear; ++iYear)
 			iDaysAccrued += 0 == iYear % 4 ? 366 : 365;
 
-		return iDaysAccrued + org.drip.analytics.date.JulianDate.DaysRemaining (dblStart) - dm.anterior() +
-			org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd) + dm.posterior();
+		return iDaysAccrued + org.drip.analytics.date.DateUtil.DaysRemaining (dblStart) - dm.anterior() +
+			org.drip.analytics.date.DateUtil.DaysElapsed (dblEnd) + dm.posterior();
 	}
 }

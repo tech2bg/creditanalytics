@@ -8,6 +8,7 @@ package org.drip.sample.bloomberg;
 import java.util.List;
 
 import org.drip.analytics.cashflow.CompositePeriod;
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.rates.DiscountCurve;
@@ -80,7 +81,8 @@ public class YAS {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -106,7 +108,6 @@ public class YAS {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -117,63 +118,62 @@ public class YAS {
 		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
 			2,
 			"6M",
-				strCurrency,
-				null,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-				1.,
-				null,
-				null,
-				null,
-				null
-			);
+			strCurrency,
+			null,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
 
-			CashSettleParams csp = new CashSettleParams (
-				0,
-				strCurrency,
-				0
-			);
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
 
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
-				strMaturityTenor,
-				null
-			);
+		List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+			dtEffective,
+			"6M",
+			strMaturityTenor,
+			null
+		);
 
-			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"3M",
-				strMaturityTenor,
-				null
-			);
+		List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+			dtEffective,
+			"3M",
+			strMaturityTenor,
+			null
+		);
 
-			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsFloatingStreamEdgeDate,
-					cpsFloating,
-					cfusFloating
-				)
-			);
+		Stream floatingStream = new Stream (
+			CompositePeriodBuilder.FloatingCompositeUnit (
+				lsFloatingStreamEdgeDate,
+				cpsFloating,
+				cfusFloating
+			)
+		);
 
-			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeUnit (
-					lsFixedStreamEdgeDate,
-					cpsFixed,
-					ucasFixed,
-					cfusFixed
-				)
-			);
+		Stream fixedStream = new Stream (
+			CompositePeriodBuilder.FixedCompositeUnit (
+				lsFixedStreamEdgeDate,
+				cpsFixed,
+				ucasFixed,
+				cfusFixed
+			)
+		);
 
-			FixFloatComponent irs = new FixFloatComponent (
-				fixedStream,
-				floatingStream,
-				csp
-			);
+		FixFloatComponent irs = new FixFloatComponent (
+			fixedStream,
+			floatingStream,
+			csp
+		);
 
-			irs.setPrimaryCode ("IRS." + strMaturityTenor + "." + strCurrency);
+		irs.setPrimaryCode ("IRS." + strMaturityTenor + "." + strCurrency);
 
-			return irs;
-		}
+		return irs;
+	}
 
 	/*
 	 * Sample demonstrating building of rates curve from cash/future/swaps
@@ -207,11 +207,10 @@ public class YAS {
 			adblRate[i] = java.lang.Double.NaN;
 			adblCompCalibValue[i] = adblCashRate[i] + dblBump;
 
-			aCompCalib[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aCompCalib[i] = SingleStreamComponentBuilder.Deposit (
 				dtCashEffective,
 				new JulianDate (adblDate[i] = dtCashEffective.addTenor (astrCashTenor[i]).julian()),
-				null,
-				strCurrency
+				ForwardLabel.Create (strCurrency, astrCashTenor[i])
 			);
 		}
 
@@ -347,7 +346,7 @@ public class YAS {
 	private static final void BondPricerSample()
 		throws Exception
 	{
-		JulianDate dtCurve = JulianDate.Today();
+		JulianDate dtCurve = DateUtil.Today();
 
 		JulianDate dtSettle = dtCurve.addBusDays (3, "USD");
 
@@ -385,17 +384,17 @@ public class YAS {
 				0.054,			// Bond Coupon
 				2, 				// Frequency
 				"30/360",		// Day Count
-				JulianDate.CreateFromYMD (2011, 4, 21), // Effective
-				JulianDate.CreateFromYMD (2021, 4, 15),	// Maturity
+				DateUtil.CreateFromYMD (2011, 4, 21), // Effective
+				DateUtil.CreateFromYMD (2021, 4, 15),	// Maturity
 				null,		// Principal Schedule
 				null);
 
 		double[] adblDate = new double[] {
-			JulianDate.CreateFromYMD (2016, 3, 1).julian(),
-			JulianDate.CreateFromYMD (2017, 3, 1).julian(),
-			JulianDate.CreateFromYMD (2018, 3, 1).julian(),
-			JulianDate.CreateFromYMD (2019, 3, 1).julian(),
-			JulianDate.CreateFromYMD (2020, 3, 1).julian()
+			DateUtil.CreateFromYMD (2016, 3, 1).julian(),
+			DateUtil.CreateFromYMD (2017, 3, 1).julian(),
+			DateUtil.CreateFromYMD (2018, 3, 1).julian(),
+			DateUtil.CreateFromYMD (2019, 3, 1).julian(),
+			DateUtil.CreateFromYMD (2020, 3, 1).julian()
 		};
 
 		double[] adblFactor = new double[] {1.045, 1.03, 1.015, 1., 1.};
@@ -491,9 +490,9 @@ public class YAS {
 
 		for (CompositePeriod p : bond.couponPeriods())
 			System.out.println (
-				JulianDate.fromJulian (p.startDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.endDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.startDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.endDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.payDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF(), 1, 4, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dc.df (p.payDate()), 1, 4, 1.) + FIELD_SEPARATOR
 			);

@@ -68,12 +68,11 @@ public class DC28_360 implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == dm)
 			throw new java.lang.Exception ("DC28_360::yearFraction => Cannot create DateEOMAdjustment!");
 
-		return (360.* (org.drip.analytics.date.JulianDate.Year (dblEnd) -
-			org.drip.analytics.date.JulianDate.Year (dblStart)) + 28. *
-				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
-					(dblStart)) + (org.drip.analytics.date.JulianDate.Day (dblEnd) -
-						org.drip.analytics.date.JulianDate.Day (dblStart) + dm.posterior() - dm.anterior()))
-							/ 360.;
+		return (360.* (org.drip.analytics.date.DateUtil.Year (dblEnd) - org.drip.analytics.date.DateUtil.Year
+			(dblStart)) + 28. * (org.drip.analytics.date.DateUtil.Month (dblEnd) -
+				org.drip.analytics.date.DateUtil.Month (dblStart)) + (org.drip.analytics.date.DateUtil.Day
+					(dblEnd) - org.drip.analytics.date.DateUtil.Day (dblStart) + dm.posterior() -
+						dm.anterior())) / 360.;
 	}
 
 	@Override public int daysAccrued (
@@ -89,10 +88,10 @@ public class DC28_360 implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == dm)
 			throw new java.lang.Exception ("DC28_360.daysAccrued: Cannot create DateEOMAdjustment!");
 
-		return 360 * (org.drip.analytics.date.JulianDate.Year (dblEnd) -
-			org.drip.analytics.date.JulianDate.Year (dblStart)) + 28 *
-				(org.drip.analytics.date.JulianDate.Month (dblEnd) - org.drip.analytics.date.JulianDate.Month
-					(dblStart)) + (org.drip.analytics.date.JulianDate.Day (dblEnd) -
-						org.drip.analytics.date.JulianDate.Day (dblStart) + dm.posterior() - dm.anterior());
+		return 360 * (org.drip.analytics.date.DateUtil.Year (dblEnd) - org.drip.analytics.date.DateUtil.Year
+			(dblStart)) + 28 * (org.drip.analytics.date.DateUtil.Month (dblEnd) -
+				org.drip.analytics.date.DateUtil.Month (dblStart)) + (org.drip.analytics.date.DateUtil.Day
+					(dblEnd) - org.drip.analytics.date.DateUtil.Day (dblStart) + dm.posterior() -
+						dm.anterior());
 	}
 }

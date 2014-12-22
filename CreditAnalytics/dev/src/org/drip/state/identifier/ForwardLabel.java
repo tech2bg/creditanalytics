@@ -56,7 +56,7 @@ public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel 
 	public static final ForwardLabel Standard (
 		final java.lang.String strFullyQualifiedName)
 	{
-		if (null == strFullyQualifiedName|| strFullyQualifiedName.isEmpty()) return null;
+		if (null == strFullyQualifiedName || strFullyQualifiedName.isEmpty()) return null;
 
 		java.lang.String[] astr = strFullyQualifiedName.split ("-");
 
@@ -72,6 +72,30 @@ public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel 
 
 		try {
 			return new ForwardLabel (strCurrency, strTenor, strFullyQualifiedName, floaterIndex);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Construct a ForwardLabel from the currency, the tenor, and the index
+	 * 
+	 * @param strCurrency Currency
+	 * @param strTenor Tenor
+	 * @param floaterIndex The Floater Index Details
+	 * 
+	 * @return ForwardLabel Instance
+	 */
+
+	public static final ForwardLabel Create (
+		final java.lang.String strCurrency,
+		final java.lang.String strTenor,
+		final org.drip.market.definition.FloaterIndex floaterIndex)
+	{
+		try {
+			return new ForwardLabel (strCurrency, strTenor, strCurrency + "-" + strTenor, floaterIndex);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -176,7 +200,8 @@ public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel 
 		try {
 			return new org.drip.param.period.UnitCouponAccrualSetting (overnight() ? 360 : 12 /
 				org.drip.analytics.support.AnalyticsHelper.TenorToMonths (_strTenor), strDayCount, false,
-					strDayCount, false, _floaterIndex.currency(), false);
+					strDayCount, false, _floaterIndex.currency(), false,
+						_floaterIndex.accrualCompoundingRule());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

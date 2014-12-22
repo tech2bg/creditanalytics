@@ -4,6 +4,7 @@ package org.drip.sample.bloomberg;
 import java.util.List;
 
 import org.drip.analytics.cashflow.CompositePeriod;
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
@@ -71,14 +72,13 @@ public class SWPMOIS {
 		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[aiDay.length + iNumFuture];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aCalibComp[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aCalibComp[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (aiDay[i], strCurrency),
-				null,
-				strCurrency
+				ForwardLabel.Create (strCurrency, aiDay[i] + "D")
 			);
 
-		CalibratableFixedIncomeComponent[] aEDF = SingleStreamComponentBuilder.GenerateFuturesPack (
+		CalibratableFixedIncomeComponent[] aEDF = SingleStreamComponentBuilder.FuturesPack (
 			dtEffective,
 			iNumFuture,
 			strCurrency
@@ -104,7 +104,8 @@ public class SWPMOIS {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -130,7 +131,6 @@ public class SWPMOIS {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -143,7 +143,6 @@ public class SWPMOIS {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -313,7 +312,7 @@ public class SWPMOIS {
 	{
 		CreditAnalytics.Init ("");
 
-		JulianDate dtValue = JulianDate.Today();
+		JulianDate dtValue = DateUtil.Today();
 
 		JulianDate dtSettle = dtValue.addBusDays (2, "USD");
 
@@ -438,9 +437,9 @@ public class SWPMOIS {
 
 		for (CompositePeriod p : swap.referenceStream().cashFlowPeriod())
 			System.out.println (
-				JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.startDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.endDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.payDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.startDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.endDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF() * 360, 0, 0, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF(), 0, 2, dblCoupon * dblNotional) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dc.df (p.payDate()), 1, 4, 1.)
@@ -454,9 +453,9 @@ public class SWPMOIS {
 
 		for (CompositePeriod p : swap.derivedStream().cashFlowPeriod())
 			System.out.println (
-				JulianDate.fromJulian (p.payDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.startDate()) + FIELD_SEPARATOR +
-				JulianDate.fromJulian (p.endDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.payDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.startDate()) + FIELD_SEPARATOR +
+				DateUtil.FromJulian (p.endDate()) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (p.couponDCF() * 360, 0, 0, 1.) + FIELD_SEPARATOR +
 				FormatUtil.FormatDouble (dc.df (p.payDate()), 1, 4, 1.)
 			);

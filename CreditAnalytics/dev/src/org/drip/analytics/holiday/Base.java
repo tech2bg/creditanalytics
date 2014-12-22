@@ -80,8 +80,8 @@ public abstract class Base {
 
 		if (null != wkend && wkend.isRightWeekend (dblDate)) dblRolledDate = dblDate + 1;
 
-		if (bBalkOnYearShift & org.drip.analytics.date.JulianDate.Year (dblDate) !=
-			org.drip.analytics.date.JulianDate.Year (dblRolledDate))
+		if (bBalkOnYearShift & org.drip.analytics.date.DateUtil.Year (dblDate) !=
+			org.drip.analytics.date.DateUtil.Year (dblRolledDate))
 			return -1.;
 
 		return dblRolledDate;

@@ -3,6 +3,7 @@ package org.drip.sample.rates;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
@@ -111,7 +112,6 @@ public class CustomDiscountCurveReconciler {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -243,7 +243,8 @@ public class CustomDiscountCurveReconciler {
 			"Act/360",
 			false,
 			strCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -269,7 +270,6 @@ public class CustomDiscountCurveReconciler {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -282,7 +282,6 @@ public class CustomDiscountCurveReconciler {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -446,7 +445,7 @@ public class CustomDiscountCurveReconciler {
 		 * Construct the Array of EDF Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.GenerateFuturesPack (
+		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.FuturesPack (
 			dtSpot,
 			8,
 			strCurrency
@@ -691,7 +690,7 @@ public class CustomDiscountCurveReconciler {
 		 */
 
 		SplineLinearDiscountCurve (
-			JulianDate.Today(),
+			DateUtil.Today(),
 			"USD",
 			prbpPolynomial
 		);

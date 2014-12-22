@@ -81,10 +81,10 @@ public class CreditAnalytics {
 			java.util.ArrayList<org.drip.analytics.date.JulianDate>();
 
 		try {
-			org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.JulianDate.CreateFromYMD (iYear,
+			org.drip.analytics.date.JulianDate dt = org.drip.analytics.date.DateUtil.CreateFromYMD (iYear,
 				1, 1);
 
-			while (iYear + 1 != org.drip.analytics.date.JulianDate.Year (dt.julian())) {
+			while (iYear + 1 != org.drip.analytics.date.DateUtil.Year (dt.julian())) {
 				if (org.drip.analytics.daycount.Convention.IsHoliday (dt.julian(), strLocationSet,
 					iHolType))
 					ldtHols.add (dt);
@@ -337,7 +337,7 @@ public class CreditAnalytics {
 
 		try {
 			double dblAdjust = org.drip.analytics.daycount.Convention.RollDate (dt.julian(), iRollMode,
-				strCalendarSet);
+				strCalendarSet, 1);
 
 			if (java.lang.Double.isNaN (dblAdjust)) return null;
 
@@ -1162,7 +1162,7 @@ public class CreditAnalytics {
 			bond = org.drip.service.env.BondManager.LoadFromBondId (null, s_stmt, strBondId, dt.julian());
 		else
 			bond = org.drip.service.env.BondManager.LoadFromBondId (null, s_stmt, strBondId,
-				org.drip.analytics.date.JulianDate.Today().julian());
+				org.drip.analytics.date.DateUtil.Today().julian());
 
 		_mapBondCache.put (strBondId, bond);
 
@@ -3878,7 +3878,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondEODConvexityFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODConvexityFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -3897,7 +3897,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondEODCreditBasisFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODCreditBasisFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -3916,7 +3916,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondEODPECSFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODPECSFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -3935,7 +3935,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondEODDurationFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODDurationFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -3954,7 +3954,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondEODGSpreadFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODGSpreadFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -3973,7 +3973,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondEODISpreadFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODISpreadFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -3992,7 +3992,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondEODOASFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODOASFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -4011,7 +4011,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondEODTSYSpreadFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODTSYSpreadFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -4030,7 +4030,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondEODYieldFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODYieldFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -4049,7 +4049,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondEODZSpreadFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODZSpreadFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -4494,7 +4494,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODConvexityFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODConvexityFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -4513,7 +4513,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODCreditBasisFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODCreditBasisFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -4532,7 +4532,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODPECSFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODPECSFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -4551,7 +4551,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODDurationFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODDurationFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -4570,7 +4570,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODGSpreadFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODGSpreadFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -4589,7 +4589,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODISpreadFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODISpreadFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -4608,7 +4608,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODOASFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODOASFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -4627,7 +4627,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODConvexityFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODConvexityFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -4646,7 +4646,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODPriceFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODPriceFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -4665,7 +4665,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODTSYSpreadFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODTSYSpreadFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -4684,7 +4684,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondEODZSpreadFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODZSpreadFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -5205,7 +5205,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondEODConvexityFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
+		return BondEODConvexityFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(),
 			dblTSYSpread);
 	}
 
@@ -5225,7 +5225,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondEODCreditBasisFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
+		return BondEODCreditBasisFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(),
 			dblTSYSpread);
 	}
 
@@ -5245,7 +5245,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondEODPECSFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
+		return BondEODPECSFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(),
 			dblTSYSpread);
 	}
 
@@ -5265,7 +5265,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondEODDurationFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
+		return BondEODDurationFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(),
 			dblTSYSpread);
 	}
 
@@ -5285,7 +5285,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondEODZSpreadFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
+		return BondEODZSpreadFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(),
 			dblTSYSpread);
 	}
 
@@ -5305,7 +5305,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondEODISpreadFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
+		return BondEODISpreadFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(),
 			dblTSYSpread);
 	}
 
@@ -5325,7 +5325,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondEODOASFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(), dblTSYSpread);
+		return BondEODOASFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(), dblTSYSpread);
 	}
 
 	/**
@@ -5344,7 +5344,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondEODPriceFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
+		return BondEODPriceFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(),
 			dblTSYSpread);
 	}
 
@@ -5364,7 +5364,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondEODYieldFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
+		return BondEODYieldFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(),
 			dblTSYSpread);
 	}
 
@@ -5384,7 +5384,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondEODZSpreadFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
+		return BondEODZSpreadFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(),
 			dblTSYSpread);
 	}
 
@@ -5463,7 +5463,7 @@ public class CreditAnalytics {
 			final java.lang.String strBondId,
 			final double dblPrice)
 	{
-		return BondEODMeasuresFromPrice (strBondId, org.drip.analytics.date.JulianDate.Today(), dblPrice);
+		return BondEODMeasuresFromPrice (strBondId, org.drip.analytics.date.DateUtil.Today(), dblPrice);
 	}
 
 	/**
@@ -5542,7 +5542,7 @@ public class CreditAnalytics {
 			final java.lang.String strBondId,
 			final double dblTSYSpread)
 	{
-		return BondEODMeasuresFromTSYSpread (strBondId, org.drip.analytics.date.JulianDate.Today(),
+		return BondEODMeasuresFromTSYSpread (strBondId, org.drip.analytics.date.DateUtil.Today(),
 			dblTSYSpread);
 	}
 
@@ -5621,7 +5621,7 @@ public class CreditAnalytics {
 			final java.lang.String strBondId,
 			final double dblYield)
 	{
-		return BondEODMeasuresFromYield (strBondId, org.drip.analytics.date.JulianDate.Today(), dblYield);
+		return BondEODMeasuresFromYield (strBondId, org.drip.analytics.date.DateUtil.Today(), dblYield);
 	}
 
 	/**
@@ -5737,7 +5737,7 @@ public class CreditAnalytics {
 		if (null == bond) throw new java.lang.Exception ("Cannot get Bond " + strBondId);
 
 		if ("Coupon".equalsIgnoreCase (strField))
-			return bond.couponMetrics (org.drip.analytics.date.JulianDate.Today().julian(), null,
+			return bond.couponMetrics (org.drip.analytics.date.DateUtil.Today().julian(), null,
 				null).rate();
 
 		if ("CurrentCoupon".equalsIgnoreCase (strField)) return bond.currentCoupon();
@@ -5964,7 +5964,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.date.JulianDate dtCurrent = dtToday;
 
-		if (null == dtToday) dtCurrent = org.drip.analytics.date.JulianDate.Today();
+		if (null == dtToday) dtCurrent = org.drip.analytics.date.DateUtil.Today();
 
 		for (java.lang.String strISIN : lsstrISIN) {
 			org.drip.product.definition.Bond bond = CreditAnalytics.GetBond (strISIN);

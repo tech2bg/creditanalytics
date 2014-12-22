@@ -450,8 +450,7 @@ public class CDSManager {
 					"' and EOD <= '" + dtEODFinish.toOracleDate() + "' order by EOD asc");
 
 			while (rsEOD.next())
-				lsEOD.add (org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry (rsEOD.getDate
-					("EOD")));
+				lsEOD.add (org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rsEOD.getDate ("EOD")));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

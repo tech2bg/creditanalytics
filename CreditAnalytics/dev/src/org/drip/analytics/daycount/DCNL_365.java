@@ -69,8 +69,8 @@ public class DCNL_365 implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == dm)
 			throw new java.lang.Exception ("DCNL_365.yearFraction: Cannot create DateEOMAdjustment!");
 
-		return (dblEnd - dblStart - org.drip.analytics.date.JulianDate.NumFeb29 (dblStart, dblEnd,
-			org.drip.analytics.date.JulianDate.RIGHT_INCLUDE) + dm.posterior() - dm.anterior()) / 365.;
+		return (dblEnd - dblStart - org.drip.analytics.date.DateUtil.NumFeb29 (dblStart, dblEnd,
+			org.drip.analytics.date.DateUtil.RIGHT_INCLUDE) + dm.posterior() - dm.anterior()) / 365.;
 	}
 
 	@Override public int daysAccrued (
@@ -86,7 +86,7 @@ public class DCNL_365 implements org.drip.analytics.daycount.DCFCalculator {
 		if (null == dm)
 			throw new java.lang.Exception ("DCNL_365.daysAccrued: Cannot create DateEOMAdjustment!");
 
-		return (int) (dblEnd - dblStart - org.drip.analytics.date.JulianDate.NumFeb29 (dblStart, dblEnd,
-			org.drip.analytics.date.JulianDate.RIGHT_INCLUDE) + dm.posterior() - dm.anterior());
+		return (int) (dblEnd - dblStart - org.drip.analytics.date.DateUtil.NumFeb29 (dblStart, dblEnd,
+			org.drip.analytics.date.DateUtil.RIGHT_INCLUDE) + dm.posterior() - dm.anterior());
 	}
 }

@@ -153,70 +153,70 @@ public class StandardCDXManager {
 		java.util.Map<java.lang.Integer, org.drip.analytics.date.JulianDate> mapSeriesDate = new
 			java.util.TreeMap<java.lang.Integer, org.drip.analytics.date.JulianDate>();
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2014, 6, 20), 22);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2013, 12, 20), 21);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2013, 6, 20), 20);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2012, 12, 20), 19);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2012, 6, 20), 18);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2011, 12, 20), 17);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2011, 6, 20), 16);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2010, 12, 20), 15);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2010, 6, 20), 14);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2009, 12, 20), 13);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2009, 6, 20), 12);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2008, 12, 20), 11);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2008, 6, 20), 10);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2007, 12, 20), 9);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2007, 6, 20), 8);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2006, 12, 20), 7);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2006, 6, 20), 6);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2005, 12, 20), 5);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2005, 6, 20), 4);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2004, 12, 20), 3);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2004, 6, 20), 2);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2003, 12, 20), 1);
 
 		_mmIndexFirstCouponSeries.put ("CDX.NA.IG", mapDateSeries);
@@ -254,52 +254,52 @@ public class StandardCDXManager {
 		java.util.Map<java.lang.Integer, org.drip.analytics.date.JulianDate> mapSeriesDate = new
 			java.util.TreeMap<java.lang.Integer, org.drip.analytics.date.JulianDate>();
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2014, 6, 20), 16);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2013, 12, 20), 15);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2013, 6, 20), 14);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2012, 12, 20), 13);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2012, 6, 20), 12);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2011, 12, 20), 11);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2011, 6, 20), 10);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2010, 12, 20), 9);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2010, 6, 20), 8);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2009, 12, 20), 7);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2009, 6, 20), 6);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2008, 12, 20), 5);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2008, 6, 20), 4);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2007, 12, 20), 3);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2007, 6, 20), 2);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2006, 12, 20), 1);
 
 		_mmIndexFirstCouponSeries.put ("CDX.NA.XO", mapDateSeries);
@@ -317,67 +317,67 @@ public class StandardCDXManager {
 		java.util.Map<java.lang.Integer, org.drip.analytics.date.JulianDate> mapSeriesDate = new
 			java.util.TreeMap<java.lang.Integer, org.drip.analytics.date.JulianDate>();
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2014, 6, 20), 21);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2013, 12, 20), 20);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2013, 6, 20), 19);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2012, 12, 20), 18);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2012, 6, 20), 17);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2011, 12, 20), 16);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2011, 6, 20), 15);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2010, 12, 20), 14);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2010, 6, 20), 13);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2009, 12, 20), 12);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2009, 6, 20), 11);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2008, 12, 20), 10);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2008, 6, 20), 9);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2007, 12, 20), 8);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2007, 6, 20), 7);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2006, 12, 20), 6);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2006, 6, 20), 5);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2005, 12, 20), 4);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2005, 6, 20), 3);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2004, 12, 20), 2);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2004, 6, 20), 1);
 
 		_mmIndexFirstCouponSeries.put ("CDX.EM", mapDateSeries);
@@ -395,64 +395,64 @@ public class StandardCDXManager {
 		java.util.Map<java.lang.Integer, org.drip.analytics.date.JulianDate> mapSeriesDate = new
 			java.util.TreeMap<java.lang.Integer, org.drip.analytics.date.JulianDate>();
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2014, 6, 20), 20);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2013, 12, 20), 19);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2013, 6, 20), 18);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2012, 12, 20), 17);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2012, 6, 20), 16);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2011, 12, 20), 15);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2011, 6, 20), 14);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2010, 12, 20), 13);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2010, 6, 20), 12);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2009, 12, 20), 11);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2009, 6, 20), 10);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2008, 12, 20), 9);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2008, 6, 20), 8);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2007, 12, 20), 7);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2007, 6, 20), 6);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2006, 12, 20), 5);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2006, 6, 20), 4);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2005, 12, 20), 3);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2005, 6, 20), 2);
 
-		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.JulianDate.CreateFromYMD
+		UpdateIndexMaps (mapDateSeries, mapSeriesDate, org.drip.analytics.date.DateUtil.CreateFromYMD
 			(2004, 12, 20), 1);
 
 		_mmIndexFirstCouponSeries.put ("ITRX.EU.IG", mapDateSeries);

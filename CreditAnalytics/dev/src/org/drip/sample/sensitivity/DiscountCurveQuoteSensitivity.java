@@ -3,6 +3,7 @@ package org.drip.sample.sensitivity;
 
 import java.util.List;
 
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
@@ -90,14 +91,13 @@ public class DiscountCurveQuoteSensitivity {
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
 
 		for (int i = 0; i < aiDay.length; ++i)
-			aDeposit[i] = SingleStreamComponentBuilder.CreateDeposit (
+			aDeposit[i] = SingleStreamComponentBuilder.Deposit (
 				dtEffective,
 				dtEffective.addBusDays (
 					aiDay[i],
 					strCurrency
 				),
-				ForwardLabel.Create (strCurrency, "ON"),
-				strCurrency
+				ForwardLabel.Create (strCurrency, "ON")
 			);
 
 		return aDeposit;
@@ -201,7 +201,8 @@ public class DiscountCurveQuoteSensitivity {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -227,7 +228,6 @@ public class DiscountCurveQuoteSensitivity {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -240,7 +240,6 @@ public class DiscountCurveQuoteSensitivity {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -353,7 +352,8 @@ public class DiscountCurveQuoteSensitivity {
 			"Act/360",
 			false,
 			strCurrency,
-			true
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -379,7 +379,6 @@ public class DiscountCurveQuoteSensitivity {
 			"3M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -392,7 +391,6 @@ public class DiscountCurveQuoteSensitivity {
 			"6M",
 			strCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -537,7 +535,7 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Array of FUTURE Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aEDF = SingleStreamComponentBuilder.GenerateFuturesPack (
+		SingleStreamComponent[] aEDF = SingleStreamComponentBuilder.FuturesPack (
 			dtSpot,
 			8,
 			strCurrency
@@ -868,6 +866,6 @@ public class DiscountCurveQuoteSensitivity {
 
 		String strCurrency = "USD";
 
-		DiscountCurveQuoteSensitivitySample (JulianDate.Today(), strCurrency);
+		DiscountCurveQuoteSensitivitySample (DateUtil.Today(), strCurrency);
 	}
 }

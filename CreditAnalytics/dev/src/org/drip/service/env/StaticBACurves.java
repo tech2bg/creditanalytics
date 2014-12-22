@@ -322,7 +322,7 @@ public class StaticBACurves {
 
 		long lStart = System.nanoTime();
 
-		if (null == (aCompCalib = org.drip.product.creator.SingleStreamComponentBuilder.GenerateFuturesPack (dt, 8,
+		if (null == (aCompCalib = org.drip.product.creator.SingleStreamComponentBuilder.FuturesPack (dt, 8,
 			strCurrency)) || 8 != aCompCalib.length)
 			return false;
 
@@ -413,9 +413,9 @@ public class StaticBACurves {
 			astrCalibMeasure[i] = "Rate";
 
 			try {
-				aCompCalib[i] = org.drip.product.creator.SingleStreamComponentBuilder.CreateDeposit
-					(dt.addDays (2), new org.drip.analytics.date.JulianDate (adblDate[i]), null,
-						strCurrency);
+				aCompCalib[i] = org.drip.product.creator.SingleStreamComponentBuilder.Deposit (dt.addDays
+					(2), new org.drip.analytics.date.JulianDate (adblDate[i]),
+						org.drip.state.identifier.ForwardLabel.Create (strCurrency, "3D"));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -425,7 +425,7 @@ public class StaticBACurves {
 
 		// Next 8 instruments - EDF calibration
 
-		if (null == (aEDF = org.drip.product.creator.SingleStreamComponentBuilder.GenerateFuturesPack (dt, 8,
+		if (null == (aEDF = org.drip.product.creator.SingleStreamComponentBuilder.FuturesPack (dt, 8,
 			strCurrency)) || 8 != aEDF.length)
 			return false;
 
@@ -530,7 +530,8 @@ public class StaticBACurves {
 
 		try {
 			ucasFixed = new org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360",
-				false, strCurrency, true);
+				false, strCurrency, true,
+					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			cfusFloating = new org.drip.param.period.ComposableFloatingUnitSetting ("3M",
 				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
@@ -541,13 +542,11 @@ public class StaticBACurves {
 				org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null, 0., 0.,
 					strCurrency);
 
-			cpsFloating = new org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null,
-				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, -1., null,
-					null, null, null);
+			cpsFloating = new org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null, -1.,
+				null, null, null, null);
 
-			cpsFixed = new org.drip.param.period.CompositePeriodSetting (2, "6M", strCurrency, null,
-				org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC, 1., null,
-					null, null, null);
+			cpsFixed = new org.drip.param.period.CompositePeriodSetting (2, "6M", strCurrency, null, 1.,
+				null, null, null, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -592,7 +591,7 @@ public class StaticBACurves {
 			return false;
 
 		try {
-			if (!mpc.addFixings (org.drip.analytics.date.JulianDate.CreateFromYMD (2010, 12, 14),
+			if (!mpc.addFixings (org.drip.analytics.date.DateUtil.CreateFromYMD (2010, 12, 14),
 				org.drip.state.identifier.ForwardLabel.Standard ("USD-3M"), 0.0042))
 				return false;
 
@@ -668,7 +667,7 @@ public class StaticBACurves {
 
 			try {
 				if (null == (aCDS[i] = org.drip.product.creator.CDSBuilder.CreateCDS (dt,
-					org.drip.analytics.date.JulianDate.CreateFromYMD (2012 + i, 6, 20), dblFixedCoupon,
+					org.drip.analytics.date.DateUtil.CreateFromYMD (2012 + i, 6, 20), dblFixedCoupon,
 						strIR, 0.40, strCC, strIR, true)))
 					return false;
 			} catch (java.lang.Exception e) {

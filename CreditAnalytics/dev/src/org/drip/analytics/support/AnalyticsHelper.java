@@ -40,7 +40,6 @@ package org.drip.analytics.support;
  * 	- Generate loss periods using a variety of different schemes
  * 	- Aggregate/disaggregate/merge coupon period lists
  * 	- Create fixings objects, rate index from currency/coupon/frequency
- * 	- Construct JulianDate from BBG dates and other formats, off of RS Entries
  * 	- String Tenor/Month Code/Work-out
  * 	- Standard Treasury Bench-mark off of Maturity
  * 
@@ -48,13 +47,6 @@ package org.drip.analytics.support;
  */
 
 public class AnalyticsHelper {
-	private static final boolean s_bBlog = false;
-
-	private static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> s_mapIRSwitch =
-		new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
-
-	private static final java.util.Map<java.lang.Integer, java.lang.String> s_mapDCBBGCode = new
-		java.util.HashMap<java.lang.Integer, java.lang.String>();
 
 	/**
 	 * Tenor Comparator - Left Tenor Greater than Right
@@ -73,6 +65,12 @@ public class AnalyticsHelper {
 	 */
 
 	public static int LEFT_TENOR_EQUALS = 4;
+
+	private static final org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> s_mapIRSwitch =
+		new org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
+
+	private static final java.util.Map<java.lang.Integer, java.lang.String> s_mapDCBBGCode = new
+		java.util.HashMap<java.lang.Integer, java.lang.String>();
 
 	/**
 	 * Initialize IR switcher and Bloomberg day count maps
@@ -322,6 +320,64 @@ public class AnalyticsHelper {
 	{
 		return 4. * (java.lang.Math.pow (1. + (OISFromLIBORSwapFedFundBasis (dblLIBORSwapRate,
 			dblFedFundLIBORSwapBasis) / 360.), 90.) - 1.);
+	}
+
+	/**
+	 * Compute the DI-Style Price given the Rate
+	 * 
+	 * @param dblRate The Rate
+	 * @param dblStartDate The Period Start Date
+	 * @param dblEndDate The Period End Date
+	 * @param strCalendar The Calendar
+	 * 
+	 * @return The DI-Style Price
+	 * 
+	 * @throws java.lang.Exception Thrown if the DI-Style Price cannot be calculated
+	 */
+
+	public static final double DIStylePriceFromRate (
+		final double dblDIRate,
+		final double dblStartDate,
+		final double dblEndDate,
+		final java.lang.String strCalendar)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDIRate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblEndDate) || dblStartDate >= dblEndDate)
+			throw new java.lang.Exception ("AnalyticsHelper::DIStylePriceFromRate => Invalid Inputs");
+
+		return java.lang.Math.pow (1. + dblDIRate, -1. * org.drip.analytics.daycount.Convention.BusinessDays
+			(dblStartDate, dblEndDate, strCalendar) / 252.);
+	}
+
+	/**
+	 * Compute the DI-Style Rate given the Price
+	 * 
+	 * @param dblPrice The Price
+	 * @param dblStartDate The Period Start Date
+	 * @param dblEndDate The Period End Date
+	 * @param strCalendar The Calendar
+	 * 
+	 * @return The DI-Style Rate
+	 * 
+	 * @throws java.lang.Exception Thrown if the DI-Style Price cannot be calculated
+	 */
+
+	public static final double DIStyleRateFromPrice (
+		final double dblDIPrice,
+		final double dblStartDate,
+		final double dblEndDate,
+		final java.lang.String strCalendar)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDIPrice) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblEndDate) || dblStartDate >= dblEndDate)
+			throw new java.lang.Exception ("AnalyticsHelper::DIStyleRateFromPrice => Invalid Inputs");
+
+		return java.lang.Math.pow (dblDIPrice, -252. / org.drip.analytics.daycount.Convention.BusinessDays
+			(dblStartDate, dblEndDate, strCalendar)) - 1.;
 	}
 
 	/**
@@ -609,108 +665,13 @@ public class AnalyticsHelper {
 		final java.lang.String strCouponCurrency,
 		final int iCouponFreq)
 	{
-		if (null == strCouponCurrency || strCouponCurrency.isEmpty()) {
-			if (s_bBlog) System.out.println ("AnalyticsHelper::CalcRateIndex => Cpn ccy is null!");
-
-			return null;
-		}
+		if (null == strCouponCurrency || strCouponCurrency.isEmpty()) return null;
 
 		java.lang.String strFreqMonthCode = GetMonthCodeFromFreq (iCouponFreq);
 
-		if (null == strFreqMonthCode) {
-			if (s_bBlog)
-				System.out.println ("AnalyticsHelper::CalcRateIndex => Cpn freq is " + iCouponFreq);
-
-			return null;
-		}
+		if (null == strFreqMonthCode) return null;
 
 		return strCouponCurrency.substring (0, 2) + strFreqMonthCode;
-	}
-
-	/**
-	 * Create a JulianDate from the java Date
-	 * 
-	 * @param dt Java Date input
-	 * 
-	 * @return JulianDate output
-	 */
-
-	public static final org.drip.analytics.date.JulianDate MakeJulianFromRSEntry (
-		final java.util.Date dt)
-	{
-		if (null == dt) return null;
-
-		try {
-			return org.drip.analytics.date.JulianDate.CreateFromYMD (org.drip.quant.common.DateUtil.GetYear
-				(dt), org.drip.quant.common.DateUtil.GetMonth (dt), org.drip.quant.common.DateUtil.GetDate
-					(dt));
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Create a JulianDate from the DD MMM YY
-	 * 
-	 * @param strDDMMMYY Java Date input as delimited DD MMM YY
-	 * @param strDelim Delimiter
-	 * 
-	 * @return JulianDate output
-	 */
-
-	public static final org.drip.analytics.date.JulianDate MakeJulianFromDDMMMYY (
-		final java.lang.String strDDMMMYY,
-		final java.lang.String strDelim)
-	{
-		if (null == strDDMMMYY || strDDMMMYY.isEmpty() || null == strDelim || strDelim.isEmpty())
-			return null;
-
-		java.lang.String[] astrDMY = strDDMMMYY.split (strDelim);
-
-		if (null == astrDMY || 3 != astrDMY.length) return null;
-
-		try {
-			return org.drip.analytics.date.JulianDate.CreateFromYMD (2000 + new java.lang.Integer
-				(astrDMY[2].trim()), org.drip.analytics.date.JulianDate.MonthFromMonthChars
-					(astrDMY[1].trim()), new java.lang.Integer (astrDMY[0].trim()));
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Create a JulianDate from the YYYY MM DD
-	 * 
-	 * @param strYYYYMMDD Java Date input as delimited YYYY MM DD
-	 * @param strDelim Delimiter
-	 * 
-	 * @return JulianDate output
-	 */
-
-	public static final org.drip.analytics.date.JulianDate MakeJulianFromYYYYMMDD (
-		final java.lang.String strYYYYMMDD,
-		final java.lang.String strDelim)
-	{
-		if (null == strYYYYMMDD || strYYYYMMDD.isEmpty() || null == strDelim || strDelim.isEmpty())
-			return null;
-
-		java.lang.String[] astrYYYYMMDD = strYYYYMMDD.split (strDelim);
-
-		if (null == astrYYYYMMDD || 3 != astrYYYYMMDD.length) return null;
-
-		try {
-			return org.drip.analytics.date.JulianDate.CreateFromYMD (new java.lang.Integer
-				(astrYYYYMMDD[0].trim()), new java.lang.Integer (astrYYYYMMDD[1].trim()), new
-					java.lang.Integer (astrYYYYMMDD[2].trim()));
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 
 	/**
@@ -759,35 +720,6 @@ public class AnalyticsHelper {
 		if (12 == iCouponFreq)  return strCcyPrefix + "0001M";
 
 		return "";
-	}
-
-	/**
-	 * Create a JulianDate from Bloomberg date string
-	 * 
-	 * @param strBBGDate Bloomberg date string
-	 * 
-	 * @return The new JulianDate
-	 */
-
-	public static final org.drip.analytics.date.JulianDate MakeJulianDateFromBBGDate (
-		final java.lang.String strBBGDate)
-	{
-		if (null == strBBGDate || strBBGDate.isEmpty()) return null;
-
-		java.lang.String[] astrFields = strBBGDate.split ("/");
-
-		if (3 != astrFields.length) return null;
-
-		try {
-			return org.drip.analytics.date.JulianDate.CreateFromYMD ((int) new java.lang.Double
-				(astrFields[2].trim()).doubleValue(), (int) new java.lang.Double
-					(astrFields[0].trim()).doubleValue(), (int) new java.lang.Double
-						(astrFields[1].trim()).doubleValue());
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 
 	/**

@@ -65,6 +65,14 @@ public class OvernightIndexContainer {
 
 			_mapNamedOvernightIndex.put ("RBA ON AONIA", oiAUD);
 
+			org.drip.market.definition.OvernightIndex oiBRL = new org.drip.market.definition.OvernightIndex
+				("CETIP", "BRL", "Bus/252", "BRL", "ON", 1,
+					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
+
+			_mapJurisdictionOvernightIndex.put ("BRL", oiBRL);
+
+			_mapNamedOvernightIndex.put ("DI", oiBRL);
+
 			org.drip.market.definition.OvernightIndex oiCAD = new org.drip.market.definition.OvernightIndex
 				("CORRA", "CAD", "Act/365", "CAD", "ON", 1,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
@@ -195,7 +203,7 @@ public class OvernightIndexContainer {
 
 			org.drip.market.definition.OvernightIndex oiUSD = new org.drip.market.definition.OvernightIndex
 				("Fed Fund", "USD", "Act/360", "USD", "ON", 1,
-					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
+					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
 			_mapJurisdictionOvernightIndex.put ("USD", oiUSD);
 

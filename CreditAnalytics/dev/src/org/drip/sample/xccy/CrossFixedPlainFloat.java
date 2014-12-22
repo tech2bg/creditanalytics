@@ -71,7 +71,8 @@ public class CrossFixedPlainFloat {
 			"Act/360",
 			false,
 			strFixedCouponCurrency,
-			false
+			false,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
@@ -97,7 +98,6 @@ public class CrossFixedPlainFloat {
 			iTenorInMonths + "M",
 			strPayCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			-1.,
 			null,
 			null,
@@ -110,7 +110,6 @@ public class CrossFixedPlainFloat {
 			"6M",
 			strPayCurrency,
 			null,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
 			1.,
 			null,
 			null,
@@ -189,7 +188,7 @@ public class CrossFixedPlainFloat {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtToday = JulianDate.Today();
+		JulianDate dtToday = org.drip.analytics.date.DateUtil.Today();
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, "USD");
 

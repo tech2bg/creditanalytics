@@ -107,8 +107,8 @@ public class BondManager {
 					"' and CallOrPut = '" + strCallOrPut + "' order by ExerciseStartDate");
 
 			while (rs.next()) {
-				ldblCallDates.add (org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
-					(rs.getDate ("ExerciseStartDate")).julian());
+				ldblCallDates.add (org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+					("ExerciseStartDate")).julian());
 
 				ldblCallFactors.add (rs.getDouble ("ExerciseFactor"));
 
@@ -175,8 +175,8 @@ public class BondManager {
 					"' and CallOrPut = '" + strCallOrPut + "' order by ExerciseStartDate");
 
 			while (rs.next()) {
-				ldblCallDates.add (org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
-					(rs.getDate ("ExerciseStartDate")).julian());
+				ldblCallDates.add (org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+					("ExerciseStartDate")).julian());
 
 				ldblCallFactors.add (rs.getDouble ("ExerciseFactor"));
 
@@ -237,8 +237,8 @@ public class BondManager {
 				strBondId + "' order by AmortDate");
 
 			while (rs.next()) {
-				ldblAmortDates.add (org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
-					(rs.getDate ("AmortDate")).julian());
+				ldblAmortDates.add (org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rs.getDate
+					("AmortDate")).julian());
 
 				ldblPrincipalPaydownFactors.add (rs.getDouble ("PrincipalPaydown"));
 			}
@@ -396,7 +396,7 @@ public class BondManager {
 			try {
 				java.lang.String strRunName = bond.ticker() + "  " + df2p.format (100. * bond.couponMetrics
 					(valParams.valueDate(), valParams, null).rate()) + " " +
-						(org.drip.analytics.date.JulianDate.Year (bond.maturityDate().julian()) - 2000);
+						(org.drip.analytics.date.DateUtil.Year (bond.maturityDate().julian()) - 2000);
 
 				if (bond.isFloater()) {
 					if (s_bBlog)
@@ -468,7 +468,7 @@ public class BondManager {
 				try {
 					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. *
 						bond.couponMetrics (valParams.valueDate(), valParams, null).rate()) + " " +
-							(org.drip.analytics.date.JulianDate.Year (bond.maturityDate().julian()) - 2000);
+							(org.drip.analytics.date.DateUtil.Year (bond.maturityDate().julian()) - 2000);
 
 					if (bond.isFloater())
 						mpc.addFixings (bond.periodFixingDate (valParams.valueDate()),
@@ -525,7 +525,7 @@ public class BondManager {
 				try {
 					java.lang.String strRunName = strRunTicker + "  " + df2_3p.format (100. *
 						bond.couponMetrics (dt.julian(), null, null).rate()) + " " +
-							(org.drip.analytics.date.JulianDate.Year (bond.maturityDate().julian()) - 2000);
+							(org.drip.analytics.date.DateUtil.Year (bond.maturityDate().julian()) - 2000);
 
 					if (!s_mapBondMarks.containsKey (bond.isin()) && !s_mapBondMarks.containsKey
 						(bond.cusip())) {
@@ -1319,8 +1319,8 @@ public class BondManager {
 					"' order by MARKDATE asc");
 
 			while (null != rsEOD && rsEOD.next())
-				setEOD.add (org.drip.analytics.support.AnalyticsHelper.MakeJulianFromRSEntry
-					(rsEOD.getDate ("MARKDATE")));
+				setEOD.add (org.drip.analytics.date.DateUtil.MakeJulianFromRSEntry (rsEOD.getDate
+					("MARKDATE")));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -1675,7 +1675,7 @@ public class BondManager {
 		java.sql.Statement stmt = org.drip.service.env.EnvManager.InitEnv
 			("c:\\Lakshmi\\BondAnal\\Config.xml");
 
-		RatesManager.LoadFullIRCurves (mpc, stmt, org.drip.analytics.date.JulianDate.CreateFromYMD (2010, 12,
+		RatesManager.LoadFullIRCurves (mpc, stmt, org.drip.analytics.date.DateUtil.CreateFromYMD (2010, 12,
 			3));
 
 		GenerateBondCreatorFile (mpc, stmt);

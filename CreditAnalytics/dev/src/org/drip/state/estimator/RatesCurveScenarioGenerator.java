@@ -269,9 +269,9 @@ public class RatesCurveScenarioGenerator {
 					adblTenorQuotes[j] = adblQuotes[j];
 			}
 
-			mapTenorDC.put (org.drip.analytics.date.JulianDate.fromJulian
-				(_aCalibInst[i].maturityDate().julian()), createIRCurve (valParams, dcTSY, adblTenorQuotes, 0.,
-					astrCalibMeasure, lsfc, quotingParams));
+			mapTenorDC.put (org.drip.analytics.date.DateUtil.FromJulian
+				(_aCalibInst[i].maturityDate().julian()), createIRCurve (valParams, dcTSY, adblTenorQuotes,
+					0., astrCalibMeasure, lsfc, quotingParams));
 		}
 
 		return mapTenorDC;

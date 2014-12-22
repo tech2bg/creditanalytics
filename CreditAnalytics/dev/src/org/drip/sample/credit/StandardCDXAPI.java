@@ -7,18 +7,10 @@ package org.drip.sample.credit;
 
 import java.util.*;
 
-/*
- * Credit Product imports
- */
-
+import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.product.definition.*;
-
-/*
- * Credit Analytics API imports
- */
-
 import org.drip.service.api.CreditAnalytics;
 import org.drip.service.env.StandardCDXManager;
 
@@ -73,7 +65,7 @@ public class StandardCDXAPI {
 
 	private static final void BasketCDSAPISample()
 	{
-		JulianDate dtToday = JulianDate.CreateFromYMD (2013, JulianDate.MAY, 10);
+		JulianDate dtToday = DateUtil.CreateFromYMD (2013, DateUtil.MAY, 10);
 
 		/*
 		 * Construct the CDX.NA.IG 5Y Series 17 index by name and series

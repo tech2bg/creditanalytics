@@ -69,27 +69,27 @@ public class DCAct_Act implements org.drip.analytics.daycount.DCFCalculator {
 		int iNumLeapDays = 0;
 		int iNumNonLeapDays = 0;
 
-		int iYearStart = org.drip.analytics.date.JulianDate.Year (dblStart);
+		int iYearStart = org.drip.analytics.date.DateUtil.Year (dblStart);
 
-		int iYearEnd = org.drip.analytics.date.JulianDate.Year (dblEnd);
+		int iYearEnd = org.drip.analytics.date.DateUtil.Year (dblEnd);
 
 		if (iYearStart == iYearEnd) {
-			return org.drip.analytics.date.JulianDate.IsLeapYear (dblStart) ? (dblEnd - dblStart) / 366. :
+			return org.drip.analytics.date.DateUtil.IsLeapYear (dblStart) ? (dblEnd - dblStart) / 366. :
 				(dblEnd - dblStart) / 365.;
 		}
 
-		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblStart))
-			iNumLeapDays += org.drip.analytics.date.JulianDate.DaysRemaining (dblStart);
+		if (org.drip.analytics.date.DateUtil.IsLeapYear (dblStart))
+			iNumLeapDays += org.drip.analytics.date.DateUtil.DaysRemaining (dblStart);
 		else
-			iNumNonLeapDays += org.drip.analytics.date.JulianDate.DaysRemaining (dblStart);
+			iNumNonLeapDays += org.drip.analytics.date.DateUtil.DaysRemaining (dblStart);
 
-		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblEnd))
-			iNumLeapDays += org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd);
+		if (org.drip.analytics.date.DateUtil.IsLeapYear (dblEnd))
+			iNumLeapDays += org.drip.analytics.date.DateUtil.DaysElapsed (dblEnd);
 		else
-			iNumNonLeapDays += org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd);
+			iNumNonLeapDays += org.drip.analytics.date.DateUtil.DaysElapsed (dblEnd);
 
 		/* if (iYearEnd == iYearStart) {
-			if (!org.drip.analytics.date.JulianDate.IsLeapYear (dblStart))
+			if (!org.drip.analytics.date.DateUtil.IsLeapYear (dblStart))
 				return 1. * (iNumNonLeapDays - 365) / 365.;
 
 			return 1. * (iNumLeapDays - (org.drip.analytics.date.JulianDate.ContainsFeb29 (dblStart,
@@ -97,10 +97,10 @@ public class DCAct_Act implements org.drip.analytics.daycount.DCFCalculator {
 		} */
 
 		for (int iYear = iYearStart + 1; iYear < iYearEnd; ++iYear) {
-			double dblYear = org.drip.analytics.date.JulianDate.toJulian (iYear,
-				org.drip.analytics.date.JulianDate.JANUARY, 1);
+			double dblYear = org.drip.analytics.date.DateUtil.ToJulian (iYear,
+				org.drip.analytics.date.DateUtil.JANUARY, 1);
 
-			if (org.drip.analytics.date.JulianDate.IsLeapYear (dblYear))
+			if (org.drip.analytics.date.DateUtil.IsLeapYear (dblYear))
 				iNumLeapDays += 366;
 			else
 				iNumNonLeapDays += 365;
@@ -120,27 +120,27 @@ public class DCAct_Act implements org.drip.analytics.daycount.DCFCalculator {
 		int iNumLeapDays = 0;
 		int iNumNonLeapDays = 0;
 
-		int iYearStart = org.drip.analytics.date.JulianDate.Year (dblStart);
+		int iYearStart = org.drip.analytics.date.DateUtil.Year (dblStart);
 
-		int iYearEnd = org.drip.analytics.date.JulianDate.Year (dblEnd);
+		int iYearEnd = org.drip.analytics.date.DateUtil.Year (dblEnd);
 
 		if (iYearStart == iYearEnd) return (int) (dblEnd - dblStart);
 
-		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblStart))
-			iNumLeapDays += org.drip.analytics.date.JulianDate.DaysRemaining (dblStart);
+		if (org.drip.analytics.date.DateUtil.IsLeapYear (dblStart))
+			iNumLeapDays += org.drip.analytics.date.DateUtil.DaysRemaining (dblStart);
 		else
-			iNumNonLeapDays += org.drip.analytics.date.JulianDate.DaysRemaining (dblStart);
+			iNumNonLeapDays += org.drip.analytics.date.DateUtil.DaysRemaining (dblStart);
 
-		if (org.drip.analytics.date.JulianDate.IsLeapYear (dblEnd))
-			iNumLeapDays += org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd);
+		if (org.drip.analytics.date.DateUtil.IsLeapYear (dblEnd))
+			iNumLeapDays += org.drip.analytics.date.DateUtil.DaysElapsed (dblEnd);
 		else
-			iNumNonLeapDays += org.drip.analytics.date.JulianDate.DaysElapsed (dblEnd);
+			iNumNonLeapDays += org.drip.analytics.date.DateUtil.DaysElapsed (dblEnd);
 
 		for (int iYear = iYearStart + 1; iYear < iYearEnd; ++iYear) {
-			double dblYear = org.drip.analytics.date.JulianDate.toJulian (iYear,
-				org.drip.analytics.date.JulianDate.JANUARY, 1);
+			double dblYear = org.drip.analytics.date.DateUtil.ToJulian (iYear,
+				org.drip.analytics.date.DateUtil.JANUARY, 1);
 
-			if (org.drip.analytics.date.JulianDate.IsLeapYear (dblYear))
+			if (org.drip.analytics.date.DateUtil.IsLeapYear (dblYear))
 				iNumLeapDays += 366;
 			else
 				iNumNonLeapDays += 365;

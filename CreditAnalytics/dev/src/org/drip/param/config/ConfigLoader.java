@@ -442,10 +442,10 @@ public class ConfigLoader {
 
 					if (null == lh) lh = new org.drip.analytics.holiday.Locale();
 
-					lh.addStaticHoliday (org.drip.analytics.date.JulianDate.CreateFromYMD
-						(org.drip.quant.common.DateUtil.GetYear (dtSQLHoliday),
-							org.drip.quant.common.DateUtil.GetMonth (dtSQLHoliday),
-								org.drip.quant.common.DateUtil.GetYear (dtSQLHoliday)), "");
+					lh.addStaticHoliday (org.drip.analytics.date.DateUtil.CreateFromYMD
+						(org.drip.analytics.date.DateUtil.Year (dtSQLHoliday),
+							org.drip.analytics.date.DateUtil.Month (dtSQLHoliday),
+								org.drip.analytics.date.DateUtil.Year (dtSQLHoliday)), "");
 
 					mapHols.put (strLocation, lh);
 				}
@@ -457,8 +457,8 @@ public class ConfigLoader {
 		}
 
 		int[] aiWeekend = new int[2];
-		aiWeekend[1] = org.drip.analytics.date.JulianDate.SUNDAY;
-		aiWeekend[0] = org.drip.analytics.date.JulianDate.SATURDAY;
+		aiWeekend[1] = org.drip.analytics.date.DateUtil.SUNDAY;
+		aiWeekend[0] = org.drip.analytics.date.DateUtil.SATURDAY;
 
 		for (java.util.Map.Entry<java.lang.String, org.drip.analytics.holiday.Locale> me :
 			mapHols.entrySet())

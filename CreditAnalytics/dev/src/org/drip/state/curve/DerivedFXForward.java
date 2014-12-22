@@ -78,7 +78,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		if (null == fxfwd)
 			throw new java.lang.Exception
 				("DerivedFXForward::calcNodeBasis => Cannot make fxfwd at maturity " +
-					org.drip.analytics.date.JulianDate.fromJulian (_adblDate[iNode]));
+					org.drip.analytics.date.DateUtil.FromJulian (_adblDate[iNode]));
 
 		return fxfwd.discountCurveBasis (valParam, dcNum, dcDenom, _dblFXSpot, dblFXFwd, bBasisOnDenom);
 	}
@@ -122,7 +122,7 @@ public class DerivedFXForward extends org.drip.analytics.definition.FXForwardCur
 		for (int i = 0; i < abIsPIP.length; ++i) {
 			if (!org.drip.quant.common.NumberUtil.IsValid (adblDate[i]) || adblDate[i] <= _dblSpotDate)
 				throw new java.lang.Exception ("DerivedFXForward ctr: Node date " +
-					org.drip.analytics.date.JulianDate.fromJulian (adblDate[i]) + " before spot " + dtSpot);
+					org.drip.analytics.date.DateUtil.FromJulian (adblDate[i]) + " before spot " + dtSpot);
 
 			_abIsPIP[i] = abIsPIP[i];
 			_adblDate[i] = adblDate[i];

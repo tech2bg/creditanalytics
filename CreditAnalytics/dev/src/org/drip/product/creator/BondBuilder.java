@@ -314,16 +314,15 @@ public class BondBuilder {
 
 				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFixedPeriod (dblPeriodStart,
 					adblDate[i], new org.drip.param.period.UnitCouponAccrualSetting (iFreq, "30/360", false,
-						"30/360", false, strCurrency, true), new
-							org.drip.param.period.ComposableFixedUnitSetting ((12 / iFreq) + "M",
-								org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-									null, adblCouponAmount[i], 0., strCurrency)));
+						"30/360", false, strCurrency, true,
+							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
+					new org.drip.param.period.ComposableFixedUnitSetting ((12 / iFreq) + "M",
+						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
+							adblCouponAmount[i], 0., strCurrency)));
 
 				lsCouponPeriod.add (new org.drip.analytics.cashflow.CompositeFixedPeriod (new
 					org.drip.param.period.CompositePeriodSetting (iFreq, (12 / iFreq) + "M", strCurrency,
-						null,
-							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC,
-					adblPrincipal[i], null, null, null, null), lsCUP));
+						null, adblPrincipal[i], null, null, null, null), lsCUP));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

@@ -53,7 +53,7 @@ public class Static extends Base {
 		final java.lang.String strDate,
 		final java.lang.String strDescription)
 	{
-		org.drip.analytics.date.JulianDate dtHol = org.drip.analytics.date.JulianDate.CreateFromDDMMMYYYY
+		org.drip.analytics.date.JulianDate dtHol = org.drip.analytics.date.DateUtil.CreateFromDDMMMYYYY
 			(strDate);
 
 		if (null == dtHol) return null;

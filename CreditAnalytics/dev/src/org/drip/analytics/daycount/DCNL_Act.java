@@ -73,8 +73,8 @@ public class DCNL_Act implements org.drip.analytics.daycount.DCFCalculator {
 			throw new java.lang.Exception ("DCNL_Act.yearFraction: Cannot create DateEOMAdjustment!");
 
 		return (dblEnd - dblStart + dm.posterior() - dm.anterior() -
-			org.drip.analytics.date.JulianDate.NumFeb29 (dblStart, dblEnd,
-				org.drip.analytics.date.JulianDate.RIGHT_INCLUDE)) / actactParams.freq() /
+			org.drip.analytics.date.DateUtil.NumFeb29 (dblStart, dblEnd,
+				org.drip.analytics.date.DateUtil.RIGHT_INCLUDE)) / actactParams.freq() /
 					(actactParams.end() - actactParams.start());
 	}
 
@@ -95,7 +95,7 @@ public class DCNL_Act implements org.drip.analytics.daycount.DCFCalculator {
 			throw new java.lang.Exception ("DCNL_Act.daysAccrued: Cannot create DateEOMAdjustment!");
 
 		return (int) (dblEnd - dblStart + dm.posterior() - dm.anterior() -
-			org.drip.analytics.date.JulianDate.NumFeb29 (dblStart, dblEnd,
-				org.drip.analytics.date.JulianDate.RIGHT_INCLUDE));
+			org.drip.analytics.date.DateUtil.NumFeb29 (dblStart, dblEnd,
+				org.drip.analytics.date.DateUtil.RIGHT_INCLUDE));
 	}
 }
