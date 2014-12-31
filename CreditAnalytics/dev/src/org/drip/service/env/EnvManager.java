@@ -74,6 +74,18 @@ public class EnvManager {
 			return null;
 		}
 
+		if (!org.drip.market.definition.ShortTermFuturesContainer.Init()) {
+			System.out.println ("EnvManager::InitEnv => Cannot Initialize Short Term Futures!");
+
+			return null;
+		}
+
+		if (!org.drip.market.definition.FuturesOptionsContainer.Init()) {
+			System.out.println ("EnvManager::InitEnv => Cannot Initialize Short Term Futures Options!");
+
+			return null;
+		}
+
 		return org.drip.param.config.ConfigLoader.OracleInit (strConfig);
 	}
 

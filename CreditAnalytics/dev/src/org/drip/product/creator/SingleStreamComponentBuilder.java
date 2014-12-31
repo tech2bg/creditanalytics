@@ -147,8 +147,7 @@ public class SingleStreamComponentBuilder {
 			dtMaturity + "}";
 
 		try {
-			int iFreq = bIsON ? 360 : 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths
-				(strTenor);
+			int iFreq = bIsON ? 360 : org.drip.analytics.support.AnalyticsHelper.TenorToFreq (strTenor);
 
 			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
 				org.drip.param.period.ComposableFloatingUnitSetting (strTenor, bIsON ?
@@ -177,5 +176,143 @@ public class SingleStreamComponentBuilder {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Create a Standard FRA from the Effective Date, the Forward Label, and the Strike
+	 * 
+	 * @param dtEffective Effective date
+	 * @param fri The Floating Rate Index
+	 * @param dblStrike Futures Strike
+	 * 
+	 * @return The Standard FRA Instance
+	 */
+
+	public static final org.drip.product.fra.FRAStandardComponent FRAStandard (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final org.drip.state.identifier.ForwardLabel fri,
+		final double dblStrike)
+	{
+		if (null == fri) return null;
+
+		java.lang.String strTenor = fri.tenor();
+
+		java.lang.String strCurrency = fri.currency();
+
+		boolean bIsON = "ON".equalsIgnoreCase (strTenor);
+
+		org.drip.analytics.date.JulianDate dtMaturity = dtEffective.addTenor (strTenor);
+		
+		java.lang.String strCode = (0 == dblStrike ? "FUTURES::" : "FRA::") + fri.fullyQualifiedName() +
+			"::{" + dtEffective + "->" + dtMaturity + "}";
+
+		try {
+			int iFreq = bIsON ? 360 : 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths
+				(strTenor);
+
+			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
+				org.drip.param.period.ComposableFloatingUnitSetting (strTenor, bIsON ?
+					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT :
+						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
+							fri,
+								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+				0.);
+
+			org.drip.param.period.CompositePeriodSetting cps = new
+				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null, 1., null,
+					null, null, null);
+
+			org.drip.product.fra.FRAStandardComponent sscDeposit = new org.drip.product.fra.FRAStandardComponent (strCode, new
+				org.drip.product.rates.Stream
+					(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
+						(org.drip.analytics.support.CompositePeriodBuilder.EdgePair (dtEffective,
+							dtMaturity), cps, cfus)), dblStrike, new
+								org.drip.param.valuation.CashSettleParams (0, strCurrency, 0));
+
+			sscDeposit.setPrimaryCode (strCode);
+
+			return sscDeposit;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Create a FRA Market Component Instance from the Effective Date, the Forward Label, and the Strike
+	 * 
+	 * @param dtEffective Effective date
+	 * @param fri The Floating Rate Index
+	 * @param dblStrike Futures Strike
+	 * 
+	 * @return The Futures Product
+	 */
+
+	public static final org.drip.product.fra.FRAMarketComponent FRAMarket (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final org.drip.state.identifier.ForwardLabel fri,
+		final double dblStrike)
+	{
+		if (null == fri) return null;
+
+		java.lang.String strTenor = fri.tenor();
+
+		java.lang.String strCurrency = fri.currency();
+
+		boolean bIsON = "ON".equalsIgnoreCase (strTenor);
+
+		org.drip.analytics.date.JulianDate dtMaturity = dtEffective.addTenor (strTenor);
+		
+		java.lang.String strCode = "FUTURES::" + fri.fullyQualifiedName() + "::{" + dtEffective + "->" +
+			dtMaturity + "}";
+
+		try {
+			int iFreq = bIsON ? 360 : 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths
+				(strTenor);
+
+			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
+				org.drip.param.period.ComposableFloatingUnitSetting (strTenor, bIsON ?
+					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT :
+						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
+							fri,
+								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+				0.);
+
+			org.drip.param.period.CompositePeriodSetting cps = new
+				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null, 1., null,
+					null, null, null);
+
+			org.drip.product.fra.FRAMarketComponent sscDeposit = new org.drip.product.fra.FRAMarketComponent
+				(strCode, new org.drip.product.rates.Stream
+					(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
+						(org.drip.analytics.support.CompositePeriodBuilder.EdgePair (dtEffective,
+							dtMaturity), cps, cfus)), dblStrike, new
+								org.drip.param.valuation.CashSettleParams (0, strCurrency, 0));
+
+			sscDeposit.setPrimaryCode (strCode);
+
+			return sscDeposit;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Create a Futures Product Instance from the Effective Date, the Forward Label, and the Strike
+	 * 
+	 * @param dtEffective Effective date
+	 * @param fri The Floating Rate Index
+	 * 
+	 * @return The Futures Product Instance
+	 */
+
+	public static final org.drip.product.fra.FRAStandardComponent Futures (
+		final org.drip.analytics.date.JulianDate dtEffective,
+		final org.drip.state.identifier.ForwardLabel fri)
+	{
+		return FRAStandard (dtEffective, fri, 0.);
 	}
 }

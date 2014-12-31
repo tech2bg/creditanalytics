@@ -644,6 +644,7 @@ public class CrossOvernightFloatingStream {
 				"ON",
 				new FloaterIndex (
 					strCurrency + " ON",
+					"OIS",
 					strCurrency,
 					"Act/360",
 					strCurrency,

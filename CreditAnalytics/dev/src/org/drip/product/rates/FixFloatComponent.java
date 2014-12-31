@@ -218,12 +218,12 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 	@Override public org.drip.analytics.date.JulianDate maturityDate()
 	{
-		org.drip.analytics.date.JulianDate dtFloatReferenceMaturity = _fixReference.maturity();
+		org.drip.analytics.date.JulianDate dtFixReferenceMaturity = _fixReference.maturity();
 
 		org.drip.analytics.date.JulianDate dtFloatDerivedMaturity = _floatDerived.maturity();
 
-		return dtFloatReferenceMaturity.julian() > dtFloatDerivedMaturity.julian() ?
-			dtFloatReferenceMaturity : dtFloatDerivedMaturity;
+		return dtFixReferenceMaturity.julian() > dtFloatDerivedMaturity.julian() ?
+			dtFixReferenceMaturity : dtFloatDerivedMaturity;
 	}
 
 	@Override public org.drip.analytics.date.JulianDate firstCouponDate()

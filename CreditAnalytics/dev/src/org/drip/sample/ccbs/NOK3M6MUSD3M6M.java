@@ -596,6 +596,7 @@ public class NOK3M6MUSD3M6M {
 
 		FloaterIndex fiNOK = new FloaterIndex (
 			"NOIS",
+			"OIS",
 			strDerivedCurrency,
 			"Act/360",
 			"NOK",

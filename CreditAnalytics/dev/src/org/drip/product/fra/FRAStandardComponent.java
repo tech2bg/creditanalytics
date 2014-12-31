@@ -29,279 +29,36 @@ package org.drip.product.fra;
  */
 
 /**
- * FRAStandardComponent contains the implementation of the Standard Multi-Curve FRA product.
+ * FRAStandardComponent contains the implementation of the Standard Multi-Curve FRA Component.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAStandardComponent extends org.drip.product.definition.CalibratableFixedIncomeComponent {
-	private double _dblNotional = 1.;
-	private java.lang.String _strCode = "";
-	private java.lang.String _strDayCount = "";
-	private java.lang.String _strCalendar = "";
-	private java.lang.String _strCurrency = "";
+public class FRAStandardComponent extends org.drip.product.rates.SingleStreamComponent {
 	private double _dblStrike = java.lang.Double.NaN;
-	private double _dblEffectiveDate = java.lang.Double.NaN;
-	private org.drip.state.identifier.ForwardLabel _fri = null;
-	private org.drip.analytics.date.JulianDate _dtMaturity = null;
-	private org.drip.param.valuation.CashSettleParams _settleParams = null;
-
-	private org.drip.state.estimator.PredictorResponseWeightConstraint discountFactorPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.product.calib.ProductQuoteSet pqs)
-	{
-		double dblValueDate = valParams.valueDate();
-
-		if (dblValueDate > _dblEffectiveDate) return null;
-
-		org.drip.product.calib.FRAComponentQuoteSet fcqs = (org.drip.product.calib.FRAComponentQuoteSet) pqs;
-
-		if (!fcqs.containsFRARate()) return null;
-
-		double dblForwardDF = java.lang.Double.NaN;
-
-		double dblMaturity = _dtMaturity.julian();
-
-		try {
-			dblForwardDF = 1. / (1. + (fcqs.fraRate() * org.drip.analytics.daycount.Convention.YearFraction
-				(_dblEffectiveDate, dblMaturity, _strDayCount, false, null, _strCalendar)));
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
-			org.drip.state.estimator.PredictorResponseWeightConstraint();
-
-		if (!prwc.addPredictorResponseWeight (_dblEffectiveDate, _dblNotional * dblForwardDF)) return null;
-
-		if (!prwc.addDResponseWeightDManifestMeasure ("PV", _dblEffectiveDate, _dblNotional * dblForwardDF))
-			return null;
-
-		if (!prwc.addPredictorResponseWeight (dblMaturity, -1. * _dblNotional)) return null;
-
-		if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblMaturity, -1. * _dblNotional)) return null;
-
-		if (!prwc.updateValue (0.)) return null;
-
-		if (!prwc.updateDValueDManifestMeasure ("PV", 1.)) return null;
-
-		return prwc;
-	}
-
-	@Override protected org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> calibMeasures (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
-	{
-		return null;
-	}
 
 	/**
 	 * FRAStandardComponent constructor
 	 * 
-	 * @param dblNotional Component Notional
-	 * @param strCurrency Pay Currency
-	 * @param strCode FRA Product Code
-	 * @param strCalendar FRA Calendar
-	 * @param dblEffectiveDate FRA Effective Date
-	 * @param fri FRA Floating Rate Index
-	 * @param dblStrike FRA Strike
-	 * @param strDayCount Day Count Convention
+	 * @param strName Futures Component Name
+	 * @param stream Futures Stream
+	 * @param dblStrike Futures Strike
+	 * @param csp Cash Settle Parameters Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
 	public FRAStandardComponent (
-		final double dblNotional,
-		final java.lang.String strCurrency,
-		final java.lang.String strCode,
-		final java.lang.String strCalendar,
-		final double dblEffectiveDate,
-		final org.drip.state.identifier.ForwardLabel fri,
+		final java.lang.String strName,
+		final org.drip.product.rates.Stream stream,
 		final double dblStrike,
-		java.lang.String strDayCount)
+		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional) || 0. == _dblNotional ||
-			null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() || null == (_strCode = strCode) ||
-				_strCode.isEmpty() || null == (_strCalendar = strCalendar) || _strCalendar.isEmpty() ||
-					!org.drip.quant.common.NumberUtil.IsValid (_dblEffectiveDate = dblEffectiveDate) || null
-						== (_fri = fri) || !org.drip.quant.common.NumberUtil.IsValid (_dblStrike =
-							dblStrike) || null == (_strDayCount = strDayCount) || _strDayCount.isEmpty())
+		super (strName, stream, csp);
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStrike = dblStrike))
 			throw new java.lang.Exception ("FRAStandardComponent ctr => Invalid Inputs!");
-
-		_dtMaturity = new org.drip.analytics.date.JulianDate (_dblEffectiveDate).addTenor (_fri.tenor());
-	}
-
-	@Override public java.lang.String primaryCode()
-	{
-		return _strCode;
-	}
-
-	@Override public void setPrimaryCode (
-		final java.lang.String strCode)
-	{
-		_strCode = strCode;
-	}
-
-	@Override public java.lang.String name()
-	{
-		return "FRA=" + _fri.fullyQualifiedName();
-	}
-
-	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> couponCurrency()
-	{
-		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String> mapCouponCurrency = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.String>();
-
-		mapCouponCurrency.put (name(), _strCurrency);
-
-		return mapCouponCurrency;
-	}
-
-	@Override public java.lang.String payCurrency()
-	{
-		return _strCurrency;
-	}
-
-	@Override public java.lang.String principalCurrency()
-	{
-		return _strCurrency;
-	}
-
-	@Override public double initialNotional()
-	{
-		return _dblNotional;
-	}
-
-	@Override public double notional (
-		final double dblDate)
-		throws java.lang.Exception
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || dblDate < _dblEffectiveDate || dblDate >
-			_dtMaturity.julian())
-			throw new java.lang.Exception ("FRAStandardComponent::notional => Bad date into getNotional");
-
-		return 1.;
-	}
-
-	@Override public double notional (
-		final double dblDate1,
-		final double dblDate2)
-		throws java.lang.Exception
-	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate1) || !org.drip.quant.common.NumberUtil.IsValid
-			(dblDate2) || dblDate1 < _dblEffectiveDate || dblDate2 < _dblEffectiveDate)
-			throw new java.lang.Exception ("FRAStandardComponent::notional => Bad date into getNotional");
-
-		double dblMaturity = _dtMaturity.julian();
-
-		if (dblDate1 > dblMaturity || dblDate2 > dblMaturity)
-			throw new java.lang.Exception ("FRAStandardComponent::notional => Bad date into getNotional");
-
-		return 1.;
-	}
-
-	@Override public org.drip.analytics.output.CompositePeriodCouponMetrics couponMetrics (
-		final double dblAccrualEndDate,
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
-	{
-		return null;
-	}
-
-	@Override public int freq()
-	{
-		return couponPeriods().get (0).freq();
-	}
-
-	@Override public org.drip.state.identifier.CreditLabel creditLabel()
-	{
-		return null;
-	}
-
-	@Override public
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
-			forwardLabel()
-	{
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel> mapFRI =
-			new org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>();
-
-		mapFRI.put ("DERIVED", _fri);
-
-		return mapFRI;
-	}
-
-	@Override public org.drip.state.identifier.FundingLabel fundingLabel()
-	{
-		return org.drip.state.identifier.FundingLabel.Standard (_strCurrency);
-	}
-
-	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.FXLabel>
-		fxLabel()
-	{
-		return null;
-	}
-
-	@Override public org.drip.analytics.date.JulianDate effectiveDate()
-	{
-		try {
-			return new org.drip.analytics.date.JulianDate (_dblEffectiveDate);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	@Override public org.drip.analytics.date.JulianDate maturityDate()
-	{
-		return _dtMaturity;
-	}
-
-	@Override public org.drip.analytics.date.JulianDate firstCouponDate()
-	{
-		return maturityDate();
-	}
-
-	@Override public java.util.List<org.drip.analytics.cashflow.CompositePeriod> couponPeriods()
-	{
-		try {
-			java.lang.String strTenor = _fri.tenor();
-
-			int iFreq = 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths (strTenor);
-
-			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
-				org.drip.param.period.ComposableFloatingUnitSetting (strTenor,
-					org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null, _fri,
-						org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE, 0.);
-
-			org.drip.param.period.CompositePeriodSetting cps = new
-				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, _strCurrency, null,
-					_dblNotional, null, null, null, null);
-
-			org.drip.analytics.date.JulianDate dtEffective = new org.drip.analytics.date.JulianDate
-				(_dblEffectiveDate);
-
-			return org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-				(org.drip.analytics.support.CompositePeriodBuilder.EdgePair (dtEffective,
-					dtEffective.addTenorAndAdjust (strTenor, _strCalendar)), cps, cfus);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	@Override public org.drip.param.valuation.CashSettleParams cashSettleParams()
-	{
-		return _settleParams;
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
@@ -312,8 +69,10 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 	{
 		if (null == valParams || null == csqs) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()));
+		org.drip.state.identifier.FundingLabel fundingLabel =
+			org.drip.state.identifier.FundingLabel.Standard (payCurrency());
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
 
 		if (null == dcFunding) return null;
 
@@ -323,44 +82,49 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate > _dblEffectiveDate) return null;
+		double dblEffectiveDate = effectiveDate().julian();
 
-		double dblMaturity = _dtMaturity.julian();
+		if (dblValueDate > dblEffectiveDate) return null;
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (_fri);
+		org.drip.analytics.date.JulianDate dtMaturity = maturityDate();
 
-		if (null == fc || !_fri.match (fc.index())) return null;
+		double dblMaturityDate = dtMaturity.julian();
+
+		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel().get ("DERIVED");
+
+		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (forwardLabel);
+
+		if (null == fc || !forwardLabel.match (fc.index())) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>();
 
+		org.drip.param.valuation.CashSettleParams settleParams = cashSettleParams();
+
 		try {
-			double dblCashSettle = null == _settleParams ? valParams.cashPayDate() :
-				_settleParams.cashSettleDate (dblValueDate);
+			double dblCashSettle = null == settleParams ? valParams.cashPayDate() :
+				settleParams.cashSettleDate (dblValueDate);
 
-			dblParForward = csqs.available (_dtMaturity, _fri) ? csqs.fixing (_dtMaturity, _fri) : fc.forward
-				(_dtMaturity);
-
-			org.drip.state.identifier.FundingLabel fundingLabel =
-				org.drip.state.identifier.FundingLabel.Standard (_strCurrency);
+			dblParForward = csqs.available (dtMaturity, forwardLabel) ? csqs.fixing (dtMaturity,
+				forwardLabel) : fc.forward (dtMaturity);
 
 			double dblMultiplicativeQuantoAdjustment = java.lang.Math.exp
 				(org.drip.analytics.support.OptionHelper.IntegratedCrossVolQuanto
-					(csqs.forwardCurveVolSurface (_fri), csqs.fundingCurveVolSurface (fundingLabel),
-						csqs.forwardFundingCorrSurface (_fri, fundingLabel), dblValueDate,
-							_dblEffectiveDate));
+					(csqs.forwardCurveVolSurface (forwardLabel), csqs.fundingCurveVolSurface (fundingLabel),
+						csqs.forwardFundingCorrSurface (forwardLabel, fundingLabel), dblValueDate,
+							dblEffectiveDate));
 
-			double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (_dblEffectiveDate,
-				dblMaturity, _strDayCount, false, null, _strCalendar);
+			double dblDCF = org.drip.analytics.daycount.Convention.YearFraction (dblEffectiveDate,
+				dblMaturityDate, stream().couponDC(), false, null, stream().calendar());
 
 			double dblQuantoAdjustedParForward = dblParForward * dblMultiplicativeQuantoAdjustment;
 
-			double dblDV01 = dblDCF * dcFunding.df (dblMaturity) / dcFunding.df (dblCashSettle) *
-				_dblNotional;
+			double dblDV01 = dblDCF * dcFunding.df (dblMaturityDate) / dcFunding.df (dblCashSettle) *
+				notional (dblValueDate);
 
 			double dblPV = dblDV01 * (dblQuantoAdjustedParForward - _dblStrike);
 
-			double dblDCParForward = dcFunding.libor (_dblEffectiveDate, dblMaturity);
+			double dblDCParForward = dcFunding.libor (dblEffectiveDate, dblMaturityDate);
 
 			mapResult.put ("additivequantoadjustment", dblQuantoAdjustedParForward - dblParForward);
 
@@ -482,15 +246,6 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		final org.drip.product.calib.ProductQuoteSet pqs)
 	{
 		return null;
-
-		/*
-		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FRAComponentQuoteSet)
-			|| !pqs.contains (org.drip.analytics.rates.DiscountCurve.LATENT_STATE_DISCOUNT,
-				org.drip.analytics.rates.DiscountCurve.QUANTIFICATION_METRIC_DISCOUNT_FACTOR,
-					org.drip.state.identifier.FundingLabel.Standard (_strCurrency)))
-			return null;
-
-		return discountFactorPRWC (valParams, pricerParams, csqs, quotingParams, pqs); */
 	}
 
 	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint forwardPRWC (
@@ -504,7 +259,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 			org.drip.product.calib.FRAComponentQuoteSet))
 			return null;
 
-		if (valParams.valueDate() > _dblEffectiveDate) return null;
+		if (valParams.valueDate() > effectiveDate().julian()) return null;
 
 		org.drip.product.calib.FRAComponentQuoteSet fcqs = (org.drip.product.calib.FRAComponentQuoteSet) pqs;
 
@@ -526,7 +281,7 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = new
 			org.drip.state.estimator.PredictorResponseWeightConstraint();
 
-		double dblMaturity = _dtMaturity.julian();
+		double dblMaturity = maturityDate().julian();
 
 		if (!prwc.addPredictorResponseWeight (dblMaturity, 1.)) return null;
 
@@ -539,38 +294,6 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 		return prwc;
 	}
 
-	@Override public org.drip.state.estimator.PredictorResponseWeightConstraint fundingForwardPRWC (
-		final org.drip.param.valuation.ValuationParams valParams,
-		final org.drip.param.pricer.PricerParams pricerParams,
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.product.calib.ProductQuoteSet pqs)
-	{
-		if (null == valParams || null == pqs || !(pqs instanceof org.drip.product.calib.FRAComponentQuoteSet)
-			|| !pqs.contains (org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FUNDING,
-				org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-					org.drip.state.identifier.FundingLabel.Standard (_strCurrency)) || !pqs.contains
-						(org.drip.analytics.definition.LatentStateStatic.LATENT_STATE_FORWARD,
-							org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE, _fri))
-			return null;
-
-		org.drip.state.estimator.PredictorResponseWeightConstraint prwc = discountFactorPRWC (valParams,
-			pricerParams, csqs, quotingParams, pqs);
-
-		return null != prwc && prwc.addMergeLabel (_fri) ? prwc : null;
-	}
-
-	/**
-	 * Retrieve the Floating Rate Index
-	 * 
-	 * @return The Floating Rate Index
-	 */
-
-	public org.drip.state.identifier.ForwardLabel fri()
-	{
-		return _fri;
-	}
-
 	/**
 	 * Retrieve the FRA Strike
 	 * 
@@ -580,27 +303,5 @@ public class FRAStandardComponent extends org.drip.product.definition.Calibratab
 	public double strike()
 	{
 		return _dblStrike;
-	}
-
-	/**
-	 * Retrieve the Day Count
-	 * 
-	 * @return The Day Count
-	 */
-
-	public java.lang.String dayCount()
-	{
-		return _strDayCount;
-	}
-
-	/**
-	 * Retrieve the Calendar
-	 * 
-	 * @return The Calendar
-	 */
-
-	public java.lang.String calendar()
-	{
-		return _strCalendar;
 	}
 }

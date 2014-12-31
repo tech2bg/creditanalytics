@@ -67,7 +67,7 @@ public class FedFundLIBORSwap {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final SingleStreamComponent[] OISDepositInstruments (
+	private static final SingleStreamComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final int[] aiDay)
@@ -446,7 +446,7 @@ public class FedFundLIBORSwap {
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aDeposit = OISDepositInstruments (
+		SingleStreamComponent[] aDeposit = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			strCurrency,
 			new int[] {

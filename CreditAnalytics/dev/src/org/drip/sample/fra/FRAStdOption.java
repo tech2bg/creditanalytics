@@ -3,8 +3,7 @@ package org.drip.sample.fra;
 
 import java.util.*;
 
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
@@ -14,6 +13,7 @@ import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.fra.*;
+import org.drip.product.option.LastTradingDateSetting;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
@@ -632,17 +632,12 @@ public class FRAStdOption {
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
-		JulianDate dtForward = dtToday.addTenor (strTenor);
+		JulianDate dtForwardStart = dtToday.addTenor (strTenor);
 
-		FRAStandardComponent fra = new FRAStandardComponent (
-			1.,
-			strCurrency,
-			strCurrency + "-FRA-" + strTenor,
-			strCurrency,
-			dtForward.julian(),
+		FRAStandardComponent fra = SingleStreamComponentBuilder.FRAStandard (
+			dtForwardStart,
 			fri,
-			0.006,
-			"Act/360"
+			0.006
 		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, mapFC.get (strTenor), null, null, null, null, null, null);
@@ -687,6 +682,7 @@ public class FRAStdOption {
 			true,
 			dblStrike,
 			1.,
+			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
 			strCurrency,
 			strCurrency
 		);
@@ -711,6 +707,7 @@ public class FRAStdOption {
 			false,
 			dblStrike,
 			1.,
+			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
 			strCurrency,
 			strCurrency
 		);

@@ -34,7 +34,7 @@ package org.drip.product.fra;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncomeOptionComponent {
+public class FRAStandardCapFloor extends org.drip.product.option.FixedIncomeOptionComponent {
 	private java.util.List<org.drip.product.fra.FRAStandardCapFloorlet> _lsFRACapFloorlet = new
 		java.util.ArrayList<org.drip.product.fra.FRAStandardCapFloorlet>();
 
@@ -46,6 +46,7 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 	 * @param bIsCap Is the FRA Option a Cap? TRUE => YES
 	 * @param dblStrike Strike of the Underlying Component's Measure
 	 * @param dblNotional Option Notional
+	 * @param ltds Last Trading Date Setting
 	 * @param strDayCount Day Count Convention
 	 * @param strCalendar Holiday Calendar
 	 * 
@@ -58,27 +59,22 @@ public class FRAStandardCapFloor extends org.drip.product.definition.FixedIncome
 		final boolean bIsCap,
 		final double dblStrike,
 		final double dblNotional,
+		final org.drip.product.option.LastTradingDateSetting ltds,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		super (comp, strManifestMeasure, dblStrike, dblNotional, strDayCount, strCalendar);
-
-		java.lang.String strIR = comp.payCurrency();
+		super (comp, strManifestMeasure, dblStrike, dblNotional, ltds, strDayCount, strCalendar);
 
 		org.drip.state.identifier.ForwardLabel fri = comp.forwardLabel().get ("DERIVED");
 
-		java.lang.String strFRACodePrefix = fri.fullyQualifiedName();
-
 		for (org.drip.analytics.cashflow.CompositePeriod period : comp.couponPeriods()) {
-			double dblFRAStartDate = period.startDate();
-
-			org.drip.product.fra.FRAStandardComponent fra = new org.drip.product.fra.FRAStandardComponent
-				(dblNotional, strIR, strFRACodePrefix + new org.drip.analytics.date.JulianDate
-					(dblFRAStartDate), strCalendar, dblFRAStartDate, fri, dblStrike, strDayCount);
+			org.drip.product.fra.FRAStandardComponent fra =
+				org.drip.product.creator.SingleStreamComponentBuilder.FRAStandard (new
+					org.drip.analytics.date.JulianDate (period.startDate()), fri, dblStrike);
 
 			_lsFRACapFloorlet.add (new org.drip.product.fra.FRAStandardCapFloorlet (fra, strManifestMeasure,
-				bIsCap, dblStrike, dblNotional, strDayCount, strCalendar));
+				bIsCap, dblStrike, dblNotional, ltds, strDayCount, strCalendar));
 		}
 	}
 

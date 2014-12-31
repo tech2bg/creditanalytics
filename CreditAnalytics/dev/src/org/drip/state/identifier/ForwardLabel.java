@@ -41,6 +41,7 @@ package org.drip.state.identifier;
 
 public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel {
 	private java.lang.String _strTenor = "";
+	private java.lang.String _strFamily = "";
 	private java.lang.String _strCurrency = "";
 	private java.lang.String _strFullyQualifiedName = "";
 	private org.drip.market.definition.FloaterIndex _floaterIndex = null;
@@ -70,8 +71,11 @@ public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel 
 				org.drip.market.definition.OvernightIndexContainer.IndexFromJurisdiction (strCurrency) :
 					org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction (strCurrency);
 
+		java.lang.String strFamily = floaterIndex.family();
+
 		try {
-			return new ForwardLabel (strCurrency, strTenor, strFullyQualifiedName, floaterIndex);
+			return new ForwardLabel (strCurrency, strFamily, strTenor, strCurrency + "-" + strFamily + "-" +
+				strTenor, floaterIndex);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -94,8 +98,13 @@ public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel 
 		final java.lang.String strTenor,
 		final org.drip.market.definition.FloaterIndex floaterIndex)
 	{
+		if (null == floaterIndex) return null;
+
+		java.lang.String strFamily = floaterIndex.family();
+
 		try {
-			return new ForwardLabel (strCurrency, strTenor, strCurrency + "-" + strTenor, floaterIndex);
+			return new ForwardLabel (strCurrency, strFamily, strTenor, strCurrency + "-" + strFamily + "-" +
+				strTenor, floaterIndex);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -123,6 +132,7 @@ public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel 
 	 * ForwardLabel constructor
 	 * 
 	 * @param strCurrency Currency
+	 * @param strFamily Family
 	 * @param strTenor Tenor
 	 * @param strFullyQualifiedName The Fully Qualified Name
 	 * @param floaterIndex The Floater Index Details
@@ -132,14 +142,16 @@ public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel 
 
 	private ForwardLabel (
 		final java.lang.String strCurrency,
+		final java.lang.String strFamily,
 		final java.lang.String strTenor,
 		final java.lang.String strFullyQualifiedName,
 		final org.drip.market.definition.FloaterIndex floaterIndex)
 		throws java.lang.Exception
 	{
-		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() || null == (_strTenor = strTenor)
-			|| _strTenor.isEmpty() || null == (_strFullyQualifiedName = strFullyQualifiedName) ||
-				_strFullyQualifiedName.isEmpty() || null == (_floaterIndex = floaterIndex))
+		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() || null == (_strFamily =
+			strFamily) || _strFamily.isEmpty() || null == (_strTenor = strTenor) || _strTenor.isEmpty() ||
+				null == (_strFullyQualifiedName = strFullyQualifiedName) || _strFullyQualifiedName.isEmpty()
+					|| null == (_floaterIndex = floaterIndex))
 			throw new java.lang.Exception ("ForwardLabel ctr: Invalid Inputs");
 	}
 
@@ -152,6 +164,17 @@ public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel 
 	public java.lang.String currency()
 	{
 		return _strCurrency;
+	}
+
+	/**
+	 * Retrieve the Family
+	 * 
+	 * @return The Family
+	 */
+
+	public java.lang.String family()
+	{
+		return _strFamily;
 	}
 
 	/**
@@ -198,8 +221,8 @@ public class ForwardLabel implements org.drip.state.identifier.LatentStateLabel 
 		java.lang.String strDayCount = _floaterIndex.dayCount();
 
 		try {
-			return new org.drip.param.period.UnitCouponAccrualSetting (overnight() ? 360 : 12 /
-				org.drip.analytics.support.AnalyticsHelper.TenorToMonths (_strTenor), strDayCount, false,
+			return new org.drip.param.period.UnitCouponAccrualSetting (overnight() ? 360 :
+				org.drip.analytics.support.AnalyticsHelper.TenorToFreq (_strTenor), strDayCount, false,
 					strDayCount, false, _floaterIndex.currency(), false,
 						_floaterIndex.accrualCompoundingRule());
 		} catch (java.lang.Exception e) {

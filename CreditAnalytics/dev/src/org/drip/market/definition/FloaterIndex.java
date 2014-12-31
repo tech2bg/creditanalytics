@@ -36,6 +36,7 @@ package org.drip.market.definition;
 
 public class FloaterIndex {
 	private java.lang.String _strName = "";
+	private java.lang.String _strFamily = "";
 	private int _iAccrualCompoundingRule = -1;
 	private java.lang.String _strCalendar = "";
 	private java.lang.String _strCurrency = "";
@@ -45,6 +46,7 @@ public class FloaterIndex {
 	 * IBORIndex Constructor
 	 * 
 	 * @param strName Index Name
+	 * @param strFamily Index Family
 	 * @param strCurrency Index Currency
 	 * @param strDayCount Index Day Count
 	 * @param strCalendar Index Holiday Calendar
@@ -55,16 +57,18 @@ public class FloaterIndex {
 
 	public FloaterIndex (
 		final java.lang.String strName,
+		final java.lang.String strFamily,
 		final java.lang.String strCurrency,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar,
 		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
-		if (null == (_strName = strName) || _strName.isEmpty() || null == (_strCurrency = strCurrency) ||
-			_strCurrency.isEmpty() || null == (_strDayCount = strDayCount) || _strDayCount.isEmpty() ||
-				!org.drip.analytics.support.CompositePeriodBuilder.ValidateCompoundingRule
-					(_iAccrualCompoundingRule = iAccrualCompoundingRule))
+		if (null == (_strName = strName) || _strName.isEmpty() || null == (_strFamily = strFamily) ||
+			_strFamily.isEmpty() || null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() || null ==
+				(_strDayCount = strDayCount) || _strDayCount.isEmpty() ||
+					!org.drip.analytics.support.CompositePeriodBuilder.ValidateCompoundingRule
+						(_iAccrualCompoundingRule = iAccrualCompoundingRule))
 			throw new java.lang.Exception ("FloaterIndex ctr: Invalid Inputs");
 
 		_strCalendar = strCalendar;
@@ -79,6 +83,17 @@ public class FloaterIndex {
 	public java.lang.String name()
 	{
 		return _strName;
+	}
+
+	/**
+	 * Retrieve the Index Family
+	 * 
+	 * @return The Index Family
+	 */
+
+	public java.lang.String family()
+	{
+		return _strFamily;
 	}
 
 	/**

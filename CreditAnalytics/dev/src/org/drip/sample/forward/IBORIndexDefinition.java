@@ -1,6 +1,7 @@
 
 package org.drip.sample.forward;
 
+import org.drip.analytics.support.CompositePeriodBuilder;
 import org.drip.market.definition.*;
 import org.drip.service.api.CreditAnalytics;
 
@@ -39,6 +40,12 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 public class IBORIndexDefinition {
+	private static final String AccrualType (
+		final int iAccrualCompounding)
+	{
+		return CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC == iAccrualCompounding ? "ARITHMETIC" : " GEOMETRIC";
+	}
+
 	private static final void DisplayNameOvernightSetting (
 		final String strName)
 	{
@@ -52,8 +59,9 @@ public class IBORIndexDefinition {
 			index.currency() + "] => " +
 			index.dayCount() + " | " +
 			index.spotLag() + " | " +
-			(strShortestMaturity.isEmpty() ? "  " : strShortestMaturity) + " | " + 
-			(strLongestMaturity.isEmpty() ? "   " : strLongestMaturity) + " | " + 
+			AccrualType (index.accrualCompoundingRule()) + " | " +
+			(strShortestMaturity.isEmpty() ? "  " : strShortestMaturity) + " | " +
+			(strLongestMaturity.isEmpty() ? "   " : strLongestMaturity) + " | " +
 			index.name()
 		);
 	}
@@ -65,50 +73,50 @@ public class IBORIndexDefinition {
 
 		System.out.println ("\n\t---------------\n\t---------------\n");
 
-		DisplayNameOvernightSetting ("CHFLIBOR");
+		DisplayNameOvernightSetting ("CHF-LIBOR");
 
-		DisplayNameOvernightSetting ("EURIBOR");
+		DisplayNameOvernightSetting ("EUR-EURIBOR");
 
-		DisplayNameOvernightSetting ("EURLIBOR");
+		DisplayNameOvernightSetting ("EUR-LIBOR");
 
-		DisplayNameOvernightSetting ("GBPLIBOR");
+		DisplayNameOvernightSetting ("GBP-LIBOR");
 
-		DisplayNameOvernightSetting ("JPYLIBOR");
+		DisplayNameOvernightSetting ("JPY-LIBOR");
 
-		DisplayNameOvernightSetting ("USDLIBOR");
+		DisplayNameOvernightSetting ("USD-LIBOR");
 
 		System.out.println ("\n\t---------------\n\t---------------\n");
 
-		DisplayNameOvernightSetting ("AUDLIBOR");
+		DisplayNameOvernightSetting ("AUD-LIBOR");
 
-		DisplayNameOvernightSetting ("CADLIBOR");
+		DisplayNameOvernightSetting ("CAD-LIBOR");
 
-		DisplayNameOvernightSetting ("CZKLIBOR");
+		DisplayNameOvernightSetting ("CZK-LIBOR");
 
-		DisplayNameOvernightSetting ("DKKLIBOR");
+		DisplayNameOvernightSetting ("DKK-LIBOR");
 
-		DisplayNameOvernightSetting ("HKDLIBOR");
+		DisplayNameOvernightSetting ("HKD-LIBOR");
 
-		DisplayNameOvernightSetting ("HUFLIBOR");
+		DisplayNameOvernightSetting ("HUF-LIBOR");
 
-		DisplayNameOvernightSetting ("IDRLIBOR");
+		DisplayNameOvernightSetting ("IDR-LIBOR");
 
-		DisplayNameOvernightSetting ("INRLIBOR");
+		DisplayNameOvernightSetting ("INR-LIBOR");
 
-		DisplayNameOvernightSetting ("NOKLIBOR");
+		DisplayNameOvernightSetting ("NOK-LIBOR");
 
-		DisplayNameOvernightSetting ("NZDLIBOR");
+		DisplayNameOvernightSetting ("NZD-LIBOR");
 
-		DisplayNameOvernightSetting ("PLNLIBOR");
+		DisplayNameOvernightSetting ("PLN-LIBOR");
 
-		DisplayNameOvernightSetting ("RMBLIBOR");
+		DisplayNameOvernightSetting ("RMB-LIBOR");
 
-		DisplayNameOvernightSetting ("SGDLIBOR");
+		DisplayNameOvernightSetting ("SGD-LIBOR");
 
-		DisplayNameOvernightSetting ("SEKLIBOR");
+		DisplayNameOvernightSetting ("SEK-LIBOR");
 
-		DisplayNameOvernightSetting ("SKKLIBOR");
+		DisplayNameOvernightSetting ("SKK-LIBOR");
 
-		DisplayNameOvernightSetting ("ZARLIBOR");
+		DisplayNameOvernightSetting ("ZAR-LIBOR");
 	}
 }

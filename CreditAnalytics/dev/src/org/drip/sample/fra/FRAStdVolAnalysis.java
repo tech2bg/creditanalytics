@@ -662,15 +662,10 @@ public class FRAStdVolAnalysis {
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
-		FRAStandardComponent fra = new FRAStandardComponent (
-			1.,
-			strCurrency,
-			strCurrency + "-FRA-" + strTenor,
-			strCurrency,
-			dtToday.addTenor (strTenor).julian(),
+		FRAStandardComponent fra = SingleStreamComponentBuilder.FRAStandard (
+			dtToday.addTenor (strTenor),
 			fri,
-			0.006,
-			"Act/360"
+			0.006
 		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, mapFC.get (strTenor), null, null, null, null, null, null);

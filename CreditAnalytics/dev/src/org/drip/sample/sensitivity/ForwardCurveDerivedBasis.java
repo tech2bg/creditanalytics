@@ -130,7 +130,7 @@ public class ForwardCurveDerivedBasis {
 			"Act/360",
 			false,
 			strCurrency,
-			true,
+			false,
 			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
@@ -268,8 +268,7 @@ public class ForwardCurveDerivedBasis {
 
 	private static final DiscountCurve MakeDC (
 		final JulianDate dtSpot,
-		final String strCurrency,
-		final double dblBump)
+		final String strCurrency)
 		throws Exception
 	{
 		/*
@@ -278,26 +277,28 @@ public class ForwardCurveDerivedBasis {
 
 		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
-			new int[] {},
+			new int[] {
+			},
 			0,
 			strCurrency
 		);
 
-		double[] adblDepositQuote = new double[] {}; // Futures
+		double[] adblDepositQuote = new double[] {
+		};
 
 		/*
 		 * Construct the array of Swap instruments and their quotes.
 		 */
 
 		double[] adblSwapQuote = new double[] {
-			0.0009875 + dblBump,   //  9M
-			0.00122 + dblBump,     //  1Y
-			0.00223 + dblBump,     // 18M
-			0.00383 + dblBump,     //  2Y
-			0.00827 + dblBump,     //  3Y
-			0.01245 + dblBump,     //  4Y
-			0.01605 + dblBump,     //  5Y
-			0.02597 + dblBump      // 10Y
+			0.0009875,   //  9M
+			0.00122,     //  1Y
+			0.00223,     // 18M
+			0.00383,     //  2Y
+			0.00827,     //  3Y
+			0.01245,     //  4Y
+			0.01605,     //  5Y
+			0.02597      // 10Y
 		};
 
 		String[] astrSwapManifestMeasure = new String[] {
@@ -314,11 +315,16 @@ public class ForwardCurveDerivedBasis {
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			new java.lang.String[] {
-				"9M", "1Y", "18M", "2Y", "3Y", "4Y", "5Y", "10Y"
+				"9M",
+				"1Y",
+				"18M",
+				"2Y",
+				"3Y",
+				"4Y",
+				"5Y",
+				"10Y"
 			},
-			new double[] {
-				0.0009875, 0.00122, 0.00223, 0.00383, 0.00827, 0.01245, 0.01605, 0.02597
-			},
+			adblSwapQuote,
 			strCurrency
 		);
 
@@ -328,7 +334,7 @@ public class ForwardCurveDerivedBasis {
 
 		return ScenarioDiscountCurveBuilder.CubicKLKHyperbolicDFRateShapePreserver (
 			"KLK_HYPERBOLIC_SHAPE_TEMPLATE",
-			new ValuationParams (dtSpot, dtSpot, "USD"),
+			new ValuationParams (dtSpot, dtSpot, strCurrency),
 			aDepositComp,
 			adblDepositQuote,
 			null,
@@ -624,9 +630,9 @@ public class ForwardCurveDerivedBasis {
 
 		CreditAnalytics.Init ("");
 
-		String strCurrency = "EUR";
+		String strCurrency = "USD";
 
-		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
+		JulianDate dtToday = DateUtil.Today();
 
 		/*
 		 * Construct the Discount Curve using its instruments and quotes
@@ -634,8 +640,7 @@ public class ForwardCurveDerivedBasis {
 
 		DiscountCurve dc = MakeDC (
 			dtToday,
-			strCurrency,
-			0.
+			strCurrency
 		);
 
 		System.out.println ("\n------------------------------------------------------------");

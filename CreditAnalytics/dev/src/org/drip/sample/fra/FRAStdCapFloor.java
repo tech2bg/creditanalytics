@@ -14,6 +14,7 @@ import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.fra.FRAStandardCapFloor;
+import org.drip.product.option.LastTradingDateSetting;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
@@ -704,6 +705,7 @@ public class FRAStdCapFloor {
 			true,
 			dblStrike,
 			1.,
+			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
 			"Act/360",
 			strCurrency
 		);
@@ -714,6 +716,7 @@ public class FRAStdCapFloor {
 			false,
 			dblStrike,
 			1.,
+			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
 			"Act/360",
 			strCurrency
 		);

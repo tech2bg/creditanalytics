@@ -628,17 +628,12 @@ public class FRAStd {
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
-		JulianDate dtForward = dtToday.addTenor (strTenor);
+		JulianDate dtForwardStart = dtToday.addTenor (strTenor);
 
-		FRAStandardComponent fra = new FRAStandardComponent (
-			1.,
-			strCurrency,
-			strCurrency + "-FRA-" + strTenor,
-			strCurrency,
-			dtForward.julian(),
+		FRAStandardComponent fra = SingleStreamComponentBuilder.FRAStandard (
+			dtForwardStart,
 			fri,
-			0.006,
-			"Act/360"
+			0.006
 		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (

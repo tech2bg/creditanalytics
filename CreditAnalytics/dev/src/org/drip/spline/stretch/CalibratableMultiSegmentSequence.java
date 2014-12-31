@@ -171,7 +171,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 
 			if (null == fpop || !fpop.containsRoot()) {
 				try {
-					fpop = new org.drip.quant.solver1D.FixedPointFinderNewton (0., this, true).findRoot();
+					fpop = new org.drip.quant.solver1D.FixedPointFinderZheng (0., this, true).findRoot();
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 

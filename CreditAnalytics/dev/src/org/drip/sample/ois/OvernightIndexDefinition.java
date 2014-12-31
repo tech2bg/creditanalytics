@@ -1,6 +1,7 @@
 
 package org.drip.sample.ois;
 
+import org.drip.analytics.support.CompositePeriodBuilder;
 import org.drip.market.definition.*;
 import org.drip.service.api.CreditAnalytics;
 
@@ -39,6 +40,12 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 public class OvernightIndexDefinition {
+	private static final String AccrualType (
+		final int iAccrualCompounding)
+	{
+		return CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC == iAccrualCompounding ? "ARITHMETIC" : " GEOMETRIC";
+	}
+
 	private static final void DisplayJurisdictionOvernightSetting (
 		final String strJurisdiction)
 	{
@@ -47,6 +54,7 @@ public class OvernightIndexDefinition {
 		System.out.println ("\t[" +
 			index.currency() + "] => " +
 			index.dayCount() + " | " +
+			AccrualType (index.accrualCompoundingRule()) + " | " +
 			index.referenceLag() + " | " +
 			index.publicationLag() + " | " + 
 			index.name()

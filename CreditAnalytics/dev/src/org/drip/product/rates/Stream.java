@@ -124,6 +124,17 @@ public class Stream {
 	}
 
 	/**
+	 * Retrieve the Calendar
+	 * 
+	 * @return The Calendar
+	 */
+
+	public java.lang.String calendar()
+	{
+		return _lsPeriod.get (0).periods().get (0).calendar();
+	}
+
+	/**
 	 * Retrieve the Accrual Day Count
 	 * 
 	 * @return The Accrual Day Count

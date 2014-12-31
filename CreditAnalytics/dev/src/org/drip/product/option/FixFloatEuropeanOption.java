@@ -1,5 +1,5 @@
 
-package org.drip.product.rates;
+package org.drip.product.option;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,40 +29,42 @@ package org.drip.product.rates;
  */
 
 /**
- * FixFloatPayerReceiverOption implements the Payer/Receiver Option on the STIR Futures.
+ * FixFloatEuropeanOption implements the Payer/Receiver European Option on the Fix-Float Swap.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class FixFloatPayerReceiverOption extends org.drip.product.definition.FixedIncomeOptionComponent {
+public class FixFloatEuropeanOption extends org.drip.product.option.FixedIncomeOptionComponent {
 	private boolean _bIsReceiver = false;
 	private org.drip.product.rates.FixFloatComponent _stir = null;
 
 	/**
-	 * FixFloatPayerReceiverOption constructor
+	 * FixFloatEuropeanOption constructor
 	 * 
 	 * @param stir The Underlying STIR Future Component
 	 * @param strManifestMeasure Measure of the Underlying Component
 	 * @param bIsReceiver Is the STIR Option a Receiver/Payer? TRUE => Receiver
 	 * @param dblStrike Strike of the Underlying Component's Measure
 	 * @param dblNotional Option Notional
+	 * @param ltds Last Trading Date Setting
 	 * @param strDayCount Day Count Convention
 	 * @param strCalendar Holiday Calendar
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public FixFloatPayerReceiverOption (
+	public FixFloatEuropeanOption (
 		final org.drip.product.rates.FixFloatComponent stir,
 		final java.lang.String strManifestMeasure,
 		final boolean bIsReceiver,
 		final double dblStrike,
 		final double dblNotional,
+		final org.drip.product.option.LastTradingDateSetting ltds,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		super (stir, strManifestMeasure, dblStrike, dblNotional, strDayCount, strCalendar);
+		super (stir, strManifestMeasure, dblStrike, dblNotional, ltds, strDayCount, strCalendar);
 
 		_stir = stir;
 		_bIsReceiver = bIsReceiver;
@@ -93,7 +95,19 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate >= exerciseDate().julian()) return null;
+		double dblExerciseDate = exerciseDate().julian();
+
+		org.drip.product.option.LastTradingDateSetting ltds = lastTradingDateSetting();
+
+		try {
+			if (null != ltds && dblValueDate >= ltds.lastTradingDate (_stir.effectiveDate().julian(),
+				calendar()))
+				return null;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
 
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
 			(org.drip.state.identifier.FundingLabel.Standard (_stir.payCurrency()));
@@ -101,8 +115,6 @@ public class FixFloatPayerReceiverOption extends org.drip.product.definition.Fix
 		if (null == dcFunding) return null;
 
 		long lStart = System.nanoTime();
-
-		double dblExerciseDate = exerciseDate().julian();
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapSTIROutput = _stir.value
 			(valParams, pricerParams, csqs, quotingParams);

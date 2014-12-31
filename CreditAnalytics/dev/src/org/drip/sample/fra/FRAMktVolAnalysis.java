@@ -9,6 +9,7 @@ import org.drip.analytics.rates.*;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
+import org.drip.product.creator.SingleStreamComponentBuilder;
 import org.drip.product.fra.FRAMarketComponent;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.*;
@@ -117,23 +118,18 @@ public class FRAMktVolAnalysis {
 		throws Exception
 	{
 		String strTenor = "6M";
-		String strCurrency = "EUR";
+		String strCurrency = "USD";
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
 		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
 
-		JulianDate dtForward = dtValue.addTenor (strForwardStartTenor);
+		JulianDate dtForwardStart = dtValue.addTenor (strForwardStartTenor);
 
-		FRAMarketComponent fra = new FRAMarketComponent (
-			1.,
-			strCurrency,
-			fri.fullyQualifiedName(),
-			strCurrency,
-			dtForward.julian(),
+		FRAMarketComponent fra = SingleStreamComponentBuilder.FRAMarket (
+			dtForwardStart,
 			fri,
-			0.006,
-			"Act/360"
+			0.006
 		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
@@ -177,7 +173,7 @@ public class FRAMktVolAnalysis {
 		CreditAnalytics.Init ("");
 
 		String strTenor = "6M";
-		String strCurrency = "EUR";
+		String strCurrency = "USD";
 
 		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 

@@ -40,30 +40,22 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 	/**
 	 * FRAMarketComponent constructor
 	 * 
-	 * @param dblNotional Component Notional
-	 * @param strIR IR Curve
-	 * @param strCode FRA Product Code
-	 * @param strCalendar FRA Calendar
-	 * @param dblEffectiveDate FRA Effective Date
-	 * @param fri FRA Floating Rate Index
-	 * @param dblStrike FRA Strike
-	 * @param strDayCount Day Count Convention
+	 * @param strName Futures Component Name
+	 * @param stream Futures Stream
+	 * @param dblStrike Futures Strike
+	 * @param csp Cash Settle Parameters Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
 	public FRAMarketComponent (
-		final double dblNotional,
-		final java.lang.String strIR,
-		final java.lang.String strCode,
-		final java.lang.String strCalendar,
-		final double dblEffectiveDate,
-		final org.drip.state.identifier.ForwardLabel fri,
+		final java.lang.String strName,
+		final org.drip.product.rates.Stream stream,
 		final double dblStrike,
-		java.lang.String strDayCount)
+		final org.drip.param.valuation.CashSettleParams csp)
 		throws java.lang.Exception
 	{
-		super (dblNotional, strIR, strCode, strCalendar, dblEffectiveDate, fri, dblStrike, strDayCount);
+		super (strName, stream, dblStrike, csp);
 	}
 
 	@Override public org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> value (
@@ -91,7 +83,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		double dblMaturity = dtMaturity.julian();
 
-		org.drip.state.identifier.ForwardLabel fri = fri();
+		org.drip.state.identifier.ForwardLabel fri = forwardLabel().get ("DERIVED");
 
 		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (fri);
 
@@ -108,7 +100,7 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 			double dblForwardDCF = org.drip.analytics.daycount.Convention.YearFraction (dblMaturity, new
 				org.drip.analytics.date.JulianDate (dblMaturity).addTenor (fri.tenor()).julian(),
-					dayCount(), false, null, calendar());
+					stream().couponDC(), false, null, stream().calendar());
 
 			double dblParDCForward = dcFunding.libor (dblEffectiveDate, dblMaturity);
 

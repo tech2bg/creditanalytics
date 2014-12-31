@@ -48,12 +48,12 @@ import org.drip.state.identifier.*;
  */
 
 /**
- * STIROption contains the demonstration of the Multi-Curve Payer/Receiver STIR Option sample.
+ * IRS contains a full valuation run on the Fix-Float IRS Product.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class STIROption {
+public class IRS {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -94,7 +94,6 @@ public class STIROption {
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
-
 
 	private static final CalibratableFixedIncomeComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
@@ -232,9 +231,7 @@ public class STIROption {
 
 		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
-			new int[] {
-				1, 2, 3, 7, 14, 21, 30, 60
-			},
+			new int[] {1, 2, 3, 7, 14, 21, 30, 60},
 			0,
 			strCurrency
 		);
@@ -454,16 +451,21 @@ public class STIROption {
 		 * Calculate the starting forward rate off of the discount curve.
 		 */
 
-		double dblStartingFwd = dc.forward (
-			dtSpot.julian(),
-			dtSpot.addTenor (strBasisTenor).julian()
-		);
+		double dblStartingFwd = dc.forward (dtSpot.julian(), dtSpot.addTenor (strBasisTenor).julian());
 
 		/*
 		 * Set the discount curve based component market parameters.
 		 */
 
-		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
+			dc,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -491,7 +493,7 @@ public class STIROption {
 		final DiscountCurve dc)
 		throws Exception
 	{
-		Map<String, ForwardCurve> mapFC = new HashMap<String, ForwardCurve> ();
+		Map<String, ForwardCurve> mapFC = new HashMap<String, ForwardCurve>();
 
 		/*
 		 * Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
@@ -620,7 +622,7 @@ public class STIROption {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			fri.tenor(),
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
 			fri,
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -708,6 +710,30 @@ public class STIROption {
 		return irs;
 	}
 
+	private static final void RunWithVolCorrSurface (
+		final FixFloatComponent stir,
+		final ValuationParams valParams,
+		final CurveSurfaceQuoteSet mktParams,
+		final ForwardLabel fri,
+		final double dblForwardVol,
+		final double dblFundingVol,
+		final double dblForwardFundingCorr)
+		throws Exception
+	{
+		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
+
+		mktParams.setFundingCurveVolSurface (fundingLabel, new FlatUnivariate (dblFundingVol));
+
+		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblForwardVol));
+
+		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblForwardFundingCorr));
+
+		Map<String, Double> mapSTIROutput = stir.value (valParams, null, mktParams, null);
+
+		for (Map.Entry<String, Double> me : mapSTIROutput.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
+	}
+
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -720,13 +746,11 @@ public class STIROption {
 
 		String strTenor = "3M";
 		String strCurrency = "EUR";
-		String strManifestMeasure = "SwapRate";
-		double dblCustomMetricVolatility = 0.4;
 		double dblForwardVolatility = 0.3;
 		double dblFundingVolatility = 0.1;
 		double dblForwardFundingCorr = 0.2;
 
-		JulianDate dtToday = DateUtil.Today().addTenorAndAdjust ("0D", strCurrency);
+		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 
 		/*
 		 * Construct the Discount Curve using its instruments and quotes
@@ -738,88 +762,27 @@ public class STIROption {
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
-		JulianDate dtForward = dtToday.addTenor (strTenor);
-
 		FixFloatComponent stir = CreateSTIR (
-			dtForward,
+			dtToday.addTenor (strTenor),
 			"5Y",
 			fri,
 			0.05,
 			strCurrency
 		);
 
-		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
-			dc,
-			mapFC.get (strTenor),
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
-		);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
+			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		FundingLabel fundingLabel = FundingLabel.Standard (strCurrency);
-
-		mktParams.setCustomMetricVolSurface (
-			CustomMetricLabel.Standard (stir.name() + "_" + strManifestMeasure),
-			new FlatUnivariate (dblCustomMetricVolatility)
-		);
-
-		mktParams.setFundingCurveVolSurface (
-			fundingLabel,
-			new FlatUnivariate (dblFundingVolatility)
-		);
-
-		mktParams.setForwardCurveVolSurface (
-			fri,
-			new FlatUnivariate (dblForwardVolatility)
-		);
-
-		mktParams.setForwardFundingCorrSurface (
-			fri,
-			fundingLabel,
-			new FlatUnivariate (dblForwardFundingCorr)
-		);
-
-		Map<String, Double> mapSTIROutput = stir.value (valParams, null, mktParams, null);
-
-		double dblStrike = 1.01 * mapSTIROutput.get (strManifestMeasure);
-
-		FixFloatPayerReceiverOption stirReceiver = new FixFloatPayerReceiverOption (
+		RunWithVolCorrSurface (
 			stir,
-			strManifestMeasure,
-			true,
-			dblStrike,
-			1.,
-			strCurrency,
-			strCurrency
+			valParams,
+			mktParams,
+			fri,
+			dblForwardVolatility,
+			dblFundingVolatility,
+			dblForwardFundingCorr
 		);
-
-		Map<String, Double> mapSTIRReceiverOutput = stirReceiver.value (valParams, null, mktParams, null);
-
-		for (Map.Entry<String, Double> me : mapSTIRReceiverOutput.entrySet())
-			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
-
-		System.out.println ("\n------------------------------------------------------------------");
-
-		System.out.println ("------------------------------------------------------------------\n");
-
-		FixFloatPayerReceiverOption stirPayer = new FixFloatPayerReceiverOption (
-			stir,
-			strManifestMeasure,
-			false,
-			dblStrike,
-			1.,
-			strCurrency,
-			strCurrency
-		);
-
-		Map<String, Double> mapSTIRPayerOutput = stirPayer.value (valParams, null, mktParams, null);
-
-		for (Map.Entry<String, Double> me : mapSTIRPayerOutput.entrySet())
-			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 	}
 }

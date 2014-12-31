@@ -137,18 +137,11 @@ public class IBORCurve {
 
 		FRAStandardComponent[] aFRA = new FRAStandardComponent[astrMaturityTenor.length];
 
-		String strCurrency = fri.currency();
-
 		for (int i = 0; i < astrMaturityTenor.length; ++i)
-			aFRA[i] = new FRAStandardComponent (
-				1.,
-				strCurrency,
-				"FRA::" + strCurrency,
-				strCurrency,
-				dtEffective.addTenor (astrMaturityTenor[i]).julian(),
+			aFRA[i] = SingleStreamComponentBuilder.FRAStandard (
+				dtEffective.addTenor (astrMaturityTenor[i]),
 				fri,
-				adblFRAStrike[i],
-				"Act/365"
+				adblFRAStrike[i]
 			);
 
 		return aFRA;

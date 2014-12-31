@@ -34,7 +34,7 @@ package org.drip.product.fra;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedIncomeOptionComponent {
+public class FRAStandardCapFloorlet extends org.drip.product.option.FixedIncomeOptionComponent {
 	private boolean _bIsCaplet = false;
 	private org.drip.product.fra.FRAStandardComponent _fra = null;
 
@@ -46,6 +46,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 	 * @param bIsCaplet Is the FRA Option a Caplet? TRUE => YES
 	 * @param dblStrike Strike of the Underlying Component's Measure
 	 * @param dblNotional Option Notional
+	 * @param ltds Last Trading Date Setting
 	 * @param strDayCount Day Count Convention
 	 * @param strCalendar Holiday Calendar
 	 * 
@@ -58,11 +59,12 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 		final boolean bIsCaplet,
 		final double dblStrike,
 		final double dblNotional,
+		final org.drip.product.option.LastTradingDateSetting ltds,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
 	{
-		super (fra, strManifestMeasure, dblStrike, dblNotional, strDayCount, strCalendar);
+		super (fra, strManifestMeasure, dblStrike, dblNotional, ltds, strDayCount, strCalendar);
 
 		_fra = fra;
 		_bIsCaplet = bIsCaplet;
@@ -103,7 +105,17 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 
 		double dblValueDate = valParams.valueDate();
 
-		if (dblValueDate >= exerciseDate().julian()) return null;
+		org.drip.product.option.LastTradingDateSetting ltds = lastTradingDateSetting();
+
+		try {
+			if (null != ltds && dblValueDate >= ltds.lastTradingDate (_fra.effectiveDate().julian(),
+				calendar()))
+				return null;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
 
 		long lStart = System.nanoTime();
 
@@ -125,7 +137,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.definition.FixedInc
 			return null;
 
 		org.drip.quant.function1D.AbstractUnivariate auForwardVolSurface = csqs.forwardCurveVolSurface
-			(_fra.fri());
+			(_fra.forwardLabel().get ("DERIVED"));
 
 		if (null == auForwardVolSurface) return null;
 

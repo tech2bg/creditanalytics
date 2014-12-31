@@ -56,178 +56,180 @@ public class OvernightIndexContainer {
 	{
 		try {
 			org.drip.market.definition.OvernightIndex oiAUD = new org.drip.market.definition.OvernightIndex
-				("RBA ON AONIA", "AUD", "Act/365", "AUD", "ON", 0,
+				("AUD-RBA ON AONIA", "AONIA", "AUD", "Act/365", "AUD", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("AUD", oiAUD);
 
-			_mapNamedOvernightIndex.put ("AONIA", oiAUD);
+			_mapNamedOvernightIndex.put ("AUD-AONIA", oiAUD);
 
-			_mapNamedOvernightIndex.put ("RBA ON AONIA", oiAUD);
+			_mapNamedOvernightIndex.put ("AUD-RBA ON AONIA", oiAUD);
 
 			org.drip.market.definition.OvernightIndex oiBRL = new org.drip.market.definition.OvernightIndex
-				("CETIP", "BRL", "Bus/252", "BRL", "ON", 1,
+				("BRL-CETIP", "CETIP", "BRL", "Bus/252", "BRL", "ON", 1,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("BRL", oiBRL);
 
-			_mapNamedOvernightIndex.put ("DI", oiBRL);
+			_mapNamedOvernightIndex.put ("BRL-CETIP", oiBRL);
+
+			_mapNamedOvernightIndex.put ("BRL-DI", oiBRL);
 
 			org.drip.market.definition.OvernightIndex oiCAD = new org.drip.market.definition.OvernightIndex
-				("CORRA", "CAD", "Act/365", "CAD", "ON", 1,
+				("CAD-CORRA", "CORRA", "CAD", "Act/365", "CAD", "ON", 1,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("CAD", oiCAD);
 
-			_mapNamedOvernightIndex.put ("CORRA", oiCAD);
+			_mapNamedOvernightIndex.put ("CAD-CORRA", oiCAD);
 
 			org.drip.market.definition.OvernightIndex oiCHF = new org.drip.market.definition.OvernightIndex
-				("TOIS", "CHF", "Act/360", "CHF", "TN", -1,
+				("CHF-TOIS", "TOIS", "CHF", "Act/360", "CHF", "TN", -1,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("CHF", oiCHF);
 
-			_mapNamedOvernightIndex.put ("TOIS", oiCHF);
+			_mapNamedOvernightIndex.put ("CHF-TOIS", oiCHF);
 
 			org.drip.market.definition.OvernightIndex oiCZK = new org.drip.market.definition.OvernightIndex
-				("CZEONIA", "CZK", "Act/360", "CZK", "ON", 0,
+				("CZK-CZEONIA", "CZEONIA", "CZK", "Act/360", "CZK", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("CZK", oiCZK);
 
-			_mapNamedOvernightIndex.put ("CZEONIA", oiCZK);
+			_mapNamedOvernightIndex.put ("CZK-CZEONIA", oiCZK);
 
 			org.drip.market.definition.OvernightIndex oiDKK = new org.drip.market.definition.OvernightIndex
-				("DNB TN", "DKK", "Act/360", "DKK", "TN", -1,
+				("DKK-DNB TN", "DNBTN", "DKK", "Act/360", "DKK", "TN", -1,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("DKK", oiDKK);
 
-			_mapNamedOvernightIndex.put ("DNBTN", oiDKK);
+			_mapNamedOvernightIndex.put ("DKK-DNBTN", oiDKK);
 
-			_mapNamedOvernightIndex.put ("DNB TN", oiDKK);
+			_mapNamedOvernightIndex.put ("DKK-DNB TN", oiDKK);
 
 			org.drip.market.definition.OvernightIndex oiEUR = new org.drip.market.definition.OvernightIndex
-				("EONIA", "EUR", "Act/360", "EUR", "ON", 0,
+				("EUR-EONIA", "EONIA", "EUR", "Act/360", "EUR", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("EUR", oiEUR);
 
-			_mapNamedOvernightIndex.put ("EONIA", oiEUR);
+			_mapNamedOvernightIndex.put ("EUR-EONIA", oiEUR);
 
 			org.drip.market.definition.OvernightIndex oiGBP = new org.drip.market.definition.OvernightIndex
-				("SONIA", "GBP", "Act/365", "GBP", "ON", 0,
+				("GBP-SONIA", "SONIA", "GBP", "Act/365", "GBP", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("GBP", oiGBP);
 
-			_mapNamedOvernightIndex.put ("SONIA", oiGBP);
+			_mapNamedOvernightIndex.put ("GBP-SONIA", oiGBP);
 
 			org.drip.market.definition.OvernightIndex oiHKD = new org.drip.market.definition.OvernightIndex
-				("HONIX", "HKD", "Act/365", "HKD", "ON", 0,
+				("HKD-HONIX", "HONIX", "HKD", "Act/365", "HKD", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("HKD", oiHKD);
 
-			_mapNamedOvernightIndex.put ("HONIX", oiHKD);
+			_mapNamedOvernightIndex.put ("HKD-HONIX", oiHKD);
 
 			org.drip.market.definition.OvernightIndex oiHUF = new org.drip.market.definition.OvernightIndex
-				("HUFONIA", "HUF", "Act/360", "HUF", "ON", 0,
+				("HUF-HUFONIA", "HUFONIA", "HUF", "Act/360", "HUF", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("HUF", oiHUF);
 
-			_mapNamedOvernightIndex.put ("HUFONIA", oiHUF);
+			_mapNamedOvernightIndex.put ("HUF-HUFONIA", oiHUF);
 
 			org.drip.market.definition.OvernightIndex oiINR = new org.drip.market.definition.OvernightIndex
-				("ON MIBOR", "INR", "Act/365", "INR", "ON", 0,
+				("INR-ON MIBOR", "MIBOR", "INR", "Act/365", "INR", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("INR", oiINR);
 
-			_mapNamedOvernightIndex.put ("MIBOR", oiINR);
+			_mapNamedOvernightIndex.put ("INR-MIBOR", oiINR);
 
-			_mapNamedOvernightIndex.put ("ON MIBOR", oiINR);
+			_mapNamedOvernightIndex.put ("INR-ON MIBOR", oiINR);
 
 			org.drip.market.definition.OvernightIndex oiINR2 = new org.drip.market.definition.OvernightIndex
-				("MITOR", "INR", "Act/365", "INR", "TN", 0,
+				("INR-MITOR", "MITOR", "INR", "Act/365", "INR", "TN", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("INR2", oiINR2);
 
-			_mapNamedOvernightIndex.put ("MITOR", oiINR2);
+			_mapNamedOvernightIndex.put ("INR-MITOR", oiINR2);
 
 			org.drip.market.definition.OvernightIndex oiJPY = new org.drip.market.definition.OvernightIndex
-				("TONAR", "JPY", "Act/365", "JPY", "ON", 1,
+				("JPY-TONAR", "TONAR", "JPY", "Act/365", "JPY", "ON", 1,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("JPY", oiJPY);
 
-			_mapNamedOvernightIndex.put ("TONAR", oiJPY);
+			_mapNamedOvernightIndex.put ("JPY-TONAR", oiJPY);
 
 			org.drip.market.definition.OvernightIndex oiNZD = new org.drip.market.definition.OvernightIndex
-				("NZIONA", "NZD", "Act/365", "NZD", "ON", 0,
+				("NZD-NZIONA", "NZIONA", "NZD", "Act/365", "NZD", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("NZD", oiNZD);
 
-			_mapNamedOvernightIndex.put ("NZIONA", oiNZD);
+			_mapNamedOvernightIndex.put ("NZD-NZIONA", oiNZD);
 
 			org.drip.market.definition.OvernightIndex oiPLN = new org.drip.market.definition.OvernightIndex
-				("POLONIA", "PLN", "Act/365", "PLN", "ON", 0,
+				("PLN-POLONIA", "POLONIA", "PLN", "Act/365", "PLN", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("PLN", oiPLN);
 
-			_mapNamedOvernightIndex.put ("POLONIA", oiPLN);
+			_mapNamedOvernightIndex.put ("PLN-POLONIA", oiPLN);
 
 			org.drip.market.definition.OvernightIndex oiSEK = new org.drip.market.definition.OvernightIndex
-				("SIOR TN STIBOR", "SEK", "Act/360", "SEK", "ON", -1,
+				("SEK-SIOR TN STIBOR", "STIBOR", "SEK", "Act/360", "SEK", "ON", -1,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("SEK", oiSEK);
 
-			_mapNamedOvernightIndex.put ("SIOR", oiSEK);
+			_mapNamedOvernightIndex.put ("SEK-SIOR", oiSEK);
 
-			_mapNamedOvernightIndex.put ("SIOR TN STIBOR", oiSEK);
+			_mapNamedOvernightIndex.put ("SEK-SIOR TN STIBOR", oiSEK);
 
-			_mapNamedOvernightIndex.put ("STIBOR", oiSEK);
+			_mapNamedOvernightIndex.put ("SEK-STIBOR", oiSEK);
 
 			org.drip.market.definition.OvernightIndex oiSGD = new org.drip.market.definition.OvernightIndex
-				("SONAR", "SGD", "Act/365", "SGD", "ON", 0,
+				("SGD-SONAR", "SONAR", "SGD", "Act/365", "SGD", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("SGD", oiSGD);
 
-			_mapNamedOvernightIndex.put ("SONAR", oiSGD);
+			_mapNamedOvernightIndex.put ("SGD-SONAR", oiSGD);
 
 			org.drip.market.definition.OvernightIndex oiUSD = new org.drip.market.definition.OvernightIndex
-				("Fed Fund", "USD", "Act/360", "USD", "ON", 1,
+				("USD-Fed Fund", "FedFund", "USD", "Act/360", "USD", "ON", 1,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_ARITHMETIC);
 
 			_mapJurisdictionOvernightIndex.put ("USD", oiUSD);
 
-			_mapNamedOvernightIndex.put ("Fed Fund", oiUSD);
+			_mapNamedOvernightIndex.put ("USD-Fed Fund", oiUSD);
 
-			_mapNamedOvernightIndex.put ("FedFund", oiUSD);
+			_mapNamedOvernightIndex.put ("USD-FedFund", oiUSD);
 
 			org.drip.market.definition.OvernightIndex oiZAR = new org.drip.market.definition.OvernightIndex
-				("SAFEX ON Dep Rate", "ZAR", "Act/365", "ZAR", "ON", 0,
+				("ZAR-SAFEX ON Dep Rate", "SAFEX", "ZAR", "Act/365", "ZAR", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("ZAR", oiZAR);
 
-			_mapNamedOvernightIndex.put ("SAFEX", oiZAR);
+			_mapNamedOvernightIndex.put ("ZAR-SAFEX", oiZAR);
 
-			_mapNamedOvernightIndex.put ("SAFEX ON Dep Rate", oiZAR);
+			_mapNamedOvernightIndex.put ("ZAR-SAFEX ON Dep Rate", oiZAR);
 
 			org.drip.market.definition.OvernightIndex oiZAR2 = new org.drip.market.definition.OvernightIndex
-				("SAONIA", "ZAR", "Act/365", "ZAR", "ON", 0,
+				("ZAR-SAONIA", "SAONIA", "ZAR", "Act/365", "ZAR", "ON", 0,
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionOvernightIndex.put ("ZAR2", oiZAR2);
 
-			_mapNamedOvernightIndex.put ("SAONIA", oiZAR2);
+			_mapNamedOvernightIndex.put ("ZAR-SAONIA", oiZAR2);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

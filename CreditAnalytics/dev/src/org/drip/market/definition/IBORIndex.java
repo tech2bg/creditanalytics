@@ -43,6 +43,7 @@ public class IBORIndex extends org.drip.market.definition.FloaterIndex {
 	 * IBORIndex Constructor
 	 * 
 	 * @param strName Index Name
+	 * @param strFamily Index Family
 	 * @param strCurrency Index Currency
 	 * @param strDayCount Index Day Count
 	 * @param strCalendar Index Holiday Calendar
@@ -56,6 +57,7 @@ public class IBORIndex extends org.drip.market.definition.FloaterIndex {
 
 	public IBORIndex (
 		final java.lang.String strName,
+		final java.lang.String strFamily,
 		final java.lang.String strCurrency,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar,
@@ -65,7 +67,7 @@ public class IBORIndex extends org.drip.market.definition.FloaterIndex {
 		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
-		super (strName, strCurrency, strDayCount, strCalendar, iAccrualCompoundingRule);
+		super (strName, strFamily, strCurrency, strDayCount, strCalendar, iAccrualCompoundingRule);
 
 		if (0 > (_iSpotLag = iSpotLag)) throw new java.lang.Exception ("IBORIndex ctr: Invalid Inputs");
 

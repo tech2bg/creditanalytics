@@ -14,6 +14,7 @@ import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.fra.*;
+import org.drip.product.option.LastTradingDateSetting;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
@@ -612,7 +613,7 @@ public class FRAStdOptionVolAnalysis {
 		final double dblForwardFundingCorr)
 		throws Exception
 	{
-		ForwardLabel fri = fra.fri();
+		ForwardLabel fri = fra.forwardLabel().get ("DERIVED");
 
 		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 
@@ -643,6 +644,7 @@ public class FRAStdOptionVolAnalysis {
 			true,
 			dblStrike,
 			1.,
+			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
 			strCurrency,
 			strCurrency
 		);
@@ -653,6 +655,7 @@ public class FRAStdOptionVolAnalysis {
 			false,
 			dblStrike,
 			1.,
+			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
 			strCurrency,
 			strCurrency
 		);
@@ -713,17 +716,12 @@ public class FRAStdOptionVolAnalysis {
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
-		JulianDate dtForward = dtToday.addTenor (strTenor);
+		JulianDate dtForwardStart = dtToday.addTenor (strTenor);
 
-		FRAStandardComponent fra = new FRAStandardComponent (
-			1.,
-			strCurrency,
-			strCurrency + "-FRA-" + strTenor,
-			strCurrency,
-			dtForward.julian(),
+		FRAStandardComponent fra = SingleStreamComponentBuilder.FRAStandard (
+			dtForwardStart,
 			fri,
-			0.006,
-			"Act/360"
+			0.006
 		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, mapFC.get (strTenor), null, null, null, null, null, null);

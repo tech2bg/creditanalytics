@@ -55,243 +55,241 @@ public class IBORIndexContainer {
 	public static final boolean Init()
 	{
 		try {
-			org.drip.market.definition.IBORIndex iborAUD = new org.drip.market.definition.IBORIndex ("BBSW",
-				"AUD", "Act/365", "AUD", 0, "1M", "6M",
+			org.drip.market.definition.IBORIndex iborAUD = new org.drip.market.definition.IBORIndex
+				("AUD-BBSW", "BBSW", "AUD", "Act/365", "AUD", 0, "1M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("AUD", iborAUD);
 
-			_mapNamedIBORIndex.put ("AUDLIBOR", iborAUD);
+			_mapNamedIBORIndex.put ("AUD-BBSW", iborAUD);
 
-			_mapNamedIBORIndex.put ("BBSW", iborAUD);
+			_mapNamedIBORIndex.put ("AUD-LIBOR", iborAUD);
 
-			org.drip.market.definition.IBORIndex iborCAD = new org.drip.market.definition.IBORIndex ("CDOR",
-				"CAD", "Act/365", "CAD", 0, "1M", "12M",
+			org.drip.market.definition.IBORIndex iborCAD = new org.drip.market.definition.IBORIndex
+				("CAD-CDOR", "CDOR", "CAD", "Act/365", "CAD", 0, "1M", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("CAD", iborCAD);
 
-			_mapNamedIBORIndex.put ("CADLIBOR", iborCAD);
+			_mapNamedIBORIndex.put ("CAD-CDOR", iborCAD);
 
-			_mapNamedIBORIndex.put ("CDOR", iborCAD);
+			_mapNamedIBORIndex.put ("CAD-LIBOR", iborCAD);
 
 			org.drip.market.definition.IBORIndex iborCHF = new org.drip.market.definition.IBORIndex
-				("CHFLIBOR", "CHF", "Act/360", "CHF", 2, "ON", "12M",
+				("CHF-LIBOR", "LIBOR", "CHF", "Act/360", "CHF", 2, "ON", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("CHF", iborCHF);
 
-			_mapNamedIBORIndex.put ("CHFLIBOR", iborCHF);
+			_mapNamedIBORIndex.put ("CHF-LIBOR", iborCHF);
 
 			org.drip.market.definition.IBORIndex iborCZK = new org.drip.market.definition.IBORIndex
-				("PRIBOR", "CZK", "Act/360", "CZK", 2, "", "",
+				("CZK-PRIBOR", "PRIBOR", "CZK", "Act/360", "CZK", 2, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("CZK", iborCZK);
 
-			_mapNamedIBORIndex.put ("CZKLIBOR", iborCZK);
+			_mapNamedIBORIndex.put ("CZK-LIBOR", iborCZK);
 
-			_mapNamedIBORIndex.put ("PRIBOR", iborCZK);
+			_mapNamedIBORIndex.put ("CZK-PRIBOR", iborCZK);
 
-			org.drip.market.definition.IBORIndex iborDKK = new org.drip.market.definition.IBORIndex ("CIBOR",
-				"DKK", "Act/360", "DKK", 2, "1W", "12M",
+			org.drip.market.definition.IBORIndex iborDKK = new org.drip.market.definition.IBORIndex
+				("DKK-CIBOR", "CIBOR", "DKK", "Act/360", "DKK", 2, "1W", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("DKK", iborDKK);
 
-			_mapNamedIBORIndex.put ("CIBOR", iborDKK);
+			_mapNamedIBORIndex.put ("DKK-CIBOR", iborDKK);
 
-			_mapNamedIBORIndex.put ("DKKLIBOR", iborDKK);
+			_mapNamedIBORIndex.put ("DKK-LIBOR", iborDKK);
 
 			org.drip.market.definition.IBORIndex iborEUR = new org.drip.market.definition.IBORIndex
-				("EURIBOR", "EUR", "Act/360", "EUR", 2, "1W", "12M",
+				("EUR-EURIBOR", "EURIBOR", "EUR", "Act/360", "EUR", 2, "1W", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("EUR", iborEUR);
 
-			_mapNamedIBORIndex.put ("EURIBOR", iborEUR);
+			_mapNamedIBORIndex.put ("EUR-EURIBOR", iborEUR);
 
 			org.drip.market.definition.IBORIndex iborEUR2 = new org.drip.market.definition.IBORIndex
-				("EURIBOR", "EUR", "Act/365", "EUR", 2, "1W", "12M",
+				("EUR-EURIBOR", "EURIBOR", "EUR", "Act/365", "EUR", 2, "1W", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
-			_mapNamedIBORIndex.put ("EURIBOR2", iborEUR2);
+			_mapNamedIBORIndex.put ("EUR-EURIBOR2", iborEUR2);
 
 			org.drip.market.definition.IBORIndex iborEUR3 = new org.drip.market.definition.IBORIndex
-				("EURLIBOR", "EUR", "Act/360", "EUR", 2, "ON", "12M",
+				("EUR-LIBOR", "LIBOR", "EUR", "Act/360", "EUR", 2, "ON", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
-			_mapNamedIBORIndex.put ("EURLIBOR", iborEUR3);
+			_mapNamedIBORIndex.put ("EUR-LIBOR", iborEUR3);
 
 			org.drip.market.definition.IBORIndex iborEUR4 = new org.drip.market.definition.IBORIndex
-				("EURLIBOR", "EUR", "Act/360", "EUR", 0, "ON", "12M",
+				("EUR-LIBOR", "LIBOR", "EUR", "Act/360", "EUR", 0, "ON", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
-			_mapNamedIBORIndex.put ("EURLIBOR2", iborEUR4);
+			_mapNamedIBORIndex.put ("EUR-LIBOR2", iborEUR4);
 
 			org.drip.market.definition.IBORIndex iborGBP = new org.drip.market.definition.IBORIndex
-				("GBPLIBOR", "GBP", "Act/365", "GBP", 0, "ON", "12M",
+				("GBP-LIBOR", "LIBOR", "GBP", "Act/365", "GBP", 0, "ON", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("GBP", iborGBP);
 
-			_mapNamedIBORIndex.put ("GBPLIBOR", iborGBP);
+			_mapNamedIBORIndex.put ("GBP-LIBOR", iborGBP);
 
-			org.drip.market.definition.IBORIndex iborHKD = new org.drip.market.definition.IBORIndex ("HIBOR",
-				"HKD", "Act/365", "HKD", 2, "1M", "12M",
+			org.drip.market.definition.IBORIndex iborHKD = new org.drip.market.definition.IBORIndex
+				("HKD-HIBOR", "HIBOR", "HKD", "Act/365", "HKD", 2, "1M", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("HKD", iborHKD);
 
-			_mapNamedIBORIndex.put ("HIBOR", iborHKD);
+			_mapNamedIBORIndex.put ("HKD-HIBOR", iborHKD);
 
-			_mapNamedIBORIndex.put ("HKDLIBOR", iborHKD);
+			_mapNamedIBORIndex.put ("HKD-LIBOR", iborHKD);
 
-			org.drip.market.definition.IBORIndex iborHUF = new org.drip.market.definition.IBORIndex ("BUBOR",
-				"HUF", "Act/360", "HUF", 2, "", "",
+			org.drip.market.definition.IBORIndex iborHUF = new org.drip.market.definition.IBORIndex
+				("HUF-BUBOR", "BUBOR", "HUF", "Act/360", "HUF", 2, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("HUF", iborHUF);
 
-			_mapNamedIBORIndex.put ("BUBOR", iborHUF);
+			_mapNamedIBORIndex.put ("HUF-BUBOR", iborHUF);
 
-			_mapNamedIBORIndex.put ("HUFLIBOR", iborHUF);
+			_mapNamedIBORIndex.put ("HUF-LIBOR", iborHUF);
 
 			org.drip.market.definition.IBORIndex iborIDR = new org.drip.market.definition.IBORIndex
-				("IDRFIX", "IDR", "Act/360", "IDR", 2, "", "",
+				("IDR-IDRFIX", "IDRFIX", "IDR", "Act/360", "IDR", 2, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("IDR", iborIDR);
 
-			_mapNamedIBORIndex.put ("IDRFIX", iborIDR);
+			_mapNamedIBORIndex.put ("IDR-IDRFIX", iborIDR);
 
-			_mapNamedIBORIndex.put ("IDRLIBOR", iborIDR);
+			_mapNamedIBORIndex.put ("IDR-LIBOR", iborIDR);
 
-			org.drip.market.definition.IBORIndex iborINR = new org.drip.market.definition.IBORIndex ("MIFOR",
-				"INR", "Act/365", "INR", 2, "", "",
+			org.drip.market.definition.IBORIndex iborINR = new org.drip.market.definition.IBORIndex
+				("INR-MIFOR", "MIFOR", "INR", "Act/365", "INR", 2, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("INR", iborINR);
 
-			_mapNamedIBORIndex.put ("INRLIBOR", iborINR);
+			_mapNamedIBORIndex.put ("INR-LIBOR", iborINR);
 
-			_mapNamedIBORIndex.put ("MIFOR", iborINR);
+			_mapNamedIBORIndex.put ("INR-MIFOR", iborINR);
 
 			org.drip.market.definition.IBORIndex iborJPY = new org.drip.market.definition.IBORIndex
-				("JPYLIBOR", "JPY", "Act/360", "JPY", 2, "ON", "12M",
+				("JPY-LIBOR", "LIBOR", "JPY", "Act/360", "JPY", 2, "ON", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("JPY", iborJPY);
 
-			_mapNamedIBORIndex.put ("JPYLIBOR", iborJPY);
+			_mapNamedIBORIndex.put ("JPY-LIBOR", iborJPY);
 
 			org.drip.market.definition.IBORIndex iborJPYTIBOR = new org.drip.market.definition.IBORIndex
-				("Japan TIBOR", "JPY", "Act/365", "JPY", 2, "1W", "12M",
+				("JPY-Japan TIBOR", "TIBOR", "JPY", "Act/365", "JPY", 2, "1W", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
-			_mapNamedIBORIndex.put ("JPYTIBOR", iborJPYTIBOR);
+			_mapNamedIBORIndex.put ("JPY-TIBOR", iborJPYTIBOR);
 
-			_mapNamedIBORIndex.put ("TIBOR", iborJPYTIBOR);
+			_mapNamedIBORIndex.put ("JPY-TIBOR", iborJPYTIBOR);
 
 			org.drip.market.definition.IBORIndex iborJPYEuroyen = new org.drip.market.definition.IBORIndex
-				("Euroyen TIBOR", "JPY", "Act/360", "JPY", 2, "1W", "12M",
+				("JPY-Euroyen TIBOR", "TIBOR", "JPY", "Act/360", "JPY", 2, "1W", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
-			_mapNamedIBORIndex.put ("EUROYEN", iborJPYEuroyen);
+			_mapNamedIBORIndex.put ("JPY-EUROYEN", iborJPYEuroyen);
 
-			_mapNamedIBORIndex.put ("EURTIBOR", iborJPYEuroyen);
+			_mapNamedIBORIndex.put ("JPY-EURTIBOR", iborJPYEuroyen);
 
-			org.drip.market.definition.IBORIndex iborNOK = new org.drip.market.definition.IBORIndex ("NIBOR",
-				"NOK", "Act/360", "NOK", 2, "", "",
+			org.drip.market.definition.IBORIndex iborNOK = new org.drip.market.definition.IBORIndex
+				("NOK-NIBOR", "NIBOR", "NOK", "Act/360", "NOK", 2, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("NOK", iborNOK);
 
-			_mapNamedIBORIndex.put ("NIBOR", iborNOK);
+			_mapNamedIBORIndex.put ("NOK-LIBOR", iborNOK);
 
-			_mapNamedIBORIndex.put ("NOKLIBOR", iborNOK);
+			_mapNamedIBORIndex.put ("NOK-NIBOR", iborNOK);
 
-			org.drip.market.definition.IBORIndex iborNZD = new org.drip.market.definition.IBORIndex ("BBR",
-				"NZD", "Act/365", "NZD", 0, "", "",
+			org.drip.market.definition.IBORIndex iborNZD = new org.drip.market.definition.IBORIndex
+				("NZD-BBR", "BBR", "NZD", "Act/365", "NZD", 0, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("NZD", iborNZD);
 
-			_mapNamedIBORIndex.put ("BBR", iborNZD);
+			_mapNamedIBORIndex.put ("NZD-BBR", iborNZD);
 
-			_mapNamedIBORIndex.put ("NZDLIBOR", iborNZD);
+			_mapNamedIBORIndex.put ("NZD-LIBOR", iborNZD);
 
-			org.drip.market.definition.IBORIndex iborPLN = new org.drip.market.definition.IBORIndex ("WIBOR",
-				"PLN", "Act/365", "PLN", 2, "", "",
+			org.drip.market.definition.IBORIndex iborPLN = new org.drip.market.definition.IBORIndex
+				("PLN-WIBOR", "WIBOR", "PLN", "Act/365", "PLN", 2, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("PLN", iborPLN);
 
-			_mapNamedIBORIndex.put ("PLNLIBOR", iborPLN);
+			_mapNamedIBORIndex.put ("PLN-LIBOR", iborPLN);
 
-			_mapNamedIBORIndex.put ("WIBOR", iborPLN);
+			_mapNamedIBORIndex.put ("PLN-WIBOR", iborPLN);
 
 			org.drip.market.definition.IBORIndex iborRMB = new org.drip.market.definition.IBORIndex
-				("SHIBOR", "RMB", "Act/360", "RMB", 0, "ON", "12M",
+				("RMB-SHIBOR", "SHIBOR", "RMB", "Act/360", "RMB", 0, "ON", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("RMB", iborRMB);
 
-			_mapNamedIBORIndex.put ("RMBLIBOR", iborRMB);
+			_mapNamedIBORIndex.put ("RMB-LIBOR", iborRMB);
 
-			_mapNamedIBORIndex.put ("SHIBOR", iborRMB);
+			_mapNamedIBORIndex.put ("RMB-SHIBOR", iborRMB);
 
 			org.drip.market.definition.IBORIndex iborSEK = new org.drip.market.definition.IBORIndex
-				("STIBOR", "SEK", "Act/360", "SEK", 2, "", "",
+				("SEK-STIBOR", "STIBOR", "SEK", "Act/360", "SEK", 2, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("SEK", iborSEK);
 
-			_mapNamedIBORIndex.put ("SEKLIBOR", iborSEK);
+			_mapNamedIBORIndex.put ("SEK-LIBOR", iborSEK);
 
-			_mapNamedIBORIndex.put ("STIBOR", iborSEK);
+			_mapNamedIBORIndex.put ("SEK-STIBOR", iborSEK);
 
-			org.drip.market.definition.IBORIndex iborSGD = new org.drip.market.definition.IBORIndex ("SIBOR",
-				"SGD", "Act/365", "SGD", 2, "", "",
+			org.drip.market.definition.IBORIndex iborSGD = new org.drip.market.definition.IBORIndex
+				("SGD-SIBOR", "SIBOR", "SGD", "Act/365", "SGD", 2, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("SGD", iborSGD);
 
-			_mapNamedIBORIndex.put ("SGDLIBOR", iborSGD);
+			_mapNamedIBORIndex.put ("SGD-LIBOR", iborSGD);
 
-			_mapNamedIBORIndex.put ("SIBOR", iborSGD);
+			_mapNamedIBORIndex.put ("SGD-SIBOR", iborSGD);
 
-			_mapNamedIBORIndex.put ("SOR", iborSGD);
+			_mapNamedIBORIndex.put ("SGD-SOR", iborSGD);
 
 			org.drip.market.definition.IBORIndex iborSKK = new org.drip.market.definition.IBORIndex
-				("BRIBOR", "SKK", "Act/360", "SKK", 2, "", "",
+				("SKK-BRIBOR", "BRIBOR", "SKK", "Act/360", "SKK", 2, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("SKK", iborSKK);
 
-			_mapNamedIBORIndex.put ("BRIBOR", iborSKK);
+			_mapNamedIBORIndex.put ("SKK-BRIBOR", iborSKK);
 
-			_mapNamedIBORIndex.put ("SKKLIBOR", iborSKK);
+			_mapNamedIBORIndex.put ("SKK-LIBOR", iborSKK);
 
 			org.drip.market.definition.IBORIndex iborUSD = new org.drip.market.definition.IBORIndex
-				("USDLIBOR", "USD", "Act/360", "USD", 2, "ON", "12M",
+				("USD-LIBOR", "LIBOR", "USD", "Act/360", "USD", 2, "ON", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("USD", iborUSD);
 
-			_mapNamedIBORIndex.put ("LIBOR", iborUSD);
+			_mapNamedIBORIndex.put ("USD-LIBOR", iborUSD);
 
-			_mapNamedIBORIndex.put ("USDLIBOR", iborUSD);
-
-			org.drip.market.definition.IBORIndex iborZAR = new org.drip.market.definition.IBORIndex ("JIBAR",
-				"ZAR", "Act/365", "ZAR", 0, "1M", "12M",
+			org.drip.market.definition.IBORIndex iborZAR = new org.drip.market.definition.IBORIndex
+				("ZAR-JIBAR", "JIBAR", "ZAR", "Act/365", "ZAR", 0, "1M", "12M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
 
 			_mapJurisdictionIBORIndex.put ("ZAR", iborZAR);
 
-			_mapNamedIBORIndex.put ("JIBAR", iborZAR);
+			_mapNamedIBORIndex.put ("ZAR-JIBAR", iborZAR);
 
-			_mapNamedIBORIndex.put ("ZARLIBOR", iborZAR);
+			_mapNamedIBORIndex.put ("ZAR-LIBOR", iborZAR);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

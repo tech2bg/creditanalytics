@@ -13,6 +13,8 @@ import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
+import org.drip.product.option.FixFloatEuropeanOption;
+import org.drip.product.option.LastTradingDateSetting;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
@@ -48,12 +50,13 @@ import org.drip.state.identifier.*;
  */
 
 /**
- * STIRVolCorrAnalysis contains an analysis if the correlation and volatility impact on the STIR.
+ * IRSEuropeanOptionVolAnalysis contains the demonstration of the custom volatility-correlation analysis of
+ * 	Multi-Curve Receiver/Payer Fix-Float IRS European Option sample.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class STIRVolCorrAnalysis {
+public class IRSEuropeanOptionVolAnalysis {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -336,7 +339,7 @@ public class STIRVolCorrAnalysis {
 
 		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
 			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
 			ForwardLabel.Create (strCurrency, "6M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -345,7 +348,7 @@ public class STIRVolCorrAnalysis {
 
 		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
 			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
 			ForwardLabel.Create (strCurrency, iTenorInMonths + "M"),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -445,13 +448,20 @@ public class STIRVolCorrAnalysis {
 
 		String strBasisTenor = iTenorInMonths + "M";
 
-		ValuationParams valParams = new ValuationParams (dtSpot, dtSpot, strCurrency);
+		ValuationParams valParams = new ValuationParams (
+			dtSpot,
+			dtSpot,
+			strCurrency
+		);
 
 		/*
 		 * Calculate the starting forward rate off of the discount curve.
 		 */
 
-		double dblStartingFwd = dc.forward (dtSpot.julian(), dtSpot.addTenor (strBasisTenor).julian());
+		double dblStartingFwd = dc.forward (
+			dtSpot.julian(),
+			dtSpot.addTenor (strBasisTenor).julian()
+		);
 
 		/*
 		 * Set the discount curve based component market parameters.
@@ -485,7 +495,7 @@ public class STIRVolCorrAnalysis {
 		final DiscountCurve dc)
 		throws Exception
 	{
-		Map<String, ForwardCurve> mapFC = new HashMap<String, ForwardCurve> ();
+		Map<String, ForwardCurve> mapFC = new HashMap<String, ForwardCurve>();
 
 		/*
 		 * Build and run the sampling for the 1M-6M Tenor Basis Swap from its instruments and quotes.
@@ -702,19 +712,26 @@ public class STIRVolCorrAnalysis {
 		return irs;
 	}
 
-	private static final double RunWithVolCorrSurface (
+	private static final void VolCorrScenario (
 		final FixFloatComponent stir,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
-		final double dblBaselineSwapRate,
+		final double dblCustomMetricVolatility,
 		final double dblForwardVolatility,
 		final double dblFundingVolatility,
 		final double dblForwardFundingCorr)
 		throws Exception
 	{
+		String strManifestMeasure = "FairPremium";
+
 		ForwardLabel fri = stir.forwardLabel().get ("DERIVED");
 
 		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
+
+		mktParams.setCustomMetricVolSurface (
+			CustomMetricLabel.Standard (stir.name() + "_" + strManifestMeasure),
+			new FlatUnivariate (dblCustomMetricVolatility)
+		);
 
 		mktParams.setForwardCurveVolSurface (fri, new FlatUnivariate (dblForwardVolatility));
 
@@ -724,16 +741,62 @@ public class STIRVolCorrAnalysis {
 
 		Map<String, Double> mapSTIROutput = stir.value (valParams, null, mktParams, null);
 
-		double dblSwapRate = mapSTIROutput.get ("FairPremium");
+		String strCurrency = stir.payCurrency();
+
+		double dblStrike = 1.01 * mapSTIROutput.get (strManifestMeasure);
+
+		FixFloatEuropeanOption stirReceiver = new FixFloatEuropeanOption (
+			stir,
+			strManifestMeasure,
+			true,
+			dblStrike,
+			1.,
+			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
+			strCurrency,
+			strCurrency
+		);
+
+		FixFloatEuropeanOption stirPayer = new FixFloatEuropeanOption (
+			stir,
+			strManifestMeasure,
+			false,
+			dblStrike,
+			1.,
+			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
+			strCurrency,
+			strCurrency
+		);
+
+		Map<String, Double> mapSTIRPayerOutput = stirPayer.value (valParams, null, mktParams, null);
+
+		Map<String, Double> mapSTIRReceiverOutput = stirReceiver.value (valParams, null, mktParams, null);
+
+		double dblATMSwapRate = mapSTIRPayerOutput.get ("ATMSwapRate");
+
+		double dblManifestMeasureIntrinsic = mapSTIRPayerOutput.get ("ManifestMeasureIntrinsic");
+
+		double dblManifestMeasureIntrinsicValue = mapSTIRPayerOutput.get ("ManifestMeasureIntrinsicValue");
+
+		double dblForwardPayerIntrinsic = mapSTIRPayerOutput.get ("ForwardIntrinsic");
+
+		double dblSpotPayerPrice = mapSTIRPayerOutput.get ("SpotPrice");
+
+		double dblForwardReceiverIntrinsic = mapSTIRReceiverOutput.get ("ForwardIntrinsic");
+
+		double dblSpotReceiverPrice = mapSTIRReceiverOutput.get ("SpotPrice");
 
 		System.out.println ("\t[" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblCustomMetricVolatility, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardVolatility, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVolatility, 2, 0, 100.) + "%," +
 			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardFundingCorr, 2, 0, 100.) + "%] =" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSwapRate, 1, 4, 100.) + "% | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSwapRate - dblBaselineSwapRate, 1, 0, 10000.));
-
-		return dblSwapRate;
+			org.drip.quant.common.FormatUtil.FormatDouble (dblATMSwapRate, 1, 4, 100.) + "% | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblManifestMeasureIntrinsic, 1, 1, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblManifestMeasureIntrinsicValue, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardPayerIntrinsic, 1, 0, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotPayerPrice, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardReceiverIntrinsic, 1, 0, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotReceiverPrice, 1, 4, 1.));
 	}
 
 	public static final void main (
@@ -761,63 +824,60 @@ public class STIRVolCorrAnalysis {
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
+		JulianDate dtForward = dtToday.addTenor (strTenor);
+
 		FixFloatComponent stir = CreateSTIR (
-			dtToday.addTenor (strTenor),
+			dtForward,
 			"5Y",
 			fri,
 			0.05,
 			strCurrency
 		);
 
-		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
-			dc,
-			mapFC.get (strTenor),
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
-		);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
+			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
+		double[] adblCustomMetricVolatility = new double[] {0.1, 0.5};
 		double[] adblForwardVolatility = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
 		double[] adblFundingVolatility = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
 		double[] adblForwardFundingCorr = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
 
-		System.out.println ("\tPrinting the IRS Output in Order (Left -> Right):");
+		System.out.println ("\tPrinting the STIR Option Output in Order (Left -> Right):");
 
-		System.out.println ("\t\tParSwapRate (%)");
+		System.out.println ("\t\tATM Swap Rate(%)");
 
-		System.out.println ("\t\tDifference (bp)");
+		System.out.println ("\t\tOption Intrinsic (bp)");
+
+		System.out.println ("\t\tOption Intrinsic Value");
+
+		System.out.println ("\t\tForward Intrinsic Payer (bp)");
+
+		System.out.println ("\t\tSpot Payer STIR Option Price");
+
+		System.out.println ("\t\tForward Intrinsic Receiver (bp)");
+
+		System.out.println ("\t\tSpot Receiver STIR Option Price");
 
 		System.out.println ("\t-------------------------------------------------------------");
 
 		System.out.println ("\t-------------------------------------------------------------");
 
-		double dblBaselineSwapRate = RunWithVolCorrSurface (
-			stir,
-			valParams,
-			mktParams,
-			0.,
-			0.,
-			0.,
-			0.
-		);
-
-		for (double dblForwardVolatility : adblForwardVolatility) {
-			for (double dblFundingVolatility : adblFundingVolatility) {
-				for (double dblForwardFundingCorr : adblForwardFundingCorr)
-					RunWithVolCorrSurface (
-						stir,
-						valParams,
-						mktParams,
-						dblBaselineSwapRate,
-						dblForwardVolatility,
-						dblFundingVolatility,
-						dblForwardFundingCorr
-					);
+		for (double dblCustomMetricVolatility : adblCustomMetricVolatility) {
+			for (double dblForwardVolatility : adblForwardVolatility) {
+				for (double dblFundingVolatility : adblFundingVolatility) {
+					for (double dblForwardFundingCorr : adblForwardFundingCorr)
+						VolCorrScenario (
+							stir,
+							valParams,
+							mktParams,
+							dblCustomMetricVolatility,
+							dblForwardVolatility,
+							dblFundingVolatility,
+							dblForwardFundingCorr
+						);
+				}
 			}
 		}
 	}

@@ -602,6 +602,39 @@ public class AnalyticsHelper {
 	}
 
 	/**
+	 * Retrieve the Annual Frequency from the Tenor
+	 * 
+	 * @param strTenor The Specified Tenor
+	 * 
+	 * @return The Annual Frequency
+	 */
+
+	public static final int TenorToFreq (
+		final java.lang.String strTenor)
+		throws java.lang.Exception
+	{
+		if (null == strTenor || strTenor.isEmpty())
+			throw new java.lang.Exception ("AnalyticsHelper::TenorToFreq => Invalid Inputs");
+
+		char chTenor = strTenor.charAt (strTenor.length() - 1);
+
+		int iTimeUnit = (int) new java.lang.Double (strTenor.substring (0, strTenor.length() -
+			1)).doubleValue();
+
+		if ('d' == chTenor || 'D' == chTenor) return (int) (365. / iTimeUnit);
+
+		if ('w' == chTenor || 'W' == chTenor) return (int) (52. / iTimeUnit);
+
+		if ('l' == chTenor || 'L' == chTenor) return (int) (13. / iTimeUnit);
+
+		if ('m' == chTenor || 'M' == chTenor) return (int) (12. / iTimeUnit);
+
+		if ('y' == chTenor || 'Y' == chTenor) return iTimeUnit;
+
+		throw new java.lang.Exception ("AnalyticsHelper::TenorToFreq => Unknown tenor format " + strTenor);
+	}
+
+	/**
 	 * Compare the Left and the Right Tenors
 	 * 
 	 * @param strTenorLeft Left Tenor

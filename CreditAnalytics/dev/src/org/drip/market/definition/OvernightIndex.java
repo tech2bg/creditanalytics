@@ -42,6 +42,7 @@ public class OvernightIndex extends org.drip.market.definition.FloaterIndex {
 	 * OvernightIndex Constructor
 	 * 
 	 * @param strName Index Name
+	 * @param strFamily Index Family
 	 * @param strCurrency Index Currency
 	 * @param strDayCount Index Day Count
 	 * @param strCalendar Index Holiday Calendar
@@ -54,6 +55,7 @@ public class OvernightIndex extends org.drip.market.definition.FloaterIndex {
 
 	public OvernightIndex (
 		final java.lang.String strName,
+		final java.lang.String strFamily,
 		final java.lang.String strCurrency,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar,
@@ -62,7 +64,7 @@ public class OvernightIndex extends org.drip.market.definition.FloaterIndex {
 		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
-		super (strName, strCurrency, strDayCount, strCalendar, iAccrualCompoundingRule);
+		super (strName, strFamily, strCurrency, strDayCount, strCalendar, iAccrualCompoundingRule);
 
 		if (null == (_strReferenceLag = strReferenceLag) || _strReferenceLag.isEmpty())
 			throw new java.lang.Exception ("OvernightIndex ctr => Invalid Inputs!");

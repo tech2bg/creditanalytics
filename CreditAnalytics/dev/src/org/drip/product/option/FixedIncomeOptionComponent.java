@@ -1,5 +1,5 @@
 
-package org.drip.product.definition;
+package org.drip.product.option;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -48,6 +48,7 @@ public abstract class FixedIncomeOptionComponent implements
 	private double _dblStrike = java.lang.Double.NaN;
 	private java.lang.String _strManifestMeasure = "";
 	private double _dblNotional = java.lang.Double.NaN;
+	private org.drip.product.option.LastTradingDateSetting _ltds = null;
 	private org.drip.product.definition.FixedIncomeComponent _comp = null;
 
 	protected double measure (
@@ -78,6 +79,7 @@ public abstract class FixedIncomeOptionComponent implements
 	 * @param strManifestMeasure Measure of the Underlying Component
 	 * @param dblStrike Strike of the Underlying Component's Measure
 	 * @param dblNotional Option Notional
+	 * @param ltds Last Trading Date Setting
 	 * @param strDayCount Day Count Convention
 	 * @param strCalendar Holiday Calendar
 	 * 
@@ -89,6 +91,7 @@ public abstract class FixedIncomeOptionComponent implements
 		final java.lang.String strManifestMeasure,
 		final double dblStrike,
 		final double dblNotional,
+		final org.drip.product.option.LastTradingDateSetting ltds,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
@@ -99,6 +102,8 @@ public abstract class FixedIncomeOptionComponent implements
 					== (_strDayCount = strDayCount) || _strDayCount.isEmpty() || null == (_strCalendar =
 						strCalendar) || _strCalendar.isEmpty())
 			throw new java.lang.Exception ("FixedIncomeOptionComponent ctr: Invalid Inputs");
+
+		_ltds = ltds;
 	}
 
 	/**
@@ -154,6 +159,17 @@ public abstract class FixedIncomeOptionComponent implements
 	public org.drip.analytics.date.JulianDate exerciseDate()
 	{
 		return _comp.effectiveDate();
+	}
+
+	/**
+	 * Retrieve the Option Last Trading Date Setting
+	 * 
+	 * @return The Option Last Trading Date Setting 
+	 */
+
+	public org.drip.product.option.LastTradingDateSetting lastTradingDateSetting()
+	{
+		return _ltds;
 	}
 
 	/**
