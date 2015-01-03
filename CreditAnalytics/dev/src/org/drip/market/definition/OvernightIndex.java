@@ -6,6 +6,7 @@ package org.drip.market.definition;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -64,12 +65,17 @@ public class OvernightIndex extends org.drip.market.definition.FloaterIndex {
 		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
-		super (strName, strFamily, strCurrency, strDayCount, strCalendar, iAccrualCompoundingRule);
+		super (strName, strFamily, strCurrency, strDayCount, strCalendar, 0, iAccrualCompoundingRule);
 
 		if (null == (_strReferenceLag = strReferenceLag) || _strReferenceLag.isEmpty())
 			throw new java.lang.Exception ("OvernightIndex ctr => Invalid Inputs!");
 
 		_iPublicationLag = iPublicationLag;
+	}
+
+	@Override public int spotLag()
+	{
+		return "ON".equalsIgnoreCase (_strReferenceLag) ? 0 : 1;
 	}
 
 	/**
@@ -92,12 +98,5 @@ public class OvernightIndex extends org.drip.market.definition.FloaterIndex {
 	public int publicationLag()
 	{
 		return _iPublicationLag;
-	}
-
-	@Override public org.drip.analytics.daycount.DateAdjustParams spotLagDAP()
-	{
-		return "ON".equalsIgnoreCase (_strReferenceLag) ? null : new
-			org.drip.analytics.daycount.DateAdjustParams
-				(org.drip.analytics.daycount.Convention.DATE_ROLL_PREVIOUS, 1, calendar());
 	}
 }

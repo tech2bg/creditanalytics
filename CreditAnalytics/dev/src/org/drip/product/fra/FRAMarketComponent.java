@@ -6,6 +6,7 @@ package org.drip.product.fra;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -74,8 +75,10 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		if (dblValueDate > dblEffectiveDate) return null;
 
-		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (payCurrency()));
+		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
+			(payCurrency());
+
+		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve (fundingLabel);
 
 		if (null == dcFunding) return null;
 
@@ -83,11 +86,11 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 
 		double dblMaturity = dtMaturity.julian();
 
-		org.drip.state.identifier.ForwardLabel fri = forwardLabel().get ("DERIVED");
+		org.drip.state.identifier.ForwardLabel forwardLabel = forwardLabel().get ("DERIVED");
 
-		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (fri);
+		org.drip.analytics.rates.ForwardRateEstimator fc = csqs.forwardCurve (forwardLabel);
 
-		if (null == fc || !fri.match (fc.index())) return null;
+		if (null == fc || !forwardLabel.match (fc.index())) return null;
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapResult = super.value
 			(valParams, pricerParams, csqs, quotingParams);
@@ -95,11 +98,11 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 		if (null == mapResult || 0 == mapResult.size()) return null;
 
 		try {
-			double dblParStandardFRA = csqs.available (dtMaturity, fri) ? csqs.fixing (dtMaturity, fri) :
-				fc.forward (dblMaturity);
+			double dblParStandardFRA = csqs.available (dtMaturity, forwardLabel) ? csqs.fixing (dtMaturity,
+				forwardLabel) : fc.forward (dblMaturity);
 
 			double dblForwardDCF = org.drip.analytics.daycount.Convention.YearFraction (dblMaturity, new
-				org.drip.analytics.date.JulianDate (dblMaturity).addTenor (fri.tenor()).julian(),
+				org.drip.analytics.date.JulianDate (dblMaturity).addTenor (forwardLabel.tenor()).julian(),
 					stream().couponDC(), false, null, stream().calendar());
 
 			double dblParDCForward = dcFunding.libor (dblEffectiveDate, dblMaturity);
@@ -111,10 +114,11 @@ public class FRAMarketComponent extends org.drip.product.fra.FRAStandardComponen
 				dblParStandardFRA);
 
 			double dblShiftedLogNormalConvexityAdjustmentExponent =
-				org.drip.analytics.support.OptionHelper.IntegratedFRACrossVolConvexityAdjuster (csqs,
-					dcFunding.label().fullyQualifiedName(), fri.fullyQualifiedName(), "ab",
-						dblShiftedLogNormalScaler, dblShiftedLogNormalScaler, dblValueDate,
-							dblEffectiveDate);
+				org.drip.analytics.support.OptionHelper.IntegratedFRACrossVolConvexityExponent
+					(csqs.forwardCurveVolSurface (forwardLabel), csqs.fundingCurveVolSurface (fundingLabel),
+						csqs.forwardFundingCorrSurface (forwardLabel, fundingLabel),
+							dblShiftedLogNormalScaler, dblShiftedLogNormalScaler, dblValueDate,
+								dblEffectiveDate);
 
 			double dblShiftedLogNormalParMarketFRA = ((dblForwardDCF * dblParStandardFRA + 1.) *
 				java.lang.Math.exp (dblShiftedLogNormalConvexityAdjustmentExponent) - 1.) / dblForwardDCF;

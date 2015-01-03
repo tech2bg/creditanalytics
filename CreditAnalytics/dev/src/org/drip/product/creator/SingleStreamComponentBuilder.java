@@ -6,6 +6,7 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
@@ -98,7 +99,7 @@ public class SingleStreamComponentBuilder {
 			org.drip.param.valuation.CashSettleParams csp = new org.drip.param.valuation.CashSettleParams (0,
 				strCurrency, 0);
 
-			org.drip.analytics.date.JulianDate dtStart = dt.firstEDFStartDate (3);
+			org.drip.analytics.date.JulianDate dtStart = dt.firstIMMDate (3);
 
 			for (int i = 0; i < iNumContract; ++i) {
 				org.drip.analytics.date.JulianDate dtMaturity = dtStart.addMonths (3);
@@ -179,9 +180,9 @@ public class SingleStreamComponentBuilder {
 	}
 
 	/**
-	 * Create a Standard FRA from the Effective Date, the Forward Label, and the Strike
+	 * Create a Standard FRA from the Spot Date, the Forward Label, and the Strike
 	 * 
-	 * @param dtEffective Effective date
+	 * @param dtSpot Spot Date
 	 * @param fri The Floating Rate Index
 	 * @param dblStrike Futures Strike
 	 * 
@@ -189,11 +190,24 @@ public class SingleStreamComponentBuilder {
 	 */
 
 	public static final org.drip.product.fra.FRAStandardComponent FRAStandard (
-		final org.drip.analytics.date.JulianDate dtEffective,
+		final org.drip.analytics.date.JulianDate dtSpot,
 		final org.drip.state.identifier.ForwardLabel fri,
 		final double dblStrike)
 	{
-		if (null == fri) return null;
+		if (null == fri || null == dtSpot) return null;
+
+		org.drip.analytics.date.JulianDate dtEffective = null;
+
+		org.drip.analytics.daycount.DateAdjustParams dapEffective = fri.floaterIndex().spotLagDAPForward();
+
+		try {
+			dtEffective = null == dapEffective ? dtSpot : new org.drip.analytics.date.JulianDate
+				(dapEffective.roll (dtSpot.julian()));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
 
 		java.lang.String strTenor = fri.tenor();
 
@@ -240,9 +254,9 @@ public class SingleStreamComponentBuilder {
 	}
 
 	/**
-	 * Create a FRA Market Component Instance from the Effective Date, the Forward Label, and the Strike
+	 * Create a FRA Market Component Instance from the Spot Date, the Forward Label, and the Strike
 	 * 
-	 * @param dtEffective Effective date
+	 * @param dtSpot Spot Date
 	 * @param fri The Floating Rate Index
 	 * @param dblStrike Futures Strike
 	 * 
@@ -250,11 +264,13 @@ public class SingleStreamComponentBuilder {
 	 */
 
 	public static final org.drip.product.fra.FRAMarketComponent FRAMarket (
-		final org.drip.analytics.date.JulianDate dtEffective,
+		final org.drip.analytics.date.JulianDate dtSpot,
 		final org.drip.state.identifier.ForwardLabel fri,
 		final double dblStrike)
 	{
 		if (null == fri) return null;
+
+		org.drip.analytics.date.JulianDate dtEffective = dtSpot;
 
 		java.lang.String strTenor = fri.tenor();
 
@@ -268,8 +284,7 @@ public class SingleStreamComponentBuilder {
 			dtMaturity + "}";
 
 		try {
-			int iFreq = bIsON ? 360 : 12 / org.drip.analytics.support.AnalyticsHelper.TenorToMonths
-				(strTenor);
+			int iFreq = org.drip.analytics.support.AnalyticsHelper.TenorToFreq (strTenor);
 
 			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
 				org.drip.param.period.ComposableFloatingUnitSetting (strTenor, bIsON ?
@@ -301,18 +316,18 @@ public class SingleStreamComponentBuilder {
 	}
 
 	/**
-	 * Create a Futures Product Instance from the Effective Date, the Forward Label, and the Strike
+	 * Create a Futures Product Instance from the Spot Date, the Forward Label, and the Strike
 	 * 
-	 * @param dtEffective Effective date
+	 * @param dtSpot Spot Date
 	 * @param fri The Floating Rate Index
 	 * 
 	 * @return The Futures Product Instance
 	 */
 
 	public static final org.drip.product.fra.FRAStandardComponent Futures (
-		final org.drip.analytics.date.JulianDate dtEffective,
+		final org.drip.analytics.date.JulianDate dtSpot,
 		final org.drip.state.identifier.ForwardLabel fri)
 	{
-		return FRAStandard (dtEffective, fri, 0.);
+		return FRAStandard (dtSpot, fri, 0.);
 	}
 }

@@ -6,6 +6,7 @@ package org.drip.market.definition;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -34,7 +35,7 @@ package org.drip.market.definition;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FloaterIndex {
+abstract public class FloaterIndex {
 	private java.lang.String _strName = "";
 	private java.lang.String _strFamily = "";
 	private int _iAccrualCompoundingRule = -1;
@@ -50,6 +51,7 @@ public class FloaterIndex {
 	 * @param strCurrency Index Currency
 	 * @param strDayCount Index Day Count
 	 * @param strCalendar Index Holiday Calendar
+	 * @param iSpotLag Spot Lag
 	 * @param iAccrualCompoundingRule Accrual Compounding Rule
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
@@ -61,6 +63,7 @@ public class FloaterIndex {
 		final java.lang.String strCurrency,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar,
+		final int iSpotLag,
 		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
@@ -141,14 +144,34 @@ public class FloaterIndex {
 	}
 
 	/**
-	 * Retrieve the Spot Lag DAP
+	 * Retrieve the Spot Lag DAP with Date Roll Previous
 	 * 
-	 * @return The Spot Lag DAP
+	 * @return The Spot Lag DAP with Date Roll Previous
 	 */
 
-	public org.drip.analytics.daycount.DateAdjustParams spotLagDAP()
+	public org.drip.analytics.daycount.DateAdjustParams spotLagDAPBackward()
 	{
 		return new org.drip.analytics.daycount.DateAdjustParams
-			(org.drip.analytics.daycount.Convention.DATE_ROLL_PREVIOUS, 1, _strCalendar);
+			(org.drip.analytics.daycount.Convention.DATE_ROLL_PREVIOUS, spotLag(), _strCalendar);
 	}
+
+	/**
+	 * Retrieve the Spot Lag DAP with Date Roll Following
+	 * 
+	 * @return The Spot Lag DAP with Date Roll Following
+	 */
+
+	public org.drip.analytics.daycount.DateAdjustParams spotLagDAPForward()
+	{
+		return new org.drip.analytics.daycount.DateAdjustParams
+			(org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING, spotLag(), _strCalendar);
+	}
+
+	/**
+	 * Retrieve the Index Spot Lag
+	 * 
+	 * @return The Index Spot Lag
+	 */
+
+	abstract public int spotLag();
 }

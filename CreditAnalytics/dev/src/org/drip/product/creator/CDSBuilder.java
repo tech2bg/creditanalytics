@@ -6,6 +6,7 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
@@ -182,7 +183,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMDate (3);
 
 		if (null == dtFirstCoupon) return null;
 
@@ -213,7 +214,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMDate (3);
 
 		if (null == dtFirstCoupon) return null;
 
@@ -244,7 +245,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMDate (3);
 
 		if (null == dtFirstCoupon) return null;
 
@@ -276,7 +277,7 @@ public class CDSBuilder {
 	{
 		if (null == dtEffective || null == strTenor || strTenor.isEmpty()) return null;
 
-		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMStartDate (3);
+		org.drip.analytics.date.JulianDate dtFirstCoupon = dtEffective.firstCreditIMMDate (3);
 
 		if (null == dtFirstCoupon) return null;
 

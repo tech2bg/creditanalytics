@@ -8,7 +8,7 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.definition.FloaterIndex;
+import org.drip.market.definition.OvernightIndex;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.period.*;
@@ -32,6 +32,7 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -640,16 +641,17 @@ public class CrossOvernightFloatingStream {
 
 		Map<String, Double> mapGeometricOutput = CompoundingRun (
 			ForwardLabel.Create (
-				strCurrency,
-				"ON",
-				new FloaterIndex (
-					strCurrency + " ON",
+				new OvernightIndex (
+					strCurrency + "OIS",
 					"OIS",
 					strCurrency,
 					"Act/360",
 					strCurrency,
+					"ON",
+					0,
 					CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
-				)
+				),
+				"ON"
 			)
 		);
 

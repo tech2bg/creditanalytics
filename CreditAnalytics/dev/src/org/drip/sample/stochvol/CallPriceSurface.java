@@ -21,6 +21,7 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -81,8 +82,6 @@ public class CallPriceSurface {
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
-		System.out.println ("\n\t\t  " + volSurface.label());
-
 		System.out.println ("\t|------------------------------------------------------------|");
 
 		System.out.print ("\t|------------------------------------------------------------|\n\t|  ATM/TTE  =>");

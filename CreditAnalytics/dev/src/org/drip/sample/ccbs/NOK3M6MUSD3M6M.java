@@ -1,11 +1,10 @@
 
 package org.drip.sample.ccbs;
 
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CompositePeriodBuilder;
-import org.drip.market.definition.FloaterIndex;
+import org.drip.market.definition.*;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.sample.forward.*;
 import org.drip.service.api.CreditAnalytics;
@@ -19,6 +18,7 @@ import org.drip.state.identifier.ForwardLabel;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -594,12 +594,14 @@ public class NOK3M6MUSD3M6M {
 			null
 		);
 
-		FloaterIndex fiNOK = new FloaterIndex (
-			"NOIS",
+		FloaterIndex fiNOK = new OvernightIndex (
+			strDerivedCurrency + "OIS",
 			"OIS",
 			strDerivedCurrency,
 			"Act/360",
-			"NOK",
+			strDerivedCurrency,
+			"ON",
+			0,
 			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
@@ -686,7 +688,7 @@ public class NOK3M6MUSD3M6M {
 		ForwardCurve fc6MDerived = IBORCurve.CustomIBORBuilderSample (
 			dcDerived,
 			null,
-			ForwardLabel.Create (strDerivedCurrency, "6M", fiNOK),
+			ForwardLabel.Create (fiNOK, "6M"),
 			scbcCubic,
 			s_astrNOK6MDepositTenor,
 			s_adblNOK6MDepositQuote,

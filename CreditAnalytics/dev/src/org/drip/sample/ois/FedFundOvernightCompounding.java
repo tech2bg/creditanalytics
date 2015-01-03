@@ -11,6 +11,7 @@ import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.output.CompositePeriodCouponMetrics;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.definition.OvernightIndex;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.period.*;
@@ -32,6 +33,7 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -678,9 +680,10 @@ public class FedFundOvernightCompounding {
 
 		String strCurrency = "USD";
 
-		JulianDate dtToday = DateUtil.Today().addTenorAndAdjust (
-			"0D",
-			strCurrency
+		JulianDate dtToday = DateUtil.CreateFromYMD (
+			2015,
+			DateUtil.JANUARY,
+			5
 		);
 
 		DiscountCurve dc = CustomOISCurveBuilderSample (
@@ -707,11 +710,32 @@ public class FedFundOvernightCompounding {
 			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
 		);
 
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+		ComposableFloatingUnitSetting cfusFloatingArithmetic = new ComposableFloatingUnitSetting (
 			"ON",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 			null,
 			ForwardLabel.Create (strCurrency, "ON"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			0.
+		);
+
+		ComposableFloatingUnitSetting cfusFloatingGeometric = new ComposableFloatingUnitSetting (
+			"ON",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
+			null,
+			ForwardLabel.Create (
+				new OvernightIndex (
+					strCurrency + "OIS",
+					"OIS",
+					strCurrency,
+					"Act/360",
+					strCurrency,
+					"ON",
+					0,
+					CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
+				),
+				"ON"
+			),
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 			0.
 		);
@@ -725,19 +749,7 @@ public class FedFundOvernightCompounding {
 			strCurrency
 		);
 
-		CompositePeriodSetting cpsFloatingGeometric = new CompositePeriodSetting (
-			360,
-			"ON",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFloatingArithmetic = new CompositePeriodSetting (
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
 			360,
 			"ON",
 			strCurrency,
@@ -778,15 +790,15 @@ public class FedFundOvernightCompounding {
 		Stream floatStreamGeometric = new Stream (
 			CompositePeriodBuilder.FloatingCompositeUnit (
 				lsFloatingStreamEdgeDate,
-				cpsFloatingGeometric,
-				cfusFloating
+				cpsFloating,
+				cfusFloatingGeometric
 			)
 		);
 
 		List<CompositePeriod> lsArithmeticFloatPeriods = CompositePeriodBuilder.FloatingCompositeUnit (
 			lsFloatingStreamEdgeDate,
-			cpsFloatingArithmetic,
-			cfusFloating
+			cpsFloating,
+			cfusFloatingArithmetic
 		);
 
 		Stream floatStreamArithmetic = new Stream (lsArithmeticFloatPeriods);
@@ -809,7 +821,11 @@ public class FedFundOvernightCompounding {
 		FixFloatComponent oisGeometric = new FixFloatComponent (
 			fixStream,
 			floatStreamGeometric,
-			new CashSettleParams (0, strCurrency, 0)
+			new CashSettleParams (
+				0,
+				strCurrency,
+				0
+			)
 		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
@@ -825,8 +841,9 @@ public class FedFundOvernightCompounding {
 				dtToday,
 				fri,
 				0.003,
-				-1.)
-			);
+				-1.
+			)
+		);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 

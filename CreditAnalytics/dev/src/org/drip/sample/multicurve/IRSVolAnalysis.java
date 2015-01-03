@@ -25,6 +25,7 @@ import org.drip.state.identifier.*;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -48,12 +49,12 @@ import org.drip.state.identifier.*;
  */
 
 /**
- * IRSVolCorrAnalysis contains an analysis if the correlation and volatility impact on the IRS.
+ * IRSVolAnalysis contains an analysis if the correlation and volatility impact on the IRS.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class IRSVolCorrAnalysis {
+public class IRSVolAnalysis {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters

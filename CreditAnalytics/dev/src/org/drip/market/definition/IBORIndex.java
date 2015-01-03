@@ -6,6 +6,7 @@ package org.drip.market.definition;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -47,7 +48,6 @@ public class IBORIndex extends org.drip.market.definition.FloaterIndex {
 	 * @param strCurrency Index Currency
 	 * @param strDayCount Index Day Count
 	 * @param strCalendar Index Holiday Calendar
-	 * @param iSpotLag Index Spot Lag
 	 * @param strShortestMaturity Index Shortest Maturity
 	 * @param strLongestMaturity Index Longest Maturity
 	 * @param iAccrualCompoundingRule Accrual Compounding Rule
@@ -67,7 +67,7 @@ public class IBORIndex extends org.drip.market.definition.FloaterIndex {
 		final int iAccrualCompoundingRule)
 		throws java.lang.Exception
 	{
-		super (strName, strFamily, strCurrency, strDayCount, strCalendar, iAccrualCompoundingRule);
+		super (strName, strFamily, strCurrency, strDayCount, strCalendar, iSpotLag, iAccrualCompoundingRule);
 
 		if (0 > (_iSpotLag = iSpotLag)) throw new java.lang.Exception ("IBORIndex ctr: Invalid Inputs");
 
@@ -75,13 +75,7 @@ public class IBORIndex extends org.drip.market.definition.FloaterIndex {
 		_strShortestMaturity = strShortestMaturity;
 	}
 
-	/**
-	 * Retrieve the Index Spot Lag
-	 * 
-	 * @return The Index Spot Lag
-	 */
-
-	public int spotLag()
+	@Override public int spotLag()
 	{
 		return _iSpotLag;
 	}
@@ -106,11 +100,5 @@ public class IBORIndex extends org.drip.market.definition.FloaterIndex {
 	public java.lang.String longestMaturity()
 	{
 		return _strLongestMaturity;
-	}
-
-	@Override public org.drip.analytics.daycount.DateAdjustParams spotLagDAP()
-	{
-		return new org.drip.analytics.daycount.DateAdjustParams
-			(org.drip.analytics.daycount.Convention.DATE_ROLL_PREVIOUS, _iSpotLag, calendar());
 	}
 }

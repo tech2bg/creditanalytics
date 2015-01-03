@@ -17,6 +17,7 @@ import org.drip.state.identifier.ForwardLabel;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -55,13 +56,32 @@ public class CHF3M6MUSD3M6M {
 		3
 	};
 
+	private static final int[] s_aiCHFOISDepositMaturityDays = new int[] {
+		1,
+		2,
+		3
+	};
+
 	private static final double[] s_adblUSDOISDepositQuote = new double[] {
 		0.0004,	// 1D
 		0.0004,	// 2D
 		0.0004	// 3D
 	};
 
+	private static final double[] s_adblCHFOISDepositQuote = new double[] {
+		0.0004,	// 1D
+		0.0004,	// 2D
+		0.0004	// 3D
+	};
+
 	private static final String[] s_astrUSDShortEndOISMaturityTenor = new String[] {
+		"1W",
+		"2W",
+		"3W",
+		"1M"
+	};
+
+	private static final String[] s_astrCHFShortEndOISMaturityTenor = new String[] {
 		"1W",
 		"2W",
 		"3W",
@@ -75,7 +95,22 @@ public class CHF3M6MUSD3M6M {
 		0.00074     //   1M
 	};
 
+	private static final double[] s_adblCHFShortEndOISQuote = new double[] {
+		0.00070,    //   1W
+		0.00069,    //   2W
+		0.00078,    //   3W
+		0.00074     //   1M
+	};
+
 	private static final String[] s_astrUSDOISFutureTenor = new String[] {
+		"1M",
+		"1M",
+		"1M",
+		"1M",
+		"1M"
+	};
+
+	private static final String[] s_astrCHFOISFutureTenor = new String[] {
 		"1M",
 		"1M",
 		"1M",
@@ -91,6 +126,14 @@ public class CHF3M6MUSD3M6M {
 		"5M"
 	};
 
+	private static final String[] s_astrCHFOISFutureMaturityTenor = new String[] {
+		"1M",
+		"2M",
+		"3M",
+		"4M",
+		"5M"
+	};
+
 	private static final double[] s_adblUSDOISFutureQuote = new double[] {
 		 0.00046,    //   1M x 1M
 		 0.00016,    //   2M x 1M
@@ -99,7 +142,36 @@ public class CHF3M6MUSD3M6M {
 		-0.00014     //   5M x 1M
 	};
 
+	private static final double[] s_adblCHFOISFutureQuote = new double[] {
+		 0.00046,    //   1M x 1M
+		 0.00016,    //   2M x 1M
+		-0.00007,    //   3M x 1M
+		-0.00013,    //   4M x 1M
+		-0.00014     //   5M x 1M
+	};
+
 	private static final String[] s_astrUSDLongEndOISMaturityTenor = new String[] {
+		"15M",
+		"18M",
+		"21M",
+		"2Y",
+		"3Y",
+		"4Y",
+		"5Y",
+		"6Y",
+		"7Y",
+		"8Y",
+		"9Y",
+		"10Y",
+		"11Y",
+		"12Y",
+		"15Y",
+		"20Y",
+		"25Y",
+		"30Y"
+	};
+
+	private static final String[] s_astrCHFLongEndOISMaturityTenor = new String[] {
 		"15M",
 		"18M",
 		"21M",
@@ -141,77 +213,6 @@ public class CHF3M6MUSD3M6M {
 		0.02038     //  30Y
 	};
 
-	private static final int[] s_aiCHFOISDepositMaturityDays = new int[] {
-		1,
-		2,
-		3
-	};
-
-	private static final double[] s_adblCHFOISDepositQuote = new double[] {
-		0.0004,	// 1D
-		0.0004,	// 2D
-		0.0004	// 3D
-	};
-
-	private static final String[] s_astrCHFShortEndOISMaturityTenor = new String[] {
-		"1W",
-		"2W",
-		"3W",
-		"1M"
-	};
-
-	private static final double[] s_adblCHFShortEndOISQuote = new double[] {
-		0.00070,    //   1W
-		0.00069,    //   2W
-		0.00078,    //   3W
-		0.00074     //   1M
-	};
-
-	private static final String[] s_astrCHFOISFutureTenor = new String[] {
-		"1M",
-		"1M",
-		"1M",
-		"1M",
-		"1M"
-	};
-
-	private static final String[] s_astrCHFOISFutureMaturityTenor = new String[] {
-		"1M",
-		"2M",
-		"3M",
-		"4M",
-		"5M"
-	};
-
-	private static final double[] s_adblCHFOISFutureQuote = new double[] {
-		 0.00046,    //   1M x 1M
-		 0.00016,    //   2M x 1M
-		-0.00007,    //   3M x 1M
-		-0.00013,    //   4M x 1M
-		-0.00014     //   5M x 1M
-	};
-
-	private static final String[] s_astrCHFLongEndOISMaturityTenor = new String[] {
-		"15M",
-		"18M",
-		"21M",
-		"2Y",
-		"3Y",
-		"4Y",
-		"5Y",
-		"6Y",
-		"7Y",
-		"8Y",
-		"9Y",
-		"10Y",
-		"11Y",
-		"12Y",
-		"15Y",
-		"20Y",
-		"25Y",
-		"30Y"
-	};
-
 	private static final double[] s_adblCHFLongEndOISQuote = new double[] {
 		0.00002,    //  15M
 		0.00008,    //  18M
@@ -245,6 +246,18 @@ public class CHF3M6MUSD3M6M {
 		"5M"
 	};
 
+	private static final String[] s_astrCHF6MDepositTenor = new String[] {
+		"1D",
+		"1W",
+		"2W",
+		"3W",
+		"1M",
+		"2M",
+		"3M",
+		"4M",
+		"5M"
+	};
+
 	private static final double[] s_adblUSD6MDepositQuote = new double[] {
 		0.003565,	// 1D
 		0.003858,	// 1W
@@ -257,7 +270,41 @@ public class CHF3M6MUSD3M6M {
 		0.003225	// 5M
 	};
 
+	private static final double[] s_adblCHF6MDepositQuote = new double[] {
+		0.003565,	// 1D
+		0.003858,	// 1W
+		0.003840,	// 2W
+		0.003922,	// 3W
+		0.003869,	// 1M
+		0.003698,	// 2M
+		0.003527,	// 3M
+		0.003342,	// 4M
+		0.003225	// 5M
+	};
+
 	private static final String[] s_astrUSD6MFRATenor = new String[] {
+		 "0D",
+		 "1M",
+		 "2M",
+		 "3M",
+		 "4M",
+		 "5M",
+		 "6M",
+		 "7M",
+		 "8M",
+		 "9M",
+		"10M",
+		"11M",
+		"12M",
+		"13M",
+		"14M",
+		"15M",
+		"16M",
+		"17M",
+		"18M"
+	};
+
+	private static final String[] s_astrCHF6MFRATenor = new String[] {
 		 "0D",
 		 "1M",
 		 "2M",
@@ -301,6 +348,28 @@ public class CHF3M6MUSD3M6M {
 		0.004090	// 18M
 	};
 
+	private static final double[] s_adblCHF6MFRAQuote = new double[] {
+		0.003120,	//  0D
+		0.002930,	//  1M
+		0.002720,	//  2M
+		0.002600,	//  3M
+		0.002560,	//  4M
+		0.002520,	//  5M
+		0.002480,	//  6M
+		0.002540,	//  7M
+		0.002610,	//  8M
+		0.002670,	//  9M
+		0.002790,	// 10M
+		0.002910,	// 11M
+		0.003030,	// 12M
+		0.003180,	// 13M
+		0.003350,	// 14M
+		0.003520,	// 15M
+		0.003710,	// 16M
+		0.003890,	// 17M
+		0.004090	// 18M
+	};
+
 	private static final String[] s_astrUSD6MFixFloatTenor = new String[] {
 		 "3Y",
 		 "4Y",
@@ -321,7 +390,47 @@ public class CHF3M6MUSD3M6M {
 		"60Y"
 	};
 
+	private static final String[] s_astrCHF6MFixFloatTenor = new String[] {
+		 "3Y",
+		 "4Y",
+		 "5Y",
+		 "6Y",
+		 "7Y",
+		 "8Y",
+		 "9Y",
+		"10Y",
+		"12Y",
+		"15Y",
+		"20Y",
+		"25Y",
+		"30Y",
+		"35Y",
+		"40Y",
+		"50Y",
+		"60Y"
+	};
+
 	private static final double[] s_adblUSD6MFixFloatQuote = new double[] {
+		0.004240,	//  3Y
+		0.005760,	//  4Y			
+		0.007620,	//  5Y
+		0.009540,	//  6Y
+		0.011350,	//  7Y
+		0.013030,	//  8Y
+		0.014520,	//  9Y
+		0.015840,	// 10Y
+		0.018090,	// 12Y
+		0.020370,	// 15Y
+		0.021870,	// 20Y
+		0.022340,	// 25Y
+		0.022560,	// 30Y
+		0.022950,	// 35Y
+		0.023480,	// 40Y
+		0.024210,	// 50Y
+		0.024630	// 60Y
+	};
+
+	private static final double[] s_adblCHF6MFixFloatQuote = new double[] {
 		0.004240,	//  3Y
 		0.005760,	//  4Y			
 		0.007620,	//  5Y
@@ -425,114 +534,6 @@ public class CHF3M6MUSD3M6M {
 		0.00050
 	};
 
-	private static final String[] s_astrCHF6MDepositTenor = new String[] {
-		"1D",
-		"1W",
-		"2W",
-		"3W",
-		"1M",
-		"2M",
-		"3M",
-		"4M",
-		"5M"
-	};
-
-	private static final double[] s_adblCHF6MDepositQuote = new double[] {
-		0.003565,	// 1D
-		0.003858,	// 1W
-		0.003840,	// 2W
-		0.003922,	// 3W
-		0.003869,	// 1M
-		0.003698,	// 2M
-		0.003527,	// 3M
-		0.003342,	// 4M
-		0.003225	// 5M
-	};
-
-	private static final String[] s_astrCHF6MFRATenor = new String[] {
-		 "0D",
-		 "1M",
-		 "2M",
-		 "3M",
-		 "4M",
-		 "5M",
-		 "6M",
-		 "7M",
-		 "8M",
-		 "9M",
-		"10M",
-		"11M",
-		"12M",
-		"13M",
-		"14M",
-		"15M",
-		"16M",
-		"17M",
-		"18M"
-	};
-
-	private static final double[] s_adblCHF6MFRAQuote = new double[] {
-		0.003120,	//  0D
-		0.002930,	//  1M
-		0.002720,	//  2M
-		0.002600,	//  3M
-		0.002560,	//  4M
-		0.002520,	//  5M
-		0.002480,	//  6M
-		0.002540,	//  7M
-		0.002610,	//  8M
-		0.002670,	//  9M
-		0.002790,	// 10M
-		0.002910,	// 11M
-		0.003030,	// 12M
-		0.003180,	// 13M
-		0.003350,	// 14M
-		0.003520,	// 15M
-		0.003710,	// 16M
-		0.003890,	// 17M
-		0.004090	// 18M
-	};
-
-	private static final String[] s_astrCHF6MFixFloatTenor = new String[] {
-		 "3Y",
-		 "4Y",
-		 "5Y",
-		 "6Y",
-		 "7Y",
-		 "8Y",
-		 "9Y",
-		"10Y",
-		"12Y",
-		"15Y",
-		"20Y",
-		"25Y",
-		"30Y",
-		"35Y",
-		"40Y",
-		"50Y",
-		"60Y"
-	};
-
-	private static final double[] s_adblCHF6MFixFloatQuote = new double[] {
-		0.004240,	//  3Y
-		0.005760,	//  4Y			
-		0.007620,	//  5Y
-		0.009540,	//  6Y
-		0.011350,	//  7Y
-		0.013030,	//  8Y
-		0.014520,	//  9Y
-		0.015840,	// 10Y
-		0.018090,	// 12Y
-		0.020370,	// 15Y
-		0.021870,	// 20Y
-		0.022340,	// 25Y
-		0.022560,	// 30Y
-		0.022950,	// 35Y
-		0.023480,	// 40Y
-		0.024210,	// 50Y
-		0.024630	// 60Y
-	};
-
 	private static final String[] s_astrCCBSTenor = new String[] {
 		"1Y",
 		"2Y",
@@ -558,7 +559,7 @@ public class CHF3M6MUSD3M6M {
 	};
 
 	private static final double[] s_adblIRSQuote = new double[] {
-		0.00000, //  1Y
+		0.00500, //  1Y
 		0.00500, //  2Y
 		0.01375, //  3Y
 		0.02250, //  4Y

@@ -30,6 +30,7 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -620,6 +621,16 @@ public class FedFundLIBORSwap {
 			1.
 		);
 
+		CurveSurfaceQuoteSet csqs = MarketParamsBuilder.Create (
+			dc,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
+
 		/*
 		 * Cross-Comparison of the Deposit Calibration Instrument "Rate" metric across the different curve
 		 * 	construction methodologies.
@@ -633,9 +644,8 @@ public class FedFundLIBORSwap {
 
 		for (int i = 0; i < aDeposit.length; ++i)
 			System.out.println ("\t[" + aDeposit[i].effectiveDate() + " => " + aDeposit[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null,
-					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
+				FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null, csqs, null, "Rate"), 1, 6, 1.) +
+				" | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
 
 		/*
 		 * Cross-Comparison of the Short End OIS Calibration Instrument "Rate" metric across the different curve
@@ -648,14 +658,25 @@ public class FedFundLIBORSwap {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aShortEndOISComp.length; ++i)
+		for (int i = 0; i < aShortEndOISComp.length; ++i) {
+			Map<String, Double> mapCalc = aShortEndOISComp[i].value (
+				valParams,
+				null,
+				csqs,
+				null
+			);
+
+			double dblCalibSwapRate = mapCalc.get ("CalibSwapRate");
+
+			double dblFairPremium = mapCalc.get ("FairPremium");
+
 			System.out.println ("\t[" + aShortEndOISComp[i].effectiveDate() + " => " + aShortEndOISComp[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (valParams, null,
-					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.) + " | " +
-							FormatUtil.FormatDouble (aShortEndOISComp[i].measureValue (valParams, null,
-								MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-									null, "FairPremium"), 1, 6, 1.));
+				FormatUtil.FormatDouble (dblCalibSwapRate, 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (adblShortEndOISQuote[i], 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (dblFairPremium, 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (dblFairPremium - dblCalibSwapRate, 1, 2, 10000.)
+			);
+		}
 
 		/*
 		 * Cross-Comparison of the OIS Future Calibration Instrument "Rate" metric across the different curve
@@ -668,14 +689,25 @@ public class FedFundLIBORSwap {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aOISFutureComp.length; ++i)
+		for (int i = 0; i < aOISFutureComp.length; ++i) {
+			Map<String, Double> mapCalc = aOISFutureComp[i].value (
+				valParams,
+				null,
+				csqs,
+				null
+			);
+
+			double dblSwapRate = mapCalc.get ("SwapRate");
+
+			double dblFairPremium = mapCalc.get ("FairPremium");
+
 			System.out.println ("\t[" + aOISFutureComp[i].effectiveDate() + " => " + aOISFutureComp[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (valParams, null,
-					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, "SwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.) + " | " +
-							FormatUtil.FormatDouble (aOISFutureComp[i].measureValue (valParams, null,
-								MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-									null, "FairPremium"), 1, 6, 1.));
+				FormatUtil.FormatDouble (dblSwapRate, 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (adblOISFutureQuote[i], 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (dblFairPremium, 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (dblFairPremium - dblSwapRate, 1, 2, 10000.)
+			);
+		}
 
 		/*
 		 * Cross-Comparison of the Long End OIS Calibration Instrument "Rate" metric across the different curve
@@ -688,14 +720,25 @@ public class FedFundLIBORSwap {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aLongEndOISComp.length; ++i)
+		for (int i = 0; i < aLongEndOISComp.length; ++i) {
+			Map<String, Double> mapCalc = aLongEndOISComp[i].value (
+				valParams,
+				null,
+				csqs,
+				null
+			);
+
+			double dblCalibSwapRate = mapCalc.get ("CalibSwapRate");
+
+			double dblFairPremium = mapCalc.get ("FairPremium");
+
 			System.out.println ("\t[" + aLongEndOISComp[i].effectiveDate() + " => " + aLongEndOISComp[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aLongEndOISComp[i].measureValue (valParams, null,
-					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblLongEndOISQuote[i], 1, 6, 1.) + " | " +
-							FormatUtil.FormatDouble (aLongEndOISComp[i].measureValue (valParams, null,
-								MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-									null, "FairPremium"), 1, 6, 1.));
+				FormatUtil.FormatDouble (dblCalibSwapRate, 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (adblLongEndOISQuote[i], 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (dblFairPremium, 1, 6, 1.) + " | " +
+				FormatUtil.FormatDouble (dblFairPremium - dblCalibSwapRate, 1, 2, 10000.)
+			);
+		}
 
 		return dc;
 	}

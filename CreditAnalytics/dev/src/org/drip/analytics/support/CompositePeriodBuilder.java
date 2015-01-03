@@ -6,6 +6,7 @@ package org.drip.analytics.support;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -158,30 +159,36 @@ public class CompositePeriodBuilder {
 		final org.drip.analytics.daycount.DateAdjustParams dap,
 		final int iPSEC)
 	{
-		if (null == dtEffective || null == dtMaturity || dtEffective.julian() >= dtMaturity.julian() || null
-			== strTenor || strTenor.isEmpty())
-			return null;
-
-		java.util.List<java.lang.Double> lsEdgeDate = new java.util.ArrayList<java.lang.Double>();
+		if (null == dtEffective || null == dtMaturity || null == strTenor || strTenor.isEmpty()) return null;
 
 		org.drip.analytics.date.JulianDate dtEdge = dtEffective;
 
-		while (dtEdge.julian() < dtMaturity.julian()) {
-			lsEdgeDate.add (dtEdge.julian());
+		double dblMaturityDate = dtMaturity.julian();
 
-			dtEdge = dtEdge.addTenor (strTenor);
+		double dblEdgeDate = dtEdge.julian();
+
+		if (dblEdgeDate >= dblMaturityDate) return null;
+
+		java.util.List<java.lang.Double> lsEdgeDate = new java.util.ArrayList<java.lang.Double>();
+
+		while (dblEdgeDate < dblMaturityDate) {
+			lsEdgeDate.add (dblEdgeDate);
+
+			if (null == (dtEdge = dtEdge.addTenor (strTenor))) return null;
+
+			dblEdgeDate = dtEdge.julian();
 		}
 
-		if (dtEdge.julian() > dtMaturity.julian()) {
+		if (dblEdgeDate > dblMaturityDate) {
 			if (SHORT_STUB == iPSEC)
-				lsEdgeDate.add (dtMaturity.julian());
+				lsEdgeDate.add (dblMaturityDate);
 			else if (LONG_STUB == iPSEC) {
 				lsEdgeDate.remove (lsEdgeDate.size() - 1);
 
-				lsEdgeDate.add (dtMaturity.julian());
+				lsEdgeDate.add (dblMaturityDate);
 			}
-		} else if (dtEdge.julian() == dtMaturity.julian())
-			lsEdgeDate.add (dtMaturity.julian());
+		} else if (dblEdgeDate == dblMaturityDate)
+			lsEdgeDate.add (dblMaturityDate);
 
 		if (null == dap) return lsEdgeDate;
 
@@ -218,32 +225,38 @@ public class CompositePeriodBuilder {
 		final org.drip.analytics.daycount.DateAdjustParams dap,
 		final int iPSEC)
 	{
-		if (null == dtEffective || null == dtMaturity || dtEffective.julian() >= dtMaturity.julian() || null
-			== strTenor || strTenor.isEmpty())
-			return null;
+		if (null == dtEffective || null == dtMaturity || null == strTenor || strTenor.isEmpty()) return null;
 
-		java.util.List<java.lang.Double> lsEdgeDate = new java.util.ArrayList<java.lang.Double>();
+		double dblEffectiveDate = dtEffective.julian();
 
 		org.drip.analytics.date.JulianDate dtEdge = dtMaturity;
 
-		while (dtEdge.julian() > dtEffective.julian()) {
-			lsEdgeDate.add (0, dtEdge.julian());
+		double dblEdgeDate = dtEdge.julian();
 
-			dtEdge = dtEdge.subtractTenor (strTenor);
+		if (dblEffectiveDate >= dblEdgeDate) return null;
+
+		java.util.List<java.lang.Double> lsEdgeDate = new java.util.ArrayList<java.lang.Double>();
+
+		while (dblEdgeDate > dblEffectiveDate) {
+			lsEdgeDate.add (0, dblEdgeDate);
+
+			if (null == (dtEdge = dtEdge.subtractTenor (strTenor))) return null;
+
+			dblEdgeDate = dtEdge.julian();
 		}
 
-		if (dtEdge.julian() < dtEffective.julian()) {
+		if (dblEdgeDate < dblEffectiveDate) {
 			if (SHORT_STUB == iPSEC)
-				lsEdgeDate.add (0, dtEffective.julian());
+				lsEdgeDate.add (0, dblEffectiveDate);
 			else if (FULL_FRONT_PERIOD == iPSEC)
-				lsEdgeDate.add (0, dtEdge.julian());
+				lsEdgeDate.add (0, dblEdgeDate);
 			else if (LONG_STUB == iPSEC) {
 				lsEdgeDate.remove (0);
 
-				lsEdgeDate.add (0, dtEffective.julian());
+				lsEdgeDate.add (0, dblEffectiveDate);
 			}
-		} else if (dtEdge.julian() == dtEffective.julian())
-			lsEdgeDate.add (0, dtEffective.julian());
+		} else if (dtEdge.julian() == dblEffectiveDate)
+			lsEdgeDate.add (0, dblEffectiveDate);
 
 		if (null == dap) return lsEdgeDate;
 
@@ -403,19 +416,27 @@ public class CompositePeriodBuilder {
 		final org.drip.analytics.date.JulianDate dtEnd,
 		final java.lang.String strCalendar)
 	{
-		if (null == dtStart || null == dtEnd || dtEnd.julian() <= dtStart.julian()) return null;
+		if (null == dtStart || null == dtEnd) return null;
 
 		org.drip.analytics.date.JulianDate dtEdge = dtStart;
 
+		double dblEndDate = dtEnd.julian();
+
+		double dblEdgeDate = dtEdge.julian();
+
+		if (dblEndDate <= dblEdgeDate) return null;
+
 		java.util.List<java.lang.Double> lsOvernightEdgeDate = new java.util.ArrayList<java.lang.Double>();
 
-		while (dtEdge.julian() < dtEnd.julian()) {
-			lsOvernightEdgeDate.add (dtEdge.julian());
+		while (dblEdgeDate < dblEndDate) {
+			lsOvernightEdgeDate.add (dblEdgeDate);
 
-			dtEdge = dtEdge.addBusDays (1, strCalendar);
+			if (null == (dtEdge = dtEdge.addBusDays (1, strCalendar))) return null;
+
+			dblEdgeDate = dtEdge.julian();
 		}
 
-		lsOvernightEdgeDate.add (dtEnd.julian());
+		lsOvernightEdgeDate.add (dblEndDate);
 
 		return lsOvernightEdgeDate;
 	}
@@ -433,13 +454,19 @@ public class CompositePeriodBuilder {
 		final org.drip.analytics.date.JulianDate dtStart,
 		final org.drip.analytics.date.JulianDate dtEnd)
 	{
-		if (null == dtStart || null == dtEnd || dtEnd.julian() <= dtStart.julian()) return null;
+		if (null == dtStart || null == dtEnd) return null;
+
+		double dblEndDate = dtEnd.julian();
+
+		double dblStartDate = dtStart.julian();
+
+		if (dblEndDate <= dblStartDate) return null;
 
 		java.util.List<java.lang.Double> lsOvernightEdgeDate = new java.util.ArrayList<java.lang.Double>();
 
-		lsOvernightEdgeDate.add (dtStart.julian());
+		lsOvernightEdgeDate.add (dblStartDate);
 
-		lsOvernightEdgeDate.add (dtEnd.julian());
+		lsOvernightEdgeDate.add (dblEndDate);
 
 		return lsOvernightEdgeDate;
 	}
@@ -466,13 +493,11 @@ public class CompositePeriodBuilder {
 
 		java.lang.String strForwardTenor = forwardLabel.tenor();
 
-		double dblStartDate = REFERENCE_PERIOD_IN_ARREARS == iReferencePeriodArrearsType ? dtStart.addTenor
-			(strForwardTenor).julian() : dtStart.julian();
-
 		try {
-			return new org.drip.analytics.cashflow.ReferenceIndexPeriod (dblStartDate,
-				REFERENCE_PERIOD_IN_ARREARS == iReferencePeriodArrearsType ? dtEnd.addTenor
-					(strForwardTenor).julian() : dtEnd.julian(), forwardLabel);
+			return new org.drip.analytics.cashflow.ReferenceIndexPeriod (REFERENCE_PERIOD_IN_ARREARS ==
+				iReferencePeriodArrearsType ? dtStart.addTenor (strForwardTenor).julian() : dtStart.julian(),
+					REFERENCE_PERIOD_IN_ARREARS == iReferencePeriodArrearsType ? dtEnd.addTenor
+						(strForwardTenor).julian() : dtEnd.julian(), forwardLabel);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -624,7 +649,7 @@ public class CompositePeriodBuilder {
 	 * @param dblUnitPeriodStartDate Unit Period Start Date
 	 * @param dblUnitPeriodEndDate Unit Period End Date
 	 * @param strCalendar Unit Date Generation Calendar
-	 * @param cus Composable Unit Setting
+	 * @param cubs Composable Unit Builder Setting
 	 * 
 	 * @return List of Edge Dates across all Units
 	 */
@@ -633,11 +658,11 @@ public class CompositePeriodBuilder {
 		final double dblUnitPeriodStartDate,
 		final double dblUnitPeriodEndDate,
 		final java.lang.String strCalendar,
-		final org.drip.param.period.ComposableUnitBuilderSetting cus)
+		final org.drip.param.period.ComposableUnitBuilderSetting cubs)
 	{
-		if (null == cus) return null;
+		if (null == cubs) return null;
 
-		int iEdgeDateSequenceScheme = cus.edgeDateSequenceScheme();
+		int iEdgeDateSequenceScheme = cubs.edgeDateSequenceScheme();
 
 		if (EDGE_DATE_SEQUENCE_SINGLE == iEdgeDateSequenceScheme) {
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblUnitPeriodStartDate) ||
@@ -655,7 +680,8 @@ public class CompositePeriodBuilder {
 		}
 
 		if (EDGE_DATE_SEQUENCE_REGULAR == iEdgeDateSequenceScheme)
-			return RegularEdgeDates (dblUnitPeriodStartDate, dblUnitPeriodEndDate, cus.tenor(), cus.dapEdge());
+			return RegularEdgeDates (dblUnitPeriodStartDate, dblUnitPeriodEndDate, cubs.tenor(),
+				cubs.dapEdge());
 
 		if (EDGE_DATE_SEQUENCE_OVERNIGHT == iEdgeDateSequenceScheme)
 			return OvernightEdgeDates (dblUnitPeriodStartDate, dblUnitPeriodEndDate, strCalendar);
@@ -783,16 +809,16 @@ public class CompositePeriodBuilder {
 		final org.drip.param.period.UnitCouponAccrualSetting ucas,
 		final org.drip.param.period.ComposableFixedUnitSetting cfus)
 	{
-		if (null == lsCompositeEdgeDate || null == ucas || null == cfus) return null;
+		if (null == lsCompositeEdgeDate) return null;
 
-		int iNumDate = lsCompositeEdgeDate.size();
+		int iNumEdge = lsCompositeEdgeDate.size();
 		
-		if (2 > iNumDate) return null;
+		if (2 > iNumEdge) return null;
 
 		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCFP = new
 			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
 
-		for (int i = 1; i < iNumDate; ++i) {
+		for (int i = 1; i < iNumEdge; ++i) {
 			try {
 				lsCFP.add (new org.drip.analytics.cashflow.CompositeFixedPeriod (cps, FixedUnits
 					(lsCompositeEdgeDate.get (i - 1), lsCompositeEdgeDate.get (i), ucas, cfus)));
@@ -821,16 +847,16 @@ public class CompositePeriodBuilder {
 		final org.drip.param.period.CompositePeriodSetting cps,
 		final org.drip.param.period.ComposableFloatingUnitSetting cfus)
 	{
-		if (null == lsCompositeEdgeDate || null == cfus) return null;
+		if (null == lsCompositeEdgeDate) return null;
 
-		int iNumDate = lsCompositeEdgeDate.size();
+		int iNumEdge = lsCompositeEdgeDate.size();
 
-		if (2 > iNumDate) return null;
+		if (2 > iNumEdge) return null;
 
 		java.util.List<org.drip.analytics.cashflow.CompositePeriod> lsCFP = new
 			java.util.ArrayList<org.drip.analytics.cashflow.CompositePeriod>();
 
-		for (int i = 1; i < iNumDate; ++i) {
+		for (int i = 1; i < iNumEdge; ++i) {
 			try {
 				lsCFP.add (new org.drip.analytics.cashflow.CompositeFloatingPeriod (cps, FloatingUnits
 					(lsCompositeEdgeDate.get (i - 1), lsCompositeEdgeDate.get (i), cfus)));

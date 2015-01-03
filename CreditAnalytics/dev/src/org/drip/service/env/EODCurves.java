@@ -6,6 +6,7 @@ package org.drip.service.env;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
@@ -305,7 +306,7 @@ public class EODCurves {
 
 		try {
 			while (rsCDSPoints.next()) {
-				org.drip.analytics.date.JulianDate dtEffective = dtEOD.firstEDFStartDate (3);
+				org.drip.analytics.date.JulianDate dtEffective = dtEOD.firstCreditIMMDate (3);
 
 				dblRecovery = rsCDSPoints.getDouble ("RecRate");
 

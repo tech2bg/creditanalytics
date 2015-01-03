@@ -6,6 +6,7 @@ package org.drip.analytics.cashflow;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -63,7 +64,8 @@ public class ReferenceIndexPeriod {
 					|| null == (_forwardLabel = forwardLabel))
 			throw new java.lang.Exception ("ReferenceIndexPeriod ctr: Invalid Inputs");
 
-		org.drip.analytics.daycount.DateAdjustParams dapFixing = _forwardLabel.floaterIndex().spotLagDAP();
+		org.drip.analytics.daycount.DateAdjustParams dapFixing =
+			_forwardLabel.floaterIndex().spotLagDAPBackward();
 
 		_dblFixingDate = null == dapFixing ? dblStartDate : dapFixing.roll (dblStartDate);
 	}

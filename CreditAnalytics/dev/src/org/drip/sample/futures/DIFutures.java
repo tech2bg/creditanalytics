@@ -19,6 +19,7 @@ import org.drip.state.identifier.ForwardLabel;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -67,7 +68,7 @@ public class DIFutures {
 			strCurrency
 		);
 
-		SingleStreamComponent fedFundFutures = SingleStreamComponentBuilder.Deposit (
+		SingleStreamComponent diFutures = SingleStreamComponentBuilder.Deposit (
 			dtToday,
 			dtToday.addTenor ("1M"),
 			ForwardLabel.Create (strCurrency, "ON")
@@ -90,14 +91,14 @@ public class DIFutures {
 			strCurrency
 		);
 
-		Map<String, Double> mapFedFundFuturesOutput = fedFundFutures.value (
+		Map<String, Double> mapDIFuturesOutput = diFutures.value (
 			valParams,
 			null,
 			mktParams,
 			null
 		);
 
-		for (Map.Entry<String, Double> me : mapFedFundFuturesOutput.entrySet())
+		for (Map.Entry<String, Double> me : mapDIFuturesOutput.entrySet())
 			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 	}
 }

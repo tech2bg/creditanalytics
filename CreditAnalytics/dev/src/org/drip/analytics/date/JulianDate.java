@@ -6,6 +6,7 @@ package org.drip.analytics.date;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
@@ -37,7 +38,7 @@ package org.drip.analytics.date;
  * 	- Explicit date construction, as well as date construction from several input string formats/today
  *  - Date Addition/Adjustment/Elapsed/Difference, add/subtract days/weeks/months/years and tenor codes
  *  - Leap Year Functionality (number of leap days in the given interval, is the given year a leap year etc.)
- *  - Generate the subsequent IMM date (EDF/CME IMM date, CDS/Credit ISDA IMM date etc)
+ *  - Generate the subsequent IMM date (CME IMM date, CDS/Credit ISDA IMM date etc)
  *  - Year/Month/Day in numbers/characters
  *  - Days Elapsed/Remaining, is EOM
  *  - Comparison with the Other, equals/hash-code/comparator
@@ -281,14 +282,14 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	}
 
 	/**
-	 * Generate the First EDF start date from this JulianDate
+	 * Generate the First IMM Date from this JulianDate
 	 * 
 	 * @param iNumRollMonths Integer representing number of months to roll
 	 * 
 	 * @return The new JulianDate
 	 */
 
-	public JulianDate firstEDFStartDate (
+	public JulianDate firstIMMDate (
 		final int iNumRollMonths)
 	{
 		int iJA = (int) (_dblJulian + org.drip.analytics.date.DateUtil.HALFSECOND / 86400.);
@@ -338,7 +339,7 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 	 * @return The new JulianDate
 	 */
 
-	public JulianDate firstCreditIMMStartDate (
+	public JulianDate firstCreditIMMDate (
 		final int iNumRollMonths)
 	{
 		int iJA = (int) (_dblJulian + org.drip.analytics.date.DateUtil.HALFSECOND / 86400.);

@@ -6,6 +6,7 @@ package org.drip.analytics.support;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -218,11 +219,11 @@ public class OptionHelper {
 	 * Compute the Integrated FRA Cross Volatility Convexity Exponent given the corresponding volatility and
 	 * 	the correlation surfaces, and the date spans
 	 * 
-	 * @param auDiscountVolTS Volatility Term Structure of the Forward Rate
-	 * @param auForwardVolTS Volatility Term Structure of the Discount Rate
-	 * @param auDiscountForwardCorrTS Correlation Term Structure between the Forward and the Discount Rates
-	 * @param dblDiscountShiftedLogNormalScaler Scaling for the Discount Log Normal Volatility
+	 * @param auForwardVolTS Volatility Term Structure of the Funding Rate
+	 * @param auFundingVolTS Volatility Term Structure of the Forward Rate
+	 * @param auForwardFundingCorrTS Correlation Term Structure between the Forward and the Funding States
 	 * @param dblForwardShiftedLogNormalScaler Scaling for the Forward Log Normal Volatility
+	 * @param dblFundingShiftedLogNormalScaler Scaling for the Funding Log Normal Volatility
 	 * @param dblStartDate Evolution Start Date
 	 * @param dblEndDate Evolution End Date
 	 * 
@@ -232,11 +233,11 @@ public class OptionHelper {
 	 */
 
 	public static final double IntegratedFRACrossVolConvexityExponent (
-		final org.drip.quant.function1D.AbstractUnivariate auDiscountVolTS,
 		final org.drip.quant.function1D.AbstractUnivariate auForwardVolTS,
-		final org.drip.quant.function1D.AbstractUnivariate auDiscountForwardCorrTS,
-		final double dblDiscountShiftedLogNormalScaler,
+		final org.drip.quant.function1D.AbstractUnivariate auFundingVolTS,
+		final org.drip.quant.function1D.AbstractUnivariate auForwardFundingCorrTS,
 		final double dblForwardShiftedLogNormalScaler,
+		final double dblFundingShiftedLogNormalScaler,
 		final double dblStartDate,
 		final double dblEndDate)
 		throws java.lang.Exception
@@ -246,10 +247,10 @@ public class OptionHelper {
 			throw new java.lang.Exception
 				("OptionHelper::IntegratedFRACrossVolConvexityExponent => Invalid Inputs");
 
-		return null == auDiscountVolTS || null == auForwardVolTS || null == auDiscountForwardCorrTS ? 0. :
-			new CrossVolatilityConvexityExponent (dblDiscountShiftedLogNormalScaler,
-				dblForwardShiftedLogNormalScaler, auDiscountVolTS, auForwardVolTS,
-					auDiscountForwardCorrTS).integrate (dblStartDate, dblEndDate) / 365.25;
+		return null == auFundingVolTS || null == auForwardVolTS || null == auForwardFundingCorrTS ? 0. :
+			new CrossVolatilityConvexityExponent (dblFundingShiftedLogNormalScaler,
+				dblForwardShiftedLogNormalScaler, auFundingVolTS, auForwardVolTS,
+					auForwardFundingCorrTS).integrate (dblStartDate, dblEndDate) / 365.25;
 	}
 
 	/**
@@ -328,11 +329,10 @@ public class OptionHelper {
 	 * 	the correlation surfaces, and the date spans
 	 * 
 	 * @param csqs Market Parameters
-	 * @param strDiscountVolTS Name of the Discount Forward Rate Volatility Term Structure
-	 * @param strForwardVolTS Name of the Forward Rate Volatility Term Structure
-	 * @param strDiscountForwardCorrTS Name of the Discount-Forward Correlation Surface
-	 * @param dblDiscountShiftedLogNormalScaler Scaling for the Discount Log Normal Volatility
+	 * @param forwardLabel Forward Latent State Label
+	 * @param fundingLabel Funding Latent State Label
 	 * @param dblForwardShiftedLogNormalScaler Scaling for the Forward Log Normal Volatility
+	 * @param dblFundingShiftedLogNormalScaler Scaling for the Funding Log Normal Volatility
 	 * @param dblStartDate Evolution Start Date
 	 * @param dblEndDate Evolution End Date
 	 * 
@@ -343,11 +343,10 @@ public class OptionHelper {
 
 	public static final double IntegratedFRACrossVolConvexityAdjuster (
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
-		final java.lang.String strDiscountVolTS,
-		final java.lang.String strForwardVolTS,
-		final java.lang.String strDiscountForwardCorrTS,
-		final double dblDiscountShiftedLogNormalScaler,
+		final org.drip.state.identifier.ForwardLabel forwardLabel,
+		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final double dblForwardShiftedLogNormalScaler,
+		final double dblFundingShiftedLogNormalScaler,
 		final double dblStartDate,
 		final double dblEndDate)
 		throws java.lang.Exception
@@ -357,20 +356,10 @@ public class OptionHelper {
 			throw new java.lang.Exception
 				("OptionHelper::IntegratedFRACrossVolConvexityAdjuster => Invalid Inputs");
 
-		if (null == csqs || null == strDiscountVolTS || strDiscountVolTS.isEmpty() || null == strForwardVolTS
-			|| strForwardVolTS.isEmpty() || null == strDiscountForwardCorrTS ||
-				strDiscountForwardCorrTS.isEmpty() || dblEndDate == dblStartDate)
-			return 0.;
-
-		org.drip.state.identifier.ForwardLabel fri = org.drip.state.identifier.ForwardLabel.Standard
-			(strForwardVolTS);
-
-		org.drip.state.identifier.FundingLabel fundingLabel = org.drip.state.identifier.FundingLabel.Standard
-			(strDiscountVolTS);
-
-		return IntegratedFRACrossVolConvexityExponent (csqs.fundingCurveVolSurface (fundingLabel),
-			csqs.forwardCurveVolSurface (fri), csqs.forwardFundingCorrSurface (fri, fundingLabel),
-				dblDiscountShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler, dblStartDate,
-					dblEndDate);
+		return null == csqs || null == forwardLabel || null == fundingLabel || dblEndDate == dblStartDate ?
+			0. : IntegratedFRACrossVolConvexityExponent (csqs.fundingCurveVolSurface (fundingLabel),
+				csqs.forwardCurveVolSurface (forwardLabel), csqs.forwardFundingCorrSurface (forwardLabel,
+					fundingLabel), dblFundingShiftedLogNormalScaler, dblForwardShiftedLogNormalScaler,
+						dblStartDate, dblEndDate);
 	}
 }

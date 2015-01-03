@@ -10,6 +10,9 @@ package org.drip.product.creator;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
+ * Copyright (C) 2014 Lakshmi Krishnamurthy
+ * Copyright (C) 2013 Lakshmi Krishnamurthy
  * Copyright (C) 2012 Lakshmi Krishnamurthy
  *
  * This file is part of CreditAnalytics, a free-software/open-source library for

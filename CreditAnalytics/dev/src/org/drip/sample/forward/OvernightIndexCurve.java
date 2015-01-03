@@ -27,6 +27,7 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -79,7 +80,7 @@ public class OvernightIndexCurve {
 					aiDay[i],
 					strCurrency
 				),
-				null == fi ? ForwardLabel.Create (strCurrency, "ON") : ForwardLabel.Create (strCurrency, "ON", fi)
+				null == fi ? ForwardLabel.Create (strCurrency, "ON") : ForwardLabel.Create (fi, "ON")
 			);
 
 		return aDeposit;
@@ -172,7 +173,7 @@ public class OvernightIndexCurve {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				null == fi ? ForwardLabel.Create (strCurrency, "ON") : ForwardLabel.Create (strCurrency, "ON", fi),
+				null == fi ? ForwardLabel.Create (strCurrency, "ON") : ForwardLabel.Create (fi, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 				0.
 			);
@@ -315,7 +316,7 @@ public class OvernightIndexCurve {
 				"ON",
 				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
 				null,
-				null == fi ? ForwardLabel.Create (strCurrency, "ON") : ForwardLabel.Create (strCurrency, "ON", fi),
+				null == fi ? ForwardLabel.Create (strCurrency, "ON") : ForwardLabel.Create (fi, "ON"),
 				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 				0.
 			);
