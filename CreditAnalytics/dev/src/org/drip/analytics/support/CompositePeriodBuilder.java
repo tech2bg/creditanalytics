@@ -402,6 +402,37 @@ public class CompositePeriodBuilder {
 	}
 
 	/**
+	 * Generate a list of the IMM period edge dates forward from the spot date.
+	 * 
+	 * @param dtSpot Spot Date
+	 * @param iRollMonths Number of Months to Roll to the Next IMM Date
+	 * @param strPeriodTenor Period Tenor
+	 * @param strMaturityTenor Period Tenor
+	 * @param dap Inner Date Adjustment Parameters
+	 * 
+	 * @return List of IMM Period Edge Dates
+	 */
+
+	public static final java.util.List<java.lang.Double> IMMEdgeDates (
+		final org.drip.analytics.date.JulianDate dtSpot,
+		final int iRollMonths,
+		final java.lang.String strPeriodTenor,
+		final java.lang.String strMaturityTenor,
+		final org.drip.analytics.daycount.DateAdjustParams dap)
+	{
+		if (null == dtSpot) return null;
+
+		try {
+			return RegularEdgeDates (dtSpot.firstIMMDate (iRollMonths), strPeriodTenor, strMaturityTenor,
+				dap);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
 	 * Generate the List of Overnight Edge Dates between the specified dates, using the specified Calendar
 	 * 
 	 * @param dtStart Start Date

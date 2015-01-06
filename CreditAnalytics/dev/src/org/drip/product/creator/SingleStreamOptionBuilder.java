@@ -102,8 +102,8 @@ public class SingleStreamOptionBuilder {
 
 		org.drip.market.definition.FloaterIndex floaterIndex = forwardLabel.floaterIndex();
 
-		org.drip.market.definition.FuturesOptions fo =
-			org.drip.market.definition.FuturesOptionsContainer.ExchangeInfo
+		org.drip.market.product.FuturesOptions fo =
+			org.drip.market.product.FuturesOptionsContainer.ExchangeInfo
 				(forwardLabel.fullyQualifiedName(), strTradingMode);
 
 		if (null == fo) return null;

@@ -84,6 +84,16 @@ public class IBORIndexContainer {
 
 			_mapNamedIBORIndex.put ("CHF-LIBOR", iborCHF);
 
+			org.drip.market.definition.IBORIndex iborCNY = new org.drip.market.definition.IBORIndex
+				("CNY-Repo", "Repo", "CNY", "Act/365", "CNY", 0, "ON", "12M",
+					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
+
+			_mapJurisdictionIBORIndex.put ("CNY", iborCNY);
+
+			_mapNamedIBORIndex.put ("CNY-LIBOR", iborCNY);
+
+			_mapNamedIBORIndex.put ("CNY-Repo", iborCNY);
+
 			org.drip.market.definition.IBORIndex iborCZK = new org.drip.market.definition.IBORIndex
 				("CZK-PRIBOR", "PRIBOR", "CZK", "Act/360", "CZK", 2, "", "",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
@@ -219,6 +229,8 @@ public class IBORIndexContainer {
 			_mapJurisdictionIBORIndex.put ("NZD", iborNZD);
 
 			_mapNamedIBORIndex.put ("NZD-BBR", iborNZD);
+
+			_mapNamedIBORIndex.put ("NZD-BKBM", iborNZD);
 
 			_mapNamedIBORIndex.put ("NZD-LIBOR", iborNZD);
 
