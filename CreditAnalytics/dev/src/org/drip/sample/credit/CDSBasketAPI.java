@@ -5,16 +5,13 @@ package org.drip.sample.credit;
  * Credit Product Imports
  */
 
-import java.util.List;
-
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
+import org.drip.market.product.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.period.*;
 import org.drip.param.pricer.PricerParams;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
@@ -70,112 +67,26 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class CDSBasketAPI {
 
-	private static final FixFloatComponent IRS (
-		final JulianDate dtEffective,
+	private static final FixFloatComponent OTCIRS (
+		final JulianDate dtSpot,
 		final String strCurrency,
-		final String strTenor,
+		final String strMaturityTenor,
 		final double dblCoupon)
-		throws Exception
 	{
-		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
+		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
 			strCurrency,
-			true,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
+			"ALL",
+			strMaturityTenor,
+			"MAIN"
 		);
 
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"3M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
-			null,
-			ForwardLabel.Create (strCurrency, "3M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
+		return ffConv.createFixFloatComponent (
+			dtSpot,
+			strMaturityTenor,
+			dblCoupon,
 			0.,
-			0.,
-			strCurrency
+			1.
 		);
-
-		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			4,
-			"3M",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CashSettleParams csp = new CashSettleParams (
-			0,
-			strCurrency,
-			0
-		);
-
-		List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-			dtEffective,
-			"6M",
-			strTenor,
-			null
-		);
-
-		List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-			dtEffective,
-			"3M",
-			strTenor,
-			null
-		);
-
-		Stream floatingStream = new Stream (
-			CompositePeriodBuilder.FloatingCompositeUnit (
-				lsFloatingStreamEdgeDate,
-				cpsFloating,
-				cfusFloating
-			)
-		);
-
-		Stream fixedStream = new Stream (
-			CompositePeriodBuilder.FixedCompositeUnit (
-				lsFixedStreamEdgeDate,
-				cpsFixed,
-				ucasFixed,
-				cfusFixed
-			)
-		);
-
-		FixFloatComponent irs = new FixFloatComponent (
-			fixedStream,
-			floatingStream,
-			csp
-		);
-
-		irs.setPrimaryCode ("IRS." + strTenor + "." + strCurrency);
-
-		return irs;
 	}
 
 	/*
@@ -228,7 +139,7 @@ public class CDSBasketAPI {
 
 			adblDate[i + astrCashTenor.length] = dtIRSEffective.addTenor (astrIRSTenor[i]).julian();
 
-			aCompCalib[i + astrCashTenor.length] = IRS (
+			aCompCalib[i + astrCashTenor.length] = OTCIRS (
 				dtIRSEffective,
 				strCurrency,
 				astrIRSTenor[i],

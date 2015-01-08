@@ -3,8 +3,7 @@ package org.drip.sample.fra;
 
 import java.util.Map;
 
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
@@ -48,12 +47,12 @@ import org.drip.state.identifier.*;
  */
 
 /**
- * FRAMktVolAnalysis contains an analysis of the correlation and volatility impact on the Market FRA.
+ * FRAMktAnalysis contains an analysis of the correlation and volatility impact on the Market FRA.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAMktVolAnalysis {
+public class FRAMktAnalysis {
 	static class FRAMktConvexityCorrection {
 		double _dblParMktFwd = Double.NaN;
 		double _dblParStdFwd = Double.NaN;

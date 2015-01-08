@@ -159,8 +159,8 @@ public class SingleStreamComponentBuilder {
 				0.);
 
 			org.drip.param.period.CompositePeriodSetting cps = new
-				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency, null, 1., null,
-					null, null, null);
+				org.drip.param.period.CompositePeriodSetting (iFreq, strTenor, strCurrency,
+					fri.floaterIndex().spotLagDAPForward(), 1., null, null, null, null);
 
 			org.drip.product.rates.SingleStreamComponent sscDeposit = new
 				org.drip.product.rates.SingleStreamComponent (strCode, new org.drip.product.rates.Stream

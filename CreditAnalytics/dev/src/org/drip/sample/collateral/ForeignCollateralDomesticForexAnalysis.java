@@ -8,7 +8,7 @@ import org.drip.analytics.support.CaseInsensitiveTreeMap;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
-import org.drip.product.fx.DomesticCollateralizedForeignForward;
+import org.drip.product.fx.ForeignCollateralizedDomesticForward;
 import org.drip.product.params.CurrencyPair;
 import org.drip.quant.function1D.*;
 import org.drip.service.api.CreditAnalytics;
@@ -45,13 +45,13 @@ import org.drip.state.identifier.FXLabel;
  */
 
 /**
- * DomesticCollateralForeignForexVolCorr contains an analysis of the correlation and volatility impact on the
- * 	price of a Domestic Collateralized ForeignPay-out Forex Contract.
+ * ForeignCollateralDomesticForexAnalysis contains an analysis of the correlation and volatility impact on the
+ * 	price of a Foreign Collateralized Domestic Pay-out Forex Contract.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class DomesticCollateralForeignForexVolCorr {
+public class ForeignCollateralDomesticForexAnalysis {
 	public static final void main (
 		final String[] astrArgs)
 		throws Exception
@@ -67,17 +67,17 @@ public class DomesticCollateralForeignForexVolCorr {
 		String strDomesticCurrency = "USD";
 		String strForeignCurrency = "EUR";
 		String strMaturity = "1Y";
-		double dblFXFwdStrike = 0.984;
-		double dblDomesticCollateralRate = 0.02;
+		double dblFXFwdStrike = 1.016;
+		double dblForeignCollateralRate = 0.02;
 		double dblCollateralizedFXRate = 0.01;
 
 		CurrencyPair cp = CurrencyPair.FromCode (strForeignCurrency + "/" + strDomesticCurrency);
 
-		DiscountCurve dcCcyDomesticCollatDomestic = DiscountCurveBuilder.CreateFromFlatRate (
+		DiscountCurve dcCcyForeignCollatForeign = DiscountCurveBuilder.CreateFromFlatRate (
 			dtToday,
-			strDomesticCurrency,
-			new CollateralizationParams ("OVERNIGHT_INDEX", strDomesticCurrency),
-			dblDomesticCollateralRate
+			strForeignCurrency,
+			new CollateralizationParams ("OVERNIGHT_INDEX", strForeignCurrency),
+			dblForeignCollateralRate
 		);
 
 		AbstractUnivariate auFX = new ExponentialDecay (
@@ -91,9 +91,9 @@ public class DomesticCollateralForeignForexVolCorr {
 			strDomesticCurrency
 		);
 
-		DiscountCurve dcCcyForeignCollatDomestic = new ForeignCollateralizedDiscountCurve (
-			strForeignCurrency,
-			dcCcyDomesticCollatDomestic,
+		DiscountCurve dcCcyDomesticCollatForeign = new ForeignCollateralizedDiscountCurve (
+			strDomesticCurrency,
+			dcCcyForeignCollatForeign,
 			auFX,
 			new FlatUnivariate (0.),
 			new FlatUnivariate (0.),
@@ -103,15 +103,15 @@ public class DomesticCollateralForeignForexVolCorr {
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (null, null, null, null, null, null, null);
 
 		mktParams.setPayCurrencyCollateralCurrencyCurve (
-			strForeignCurrency,
 			strDomesticCurrency,
-			dcCcyForeignCollatDomestic
+			strForeignCurrency,
+			dcCcyDomesticCollatForeign
 		);
 
 		mktParams.setPayCurrencyCollateralCurrencyCurve (
-			strDomesticCurrency,
-			strDomesticCurrency,
-			dcCcyDomesticCollatDomestic
+			strForeignCurrency,
+			strForeignCurrency,
+			dcCcyForeignCollatForeign
 		);
 
 		mktParams.setFXCurve (
@@ -119,13 +119,13 @@ public class DomesticCollateralForeignForexVolCorr {
 			auFX
 		);
 
-		DomesticCollateralizedForeignForward dcff = new DomesticCollateralizedForeignForward (
+		ForeignCollateralizedDomesticForward fcff = new ForeignCollateralizedDomesticForward (
 			cp,
 			dblFXFwdStrike,
 			dtToday.addTenor (strMaturity)
 		);
 
-		CaseInsensitiveTreeMap<Double> mapBaseValue = dcff.value (
+		CaseInsensitiveTreeMap<Double> mapBaseValue = fcff.value (
 			new ValuationParams (dtToday, dtToday, strDomesticCurrency),
 			null,
 			mktParams,
@@ -140,7 +140,7 @@ public class DomesticCollateralForeignForexVolCorr {
 		double[] adblFXVolatility = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
 		double[] adblFXForeignRatesCorrelation = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
 
-		System.out.println ("\tPrinting the Domestic Collateralized Foreign Forex Output in Order (Left -> Right):");
+		System.out.println ("\tPrinting the Foreign Collateralized Forex Output in Order (Left -> Right):");
 
 		System.out.println ("\t\tPrice (%)");
 
@@ -157,30 +157,31 @@ public class DomesticCollateralForeignForexVolCorr {
 		for (double dblForeignRatesVolatility : adblForeignRatesVolatility) {
 			for (double dblFXVolatility : adblFXVolatility) {
 				for (double dblFXForeignRatesCorrelation : adblFXForeignRatesCorrelation) {
-					dcCcyForeignCollatDomestic = new ForeignCollateralizedDiscountCurve (
-						strForeignCurrency,
-						dcCcyDomesticCollatDomestic,
+					dcCcyDomesticCollatForeign = new ForeignCollateralizedDiscountCurve (
+						strDomesticCurrency,
+						dcCcyForeignCollatForeign,
 						auFX,
 						new FlatUnivariate (dblForeignRatesVolatility),
 						new FlatUnivariate (dblFXVolatility),
-						new FlatUnivariate (dblFXForeignRatesCorrelation));
-
-					mktParams.setPayCurrencyCollateralCurrencyCurve (
-						strForeignCurrency,
-						strDomesticCurrency,
-						dcCcyForeignCollatDomestic
+						new FlatUnivariate (dblFXForeignRatesCorrelation)
 					);
 
-					CaseInsensitiveTreeMap<Double> mapDCFF = dcff.value (
+					mktParams.setPayCurrencyCollateralCurrencyCurve (
+						strDomesticCurrency,
+						strForeignCurrency,
+						dcCcyDomesticCollatForeign
+					);
+
+					CaseInsensitiveTreeMap<Double> mapFCFF = fcff.value (
 						valParams,
 						null,
 						mktParams,
 						null
 					);
 
-					double dblPrice = mapDCFF.get ("Price");
+					double dblPrice = mapFCFF.get ("Price");
 
-					double dblParForward = mapDCFF.get ("ParForward");
+					double dblParForward = mapFCFF.get ("ParForward");
 
 					System.out.println ("\t[" +
 						org.drip.quant.common.FormatUtil.FormatDouble (dblForeignRatesVolatility, 2, 0, 100.) + "%," +

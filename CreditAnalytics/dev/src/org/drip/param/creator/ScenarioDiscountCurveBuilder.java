@@ -83,50 +83,16 @@ public class ScenarioDiscountCurveBuilder {
 				org.drip.product.definition.CalibratableFixedIncomeComponent comp = null;
 
 				if (bIsIRS) {
-					org.drip.param.period.UnitCouponAccrualSetting ucasFixed = new
-						org.drip.param.period.UnitCouponAccrualSetting (2, "Act/360", false, "Act/360",
-							false, strCurrency, true,
-								org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
+					java.lang.String strMaturityTenor = ((int) ((dtMaturity.julian() - dtEffective.julian())
+						* 12 / 365.25)) + "M";
 
-					org.drip.param.period.ComposableFloatingUnitSetting cfusFloating = new
-						org.drip.param.period.ComposableFloatingUnitSetting ("3M",
-							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
-								null, org.drip.state.identifier.ForwardLabel.Standard (strCurrency + "-3M"),
-									org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-						0.);
+					org.drip.market.product.FixFloatConvention ffConv =
+						org.drip.market.product.FixFloatContainer.ConventionFromJurisdiction (strCurrency,
+							"ALL", strMaturityTenor, "MAIN");
 
-					org.drip.param.period.ComposableFixedUnitSetting cfusFixed = new
-						org.drip.param.period.ComposableFixedUnitSetting ("6M",
-							org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-								null, 0., 0., strCurrency);
+					if (null == ffConv) return null;
 
-					org.drip.param.period.CompositePeriodSetting cpsFloating = new
-						org.drip.param.period.CompositePeriodSetting (4, "3M", strCurrency, null, -1., null,
-							null, null, null);
-
-					org.drip.param.period.CompositePeriodSetting cpsFixed = new
-						org.drip.param.period.CompositePeriodSetting (2, "6M", strCurrency, null, 1., null,
-							null, null, null);
-
-					java.util.List<java.lang.Double> lsFixedStreamEdgeDate =
-						org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dtEffective,
-							dtMaturity, "6M", null,
-								org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
-
-					java.util.List<java.lang.Double> lsFloatingStreamEdgeDate =
-						org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dtEffective,
-							dtMaturity, "3M", null,
-								org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
-
-					org.drip.product.rates.Stream floatingStream = new org.drip.product.rates.Stream
-						(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit
-							(lsFloatingStreamEdgeDate, cpsFloating, cfusFloating));
-
-					org.drip.product.rates.Stream fixedStream = new org.drip.product.rates.Stream
-						(org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit
-							(lsFixedStreamEdgeDate, cpsFixed, ucasFixed, cfusFixed));
-
-					comp = new org.drip.product.rates.FixFloatComponent (fixedStream, floatingStream, null);
+					comp = ffConv.createFixFloatComponent (dtEffective, strMaturityTenor, 0., 0., 1.);
 				} else {
 					org.drip.param.period.ComposableFloatingUnitSetting cfusDeposit = new
 						org.drip.param.period.ComposableFloatingUnitSetting ("3M",
@@ -800,9 +766,8 @@ public class ScenarioDiscountCurveBuilder {
 
 		if (null == dcShapePreserver || (null != tldf && !dcShapePreserver.setTurns (tldf))) return null;
 
-		org.drip.param.market.CurveSurfaceQuoteSet csqs =
-			org.drip.param.creator.MarketParamsBuilder.Create (dcShapePreserver, null, null, null,
-				null, null, null);
+		org.drip.param.market.CurveSurfaceQuoteSet csqs = org.drip.param.creator.MarketParamsBuilder.Create
+			(dcShapePreserver, null, null, null, null, null, null);
 
 		if (null == csqs) return null;
 

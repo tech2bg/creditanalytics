@@ -536,9 +536,11 @@ public class Stream {
 			org.drip.analytics.output.CompositePeriodAccrualMetrics cpam = period.accrualMetrics
 				(dblValueDate, csqs);
 
+			double dblPeriodEndDate = period.endDate();
+
 			try {
-				double dblPeriodNotional = period.notional (dblPeriodPayDate) * period.couponFactor
-					(dblPeriodPayDate);
+				double dblPeriodNotional = period.notional (dblPeriodEndDate) * period.couponFactor
+					(dblPeriodEndDate);
 
 				double dblPeriodFX = period.fx (csqs);
 

@@ -57,7 +57,7 @@ public class IBOR12MCubicKLKHyperbolic {
 
 		CreditAnalytics.Init ("");
 
-		JulianDate dtValue = DateUtil.CreateFromYMD (2012, DateUtil.DECEMBER, 11);
+		JulianDate dtValue = DateUtil.CreateFromYMD (2015, DateUtil.JANUARY, 7);
 
 		String strTenor = "12M";
 		String strCurrency = "EUR";

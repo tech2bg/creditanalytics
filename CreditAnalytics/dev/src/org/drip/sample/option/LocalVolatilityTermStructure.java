@@ -1,15 +1,13 @@
 
 package org.drip.sample.option;
 
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.analytics.definition.*;
 import org.drip.param.creator.ScenarioMarketSurfaceBuilder;
 import org.drip.param.valuation.CollateralizationParams;
 import org.drip.quant.common.FormatUtil;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
-import org.drip.spline.params.SegmentCustomBuilderControl;
-import org.drip.spline.params.SegmentInelasticDesignControl;
+import org.drip.spline.params.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
 
 /*

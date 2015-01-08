@@ -3,10 +3,10 @@ package org.drip.sample.multicurve;
 
 import java.util.*;
 
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.product.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -26,7 +26,6 @@ import org.drip.state.identifier.*;
 
 /*!
  * Copyright (C) 2015 Lakshmi Krishnamurthy
- * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -49,12 +48,34 @@ import org.drip.state.identifier.*;
  */
 
 /**
- * IRSVolAnalysis contains an analysis if the correlation and volatility impact on the IRS.
+ * FixFloatSwapIMM contains a full valuation run on the IMM Fix-Float Swap Product.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class IRSVolAnalysis {
+public class FixFloatSwapIMM {
+
+	private static final FixFloatComponent OTCIRS (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strMaturityTenor,
+		final double dblCoupon)
+	{
+		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+			strCurrency,
+			"ALL",
+			strMaturityTenor,
+			"MAIN"
+		);
+
+		return ffConv.createFixFloatComponent (
+			dtSpot,
+			strMaturityTenor,
+			dblCoupon,
+			0.,
+			1.
+		);
+	}
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -97,119 +118,23 @@ public class IRSVolAnalysis {
 	 */
 
 	private static final CalibratableFixedIncomeComponent[] SwapInstrumentsFromMaturityTenor (
-		final JulianDate dtEffective,
+		final JulianDate dtSpot,
+		final String strCurrency,
 		final String[] astrMaturityTenor,
-		final double[] adblCoupon,
-		final String strCurrency)
+		final double[] adblCoupon)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
-		);
-
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, "6M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CashSettleParams csp = new CashSettleParams (
-			0,
-			strCurrency,
-			0
-		);
-
-		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenor (astrMaturityTenor[i]);
-
-			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-				"6M",
-				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-				null,
-				adblCoupon[i],
-				0.,
-				strCurrency
-			);
-
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aIRS[i] = OTCIRS (
+				dtSpot,
+				strCurrency,
 				astrMaturityTenor[i],
-				null
+				adblCoupon[i]
 			);
 
-			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			);
-
-			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsFloatingStreamEdgeDate,
-					cpsFloating,
-					cfusFloating
-				)
-			);
-
-			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeUnit (
-					lsFixedStreamEdgeDate,
-					cpsFixed,
-					ucasFixed,
-					cfusFixed
-				)
-			);
-
-			FixFloatComponent irs = new FixFloatComponent (
-				fixedStream,
-				floatingStream,
-				csp
-			);
-
-			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
-
-			aCalibComp[i] = irs;
-		}
-
-		return aCalibComp;
+		return aIRS;
 	}
 
 	/*
@@ -294,9 +219,11 @@ public class IRSVolAnalysis {
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
-			adblSwapQuote,
-			strCurrency
+			strCurrency,
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			},
+			adblSwapQuote
 		);
 
 		/*
@@ -433,11 +360,20 @@ public class IRSVolAnalysis {
 		 * Construct the 6M-xM float-float basis swap.
 		 */
 
-		FloatFloatComponent[] aFFC = MakexM6MBasisSwap (dtSpot, strCurrency, astrxM6MFwdTenor, iTenorInMonths);
+		FloatFloatComponent[] aFFC = MakexM6MBasisSwap (
+			dtSpot,
+			strCurrency,
+			astrxM6MFwdTenor,
+			iTenorInMonths
+		);
 
 		String strBasisTenor = iTenorInMonths + "M";
 
-		ValuationParams valParams = new ValuationParams (dtSpot, dtSpot, strCurrency);
+		ValuationParams valParams = new ValuationParams (
+			dtSpot,
+			dtSpot,
+			strCurrency
+		);
 
 		/*
 		 * Calculate the starting forward rate off of the discount curve.
@@ -449,7 +385,15 @@ public class IRSVolAnalysis {
 		 * Set the discount curve based component market parameters.
 		 */
 
-		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
+			dc,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
 
 		/*
 		 * Construct the shape preserving forward curve off of Quartic Polynomial Basis Spline.
@@ -581,7 +525,7 @@ public class IRSVolAnalysis {
 		return mapFC;
 	}
 
-	private static final FixFloatComponent CreateIRS (
+	private static final FixFloatComponent CreateSTIR (
 		final JulianDate dtEffective,
 		final String strMaturityTenor,
 		final ForwardLabel fri,
@@ -606,7 +550,7 @@ public class IRSVolAnalysis {
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
 			fri.tenor(),
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
 			fri,
 			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
@@ -694,12 +638,11 @@ public class IRSVolAnalysis {
 		return irs;
 	}
 
-	private static final double RunWithVolCorrSurface (
-		final FixFloatComponent irs,
+	private static final void RunWithVolCorrSurface (
+		final FixFloatComponent stir,
 		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
 		final ForwardLabel fri,
-		final double dblBaselineSwapRate,
 		final double dblForwardVol,
 		final double dblFundingVol,
 		final double dblForwardFundingCorr)
@@ -713,18 +656,10 @@ public class IRSVolAnalysis {
 
 		mktParams.setForwardFundingCorrSurface (fri, fundingLabel, new FlatUnivariate (dblForwardFundingCorr));
 
-		Map<String, Double> mapIRSOutput = irs.value (valParams, null, mktParams, null);
+		Map<String, Double> mapSTIROutput = stir.value (valParams, null, mktParams, null);
 
-		double dblSwapRate = mapIRSOutput.get ("SwapRate");
-
-		System.out.println ("\t[" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardFundingCorr, 2, 0, 100.) + "%] =" +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSwapRate, 1, 4, 100.) + "% | " +
-			org.drip.quant.common.FormatUtil.FormatDouble (dblSwapRate - dblBaselineSwapRate, 1, 0, 10000.));
-
-		return dblSwapRate;
+		for (Map.Entry<String, Double> me : mapSTIROutput.entrySet())
+			System.out.println ("\t" + me.getKey() + " => " + me.getValue());
 	}
 
 	public static final void main (
@@ -739,6 +674,9 @@ public class IRSVolAnalysis {
 
 		String strTenor = "3M";
 		String strCurrency = "EUR";
+		double dblForwardVolatility = 0.3;
+		double dblFundingVolatility = 0.1;
+		double dblForwardFundingCorr = 0.2;
 
 		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 
@@ -752,52 +690,27 @@ public class IRSVolAnalysis {
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
-		FixFloatComponent irs = CreateIRS (dtToday.addTenor (strTenor), "5Y", fri, 0.05, strCurrency);
+		FixFloatComponent stir = CreateSTIR (
+			dtToday.addTenor (strTenor),
+			"5Y",
+			fri,
+			0.05,
+			strCurrency
+		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create
 			(dc, mapFC.get (strTenor), null, null, null, null, null, null);
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		double[] adblSigmaFwd = new double[] {0.1, 0.2, 0.3, 0.4, 0.5};
-		double[] adblSigmaFwd2DomX = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
-		double[] adblCorrFwdFwd2DomX = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
-
-		System.out.println ("\tPrinting the IRS Output in Order (Left -> Right):");
-
-		System.out.println ("\t\tParSwapRate (%)");
-
-		System.out.println ("\t\tDifference (bp)");
-
-		System.out.println ("\t-------------------------------------------------------------");
-
-		System.out.println ("\t-------------------------------------------------------------");
-
-		double dblBaselineSwapRate = RunWithVolCorrSurface (
-			irs,
+		RunWithVolCorrSurface (
+			stir,
 			valParams,
 			mktParams,
 			fri,
-			0.,
-			0.,
-			0.,
-			0.
+			dblForwardVolatility,
+			dblFundingVolatility,
+			dblForwardFundingCorr
 		);
-
-		for (double dblSigmaFwd : adblSigmaFwd) {
-			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
-				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX)
-					RunWithVolCorrSurface (
-						irs,
-						valParams,
-						mktParams,
-						fri,
-						dblBaselineSwapRate,
-						dblSigmaFwd,
-						dblSigmaFwd2DomX,
-						dblCorrFwdFwd2DomX
-					);
-			}
-		}
 	}
 }

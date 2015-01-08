@@ -1,14 +1,10 @@
 
 package org.drip.sample.option;
 
-import java.util.List;
-
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.analytics.support.*;
+import org.drip.market.product.*;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
-import org.drip.param.period.*;
 import org.drip.param.pricer.HestonOptionPricerParams;
 import org.drip.param.valuation.*;
 import org.drip.pricer.option.*;
@@ -58,6 +54,28 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class ForwardOptionPricing {
 
+	private static final FixFloatComponent OTCIRS (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strMaturityTenor,
+		final double dblCoupon)
+	{
+		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+			strCurrency,
+			"ALL",
+			strMaturityTenor,
+			"MAIN"
+		);
+
+		return ffConv.createFixFloatComponent (
+			dtSpot,
+			strMaturityTenor,
+			dblCoupon,
+			0.,
+			1.
+		);
+	}
+
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
@@ -99,109 +117,20 @@ public class ForwardOptionPricing {
 	 */
 
 	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
-		final JulianDate dtEffective,
+		final JulianDate dtSpot,
+		final String strCurrency,
 		final String[] astrMaturityTenor,
-		final double[] adblSwapQuote,
-		final String strCurrency)
+		final double[] adblCoupon)
 		throws Exception
 	{
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
-		);
-
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, "6M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CashSettleParams csp = new CashSettleParams (
-			0,
-			strCurrency,
-			0
-		);
-
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-				"6M",
-				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-				null,
-				adblSwapQuote[i],
-				0.,
-				strCurrency
-			);
-
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
+			FixFloatComponent irs = OTCIRS (
+				dtSpot,
+				strCurrency,
 				astrMaturityTenor[i],
-				null
-			);
-
-			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			);
-
-			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsFloatingStreamEdgeDate,
-					cpsFloating,
-					cfusFloating
-				)
-			);
-
-			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeUnit (
-					lsFixedStreamEdgeDate,
-					cpsFixed,
-					ucasFixed,
-					cfusFixed
-				)
-			);
-
-			FixFloatComponent irs = new FixFloatComponent (
-				fixedStream,
-				floatingStream,
-				csp
+				adblCoupon[i]
 			);
 
 			irs.setPrimaryCode ("IRS." + astrMaturityTenor[i] + "." + strCurrency);
@@ -287,9 +216,11 @@ public class ForwardOptionPricing {
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
-			new java.lang.String[] {"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"},
-			adblSwapQuote,
-			strCurrency
+			strCurrency,
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			},
+			adblSwapQuote
 		);
 
 		/*

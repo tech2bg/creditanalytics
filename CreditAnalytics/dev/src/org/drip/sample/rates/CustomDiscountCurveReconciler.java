@@ -1,13 +1,11 @@
 
 package org.drip.sample.rates;
 
-import java.util.List;
-
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.product.*;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -84,6 +82,28 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 public class CustomDiscountCurveReconciler {
+
+	private static final FixFloatComponent OTCIRS (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strMaturityTenor,
+		final double dblCoupon)
+	{
+		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+			strCurrency,
+			"ALL",
+			strMaturityTenor,
+			"MAIN"
+		);
+
+		return ffConv.createFixFloatComponent (
+			dtSpot,
+			strMaturityTenor,
+			dblCoupon,
+			0.,
+			1.
+		);
+	}
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -230,114 +250,20 @@ public class CustomDiscountCurveReconciler {
 	 */
 
 	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
-		final JulianDate dtEffective,
+		final JulianDate dtSpot,
 		final String strCurrency,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
-		);
-
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, "6M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			0.,
-			0.,
-			strCurrency
-		);
-
-		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CashSettleParams csp = new CashSettleParams (
-			0,
-			strCurrency,
-			0
-		);
-
-		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aIRS[i] = OTCIRS (
+				dtSpot,
+				strCurrency,
 				astrMaturityTenor[i],
-				null
+				0.
 			);
-
-			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			);
-
-			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsFloatingStreamEdgeDate,
-					cpsFloating,
-					cfusFloating
-				)
-			);
-
-			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeUnit (
-					lsFixedStreamEdgeDate,
-					cpsFixed,
-					ucasFixed,
-					cfusFixed
-				)
-			);
-
-			FixFloatComponent irs = new FixFloatComponent (
-				fixedStream,
-				floatingStream,
-				csp
-			);
-
-			irs.setPrimaryCode ("IRS." + astrMaturityTenor[i] + "." + strCurrency);
-
-			aIRS[i] = irs;
-		}
 
 		return aIRS;
 	}

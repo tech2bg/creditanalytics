@@ -384,7 +384,8 @@ public abstract class CompositePeriod {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || !contains (dblDate))
-			throw new java.lang.Exception ("CompositePeriod::notional => Invalid Inputs");
+			throw new java.lang.Exception ("CompositePeriod::notional => Invalid Inputs: " + dblDate + " [" +
+				startDate() + " => " + endDate() + "]");
 
 		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.factor (dblDate));
 	}
@@ -1085,15 +1086,17 @@ public abstract class CompositePeriod {
 
 			dblDF = df (csqs);
 
+			double dblEndDate = endDate();
+
 			dblSurvival = survival (csqs);
 
 			dblBasis = cpqs.containsBasis() ? cpqs.basis() : 0.;
 
 			dblBaseRate = cpqs.containsBaseRate() ? cpqs.baseRate() : 0.;
 
-			dblNotional = notional (_dblPayDate) * couponFactor (_dblPayDate);
+			dblNotional = notional (dblEndDate) * couponFactor (dblEndDate);
 
-			dblAccrued = dblNotional * dblFX * accrualDCF (dblValueDate) * (dblBaseRate + cpqs.basis());
+			dblAccrued = dblNotional * dblFX * accrualDCF (dblValueDate) * (dblBaseRate + dblBasis);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 

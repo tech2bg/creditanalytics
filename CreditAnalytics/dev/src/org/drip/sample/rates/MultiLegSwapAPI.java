@@ -5,13 +5,11 @@ package org.drip.sample.rates;
  * Credit Analytics Imports
  */
 
-import java.util.List;
-
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.analytics.daycount.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
+import org.drip.market.product.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -59,6 +57,28 @@ import org.drip.state.identifier.*;
  */
 
 public class MultiLegSwapAPI {
+
+	private static final FixFloatComponent OTCIRS (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strMaturityTenor,
+		final double dblCoupon)
+	{
+		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+			strCurrency,
+			"ALL",
+			strMaturityTenor,
+			"MAIN"
+		);
+
+		return ffConv.createFixFloatComponent (
+			dtSpot,
+			strMaturityTenor,
+			dblCoupon,
+			0.,
+			1.
+		);
+	}
 
 	/*
 	 * Sample demonstrating building of rates curve from deposit/future/swaps
@@ -137,99 +157,16 @@ public class MultiLegSwapAPI {
 
 		// IRS Calibration
 
-		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
-		);
-
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, "6M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			0.,
-			0.,
-			strCurrency
-		);
-
-		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
 		for (int i = 0; i < astrIRSTenor.length; ++i) {
 			astrCalibMeasure[i + astrDepositTenor.length] = "Rate";
 			adblRate[i + astrDepositTenor.length] = java.lang.Double.NaN;
 			adblCompCalibValue[i + astrDepositTenor.length] = adblIRSRate[i] + dblBump;
 
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+			FixFloatComponent irs = OTCIRS (
 				dtStart,
-				"6M",
+				strCurrency,
 				astrIRSTenor[i],
-				null
-			);
-
-			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtStart,
-				"6M",
-				astrIRSTenor[i],
-				null
-			);
-
-			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsFloatingStreamEdgeDate,
-					cpsFloating,
-					cfusFloating
-				)
-			);
-
-			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeUnit (
-					lsFixedStreamEdgeDate,
-					cpsFixed,
-					ucasFixed,
-					cfusFixed
-				)
-			);
-
-			FixFloatComponent irs = new FixFloatComponent (
-				fixedStream,
-				floatingStream,
-				csp
+				adblIRSRate[i] + dblBump
 			);
 
 			irs.setPrimaryCode ("IRS." + astrIRSTenor[i] + "." + strCurrency);

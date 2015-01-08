@@ -7,13 +7,15 @@ import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.product.FixFloatContainer;
+import org.drip.market.product.FixFloatConvention;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
-import org.drip.product.fra.FRAStandardCapFloor;
+import org.drip.product.fra.*;
 import org.drip.product.option.LastTradingDateSetting;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.FlatUnivariate;
@@ -50,13 +52,35 @@ import org.drip.state.identifier.*;
  */
 
 /**
- * FRAStdCapFloorVolAnalysis contains an analysis if the correlation and volatility impact on a Cap/Floor of
- * 	the standard FRA.
+ * FRAStdOptionAnalysis contains the demonstration of the custom volatility-correlation analysis of Option
+ * 	on a Standard Multi-Curve FRA.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class FRAStdCapFloorVolAnalysis {
+public class FRAStdOptionAnalysis {
+
+	private static final FixFloatComponent OTCIRS (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strMaturityTenor,
+		final double dblCoupon)
+	{
+		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+			strCurrency,
+			"ALL",
+			strMaturityTenor,
+			"MAIN"
+		);
+
+		return ffConv.createFixFloatComponent (
+			dtSpot,
+			strMaturityTenor,
+			dblCoupon,
+			0.,
+			1.
+		);
+	}
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -98,120 +122,24 @@ public class FRAStdCapFloorVolAnalysis {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] SwapInstrumentsFromMaturityTenor (
-		final JulianDate dtEffective,
+	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
+		final JulianDate dtSpot,
+		final String strCurrency,
 		final String[] astrMaturityTenor,
-		final double[] adblCoupon,
-		final String strCurrency)
+		final double[] adblCoupon)
 		throws Exception
 	{
-		CalibratableFixedIncomeComponent[] aCalibComp = new CalibratableFixedIncomeComponent[astrMaturityTenor.length];
+		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
-		);
-
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, "6M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CashSettleParams csp = new CashSettleParams (
-			0,
-			strCurrency,
-			0
-		);
-
-		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			JulianDate dtMaturity = dtEffective.addTenor (astrMaturityTenor[i]);
-
-			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-				"6M",
-				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-				null,
-				adblCoupon[i],
-				0.,
-				strCurrency
-			);
-
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aIRS[i] = OTCIRS (
+				dtSpot,
+				strCurrency,
 				astrMaturityTenor[i],
-				null
+				adblCoupon[i]
 			);
 
-			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			);
-
-			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsFloatingStreamEdgeDate,
-					cpsFloating,
-					cfusFloating
-				)
-			);
-
-			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeUnit (
-					lsFixedStreamEdgeDate,
-					cpsFixed,
-					ucasFixed,
-					cfusFixed
-				)
-			);
-
-			FixFloatComponent irs = new FixFloatComponent (
-				fixedStream,
-				floatingStream,
-				csp
-			);
-
-			irs.setPrimaryCode ("IRS." + dtMaturity.toString() + "." + strCurrency);
-
-			aCalibComp[i] = irs;
-		}
-
-		return aCalibComp;
+		return aIRS;
 	}
 
 	/*
@@ -298,11 +226,11 @@ public class FRAStdCapFloorVolAnalysis {
 
 		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
+			strCurrency,
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
 			},
-			adblSwapQuote,
-			strCurrency
+			adblSwapQuote
 		);
 
 		/*
@@ -346,6 +274,15 @@ public class FRAStdCapFloorVolAnalysis {
 			0.
 		);
 
+		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
+			iTenorInMonths + "M",
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			ForwardLabel.Create (strCurrency, iTenorInMonths + "M"),
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			0.
+		);
+
 		CompositePeriodSetting cpsReference = new CompositePeriodSetting (
 			2,
 			"6M",
@@ -356,15 +293,6 @@ public class FRAStdCapFloorVolAnalysis {
 			null,
 			null,
 			null
-		);
-
-		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
-			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, iTenorInMonths + "M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
 		);
 
 		CompositePeriodSetting cpsDerived = new CompositePeriodSetting (
@@ -415,10 +343,6 @@ public class FRAStdCapFloorVolAnalysis {
 					cfusDerived
 				)
 			);
-
-			/*
-			 * The float-float swap instance
-			 */
 
 			aFFC[i] = new FloatFloatComponent (
 				referenceStream,
@@ -510,7 +434,9 @@ public class FRAStdCapFloorVolAnalysis {
 			strCurrency,
 			dc,
 			1,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
+			new String[] {
+				"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+			},
 			new double[] {
 				0.00551,    //  1Y
 				0.00387,    //  2Y
@@ -528,8 +454,8 @@ public class FRAStdCapFloorVolAnalysis {
 				0.00079,    // 20Y
 				0.00069,    // 25Y
 				0.00062     // 30Y
-				}
-			);
+			}
+		);
 
 		mapFC.put ("1M", fc1M);
 
@@ -542,7 +468,9 @@ public class FRAStdCapFloorVolAnalysis {
 			strCurrency,
 			dc,
 			3,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"},
+			new String[] {
+				"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+			},
 			new double[] {
 				0.00186,    //  1Y
 				0.00127,    //  2Y
@@ -560,8 +488,8 @@ public class FRAStdCapFloorVolAnalysis {
 				0.00022,    // 20Y
 				0.00020,    // 25Y
 				0.00018     // 30Y
-				}
-			);
+			}
+		);
 
 		mapFC.put ("3M", fc3M);
 
@@ -574,8 +502,9 @@ public class FRAStdCapFloorVolAnalysis {
 			strCurrency,
 			dc,
 			12,
-			new String[] {"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y",
-				"35Y", "40Y"}, // Extrapolated
+			new String[] {
+				"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "35Y", "40Y"
+			},
 			new double[] {
 				-0.00212,    //  1Y
 				-0.00152,    //  2Y
@@ -595,22 +524,25 @@ public class FRAStdCapFloorVolAnalysis {
 				-0.00022,    // 30Y
 				-0.00022,    // 35Y Extrapolated
 				-0.00022,    // 40Y Extrapolated
-				}
-			);
+			}
+		);
 
 		mapFC.put ("12M", fc12M);
 
 		return mapFC;
 	}
 
-	private static final void SetVolCorrSurface (
+	private static final void VolCorrScenario (
+		final FRAStandardComponent fra,
+		final ValuationParams valParams,
 		final CurveSurfaceQuoteSet mktParams,
-		final ForwardLabel fri,
 		final double dblForwardVol,
 		final double dblFundingVol,
 		final double dblForwardFundingCorr)
 		throws Exception
 	{
+		ForwardLabel fri = fra.forwardLabel().get ("DERIVED");
+
 		FundingLabel fundingLabel = FundingLabel.Standard (fri.currency());
 
 		mktParams.setForwardCurveVolSurface (
@@ -628,6 +560,63 @@ public class FRAStdCapFloorVolAnalysis {
 			fundingLabel,
 			new FlatUnivariate (dblForwardFundingCorr)
 		);
+
+		double dblStrike = 0.0189;
+		String strManifestMeasure = "QuantoAdjustedParForward";
+
+		String strCurrency = fra.payCurrency();
+
+		FRAStandardCapFloorlet fraCaplet = new FRAStandardCapFloorlet (
+			fra,
+			strManifestMeasure,
+			true,
+			dblStrike,
+			1.,
+			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
+			strCurrency,
+			strCurrency
+		);
+
+		FRAStandardCapFloorlet fraFloorlet = new FRAStandardCapFloorlet (
+			fra,
+			strManifestMeasure,
+			false,
+			dblStrike,
+			1.,
+			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
+			strCurrency,
+			strCurrency
+		);
+
+		Map<String, Double> mapFRACapletOutput = fraCaplet.value (valParams, null, mktParams, null);
+
+		Map<String, Double> mapFRAFloorletOutput = fraFloorlet.value (valParams, null, mktParams, null);
+
+		double dblATMFRA = mapFRACapletOutput.get ("ATMFRA");
+
+		double dblManifestMeasureIntrinsic = mapFRACapletOutput.get ("ManifestMeasureIntrinsic");
+
+		double dblManifestMeasureIntrinsicValue = mapFRACapletOutput.get ("ManifestMeasureIntrinsicValue");
+
+		double dblForwardATMCapletPrice = mapFRACapletOutput.get ("ForwardATMIntrinsic");
+
+		double dblSpotCapletPrice = mapFRACapletOutput.get ("SpotPrice");
+
+		double dblForwardATMFloorletPrice = mapFRAFloorletOutput.get ("ForwardATMIntrinsic");
+
+		double dblSpotFloorletPrice = mapFRAFloorletOutput.get ("SpotPrice");
+
+		System.out.println ("\t[" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblFundingVol, 2, 0, 100.) + "%," +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardFundingCorr, 2, 0, 100.) + "%] =" +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblATMFRA, 1, 4, 100.) + "% | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblManifestMeasureIntrinsic, 1, 1, 10000.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblManifestMeasureIntrinsicValue, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMCapletPrice, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotCapletPrice, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblForwardATMFloorletPrice, 1, 4, 1.) + " | " +
+			org.drip.quant.common.FormatUtil.FormatDouble (dblSpotFloorletPrice, 1, 4, 1.));
 	}
 
 	public static final void main (
@@ -640,10 +629,8 @@ public class FRAStdCapFloorVolAnalysis {
 
 		CreditAnalytics.Init ("");
 
-		double dblStrike = 0.02;
 		String strTenor = "3M";
 		String strCurrency = "EUR";
-		String strManifestMeasure = "QuantoAdjustedParForward";
 
 		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 
@@ -657,66 +644,12 @@ public class FRAStdCapFloorVolAnalysis {
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 
-		JulianDate dtEffective = dtToday.addTenor (strTenor);
+		JulianDate dtForwardStart = dtToday.addTenor (strTenor);
 
-		ComposableFloatingUnitSetting cfus = new ComposableFloatingUnitSetting (
-			strTenor,
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
-			null,
+		FRAStandardComponent fra = SingleStreamComponentBuilder.FRAStandard (
+			dtForwardStart,
 			fri,
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		CompositePeriodSetting cps = new CompositePeriodSetting (
-			4,
-			strTenor,
-			strCurrency,
-			null,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CashSettleParams csp = new CashSettleParams (
-			0,
-			strCurrency,
-			0
-		);
-
-		Stream floatStream = new Stream (
-			CompositePeriodBuilder.FloatingCompositeUnit (
-				CompositePeriodBuilder.EdgePair (
-					dtEffective,
-					dtEffective.addTenorAndAdjust (strTenor, strCurrency)
-				),
-				cps,
-				cfus
-			)
-		);
-
-		FRAStandardCapFloor fraCap = new FRAStandardCapFloor (
-			new SingleStreamComponent ("FRA_CAP", floatStream, csp),
-			strManifestMeasure,
-			true,
-			dblStrike,
-			1.,
-			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
-			"Act/360",
-			strCurrency
-		);
-
-		FRAStandardCapFloor fraFloor = new FRAStandardCapFloor (
-			new SingleStreamComponent ("FRA_FLOOR", floatStream, csp),
-			strManifestMeasure,
-			false,
-			dblStrike,
-			1.,
-			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
-			"Act/360",
-			strCurrency
+			0.006
 		);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, mapFC.get (strTenor), null, null, null, null, null, null);
@@ -727,11 +660,21 @@ public class FRAStdCapFloorVolAnalysis {
 		double[] adblSigmaFwd2DomX = new double[] {0.10, 0.15, 0.20, 0.25, 0.30};
 		double[] adblCorrFwdFwd2DomX = new double[] {-0.99, -0.50, 0.00, 0.50, 0.99};
 
-		System.out.println ("\tPrinting the Cap/Floor Output in Order (Left -> Right):");
+		System.out.println ("\tPrinting the IRS Output in Order (Left -> Right):");
 
-		System.out.println ("\t\tCap Price");
+		System.out.println ("\t\tFRA ATM (%)");
 
-		System.out.println ("\t\tFloor Price");
+		System.out.println ("\t\tManifest Measure Instrinsic (bp)");
+
+		System.out.println ("\t\tManifest Measure Instrinsic Value");
+
+		System.out.println ("\t\tForward Caplet ATM Price");
+
+		System.out.println ("\t\tSpot Caplet Price");
+
+		System.out.println ("\t\tForward Floorlet ATM Price");
+
+		System.out.println ("\t\tSpot Floorlet Price");
 
 		System.out.println ("\t-------------------------------------------------------------");
 
@@ -739,26 +682,15 @@ public class FRAStdCapFloorVolAnalysis {
 
 		for (double dblSigmaFwd : adblSigmaFwd) {
 			for (double dblSigmaFwd2DomX : adblSigmaFwd2DomX) {
-				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX) {
-					SetVolCorrSurface (
+				for (double dblCorrFwdFwd2DomX : adblCorrFwdFwd2DomX)
+					VolCorrScenario (
+						fra,
+						valParams,
 						mktParams,
-						fri,
 						dblSigmaFwd,
 						dblSigmaFwd2DomX,
 						dblCorrFwdFwd2DomX
 					);
-
-					Map<String, Double> mapFRACapOutput = fraCap.value (valParams, null, mktParams, null);
-
-					Map<String, Double> mapFRAFloorOutput = fraFloor.value (valParams, null, mktParams, null);
-
-					System.out.println ("\t[" +
-						org.drip.quant.common.FormatUtil.FormatDouble (dblSigmaFwd, 2, 0, 100.) + "%," +
-						org.drip.quant.common.FormatUtil.FormatDouble (dblSigmaFwd2DomX, 2, 0, 100.) + "%," +
-						org.drip.quant.common.FormatUtil.FormatDouble (dblCorrFwdFwd2DomX, 2, 0, 100.) + "%] =" +
-						org.drip.quant.common.FormatUtil.FormatDouble (mapFRACapOutput.get ("Price"), 1, 4, 1.) + " | " +
-						org.drip.quant.common.FormatUtil.FormatDouble (mapFRAFloorOutput.get ("Price"), 1, 4, 1.));
-				}
 			}
 		}
 	}

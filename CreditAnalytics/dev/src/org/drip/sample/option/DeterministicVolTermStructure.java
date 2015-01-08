@@ -52,8 +52,6 @@ public class DeterministicVolTermStructure {
 		final double[] dblNodeInput)
 		throws Exception
 	{
-		System.out.println ("\n\t" + vts.label());
-
 		System.out.println ("\n\t|------------------------------------|");
 
 		System.out.println ("\t| TNR =>   CALC  |   IMPL  |  INPUT  |");
