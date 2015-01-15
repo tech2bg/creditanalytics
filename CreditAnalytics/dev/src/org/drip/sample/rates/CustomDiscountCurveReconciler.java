@@ -5,7 +5,7 @@ import org.drip.analytics.date.*;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.product.*;
+import org.drip.market.otc.*;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -89,7 +89,7 @@ public class CustomDiscountCurveReconciler {
 		final String strMaturityTenor,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
 			strCurrency,
 			"ALL",
 			strMaturityTenor,

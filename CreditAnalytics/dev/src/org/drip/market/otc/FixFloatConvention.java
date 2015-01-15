@@ -1,5 +1,5 @@
 
-package org.drip.market.product;
+package org.drip.market.otc;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -36,8 +36,8 @@ package org.drip.market.product;
 
 public class FixFloatConvention {
 	private int _iSpotLag = -1;
-	private org.drip.market.product.FixedStreamConvention _fixedConv = null;
-	private org.drip.market.product.FloatStreamConvention _floatConv = null;
+	private org.drip.market.otc.FixFloatFixedConvention _fixedConv = null;
+	private org.drip.market.otc.FixFloatFloatConvention _floatConv = null;
 
 	/**
 	 * FixFloatConvention Constructor
@@ -50,8 +50,8 @@ public class FixFloatConvention {
 	 */
 
 	public FixFloatConvention (
-		final org.drip.market.product.FixedStreamConvention fixedConv,
-		final org.drip.market.product.FloatStreamConvention floatConv,
+		final org.drip.market.otc.FixFloatFixedConvention fixedConv,
+		final org.drip.market.otc.FixFloatFloatConvention floatConv,
 		final int iSpotLag)
 		throws java.lang.Exception
 	{
@@ -66,7 +66,7 @@ public class FixFloatConvention {
 	 * @return The Fixed Stream Convention
 	 */
 
-	public org.drip.market.product.FixedStreamConvention fixedStreamConvention()
+	public org.drip.market.otc.FixFloatFixedConvention fixedStreamConvention()
 	{
 		return _fixedConv;
 	}
@@ -77,7 +77,7 @@ public class FixFloatConvention {
 	 * @return The Float Stream Convention
 	 */
 
-	public org.drip.market.product.FloatStreamConvention floatStreamConvention()
+	public org.drip.market.otc.FixFloatFloatConvention floatStreamConvention()
 	{
 		return _floatConv;
 	}

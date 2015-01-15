@@ -65,8 +65,8 @@ public class SingleStreamOptionBuilder {
 			return new org.drip.product.fra.FRAStandardCapFloorlet (
 				org.drip.product.creator.SingleStreamComponentBuilder.Futures (dtEffective, forwardLabel),
 					strManifestMeasure, bIsCaplet, dblStrike, 1., new
-						org.drip.product.option.LastTradingDateSetting
-							(org.drip.product.option.LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "",
+						org.drip.product.params.LastTradingDateSetting
+							(org.drip.product.params.LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "",
 								java.lang.Double.NaN), floaterIndex.dayCount(), floaterIndex.calendar());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -102,8 +102,8 @@ public class SingleStreamOptionBuilder {
 
 		org.drip.market.definition.FloaterIndex floaterIndex = forwardLabel.floaterIndex();
 
-		org.drip.market.product.FuturesOptions fo =
-			org.drip.market.product.FuturesOptionsContainer.ExchangeInfo
+		org.drip.market.exchange.FuturesOptions fo =
+			org.drip.market.exchange.FuturesOptionsContainer.ExchangeInfo
 				(forwardLabel.fullyQualifiedName(), strTradingMode);
 
 		if (null == fo) return null;

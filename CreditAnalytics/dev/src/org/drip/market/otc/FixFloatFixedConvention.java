@@ -1,5 +1,5 @@
 
-package org.drip.market.product;
+package org.drip.market.otc;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,12 +29,12 @@ package org.drip.market.product;
  */
 
 /**
- * FixedStreamConvention contains the details of the fixed stream of an OTC contact.
+ * FixFloatFixedConvention contains the details of the fixed stream of an OTC fixed-float contact.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class FixedStreamConvention {
+public class FixFloatFixedConvention {
 	private int _iAccrualCompoundingRule = -1;
 	private java.lang.String _strCalendar = "";
 	private java.lang.String _strCurrency = "";
@@ -43,7 +43,7 @@ public class FixedStreamConvention {
 	private java.lang.String _strCompositePeriodTenor = "";
 
 	/**
-	 * FixedStreamConvention constructor
+	 * FixFloatFixedConvention constructor
 	 * 
 	 * @param strCurrency Currency
 	 * @param strDayCount Day Count
@@ -55,7 +55,7 @@ public class FixedStreamConvention {
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public FixedStreamConvention (
+	public FixFloatFixedConvention (
 		final java.lang.String strCurrency,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar,
@@ -71,7 +71,7 @@ public class FixedStreamConvention {
 						strCompositePeriodTenor) || _strCompositePeriodTenor.isEmpty() ||
 							!org.drip.analytics.support.CompositePeriodBuilder.ValidateCompoundingRule
 								(_iAccrualCompoundingRule = iAccrualCompoundingRule))
-			throw new java.lang.Exception ("FixedStreamConvention ctr => Invalid Inputs!");
+			throw new java.lang.Exception ("FixFloatFixedConvention ctr => Invalid Inputs!");
 	}
 
 	/**

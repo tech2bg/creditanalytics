@@ -725,8 +725,8 @@ public class FedFundOvernightCompounding {
 			null,
 			ForwardLabel.Create (
 				new OvernightIndex (
-					strCurrency + "OIS",
-					"OIS",
+					strCurrency + "FedFund",
+					"FedFund",
 					strCurrency,
 					"Act/360",
 					strCurrency,

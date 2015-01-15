@@ -1,7 +1,7 @@
 
-package org.drip.sample.swaps;
+package org.drip.sample.fixfloat;
 
-import org.drip.market.product.FixFloatContainer;
+import org.drip.market.otc.FixFloatConventionContainer;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -38,16 +38,15 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 public class OTCFixFloatDefinitions {
-
 	private static final void DisplayIRSOTCInfo (
 		String strCurrency,
 		String strLocation,
 		String strMaturityTenor,
 		String strIndex)
 	{
-		System.out.println ("\t" +
-			strCurrency + "-" + strLocation + "-" + strMaturityTenor + "-" + strIndex + " => " +
-			FixFloatContainer.ConventionFromJurisdiction (
+		System.out.println (
+			"\t" + strCurrency + "-" + strLocation + "-" + strMaturityTenor + "-" + strIndex + " => " +
+			FixFloatConventionContainer.ConventionFromJurisdiction (
 				strCurrency,
 				strLocation,
 				strMaturityTenor,

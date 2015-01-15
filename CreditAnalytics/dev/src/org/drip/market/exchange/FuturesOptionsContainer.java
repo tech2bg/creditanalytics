@@ -1,5 +1,5 @@
 
-package org.drip.market.product;
+package org.drip.market.exchange;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -36,9 +36,9 @@ package org.drip.market.product;
  */
 
 public class FuturesOptionsContainer {
-	private static final java.util.Map<java.lang.String, org.drip.market.product.FuturesOptions>
+	private static final java.util.Map<java.lang.String, org.drip.market.exchange.FuturesOptions>
 		_mapFuturesOptions = new
-			java.util.TreeMap<java.lang.String, org.drip.market.product.FuturesOptions>();
+			java.util.TreeMap<java.lang.String, org.drip.market.exchange.FuturesOptions>();
 
 	/**
 	 * Initialize the Overnight Index Container with the Overnight Indexes
@@ -49,96 +49,96 @@ public class FuturesOptionsContainer {
 	public static final boolean Init()
 	{
 		try {
-			org.drip.product.option.LastTradingDateSetting ltdsMidCurveQuarterly = new
-				org.drip.product.option.LastTradingDateSetting
-					(org.drip.product.option.LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "",
+			org.drip.product.params.LastTradingDateSetting ltdsMidCurveQuarterly = new
+				org.drip.product.params.LastTradingDateSetting
+					(org.drip.product.params.LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "",
 						java.lang.Double.NaN);
 
-			org.drip.product.option.LastTradingDateSetting ltdsMidCurve1M = new
-				org.drip.product.option.LastTradingDateSetting
-					(org.drip.product.option.LastTradingDateSetting.MID_CURVE_OPTION, "1M",
+			org.drip.product.params.LastTradingDateSetting ltdsMidCurve1M = new
+				org.drip.product.params.LastTradingDateSetting
+					(org.drip.product.params.LastTradingDateSetting.MID_CURVE_OPTION, "1M",
 						java.lang.Double.NaN);
 
-			org.drip.product.option.LastTradingDateSetting ltdsMidCurve2M = new
-				org.drip.product.option.LastTradingDateSetting
-					(org.drip.product.option.LastTradingDateSetting.MID_CURVE_OPTION, "2M",
+			org.drip.product.params.LastTradingDateSetting ltdsMidCurve2M = new
+				org.drip.product.params.LastTradingDateSetting
+					(org.drip.product.params.LastTradingDateSetting.MID_CURVE_OPTION, "2M",
 						java.lang.Double.NaN);
 
-			org.drip.product.option.LastTradingDateSetting ltdsMidCurve1Y = new
-				org.drip.product.option.LastTradingDateSetting
-					(org.drip.product.option.LastTradingDateSetting.MID_CURVE_OPTION, "1Y",
+			org.drip.product.params.LastTradingDateSetting ltdsMidCurve1Y = new
+				org.drip.product.params.LastTradingDateSetting
+					(org.drip.product.params.LastTradingDateSetting.MID_CURVE_OPTION, "1Y",
 						java.lang.Double.NaN);
 
-			org.drip.product.option.LastTradingDateSetting ltdsMidCurve2Y = new
-				org.drip.product.option.LastTradingDateSetting
-					(org.drip.product.option.LastTradingDateSetting.MID_CURVE_OPTION, "2Y",
+			org.drip.product.params.LastTradingDateSetting ltdsMidCurve2Y = new
+				org.drip.product.params.LastTradingDateSetting
+					(org.drip.product.params.LastTradingDateSetting.MID_CURVE_OPTION, "2Y",
 						java.lang.Double.NaN);
 
-			org.drip.product.option.LastTradingDateSetting[] s_aLTDSMidCurveAll = new
-				org.drip.product.option.LastTradingDateSetting[] {ltdsMidCurveQuarterly, ltdsMidCurve1M,
+			org.drip.product.params.LastTradingDateSetting[] s_aLTDSMidCurveAll = new
+				org.drip.product.params.LastTradingDateSetting[] {ltdsMidCurveQuarterly, ltdsMidCurve1M,
 					ltdsMidCurve2M, ltdsMidCurve1Y, ltdsMidCurve2Y, new
-						org.drip.product.option.LastTradingDateSetting
-							(org.drip.product.option.LastTradingDateSetting.MID_CURVE_OPTION, "4Y",
+						org.drip.product.params.LastTradingDateSetting
+							(org.drip.product.params.LastTradingDateSetting.MID_CURVE_OPTION, "4Y",
 								java.lang.Double.NaN)};
 
-			org.drip.market.product.FuturesOptions foCHFLIBOR3M_MARGIN = new
-				org.drip.market.product.FuturesOptions ("CHF-LIBOR-3M", "MARGIN");
+			org.drip.market.exchange.FuturesOptions foCHFLIBOR3M_MARGIN = new
+				org.drip.market.exchange.FuturesOptions ("CHF-LIBOR-3M", "MARGIN");
 
-			foCHFLIBOR3M_MARGIN.setLDTS ("LIFFE", new org.drip.product.option.LastTradingDateSetting[]
+			foCHFLIBOR3M_MARGIN.setLDTS ("LIFFE", new org.drip.product.params.LastTradingDateSetting[]
 				{ltdsMidCurveQuarterly});
 
 			_mapFuturesOptions.put ("CHF-LIBOR-3M|MARGIN", foCHFLIBOR3M_MARGIN);
 
-			org.drip.market.product.FuturesOptions foGBPLIBOR3M_MARGIN = new
-				org.drip.market.product.FuturesOptions ("GBP-LIBOR-3M", "MARGIN");
+			org.drip.market.exchange.FuturesOptions foGBPLIBOR3M_MARGIN = new
+				org.drip.market.exchange.FuturesOptions ("GBP-LIBOR-3M", "MARGIN");
 
-			foGBPLIBOR3M_MARGIN.setLDTS ("LIFFE", new org.drip.product.option.LastTradingDateSetting[]
+			foGBPLIBOR3M_MARGIN.setLDTS ("LIFFE", new org.drip.product.params.LastTradingDateSetting[]
 				{ltdsMidCurveQuarterly, ltdsMidCurve1M, ltdsMidCurve2M, ltdsMidCurve2Y});
 
 			_mapFuturesOptions.put ("GBP-LIBOR-3M|MARGIN", foGBPLIBOR3M_MARGIN);
 
-			org.drip.market.product.FuturesOptions foEUREURIBOR3M_MARGIN = new
-				org.drip.market.product.FuturesOptions ("EUR-EURIBOR-3M", "MARGIN");
+			org.drip.market.exchange.FuturesOptions foEUREURIBOR3M_MARGIN = new
+				org.drip.market.exchange.FuturesOptions ("EUR-EURIBOR-3M", "MARGIN");
 
-			foEUREURIBOR3M_MARGIN.setLDTS ("EUREX", new org.drip.product.option.LastTradingDateSetting[]
+			foEUREURIBOR3M_MARGIN.setLDTS ("EUREX", new org.drip.product.params.LastTradingDateSetting[]
 				{ltdsMidCurveQuarterly, ltdsMidCurve1Y});
 
-			foEUREURIBOR3M_MARGIN.setLDTS ("LIFFE", new org.drip.product.option.LastTradingDateSetting[]
+			foEUREURIBOR3M_MARGIN.setLDTS ("LIFFE", new org.drip.product.params.LastTradingDateSetting[]
 				{ltdsMidCurveQuarterly, ltdsMidCurve1M, ltdsMidCurve2M, ltdsMidCurve2Y});
 
 			_mapFuturesOptions.put ("EUR-EURIBOR-3M|MARGIN", foEUREURIBOR3M_MARGIN);
 
-			org.drip.market.product.FuturesOptions foJPYLIBOR3M_PREMIUM = new
-				org.drip.market.product.FuturesOptions ("JPY-LIBOR-3M", "PREMIUM");
+			org.drip.market.exchange.FuturesOptions foJPYLIBOR3M_PREMIUM = new
+				org.drip.market.exchange.FuturesOptions ("JPY-LIBOR-3M", "PREMIUM");
 
 			foJPYLIBOR3M_PREMIUM.setLDTS ("SGX", s_aLTDSMidCurveAll);
 
 			_mapFuturesOptions.put ("JPY-LIBOR-3M|PREMIUM", foJPYLIBOR3M_PREMIUM);
 
-			org.drip.market.product.FuturesOptions foJPYTIBOR3M_PREMIUM = new
-				org.drip.market.product.FuturesOptions ("JPY-TIBOR-3M", "PREMIUM");
+			org.drip.market.exchange.FuturesOptions foJPYTIBOR3M_PREMIUM = new
+				org.drip.market.exchange.FuturesOptions ("JPY-TIBOR-3M", "PREMIUM");
 
 			foJPYTIBOR3M_PREMIUM.setLDTS ("SGX", s_aLTDSMidCurveAll);
 
 			_mapFuturesOptions.put ("JPY-TIBOR-3M|PREMIUM", foJPYTIBOR3M_PREMIUM);
 
-			org.drip.market.product.FuturesOptions foUSDLIBOR1M_PREMIUM = new
-				org.drip.market.product.FuturesOptions ("USD-LIBOR-1M", "PREMIUM");
+			org.drip.market.exchange.FuturesOptions foUSDLIBOR1M_PREMIUM = new
+				org.drip.market.exchange.FuturesOptions ("USD-LIBOR-1M", "PREMIUM");
 
 			foUSDLIBOR1M_PREMIUM.setLDTS ("CME", s_aLTDSMidCurveAll);
 
 			_mapFuturesOptions.put ("USD-LIBOR-1M|PREMIUM", foUSDLIBOR1M_PREMIUM);
 
-			org.drip.market.product.FuturesOptions foUSDLIBOR3M_MARGIN = new
-				org.drip.market.product.FuturesOptions ("USD-LIBOR-3M", "MARGIN");
+			org.drip.market.exchange.FuturesOptions foUSDLIBOR3M_MARGIN = new
+				org.drip.market.exchange.FuturesOptions ("USD-LIBOR-3M", "MARGIN");
 
-			foUSDLIBOR3M_MARGIN.setLDTS ("LIFFE", new org.drip.product.option.LastTradingDateSetting[]
+			foUSDLIBOR3M_MARGIN.setLDTS ("LIFFE", new org.drip.product.params.LastTradingDateSetting[]
 				{ltdsMidCurveQuarterly, ltdsMidCurve1M, ltdsMidCurve2M});
 
 			_mapFuturesOptions.put ("USD-LIBOR-3M|MARGIN", foUSDLIBOR3M_MARGIN);
 
-			org.drip.market.product.FuturesOptions foUSDLIBOR3M_PREMIUM = new
-				org.drip.market.product.FuturesOptions ("USD-LIBOR-3M", "PREMIUM");
+			org.drip.market.exchange.FuturesOptions foUSDLIBOR3M_PREMIUM = new
+				org.drip.market.exchange.FuturesOptions ("USD-LIBOR-3M", "PREMIUM");
 
 			foUSDLIBOR3M_PREMIUM.setLDTS ("CME", s_aLTDSMidCurveAll);
 
@@ -163,7 +163,7 @@ public class FuturesOptionsContainer {
 	 * @return The FuturesOptions Exchange Info
 	 */
 
-	public static final org.drip.market.product.FuturesOptions ExchangeInfo (
+	public static final org.drip.market.exchange.FuturesOptions ExchangeInfo (
 		final java.lang.String strFullyQualifiedName,
 		final java.lang.String strTradingMode)
 	{

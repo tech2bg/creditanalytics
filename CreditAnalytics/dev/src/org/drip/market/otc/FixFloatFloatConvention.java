@@ -1,5 +1,5 @@
 
-package org.drip.market.product;
+package org.drip.market.otc;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,17 +29,17 @@ package org.drip.market.product;
  */
 
 /**
- * FloatStreamConvention contains the details of the Floating Stream of an OTC contact.
+ * FixFloatFloatConvention contains the details of the Floating Stream of an OTC fix-float contact.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class FloatStreamConvention {
+public class FixFloatFloatConvention {
 	private java.lang.String _strCompositePeriodTenor = "";
 	private org.drip.state.identifier.ForwardLabel _forwardLabel = null;
 
 	/**
-	 * FloatStreamConvention Constructor
+	 * FixFloatFloatConvention Constructor
 	 * 
 	 * @param forwardLabel The Forward Label
 	 * @param strCompositePeriodTenor Composite Period Tenor
@@ -47,14 +47,14 @@ public class FloatStreamConvention {
 	 * @throws java.lang.Exception Thrown if Inputs are invalid
 	 */
 
-	public FloatStreamConvention (
+	public FixFloatFloatConvention (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final java.lang.String strCompositePeriodTenor)
 		throws java.lang.Exception
 	{
 		if (null == (_forwardLabel = forwardLabel) || null == (_strCompositePeriodTenor =
 			strCompositePeriodTenor) || _strCompositePeriodTenor.isEmpty())
-			throw new java.lang.Exception ("FloatStreamConvention ctr: Invalid Inputs");
+			throw new java.lang.Exception ("FixFloatFloatConvention ctr: Invalid Inputs");
 	}
 
 	/**

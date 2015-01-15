@@ -1,5 +1,5 @@
 
-package org.drip.sample.swaps;
+package org.drip.sample.fixfloat;
 
 import java.util.List;
 
@@ -53,12 +53,13 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /**
- * RollerCoasterSwap demonstrates the construction and Valuation of In-Advance Roller-Coaster Swap.
+ * AmortizingAccruingSwap demonstrates the construction and Valuation of in-advance Amortizing and Accruing
+ *  Swap.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class RollerCoasterSwap {
+public class AmortizingAccruingSwap {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -356,7 +357,7 @@ public class RollerCoasterSwap {
 		);
 	}
 
-	private static final FactorSchedule RollerCoaster1 (
+	private static final FactorSchedule StepDown (
 		final JulianDate dtSpot)
 	{
 		return FactorSchedule.FromDateFactorArray (
@@ -374,20 +375,20 @@ public class RollerCoasterSwap {
 			},
 			new double[] {
 				1.00,
-				0.98,
+				0.99,
+				0.97,
 				0.94,
-				0.88,
-				0.80,
-				0.70,
-				0.81,
 				0.90,
-				0.96,
-				1.00
+				0.85,
+				0.78,
+				0.70,
+				0.61,
+				0.51
 			}
 		);
 	}
 
-	private static final FactorSchedule RollerCoaster2 (
+	private static final FactorSchedule StepUp (
 		final JulianDate dtSpot)
 	{
 		return FactorSchedule.FromDateFactorArray (
@@ -405,15 +406,15 @@ public class RollerCoasterSwap {
 			},
 			new double[] {
 				1.00,
-				1.02,
+				1.01,
+				1.03,
 				1.06,
-				1.12,
-				1.20,
-				1.30,
-				1.19,
 				1.10,
-				1.04,
-				1.00
+				1.15,
+				1.21,
+				1.28,
+				1.36,
+				1.45
 			}
 		);
 	}
@@ -502,19 +503,19 @@ public class RollerCoasterSwap {
 			}
 		);
 
-		FixFloatComponent[] aSwapInAdvanceRollerCoaster1 = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapInAdvanceAccruing = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
-			RollerCoaster1 (dtSpot),
+			StepUp (dtSpot),
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
 			}
 		);
 
-		FixFloatComponent[] aSwapInAdvanceRollerCoaster2 = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapInAdvanceAmortizing = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
-			RollerCoaster2 (dtSpot),
+			StepDown (dtSpot),
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
 			}
@@ -587,7 +588,7 @@ public class RollerCoasterSwap {
 
 		System.out.println ("\n\t-------------------------------------------------------------------------------");
 
-		System.out.println ("\t     IN-ADVANCE ROLLER COASTER SWAP METRIC COMPARISON");
+		System.out.println ("\t     IN-ADVANCE AMORTIZING/ACCRUING SWAP METRIC COMPARISON");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
@@ -601,35 +602,35 @@ public class RollerCoasterSwap {
 
 		System.out.println ("\t\t\t - In Advance Swap Rate");
 
-		System.out.println ("\t\t\t - In Advance Roller Coaster #1 Swap Rate");
+		System.out.println ("\t\t\t - In Advance Accruing Swap Rate");
 
-		System.out.println ("\t\t\t - In Advance Roller Coaster #2 Swap Rate");
+		System.out.println ("\t\t\t - In Advance Amortizing Swap Rate");
 
-		System.out.println ("\t\t\t - In Advance Roller Coaster #1 Swap Rate Shift");
+		System.out.println ("\t\t\t - In Advance Accruing Swap Rate Shift");
 
-		System.out.println ("\t\t\t - In Advance Roller Coaster #2 Swap Rate Shift");
+		System.out.println ("\t\t\t - In Advance Amortizing Swap Rate Shift");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapInAdvance.length; ++i) {
-			double dblInAdvanceRollerCoaster1FairPremium = aSwapInAdvanceRollerCoaster1[i].measureValue (valParams, null, csqs, null, "FairPremium");
+			double dblInAdvanceStepUpFairPremium = aSwapInAdvanceAccruing[i].measureValue (valParams, null, csqs, null, "FairPremium");
 
-			double dblInAdvanceRollerCoaster2FairPremium = aSwapInAdvanceRollerCoaster2[i].measureValue (valParams, null, csqs, null, "FairPremium");
+			double dblInAdvanceStepDownFairPremium = aSwapInAdvanceAmortizing[i].measureValue (valParams, null, csqs, null, "FairPremium");
 
 			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "CalibSwapRate"), 1, 4, 100.) + "% | " +
 				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 4, 100.) + "% | " +
 				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FairPremium"), 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster1FairPremium, 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster1FairPremium - adblSwapQuote[i], 1, 0, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster2FairPremium, 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster2FairPremium - adblSwapQuote[i], 1, 0, 10000.)
+				FormatUtil.FormatDouble (dblInAdvanceStepUpFairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepUpFairPremium - adblSwapQuote[i], 1, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepDownFairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepDownFairPremium - adblSwapQuote[i], 1, 0, 10000.)
 			);
 		}
 
 		System.out.println ("\n\t-------------------------------------------------------------------------------");
 
-		System.out.println ("\t     IN-ADVANCE ROLLER COASTER SWAP DV01 COMPARISON");
+		System.out.println ("\t     IN-ADVANCE AMORTIZING/ACCRUING SWAP DV01 COMPARISON");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
@@ -639,29 +640,29 @@ public class RollerCoasterSwap {
 
 		System.out.println ("\t\t\t - In Advance Swap DV01");
 
-		System.out.println ("\t\t\t - In Advance Roller Coaster #1 DV01");
+		System.out.println ("\t\t\t - In Advance Accruing Swap DV01");
 
-		System.out.println ("\t\t\t - In Advance Roller Coaster #1 DV01 Shift");
+		System.out.println ("\t\t\t - In Advance Accruing Swap DV01 Shift");
 
-		System.out.println ("\t\t\t - In Advance Roller Coaster #2 DV01");
+		System.out.println ("\t\t\t - In Advance Amortizing Swap DV01");
 
-		System.out.println ("\t\t\t - In Advance Roller Coaster #2 DV01 Shift");
+		System.out.println ("\t\t\t - In Advance Amortizing Swap DV01 Shift");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapInAdvance.length; ++i) {
 			double dblInAdvanceDV01 = aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FixedDV01");
 
-			double dblInAdvanceRollerCoaster1DV01 = aSwapInAdvanceRollerCoaster1[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+			double dblInAdvanceStepUpDV01 = aSwapInAdvanceAccruing[i].measureValue (valParams, null, csqs, null, "FixedDV01");
 
-			double dblInAdvanceRollerCoaster2DV01 = aSwapInAdvanceRollerCoaster2[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+			double dblInAdvanceStepDownDV01 = aSwapInAdvanceAmortizing[i].measureValue (valParams, null, csqs, null, "FixedDV01");
 
 			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (dblInAdvanceDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster1DV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster1DV01 - dblInAdvanceDV01, 1, 2, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster2DV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster2DV01 - dblInAdvanceDV01, 1, 2, 10000.)
+				FormatUtil.FormatDouble (dblInAdvanceStepUpDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepUpDV01 - dblInAdvanceDV01, 1, 2, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepDownDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepDownDV01 - dblInAdvanceDV01, 1, 2, 10000.)
 			);
 		}
 

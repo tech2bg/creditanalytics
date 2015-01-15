@@ -1269,6 +1269,8 @@ public class FedFundLIBORSwap {
 
 		System.out.println ("\t\t\t OIS Rate (%) From Full Calibration\n");
 
+		System.out.println ("\t--------------------------------------------------------------------------");
+
 		for (int i = 0; i < aFedFundLIBORSwap.length; ++i) {
 			Map<String, Double> mapOIS = aOIS[i].value (
 				valParams,
@@ -1300,5 +1302,7 @@ public class FedFundLIBORSwap {
 				FormatUtil.FormatDouble (dblOISRate, 1, 4, 100.) + "%"
 			);
 		}
+
+		System.out.println ("\t--------------------------------------------------------------------------");
 	}
 }

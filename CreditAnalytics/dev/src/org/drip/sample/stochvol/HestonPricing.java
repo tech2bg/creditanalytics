@@ -4,7 +4,7 @@ package org.drip.sample.stochvol;
 import org.drip.analytics.date.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
-import org.drip.market.product.*;
+import org.drip.market.otc.*;
 import org.drip.param.creator.ScenarioDiscountCurveBuilder;
 import org.drip.param.period.*;
 import org.drip.param.pricer.HestonOptionPricerParams;
@@ -61,7 +61,7 @@ public class HestonPricing {
 		final String strMaturityTenor,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
 			strCurrency,
 			"ALL",
 			strMaturityTenor,

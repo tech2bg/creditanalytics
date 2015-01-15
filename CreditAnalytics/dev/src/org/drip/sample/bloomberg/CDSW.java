@@ -10,7 +10,7 @@ import org.drip.analytics.date.*;
 import org.drip.analytics.definition.*;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
-import org.drip.market.product.*;
+import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.pricer.PricerParams;
@@ -68,7 +68,7 @@ public class CDSW {
 		final String strMaturityTenor,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
 			strCurrency,
 			"ALL",
 			strMaturityTenor,

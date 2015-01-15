@@ -60,7 +60,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.option.FixedIncomeO
 		final boolean bIsCaplet,
 		final double dblStrike,
 		final double dblNotional,
-		final org.drip.product.option.LastTradingDateSetting ltds,
+		final org.drip.product.params.LastTradingDateSetting ltds,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
@@ -106,7 +106,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.option.FixedIncomeO
 
 		double dblValueDate = valParams.valueDate();
 
-		org.drip.product.option.LastTradingDateSetting ltds = lastTradingDateSetting();
+		org.drip.product.params.LastTradingDateSetting ltds = lastTradingDateSetting();
 
 		try {
 			if (null != ltds && dblValueDate >= ltds.lastTradingDate (_fra.effectiveDate().julian(),

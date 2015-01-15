@@ -1,5 +1,5 @@
 
-package org.drip.sample.swaps;
+package org.drip.sample.fixfloat;
 
 import java.util.List;
 
@@ -13,7 +13,6 @@ import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
-import org.drip.product.params.FactorSchedule;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
@@ -53,12 +52,12 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /**
- * StepUpStepDown demonstrates the construction and Valuation of in-advance step-up and step-down swaps.
+ * LongTenorSwap demonstrates the Construction and Valuation of In-Advance and In-Arrears Long Tenor Swap.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class StepUpStepDown {
+public class LongTenorSwap {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -69,7 +68,8 @@ public class StepUpStepDown {
 	private static final SingleStreamComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final String strCurrency,
-		final int[] aiDay)
+		final int[] aiDay,
+		final int iRefPeriodType)
 		throws Exception
 	{
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
@@ -79,7 +79,7 @@ public class StepUpStepDown {
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
 			ForwardLabel.Create (strCurrency, "3M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			iRefPeriodType,
 			0.
 		);
 
@@ -206,14 +206,16 @@ public class StepUpStepDown {
 	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String strCurrency,
-		final FactorSchedule fsCoupon,
-		final String[] astrMaturityTenor)
+		final String[] astrMaturityTenor,
+		final int iRefPeriodType,
+		final String strFloatingTenor,
+		final String strCompositeTenor)
 		throws Exception
 	{
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
+			AnalyticsHelper.TenorToFreq (strCompositeTenor),
 			"Act/360",
 			false,
 			"Act/360",
@@ -224,16 +226,16 @@ public class StepUpStepDown {
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"6M",
+			strCompositeTenor,
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Create (strCurrency, "6M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			ForwardLabel.Create (strCurrency, strFloatingTenor),
+			iRefPeriodType,
 			0.
 		);
 
 		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-			"6M",
+			strCompositeTenor,
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			0.,
@@ -242,24 +244,24 @@ public class StepUpStepDown {
 		);
 
 		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			2,
-			"6M",
+			AnalyticsHelper.TenorToFreq (strCompositeTenor),
+			strCompositeTenor,
 			strCurrency,
 			null,
 			-1.,
-			fsCoupon,
+			null,
 			null,
 			null,
 			null
 		);
 
 		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
+			AnalyticsHelper.TenorToFreq (strCompositeTenor),
+			strCompositeTenor,
 			strCurrency,
 			null,
 			1.,
-			fsCoupon,
+			null,
 			null,
 			null,
 			null
@@ -274,14 +276,14 @@ public class StepUpStepDown {
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtEffective,
-				"6M",
+				strCompositeTenor,
 				astrMaturityTenor[i],
 				null
 			);
 
 			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtEffective,
-				"6M",
+				strCompositeTenor,
 				astrMaturityTenor[i],
 				null
 			);
@@ -356,68 +358,6 @@ public class StepUpStepDown {
 		);
 	}
 
-	private static final FactorSchedule StepDown (
-		final JulianDate dtSpot)
-	{
-		return FactorSchedule.FromDateFactorArray (
-			new double[] {
-				dtSpot.julian(),
-				dtSpot.addYears (2).julian(),
-				dtSpot.addYears (4).julian(),
-				dtSpot.addYears (6).julian(),
-				dtSpot.addYears (10).julian(),
-				dtSpot.addYears (15).julian(),
-				dtSpot.addYears (21).julian(),
-				dtSpot.addYears (29).julian(),
-				dtSpot.addYears (36).julian(),
-				dtSpot.addYears (51).julian()
-			},
-			new double[] {
-				1.00,
-				0.99,
-				0.97,
-				0.94,
-				0.90,
-				0.85,
-				0.78,
-				0.70,
-				0.61,
-				0.51
-			}
-		);
-	}
-
-	private static final FactorSchedule StepUp (
-		final JulianDate dtSpot)
-	{
-		return FactorSchedule.FromDateFactorArray (
-			new double[] {
-				dtSpot.julian(),
-				dtSpot.addYears (2).julian(),
-				dtSpot.addYears (4).julian(),
-				dtSpot.addYears (6).julian(),
-				dtSpot.addYears (10).julian(),
-				dtSpot.addYears (15).julian(),
-				dtSpot.addYears (21).julian(),
-				dtSpot.addYears (29).julian(),
-				dtSpot.addYears (36).julian(),
-				dtSpot.addYears (51).julian()
-			},
-			new double[] {
-				1.00,
-				1.01,
-				1.03,
-				1.06,
-				1.10,
-				1.15,
-				1.21,
-				1.28,
-				1.36,
-				1.45
-			}
-		);
-	}
-
 	/*
 	 * This sample demonstrates discount curve calibration and input instrument calibration quote recovery.
 	 * 	It shows the following:
@@ -450,7 +390,8 @@ public class StepUpStepDown {
 			strCurrency,
 			new int[] {
 				1, 2, 7, 14, 30, 60
-			}
+			},
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE
 		);
 
 		double[] adblDepositQuote = new double[] {
@@ -496,28 +437,34 @@ public class StepUpStepDown {
 		FixFloatComponent[] aSwapInAdvance = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
-			null,
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
-			}
+			},
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			"6M",
+			"6M"
 		);
 
-		FixFloatComponent[] aSwapInAdvanceStepUp = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapInAdvanceLongTenor = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
-			StepUp (dtSpot),
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
-			}
+			},
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			"3M",
+			"12M"
 		);
 
-		FixFloatComponent[] aSwapInAdvanceStepDown = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapInArrearsLongTenor = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
-			StepDown (dtSpot),
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
-			}
+			},
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ARREARS,
+			"3M",
+			"12M"
 		);
 
 		double[] adblSwapQuote = new double[] {
@@ -587,7 +534,7 @@ public class StepUpStepDown {
 
 		System.out.println ("\n\t-------------------------------------------------------------------------------");
 
-		System.out.println ("\t     IN-ADVANCE STEP UP/DOWN SWAP METRIC COMPARISON");
+		System.out.println ("\t            IN-ADVANCE/IN-ARREARS LONG TENOR SWAP METRIC COMPARISON");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
@@ -601,35 +548,35 @@ public class StepUpStepDown {
 
 		System.out.println ("\t\t\t - In Advance Swap Rate");
 
-		System.out.println ("\t\t\t - In Advance Step Up Swap Rate");
+		System.out.println ("\t\t\t - In Advance Long Tenor Swap Rate");
 
-		System.out.println ("\t\t\t - In Advance Step Down Swap Rate");
+		System.out.println ("\t\t\t - In Arrears Long Tenor Swap Rate");
 
-		System.out.println ("\t\t\t - In Advance Step Up Swap Rate Shift");
+		System.out.println ("\t\t\t - In Advance Long Tenor Swap Rate Shift");
 
-		System.out.println ("\t\t\t - In Advance Step Down Swap Rate Shift");
+		System.out.println ("\t\t\t - In Arrears Long Tenor Swap Rate Shift");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapInAdvance.length; ++i) {
-			double dblInAdvanceStepUpFairPremium = aSwapInAdvanceStepUp[i].measureValue (valParams, null, csqs, null, "FairPremium");
+			double dblInAdvanceLongTenorFairPremium = aSwapInAdvanceLongTenor[i].measureValue (valParams, null, csqs, null, "FairPremium");
 
-			double dblInAdvanceStepDownFairPremium = aSwapInAdvanceStepDown[i].measureValue (valParams, null, csqs, null, "FairPremium");
+			double dblInArrearsLongTenorFairPremium = aSwapInArrearsLongTenor[i].measureValue (valParams, null, csqs, null, "FairPremium");
 
 			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "CalibSwapRate"), 1, 4, 100.) + "% | " +
 				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 4, 100.) + "% | " +
 				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FairPremium"), 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepUpFairPremium, 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepUpFairPremium - adblSwapQuote[i], 1, 0, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepDownFairPremium, 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepDownFairPremium - adblSwapQuote[i], 1, 0, 10000.)
+				FormatUtil.FormatDouble (dblInAdvanceLongTenorFairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInArrearsLongTenorFairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInAdvanceLongTenorFairPremium - adblSwapQuote[i], 1, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInArrearsLongTenorFairPremium - adblSwapQuote[i], 1, 0, 10000.)
 			);
 		}
 
 		System.out.println ("\n\t-------------------------------------------------------------------------------");
 
-		System.out.println ("\t     IN-ADVANCE STEP UP/DOWN SWAP DV01 COMPARISON");
+		System.out.println ("\t            IN-ADVANCE/IN-ARREARS LONG TENOR SWAP DV01 COMPARISON");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
@@ -639,29 +586,29 @@ public class StepUpStepDown {
 
 		System.out.println ("\t\t\t - In Advance Swap DV01");
 
-		System.out.println ("\t\t\t - In Advance Step Up Swap DV01");
+		System.out.println ("\t\t\t - In Advance Long Tenor Swap DV01");
 
-		System.out.println ("\t\t\t - In Advance Step Up Swap DV01 Shift");
+		System.out.println ("\t\t\t - In Arrears Long Tenor Swap DV01");
 
-		System.out.println ("\t\t\t - In Advance Step Down Swap DV01");
+		System.out.println ("\t\t\t - In Advance Long Tenor Swap DV01 Shift");
 
-		System.out.println ("\t\t\t - In Advance Step Down Swap DV01 Shift");
+		System.out.println ("\t\t\t - In Arrears Long Tenor Swap DV01 Shift");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapInAdvance.length; ++i) {
 			double dblInAdvanceDV01 = aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FixedDV01");
 
-			double dblInAdvanceStepUpDV01 = aSwapInAdvanceStepUp[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+			double dblInAdvanceLongTenorDV01 = aSwapInAdvanceLongTenor[i].measureValue (valParams, null, csqs, null, "FixedDV01");
 
-			double dblInAdvanceStepDownDV01 = aSwapInAdvanceStepDown[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+			double dblInArrearsLongTenorDV01 = aSwapInAdvanceLongTenor[i].measureValue (valParams, null, csqs, null, "FixedDV01");
 
 			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (dblInAdvanceDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepUpDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepUpDV01 - dblInAdvanceDV01, 1, 2, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepDownDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepDownDV01 - dblInAdvanceDV01, 1, 2, 10000.)
+				FormatUtil.FormatDouble (dblInAdvanceLongTenorDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInArrearsLongTenorDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceLongTenorDV01 - dblInAdvanceDV01, 1, 2, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInArrearsLongTenorDV01 - dblInAdvanceDV01, 1, 2, 10000.)
 			);
 		}
 

@@ -1,19 +1,19 @@
 
-package org.drip.sample.swaps;
+package org.drip.sample.fixfloat;
 
-import java.util.List;
+import java.util.Map;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
-import org.drip.product.params.FactorSchedule;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
@@ -53,13 +53,36 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /**
- * AmortizingAccruingSwap demonstrates the construction and Valuation of in-advance Amortizing and Accruing
- *  Swap.
+ * OTCFixFloatSwaps contains curve construction and valuation of common OTC IRS.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class AmortizingAccruingSwap {
+public class OTCFixFloatSwaps {
+
+	private static final FixFloatComponent OTCIRS (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strLocation,
+		final String strMaturityTenor,
+		final String strIndex,
+		final double dblCoupon)
+	{
+		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
+			strCurrency,
+			strLocation,
+			strMaturityTenor,
+			strIndex
+		);
+
+		return ffConv.createFixFloatComponent (
+			dtSpot,
+			strMaturityTenor,
+			dblCoupon,
+			0.,
+			1.
+		);
+	}
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -205,115 +228,24 @@ public class AmortizingAccruingSwap {
 	 */
 
 	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
-		final JulianDate dtEffective,
+		final JulianDate dtSpot,
 		final String strCurrency,
-		final FactorSchedule fsNotional,
+		final String strLocation,
+		final String strIndex,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			true,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
-		);
-
-		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, "6M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			0.,
-			0.,
-			strCurrency
-		);
-
-		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			fsNotional,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			1.,
-			null,
-			fsNotional,
-			null,
-			null
-		);
-
-		CashSettleParams csp = new CashSettleParams (
-			0,
-			strCurrency,
-			0
-		);
-
-		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aIRS[i] = OTCIRS (
+				dtSpot,
+				strCurrency,
+				strLocation,
 				astrMaturityTenor[i],
-				null
+				strIndex,
+				0.
 			);
-
-			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			);
-
-			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsFloatingStreamEdgeDate,
-					cpsFloating,
-					cfusFloating
-				)
-			);
-
-			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeUnit (
-					lsFixedStreamEdgeDate,
-					cpsFixed,
-					ucasFixed,
-					cfusFixed
-				)
-			);
-
-			FixFloatComponent irs = new FixFloatComponent (
-				fixedStream,
-				floatingStream,
-				csp
-			);
-
-			irs.setPrimaryCode ("IRS." + astrMaturityTenor[i] + "." + strCurrency);
-
-			aIRS[i] = irs;
-		}
 
 		return aIRS;
 	}
@@ -357,68 +289,6 @@ public class AmortizingAccruingSwap {
 		);
 	}
 
-	private static final FactorSchedule StepDown (
-		final JulianDate dtSpot)
-	{
-		return FactorSchedule.FromDateFactorArray (
-			new double[] {
-				dtSpot.julian(),
-				dtSpot.addYears (2).julian(),
-				dtSpot.addYears (4).julian(),
-				dtSpot.addYears (6).julian(),
-				dtSpot.addYears (10).julian(),
-				dtSpot.addYears (15).julian(),
-				dtSpot.addYears (21).julian(),
-				dtSpot.addYears (29).julian(),
-				dtSpot.addYears (36).julian(),
-				dtSpot.addYears (51).julian()
-			},
-			new double[] {
-				1.00,
-				0.99,
-				0.97,
-				0.94,
-				0.90,
-				0.85,
-				0.78,
-				0.70,
-				0.61,
-				0.51
-			}
-		);
-	}
-
-	private static final FactorSchedule StepUp (
-		final JulianDate dtSpot)
-	{
-		return FactorSchedule.FromDateFactorArray (
-			new double[] {
-				dtSpot.julian(),
-				dtSpot.addYears (2).julian(),
-				dtSpot.addYears (4).julian(),
-				dtSpot.addYears (6).julian(),
-				dtSpot.addYears (10).julian(),
-				dtSpot.addYears (15).julian(),
-				dtSpot.addYears (21).julian(),
-				dtSpot.addYears (29).julian(),
-				dtSpot.addYears (36).julian(),
-				dtSpot.addYears (51).julian()
-			},
-			new double[] {
-				1.00,
-				1.01,
-				1.03,
-				1.06,
-				1.10,
-				1.15,
-				1.21,
-				1.28,
-				1.36,
-				1.45
-			}
-		);
-	}
-
 	/*
 	 * This sample demonstrates discount curve calibration and input instrument calibration quote recovery.
 	 * 	It shows the following:
@@ -437,9 +307,12 @@ public class AmortizingAccruingSwap {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final void CustomDiscountCurveBuilderSample (
+	private static final void OTCRun (
 		final JulianDate dtSpot,
-		final String strCurrency)
+		final String strCurrency,
+		final String strLocation,
+		final String[] astrOTCMaturityTenor,
+		final String strIndex)
 		throws Exception
 	{
 		/*
@@ -494,28 +367,11 @@ public class AmortizingAccruingSwap {
 		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aSwapInAdvance = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
-			null,
-			new java.lang.String[] {
-				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
-			}
-		);
-
-		FixFloatComponent[] aSwapInAdvanceAccruing = SwapInstrumentsFromMaturityTenor (
-			dtSpot,
-			strCurrency,
-			StepUp (dtSpot),
-			new java.lang.String[] {
-				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
-			}
-		);
-
-		FixFloatComponent[] aSwapInAdvanceAmortizing = SwapInstrumentsFromMaturityTenor (
-			dtSpot,
-			strCurrency,
-			StepDown (dtSpot),
+			strLocation,
+			strIndex,
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
 			}
@@ -530,7 +386,7 @@ public class AmortizingAccruingSwap {
 		 */
 
 		LatentStateStretchSpec swapStretch = SwapStretch (
-			aSwapInAdvance,
+			aSwapComp,
 			adblSwapQuote
 		);
 
@@ -579,94 +435,42 @@ public class AmortizingAccruingSwap {
 			1.
 		);
 
-		CurveSurfaceQuoteSet csqs = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
+		CurveSurfaceQuoteSet csqs = MarketParamsBuilder.Create (
+			dc,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
 
-		/*
-		 * Cross-Comparison of the In-Advance/Arrears Swap "Rate" metric across the different curve
-		 * 	construction methodologies.
-		 */
+		System.out.print ("\t[" + strCurrency + " | " + strLocation + "] = ");
 
-		System.out.println ("\n\t-------------------------------------------------------------------------------");
+		for (int i = 0; i < astrOTCMaturityTenor.length; ++i) {
+			FixFloatComponent swap = OTCIRS (
+				dtSpot,
+				strCurrency,
+				strLocation,
+				astrOTCMaturityTenor[i],
+				strIndex,
+				0.
+			);
 
-		System.out.println ("\t     IN-ADVANCE AMORTIZING/ACCRUING SWAP METRIC COMPARISON");
+			Map<String, Double> mapOutput = swap.value (
+				valParams,
+				null,
+				csqs,
+				null
+			);
 
-		System.out.println ("\t-------------------------------------------------------------------------------");
-
-		System.out.println ("\t\tL -> R:");
-
-		System.out.println ("\t\t\t - Swap Maturity");
-
-		System.out.println ("\t\t\t - In Advance Calibration Quote");
-
-		System.out.println ("\t\t\t - In Advance Fair Premium");
-
-		System.out.println ("\t\t\t - In Advance Swap Rate");
-
-		System.out.println ("\t\t\t - In Advance Accruing Swap Rate");
-
-		System.out.println ("\t\t\t - In Advance Amortizing Swap Rate");
-
-		System.out.println ("\t\t\t - In Advance Accruing Swap Rate Shift");
-
-		System.out.println ("\t\t\t - In Advance Amortizing Swap Rate Shift");
-
-		System.out.println ("\t-------------------------------------------------------------------------------");
-
-		for (int i = 0; i < aSwapInAdvance.length; ++i) {
-			double dblInAdvanceStepUpFairPremium = aSwapInAdvanceAccruing[i].measureValue (valParams, null, csqs, null, "FairPremium");
-
-			double dblInAdvanceStepDownFairPremium = aSwapInAdvanceAmortizing[i].measureValue (valParams, null, csqs, null, "FairPremium");
-
-			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "CalibSwapRate"), 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FairPremium"), 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepUpFairPremium, 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepUpFairPremium - adblSwapQuote[i], 1, 0, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepDownFairPremium, 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepDownFairPremium - adblSwapQuote[i], 1, 0, 10000.)
+			System.out.print (
+				FormatUtil.FormatDouble (mapOutput.get ("CalibSwapRate"), 1, 4, 100.) + "% (" +
+				FormatUtil.FormatDouble (mapOutput.get ("FairPremium"), 1, 4, 100.) + "%) || "
 			);
 		}
 
-		System.out.println ("\n\t-------------------------------------------------------------------------------");
-
-		System.out.println ("\t     IN-ADVANCE AMORTIZING/ACCRUING SWAP DV01 COMPARISON");
-
-		System.out.println ("\t-------------------------------------------------------------------------------");
-
-		System.out.println ("\t\tL -> R:");
-
-		System.out.println ("\t\t\t - Swap Maturity");
-
-		System.out.println ("\t\t\t - In Advance Swap DV01");
-
-		System.out.println ("\t\t\t - In Advance Accruing Swap DV01");
-
-		System.out.println ("\t\t\t - In Advance Accruing Swap DV01 Shift");
-
-		System.out.println ("\t\t\t - In Advance Amortizing Swap DV01");
-
-		System.out.println ("\t\t\t - In Advance Amortizing Swap DV01 Shift");
-
-		System.out.println ("\t-------------------------------------------------------------------------------");
-
-		for (int i = 0; i < aSwapInAdvance.length; ++i) {
-			double dblInAdvanceDV01 = aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FixedDV01");
-
-			double dblInAdvanceStepUpDV01 = aSwapInAdvanceAccruing[i].measureValue (valParams, null, csqs, null, "FixedDV01");
-
-			double dblInAdvanceStepDownDV01 = aSwapInAdvanceAmortizing[i].measureValue (valParams, null, csqs, null, "FixedDV01");
-
-			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (dblInAdvanceDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepUpDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepUpDV01 - dblInAdvanceDV01, 1, 2, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepDownDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceStepDownDV01 - dblInAdvanceDV01, 1, 2, 10000.)
-			);
-		}
-
-		System.out.println ("\t-------------------------------------------------------------------------------");
+		System.out.println();
 	}
 
 	public static final void main (
@@ -681,8 +485,54 @@ public class AmortizingAccruingSwap {
 
 		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 
-		String strCurrency = "USD";
+		String[] astrOTCMaturityTenor = new String[] {
+			"1Y", "3Y", "5Y", "7Y", "10Y"
+		};
 
-		CustomDiscountCurveBuilderSample (dtToday, strCurrency);
+		System.out.println ("\n\t--------------------------------------------------------------------------------------------------------------------------------");
+
+		System.out.println ("\t JURISDICTION             1Y      ||          3Y         ||          5Y         ||          7Y         ||         10Y         ||");
+
+		System.out.println ("\t--------------------------------------------------------------------------------------------------------------------------------");
+
+		OTCRun (dtToday, "AUD", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "CAD", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "CHF", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "CNY", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "DKK", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "EUR", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "GBP", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "HKD", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "INR", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "JPY", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "JPY", "ALL", astrOTCMaturityTenor, "TIBOR");
+
+		OTCRun (dtToday, "NOK", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "NZD", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "PLN", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "SEK", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "SGD", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "USD", "LON", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "USD", "NYC", astrOTCMaturityTenor, "MAIN");
+
+		OTCRun (dtToday, "ZAR", "ALL", astrOTCMaturityTenor, "MAIN");
+
+		System.out.println ("\t--------------------------------------------------------------------------------------------------------------------------------");
 	}
 }

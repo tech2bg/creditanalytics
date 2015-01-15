@@ -60,7 +60,7 @@ public class FRAStandardCapFloor extends org.drip.product.option.FixedIncomeOpti
 		final boolean bIsCap,
 		final double dblStrike,
 		final double dblNotional,
-		final org.drip.product.option.LastTradingDateSetting ltds,
+		final org.drip.product.params.LastTradingDateSetting ltds,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception

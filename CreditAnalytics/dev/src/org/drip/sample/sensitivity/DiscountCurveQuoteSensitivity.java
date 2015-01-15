@@ -4,7 +4,7 @@ package org.drip.sample.sensitivity;
 import org.drip.analytics.date.*;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
-import org.drip.market.product.*;
+import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
@@ -79,7 +79,7 @@ public class DiscountCurveQuoteSensitivity {
 		final String strMaturityTenor,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
 			strCurrency,
 			"ALL",
 			strMaturityTenor,

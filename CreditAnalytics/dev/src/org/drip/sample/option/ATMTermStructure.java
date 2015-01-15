@@ -6,7 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.*;
 import org.drip.analytics.definition.TermStructure;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.market.product.*;
+import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.*;
 import org.drip.pricer.option.BlackScholesAlgorithm;
@@ -62,7 +62,7 @@ public class ATMTermStructure {
 		final String strMaturityTenor,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
 			strCurrency,
 			"ALL",
 			strMaturityTenor,

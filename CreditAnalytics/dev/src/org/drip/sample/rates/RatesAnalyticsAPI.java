@@ -8,7 +8,7 @@ package org.drip.sample.rates;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.*;
-import org.drip.market.product.*;
+import org.drip.market.otc.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
@@ -69,7 +69,7 @@ public class RatesAnalyticsAPI {
 		final String strMaturityTenor,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
 			strCurrency,
 			"ALL",
 			strMaturityTenor,

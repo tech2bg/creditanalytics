@@ -1,13 +1,12 @@
 
-package org.drip.sample.swaps;
+package org.drip.sample.fixfloat;
 
-import java.util.Map;
+import java.util.List;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.product.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -53,36 +52,12 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /**
- * OTCFixFloatSwaps contains curve construction and valuation of common OTC IRS.
+ * ShortTenorSwap demonstrates the Construction and Valuation of In-Advance and In-Arrears Short Tenor Swap.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class OTCFixFloatSwaps {
-
-	private static final FixFloatComponent OTCIRS (
-		final JulianDate dtSpot,
-		final String strCurrency,
-		final String strLocation,
-		final String strMaturityTenor,
-		final String strIndex,
-		final double dblCoupon)
-	{
-		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
-			strCurrency,
-			strLocation,
-			strMaturityTenor,
-			strIndex
-		);
-
-		return ffConv.createFixFloatComponent (
-			dtSpot,
-			strMaturityTenor,
-			dblCoupon,
-			0.,
-			1.
-		);
-	}
+public class ShortTenorSwap {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -93,7 +68,8 @@ public class OTCFixFloatSwaps {
 	private static final SingleStreamComponent[] DepositInstrumentsFromMaturityDays (
 		final JulianDate dtEffective,
 		final String strCurrency,
-		final int[] aiDay)
+		final int[] aiDay,
+		final int iRefPeriodType)
 		throws Exception
 	{
 		SingleStreamComponent[] aDeposit = new SingleStreamComponent[aiDay.length];
@@ -103,7 +79,7 @@ public class OTCFixFloatSwaps {
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE,
 			null,
 			ForwardLabel.Create (strCurrency, "3M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			iRefPeriodType,
 			0.
 		);
 
@@ -228,24 +204,117 @@ public class OTCFixFloatSwaps {
 	 */
 
 	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
-		final JulianDate dtSpot,
+		final JulianDate dtEffective,
 		final String strCurrency,
-		final String strLocation,
-		final String strIndex,
-		final String[] astrMaturityTenor)
+		final String[] astrMaturityTenor,
+		final int iRefPeriodType,
+		final String strFloatingTenor,
+		final String strCompositeTenor)
 		throws Exception
 	{
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
-		for (int i = 0; i < astrMaturityTenor.length; ++i)
-			aIRS[i] = OTCIRS (
-				dtSpot,
-				strCurrency,
-				strLocation,
+		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
+			AnalyticsHelper.TenorToFreq (strCompositeTenor),
+			"Act/360",
+			false,
+			"Act/360",
+			false,
+			strCurrency,
+			true,
+			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
+		);
+
+		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
+			strCompositeTenor,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			ForwardLabel.Create (strCurrency, strFloatingTenor),
+			iRefPeriodType,
+			0.
+		);
+
+		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
+			strCompositeTenor,
+			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
+			null,
+			0.,
+			0.,
+			strCurrency
+		);
+
+		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
+			AnalyticsHelper.TenorToFreq (strCompositeTenor),
+			strCompositeTenor,
+			strCurrency,
+			null,
+			-1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
+			AnalyticsHelper.TenorToFreq (strCompositeTenor),
+			strCompositeTenor,
+			strCurrency,
+			null,
+			1.,
+			null,
+			null,
+			null,
+			null
+		);
+
+		CashSettleParams csp = new CashSettleParams (
+			0,
+			strCurrency,
+			0
+		);
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				strCompositeTenor,
 				astrMaturityTenor[i],
-				strIndex,
-				0.
+				null
 			);
+
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
+				dtEffective,
+				strCompositeTenor,
+				astrMaturityTenor[i],
+				null
+			);
+
+			Stream floatingStream = new Stream (
+				CompositePeriodBuilder.FloatingCompositeUnit (
+					lsFloatingStreamEdgeDate,
+					cpsFloating,
+					cfusFloating
+				)
+			);
+
+			Stream fixedStream = new Stream (
+				CompositePeriodBuilder.FixedCompositeUnit (
+					lsFixedStreamEdgeDate,
+					cpsFixed,
+					ucasFixed,
+					cfusFixed
+				)
+			);
+
+			FixFloatComponent irs = new FixFloatComponent (
+				fixedStream,
+				floatingStream,
+				csp
+			);
+
+			irs.setPrimaryCode ("IRS." + astrMaturityTenor[i] + "." + strCurrency);
+
+			aIRS[i] = irs;
+		}
 
 		return aIRS;
 	}
@@ -307,12 +376,9 @@ public class OTCFixFloatSwaps {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final void OTCRun (
+	private static final void CustomDiscountCurveBuilderSample (
 		final JulianDate dtSpot,
-		final String strCurrency,
-		final String strLocation,
-		final String[] astrOTCMaturityTenor,
-		final String strIndex)
+		final String strCurrency)
 		throws Exception
 	{
 		/*
@@ -324,7 +390,8 @@ public class OTCFixFloatSwaps {
 			strCurrency,
 			new int[] {
 				1, 2, 7, 14, 30, 60
-			}
+			},
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE
 		);
 
 		double[] adblDepositQuote = new double[] {
@@ -367,14 +434,37 @@ public class OTCFixFloatSwaps {
 		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapInAdvance = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
-			strLocation,
-			strIndex,
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
-			}
+			},
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			"6M",
+			"6M"
+		);
+
+		FixFloatComponent[] aSwapInAdvanceShortTenor = SwapInstrumentsFromMaturityTenor (
+			dtSpot,
+			strCurrency,
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			},
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
+			"12M",
+			"3M"
+		);
+
+		FixFloatComponent[] aSwapInArrearsShortTenor = SwapInstrumentsFromMaturityTenor (
+			dtSpot,
+			strCurrency,
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			},
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ARREARS,
+			"12M",
+			"3M"
 		);
 
 		double[] adblSwapQuote = new double[] {
@@ -386,7 +476,7 @@ public class OTCFixFloatSwaps {
 		 */
 
 		LatentStateStretchSpec swapStretch = SwapStretch (
-			aSwapComp,
+			aSwapInAdvance,
 			adblSwapQuote
 		);
 
@@ -435,42 +525,94 @@ public class OTCFixFloatSwaps {
 			1.
 		);
 
-		CurveSurfaceQuoteSet csqs = MarketParamsBuilder.Create (
-			dc,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null
-		);
+		CurveSurfaceQuoteSet csqs = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
 
-		System.out.print ("\t[" + strCurrency + " | " + strLocation + "] = ");
+		/*
+		 * Cross-Comparison of the In-Advance/Arrears Swap "Rate" metric across the different curve
+		 * 	construction methodologies.
+		 */
 
-		for (int i = 0; i < astrOTCMaturityTenor.length; ++i) {
-			FixFloatComponent swap = OTCIRS (
-				dtSpot,
-				strCurrency,
-				strLocation,
-				astrOTCMaturityTenor[i],
-				strIndex,
-				0.
-			);
+		System.out.println ("\n\t-------------------------------------------------------------------------------");
 
-			Map<String, Double> mapOutput = swap.value (
-				valParams,
-				null,
-				csqs,
-				null
-			);
+		System.out.println ("\t            IN-ADVANCE/IN-ARREARS SHORT TENOR SWAP METRIC COMPARISON");
 
-			System.out.print (
-				FormatUtil.FormatDouble (mapOutput.get ("CalibSwapRate"), 1, 4, 100.) + "% (" +
-				FormatUtil.FormatDouble (mapOutput.get ("FairPremium"), 1, 4, 100.) + "%) || "
+		System.out.println ("\t-------------------------------------------------------------------------------");
+
+		System.out.println ("\t\tL -> R:");
+
+		System.out.println ("\t\t\t - Swap Maturity");
+
+		System.out.println ("\t\t\t - In Advance Calibration Quote");
+
+		System.out.println ("\t\t\t - In Advance Fair Premium");
+
+		System.out.println ("\t\t\t - In Advance Swap Rate");
+
+		System.out.println ("\t\t\t - In Advance Short Tenor Swap Rate");
+
+		System.out.println ("\t\t\t - In Arrears Short Tenor Swap Rate");
+
+		System.out.println ("\t\t\t - In Advance Short Tenor Swap Rate Shift");
+
+		System.out.println ("\t\t\t - In Arrears Short Tenor Swap Rate Shift");
+
+		System.out.println ("\t-------------------------------------------------------------------------------");
+
+		for (int i = 0; i < aSwapInAdvance.length; ++i) {
+			double dblInAdvanceShortTenorFairPremium = aSwapInAdvanceShortTenor[i].measureValue (valParams, null, csqs, null, "FairPremium");
+
+			double dblInArrearsShortTenorFairPremium = aSwapInArrearsShortTenor[i].measureValue (valParams, null, csqs, null, "FairPremium");
+
+			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
+				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "CalibSwapRate"), 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FairPremium"), 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInAdvanceShortTenorFairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInArrearsShortTenorFairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInAdvanceShortTenorFairPremium - adblSwapQuote[i], 1, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInArrearsShortTenorFairPremium - adblSwapQuote[i], 1, 0, 10000.)
 			);
 		}
 
-		System.out.println();
+		System.out.println ("\n\t-------------------------------------------------------------------------------");
+
+		System.out.println ("\t            IN-ADVANCE/IN-ARREARS SHORT TENOR SWAP DV01 COMPARISON");
+
+		System.out.println ("\t-------------------------------------------------------------------------------");
+
+		System.out.println ("\t\tL -> R:");
+
+		System.out.println ("\t\t\t - Swap Maturity");
+
+		System.out.println ("\t\t\t - In Advance Swap DV01");
+
+		System.out.println ("\t\t\t - In Advance Short Tenor Swap DV01");
+
+		System.out.println ("\t\t\t - In Arrears Short Tenor Swap DV01");
+
+		System.out.println ("\t\t\t - In Advance Short Tenor Swap DV01 Shift");
+
+		System.out.println ("\t\t\t - In Arrears Short Tenor Swap DV01 Shift");
+
+		System.out.println ("\t-------------------------------------------------------------------------------");
+
+		for (int i = 0; i < aSwapInAdvance.length; ++i) {
+			double dblInAdvanceDV01 = aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+
+			double dblInAdvanceShortTenorDV01 = aSwapInAdvanceShortTenor[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+
+			double dblInArrearsShortTenorDV01 = aSwapInAdvanceShortTenor[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+
+			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
+				FormatUtil.FormatDouble (dblInAdvanceDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceShortTenorDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInArrearsShortTenorDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceShortTenorDV01 - dblInAdvanceDV01, 1, 2, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInArrearsShortTenorDV01 - dblInAdvanceDV01, 1, 2, 10000.)
+			);
+		}
+
+		System.out.println ("\t-------------------------------------------------------------------------------");
 	}
 
 	public static final void main (
@@ -485,54 +627,8 @@ public class OTCFixFloatSwaps {
 
 		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 
-		String[] astrOTCMaturityTenor = new String[] {
-			"1Y", "3Y", "5Y", "7Y", "10Y"
-		};
+		String strCurrency = "USD";
 
-		System.out.println ("\n\t--------------------------------------------------------------------------------------------------------------------------------");
-
-		System.out.println ("\t JURISDICTION             1Y      ||          3Y         ||          5Y         ||          7Y         ||         10Y         ||");
-
-		System.out.println ("\t--------------------------------------------------------------------------------------------------------------------------------");
-
-		OTCRun (dtToday, "AUD", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "CAD", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "CHF", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "CNY", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "DKK", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "EUR", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "GBP", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "HKD", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "INR", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "JPY", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "JPY", "ALL", astrOTCMaturityTenor, "TIBOR");
-
-		OTCRun (dtToday, "NOK", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "NZD", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "PLN", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "SEK", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "SGD", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "USD", "LON", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "USD", "NYC", astrOTCMaturityTenor, "MAIN");
-
-		OTCRun (dtToday, "ZAR", "ALL", astrOTCMaturityTenor, "MAIN");
-
-		System.out.println ("\t--------------------------------------------------------------------------------------------------------------------------------");
+		CustomDiscountCurveBuilderSample (dtToday, strCurrency);
 	}
 }

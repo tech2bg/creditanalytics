@@ -49,7 +49,7 @@ public abstract class FixedIncomeOptionComponent implements
 	private double _dblStrike = java.lang.Double.NaN;
 	private java.lang.String _strManifestMeasure = "";
 	private double _dblNotional = java.lang.Double.NaN;
-	private org.drip.product.option.LastTradingDateSetting _ltds = null;
+	private org.drip.product.params.LastTradingDateSetting _ltds = null;
 	private org.drip.product.definition.FixedIncomeComponent _comp = null;
 
 	protected double measure (
@@ -92,7 +92,7 @@ public abstract class FixedIncomeOptionComponent implements
 		final java.lang.String strManifestMeasure,
 		final double dblStrike,
 		final double dblNotional,
-		final org.drip.product.option.LastTradingDateSetting ltds,
+		final org.drip.product.params.LastTradingDateSetting ltds,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
@@ -168,7 +168,7 @@ public abstract class FixedIncomeOptionComponent implements
 	 * @return The Option Last Trading Date Setting 
 	 */
 
-	public org.drip.product.option.LastTradingDateSetting lastTradingDateSetting()
+	public org.drip.product.params.LastTradingDateSetting lastTradingDateSetting()
 	{
 		return _ltds;
 	}

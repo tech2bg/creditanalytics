@@ -1,5 +1,5 @@
 
-package org.drip.market.product;
+package org.drip.market.otc;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,15 +29,14 @@ package org.drip.market.product;
  */
 
 /**
- * FixFloatContainer holds the settings of the standard OTC fix-float swap contracts.
+ * FixFloatConventionContainer holds the settings of the standard OTC fix-float swap contract conventions.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class FixFloatContainer {
-	private static final java.util.Map<java.lang.String, org.drip.market.product.FixFloatConvention>
-		_mapConvention = new java.util.TreeMap<java.lang.String,
-			org.drip.market.product.FixFloatConvention>();
+public class FixFloatConventionContainer {
+	private static final java.util.Map<java.lang.String, org.drip.market.otc.FixFloatConvention>
+		_mapConvention = new java.util.TreeMap<java.lang.String, org.drip.market.otc.FixFloatConvention>();
 
 	private static final java.lang.String TenorSubKey (
 		final java.lang.String strCurrency,
@@ -74,210 +73,210 @@ public class FixFloatContainer {
 	public static final boolean Init()
 	{
 		try {
-			_mapConvention.put ("AUD|ALL|36M|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("AUD", "Act/365", "AUD", "3M", "3M",
+			_mapConvention.put ("AUD|ALL|36M|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("AUD", "Act/365", "AUD", "3M", "3M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("AUD"),
 									"3M"), "3M"), 1));
 
-			_mapConvention.put ("AUD|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("AUD", "Act/365", "AUD", "6M", "6M",
+			_mapConvention.put ("AUD|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("AUD", "Act/365", "AUD", "6M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("AUD"),
 									"6M"), "6M"), 1));
 
-			_mapConvention.put ("CAD|ALL|12M|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("CAD", "Act/365", "CAD", "1Y", "1Y",
+			_mapConvention.put ("CAD|ALL|12M|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("CAD", "Act/365", "CAD", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("CAD"),
 									"3M"), "1Y"), 0));
 
-			_mapConvention.put ("CAD|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("CAD", "Act/365", "CAD", "6M", "6M",
+			_mapConvention.put ("CAD|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("CAD", "Act/365", "CAD", "6M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("CAD"),
 									"3M"), "6M"), 0));
 
-			_mapConvention.put ("CHF|ALL|12M|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("CHF", "30/360", "CHF", "1Y", "1Y",
+			_mapConvention.put ("CHF|ALL|12M|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("CHF", "30/360", "CHF", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("CHF"),
 									"3M"), "3M"), 2));
 
-			_mapConvention.put ("CHF|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("CHF", "30/360", "CHF", "1Y", "1Y",
+			_mapConvention.put ("CHF|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("CHF", "30/360", "CHF", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("CHF"),
 									"6M"), "6M"), 2));
 
-			_mapConvention.put ("CNY|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("CNY", "Act/365", "CNY", "3M", "3M",
+			_mapConvention.put ("CNY|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("CNY", "Act/365", "CNY", "3M", "3M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("CNY"),
 									"1W"), "3M"), 2));
 
-			_mapConvention.put ("DKK|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("DKK", "30/360", "DKK", "1Y", "1Y",
+			_mapConvention.put ("DKK|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("DKK", "30/360", "DKK", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("DKK"),
 									"6M"), "6M"), 2));
 
-			_mapConvention.put ("EUR|ALL|12M|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("EUR", "30/360", "EUR", "1Y", "1Y",
+			_mapConvention.put ("EUR|ALL|12M|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("EUR", "30/360", "EUR", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("EUR"),
 									"3M"), "3M"), 2));
 
-			_mapConvention.put ("EUR|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("EUR", "30/360", "EUR", "1Y", "1Y",
+			_mapConvention.put ("EUR|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("EUR", "30/360", "EUR", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("EUR"),
 									"6M"), "6M"), 2));
 
-			_mapConvention.put ("GBP|ALL|12M|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("GBP", "Act/365", "GBP", "1Y", "1Y",
+			_mapConvention.put ("GBP|ALL|12M|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("GBP", "Act/365", "GBP", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("GBP"),
 									"3M"), "3M"), 0));
 
-			_mapConvention.put ("GBP|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("GBP", "Act/365", "GBP", "6M", "6M",
+			_mapConvention.put ("GBP|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("GBP", "Act/365", "GBP", "6M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("GBP"),
 									"6M"), "6M"), 0));
 
-			_mapConvention.put ("HKD|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("HKD", "Act/365", "HKD", "3M", "3M",
+			_mapConvention.put ("HKD|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("HKD", "Act/365", "HKD", "3M", "3M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("HKD"),
 									"3M"), "3M"), 0));
 
-			_mapConvention.put ("INR|ALL|12M|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("INR", "Act/365", "INR", "1Y", "1Y",
+			_mapConvention.put ("INR|ALL|12M|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("INR", "Act/365", "INR", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("INR"),
 									"3M"), "3M"), 2));
 
-			_mapConvention.put ("INR|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("INR", "Act/365", "INR", "6M", "6M",
+			_mapConvention.put ("INR|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("INR", "Act/365", "INR", "6M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("INR"),
 									"6M"), "6M"), 2));
 
-			_mapConvention.put ("JPY|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("JPY", "Act/365", "JPY", "6M", "6M",
+			_mapConvention.put ("JPY|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("JPY", "Act/365", "JPY", "6M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("JPY"),
 									"6M"), "6M"), 2));
 
-			_mapConvention.put ("JPY|ALL|MAX|TIBOR", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("JPY", "Act/365", "JPY", "6M", "6M",
+			_mapConvention.put ("JPY|ALL|MAX|TIBOR", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("JPY", "Act/365", "JPY", "6M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromName ("JPY-TIBOR"),
 									"3M"), "3M"), 2));
 
-			_mapConvention.put ("NOK|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("NOK", "30/360", "NOK", "1Y", "1Y",
+			_mapConvention.put ("NOK|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("NOK", "30/360", "NOK", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("NOK"),
 									"6M"), "6M"), 2));
 
-			_mapConvention.put ("NZD|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("NZD", "Act/365", "NZD", "6M", "6M",
+			_mapConvention.put ("NZD|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("NZD", "Act/365", "NZD", "6M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("NZD"),
 									"3M"), "3M"), 0));
 
-			_mapConvention.put ("PLN|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("PLN", "Act/Act ISDA", "PLN", "1Y", "1Y",
+			_mapConvention.put ("PLN|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("PLN", "Act/Act ISDA", "PLN", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("PLN"),
 									"6M"), "6M"), 2));
 
-			_mapConvention.put ("SEK|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("SEK", "30/360", "SEK", "1Y", "1Y",
+			_mapConvention.put ("SEK|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("SEK", "30/360", "SEK", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("SEK"),
 									"6M"), "6M"), 2));
 
-			_mapConvention.put ("SGD|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("SGD", "Act/365", "SGD", "6M", "6M",
+			_mapConvention.put ("SGD|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("SGD", "Act/365", "SGD", "6M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("SGD"),
 									"6M"), "6M"), 2));
 
-			_mapConvention.put ("USD|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("USD", "30/360", "USD", "6M", "6M",
+			_mapConvention.put ("USD|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("USD", "30/360", "USD", "6M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("USD"),
 									"3M"), "3M"), 2));
 
-			_mapConvention.put ("USD|LON|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("USD", "Act/360", "USD", "1Y", "1Y",
+			_mapConvention.put ("USD|LON|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("USD", "Act/360", "USD", "1Y", "1Y",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("USD"),
 									"3M"), "3M"), 2));
 
-			_mapConvention.put ("USD|NYC|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("USD", "30/360", "USD", "6M", "6M",
+			_mapConvention.put ("USD|NYC|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("USD", "30/360", "USD", "6M", "6M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("USD"),
 									"3M"), "3M"), 2));
 
-			_mapConvention.put ("ZAR|ALL|MAX|MAIN", new org.drip.market.product.FixFloatConvention (new
-				org.drip.market.product.FixedStreamConvention ("ZAR", "Act/365", "ZAR", "3M", "3M",
+			_mapConvention.put ("ZAR|ALL|MAX|MAIN", new org.drip.market.otc.FixFloatConvention (new
+				org.drip.market.otc.FixFloatFixedConvention ("ZAR", "Act/365", "ZAR", "3M", "3M",
 					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
-						new org.drip.market.product.FloatStreamConvention (
+						new org.drip.market.otc.FixFloatFloatConvention (
 							org.drip.state.identifier.ForwardLabel.Create (
 								org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction ("ZAR"),
 									"3M"), "3M"), 0));
@@ -298,7 +297,7 @@ public class FixFloatContainer {
 	 * @return The Fix-Float Convention
 	 */
 
-	public static final org.drip.market.product.FixFloatConvention ConventionFromJurisdiction (
+	public static final org.drip.market.otc.FixFloatConvention ConventionFromJurisdiction (
 		final java.lang.String strJurisdictionName)
 	{
 		if (null == strJurisdictionName) return null;
@@ -317,7 +316,7 @@ public class FixFloatContainer {
 	 * @return The Fix-Float Convention
 	 */
 
-	public static final org.drip.market.product.FixFloatConvention ConventionFromJurisdictionMaturity (
+	public static final org.drip.market.otc.FixFloatConvention ConventionFromJurisdictionMaturity (
 		final java.lang.String strJurisdictionName,
 		final java.lang.String strMaturityTenor)
 	{
@@ -338,7 +337,7 @@ public class FixFloatContainer {
 	 * @return The Fix-Float Convention
 	 */
 
-	public static final org.drip.market.product.FixFloatConvention ConventionFromJurisdictionLocation (
+	public static final org.drip.market.otc.FixFloatConvention ConventionFromJurisdictionLocation (
 		final java.lang.String strJurisdictionName,
 		final java.lang.String strLocation)
 	{
@@ -358,7 +357,7 @@ public class FixFloatContainer {
 	 * @return The Fix-Float Convention
 	 */
 
-	public static final org.drip.market.product.FixFloatConvention ConventionFromJurisdictionIndex (
+	public static final org.drip.market.otc.FixFloatConvention ConventionFromJurisdictionIndex (
 		final java.lang.String strJurisdictionName,
 		final java.lang.String strIndexName)
 	{
@@ -381,7 +380,7 @@ public class FixFloatContainer {
 	 * @return The Fix-Float Convention
 	 */
 
-	public static final org.drip.market.product.FixFloatConvention ConventionFromJurisdiction (
+	public static final org.drip.market.otc.FixFloatConvention ConventionFromJurisdiction (
 		final java.lang.String strJurisdictionName,
 		final java.lang.String strLocation,
 		final java.lang.String strMaturityTenor,

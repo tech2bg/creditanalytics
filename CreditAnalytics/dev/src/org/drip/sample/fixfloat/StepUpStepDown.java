@@ -1,5 +1,5 @@
 
-package org.drip.sample.swaps;
+package org.drip.sample.fixfloat;
 
 import java.util.List;
 
@@ -8,10 +8,12 @@ import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
+import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
+import org.drip.product.params.FactorSchedule;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
@@ -29,7 +31,6 @@ import org.drip.state.representation.LatentStateSpecification;
 
 /*!
  * Copyright (C) 2015 Lakshmi Krishnamurthy
- * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -52,24 +53,12 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /**
- * InAdvanceSwap discount curve calibration and input instrument calibration quote recovery. It shows
- *  the following:
- * 	- Construct the Array of Deposit/Swap Instruments and their Quotes from the given set of parameters.
- * 	- Construct the Deposit/Swap Instrument Set Stretch Builder.
- * 	- Set up the Linear Curve Calibrator using the following parameters:
- * 		- Cubic Exponential Mixture Basis Spline Set
- * 		- Ck = 2, Segment Curvature Penalty = 2
- * 		- Quadratic Rational Shape Controller
- * 		- Natural Boundary Setting
- * 	- Construct the Shape Preserving Discount Curve by applying the linear curve calibrator to the array
- * 		of Cash and Swap Stretches.
- * 	- Cross-Comparison of the Cash/Swap Calibration Instrument "Rate" metric across the different curve
- * 		construction methodologies.
+ * StepUpStepDown demonstrates the construction and Valuation of in-advance step-up and step-down swaps.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class InAdvanceSwap {
+public class StepUpStepDown {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -217,6 +206,7 @@ public class InAdvanceSwap {
 	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String strCurrency,
+		final FactorSchedule fsCoupon,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
@@ -257,7 +247,7 @@ public class InAdvanceSwap {
 			strCurrency,
 			null,
 			-1.,
-			null,
+			fsCoupon,
 			null,
 			null,
 			null
@@ -269,7 +259,7 @@ public class InAdvanceSwap {
 			strCurrency,
 			null,
 			1.,
-			null,
+			fsCoupon,
 			null,
 			null,
 			null
@@ -366,6 +356,68 @@ public class InAdvanceSwap {
 		);
 	}
 
+	private static final FactorSchedule StepDown (
+		final JulianDate dtSpot)
+	{
+		return FactorSchedule.FromDateFactorArray (
+			new double[] {
+				dtSpot.julian(),
+				dtSpot.addYears (2).julian(),
+				dtSpot.addYears (4).julian(),
+				dtSpot.addYears (6).julian(),
+				dtSpot.addYears (10).julian(),
+				dtSpot.addYears (15).julian(),
+				dtSpot.addYears (21).julian(),
+				dtSpot.addYears (29).julian(),
+				dtSpot.addYears (36).julian(),
+				dtSpot.addYears (51).julian()
+			},
+			new double[] {
+				1.00,
+				0.99,
+				0.97,
+				0.94,
+				0.90,
+				0.85,
+				0.78,
+				0.70,
+				0.61,
+				0.51
+			}
+		);
+	}
+
+	private static final FactorSchedule StepUp (
+		final JulianDate dtSpot)
+	{
+		return FactorSchedule.FromDateFactorArray (
+			new double[] {
+				dtSpot.julian(),
+				dtSpot.addYears (2).julian(),
+				dtSpot.addYears (4).julian(),
+				dtSpot.addYears (6).julian(),
+				dtSpot.addYears (10).julian(),
+				dtSpot.addYears (15).julian(),
+				dtSpot.addYears (21).julian(),
+				dtSpot.addYears (29).julian(),
+				dtSpot.addYears (36).julian(),
+				dtSpot.addYears (51).julian()
+			},
+			new double[] {
+				1.00,
+				1.01,
+				1.03,
+				1.06,
+				1.10,
+				1.15,
+				1.21,
+				1.28,
+				1.36,
+				1.45
+			}
+		);
+	}
+
 	/*
 	 * This sample demonstrates discount curve calibration and input instrument calibration quote recovery.
 	 * 	It shows the following:
@@ -441,9 +493,28 @@ public class InAdvanceSwap {
 		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapInAdvance = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
+			null,
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			}
+		);
+
+		FixFloatComponent[] aSwapInAdvanceStepUp = SwapInstrumentsFromMaturityTenor (
+			dtSpot,
+			strCurrency,
+			StepUp (dtSpot),
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			}
+		);
+
+		FixFloatComponent[] aSwapInAdvanceStepDown = SwapInstrumentsFromMaturityTenor (
+			dtSpot,
+			strCurrency,
+			StepDown (dtSpot),
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
 			}
@@ -458,7 +529,7 @@ public class InAdvanceSwap {
 		 */
 
 		LatentStateStretchSpec swapStretch = SwapStretch (
-			aSwapComp,
+			aSwapInAdvance,
 			adblSwapQuote
 		);
 
@@ -507,61 +578,94 @@ public class InAdvanceSwap {
 			1.
 		);
 
+		CurveSurfaceQuoteSet csqs = MarketParamsBuilder.Create (dc, null, null, null, null, null, null);
+
 		/*
-		 * Cross-Comparison of the Deposit Calibration Instrument "Rate" metric across the different curve
+		 * Cross-Comparison of the In-Advance/Arrears Swap "Rate" metric across the different curve
 		 * 	construction methodologies.
 		 */
 
-		System.out.println ("\n\t----------------------------------------------------------------");
+		System.out.println ("\n\t-------------------------------------------------------------------------------");
 
-		System.out.println ("\t     DEPOSIT INSTRUMENTS CALIBRATION RECOVERY");
+		System.out.println ("\t     IN-ADVANCE STEP UP/DOWN SWAP METRIC COMPARISON");
 
-		System.out.println ("\t----------------------------------------------------------------");
+		System.out.println ("\t-------------------------------------------------------------------------------");
 
-		for (int i = 0; i < aDepositComp.length; ++i)
-			System.out.println ("\t[" + aDepositComp[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aDepositComp[i].measureValue (valParams, null,
-					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
+		System.out.println ("\t\tL -> R:");
 
-		/*
-		 * Cross-Comparison of the EDF Calibration Instrument "Rate" metric across the different curve
-		 * 	construction methodologies.
-		 */
+		System.out.println ("\t\t\t - Swap Maturity");
 
-		System.out.println ("\n\t----------------------------------------------------------------");
+		System.out.println ("\t\t\t - In Advance Calibration Quote");
 
-		System.out.println ("\t     EDF INSTRUMENTS CALIBRATION RECOVERY");
+		System.out.println ("\t\t\t - In Advance Fair Premium");
 
-		System.out.println ("\t----------------------------------------------------------------");
+		System.out.println ("\t\t\t - In Advance Swap Rate");
 
-		for (int i = 0; i < aEDFComp.length; ++i)
-			System.out.println ("\t[" + aEDFComp[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aEDFComp[i].measureValue (valParams, null,
-					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblEDFQuote[i], 1, 6, 1.));
+		System.out.println ("\t\t\t - In Advance Step Up Swap Rate");
 
-		/*
-		 * Cross-Comparison of the Swap Calibration Instrument "Rate" metric across the different curve
-		 * 	construction methodologies.
-		 */
+		System.out.println ("\t\t\t - In Advance Step Down Swap Rate");
 
-		System.out.println ("\n\t----------------------------------------------------------------");
+		System.out.println ("\t\t\t - In Advance Step Up Swap Rate Shift");
 
-		System.out.println ("\t     SWAP INSTRUMENTS CALIBRATION RECOVERY");
+		System.out.println ("\t\t\t - In Advance Step Down Swap Rate Shift");
 
-		System.out.println ("\t----------------------------------------------------------------");
+		System.out.println ("\t-------------------------------------------------------------------------------");
 
-		for (int i = 0; i < aSwapComp.length; ++i)
-			System.out.println ("\t[" + aSwapComp[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aSwapComp[i].measureValue (valParams, null,
-					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.) + " | " +
-							FormatUtil.FormatDouble (aSwapComp[i].measureValue (valParams, null,
-								MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
-									null, "FairPremium"), 1, 6, 1.));
+		for (int i = 0; i < aSwapInAdvance.length; ++i) {
+			double dblInAdvanceStepUpFairPremium = aSwapInAdvanceStepUp[i].measureValue (valParams, null, csqs, null, "FairPremium");
 
-		System.out.println ("\t----------------------------------------------------------------");
+			double dblInAdvanceStepDownFairPremium = aSwapInAdvanceStepDown[i].measureValue (valParams, null, csqs, null, "FairPremium");
+
+			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
+				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "CalibSwapRate"), 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FairPremium"), 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepUpFairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepUpFairPremium - adblSwapQuote[i], 1, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepDownFairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepDownFairPremium - adblSwapQuote[i], 1, 0, 10000.)
+			);
+		}
+
+		System.out.println ("\n\t-------------------------------------------------------------------------------");
+
+		System.out.println ("\t     IN-ADVANCE STEP UP/DOWN SWAP DV01 COMPARISON");
+
+		System.out.println ("\t-------------------------------------------------------------------------------");
+
+		System.out.println ("\t\tL -> R:");
+
+		System.out.println ("\t\t\t - Swap Maturity");
+
+		System.out.println ("\t\t\t - In Advance Swap DV01");
+
+		System.out.println ("\t\t\t - In Advance Step Up Swap DV01");
+
+		System.out.println ("\t\t\t - In Advance Step Up Swap DV01 Shift");
+
+		System.out.println ("\t\t\t - In Advance Step Down Swap DV01");
+
+		System.out.println ("\t\t\t - In Advance Step Down Swap DV01 Shift");
+
+		System.out.println ("\t-------------------------------------------------------------------------------");
+
+		for (int i = 0; i < aSwapInAdvance.length; ++i) {
+			double dblInAdvanceDV01 = aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+
+			double dblInAdvanceStepUpDV01 = aSwapInAdvanceStepUp[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+
+			double dblInAdvanceStepDownDV01 = aSwapInAdvanceStepDown[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+
+			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
+				FormatUtil.FormatDouble (dblInAdvanceDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepUpDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepUpDV01 - dblInAdvanceDV01, 1, 2, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepDownDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceStepDownDV01 - dblInAdvanceDV01, 1, 2, 10000.)
+			);
+		}
+
+		System.out.println ("\t-------------------------------------------------------------------------------");
 	}
 
 	public static final void main (

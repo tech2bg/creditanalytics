@@ -60,7 +60,7 @@ public class FixFloatEuropeanOption extends org.drip.product.option.FixedIncomeO
 		final boolean bIsReceiver,
 		final double dblStrike,
 		final double dblNotional,
-		final org.drip.product.option.LastTradingDateSetting ltds,
+		final org.drip.product.params.LastTradingDateSetting ltds,
 		final java.lang.String strDayCount,
 		final java.lang.String strCalendar)
 		throws java.lang.Exception
@@ -98,7 +98,7 @@ public class FixFloatEuropeanOption extends org.drip.product.option.FixedIncomeO
 
 		double dblExerciseDate = exerciseDate().julian();
 
-		org.drip.product.option.LastTradingDateSetting ltds = lastTradingDateSetting();
+		org.drip.product.params.LastTradingDateSetting ltds = lastTradingDateSetting();
 
 		try {
 			if (null != ltds && dblValueDate >= ltds.lastTradingDate (_stir.effectiveDate().julian(),

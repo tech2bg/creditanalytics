@@ -1,5 +1,5 @@
 
-package org.drip.market.product;
+package org.drip.market.exchange;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -39,9 +39,9 @@ public class FuturesOptions {
 	private java.lang.String _strTradingMode = "";
 	private java.lang.String _strFullyQualifiedName = "";
 	private
-		org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.product.option.LastTradingDateSetting[]>
+		org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.product.params.LastTradingDateSetting[]>
 			_mapLTDS = new
-				org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.product.option.LastTradingDateSetting[]>();
+				org.drip.analytics.support.CaseInsensitiveHashMap<org.drip.product.params.LastTradingDateSetting[]>();
 
 	/**
 	 * FuturesOptions Constructor
@@ -95,7 +95,7 @@ public class FuturesOptions {
 
 	public boolean setLDTS (
 		final java.lang.String strExchange,
-		final org.drip.product.option.LastTradingDateSetting[] aLTDS)
+		final org.drip.product.params.LastTradingDateSetting[] aLTDS)
 	{
 		if (null == strExchange || strExchange.isEmpty() || null == aLTDS || 0 == aLTDS.length) return false;
 
@@ -112,7 +112,7 @@ public class FuturesOptions {
 	 * @return The LTDS Array
 	 */
 
-	public org.drip.product.option.LastTradingDateSetting[] ltdsArray (
+	public org.drip.product.params.LastTradingDateSetting[] ltdsArray (
 		final java.lang.String strExchange)
 	{
 		if (null == strExchange || strExchange.isEmpty() || !_mapLTDS.containsKey (strExchange)) return null;

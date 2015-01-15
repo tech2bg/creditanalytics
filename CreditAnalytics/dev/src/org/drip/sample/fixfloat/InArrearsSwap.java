@@ -1,5 +1,5 @@
 
-package org.drip.sample.swaps;
+package org.drip.sample.fixfloat;
 
 import java.util.List;
 
@@ -52,12 +52,12 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /**
- * LongTenorSwap demonstrates the Construction and Valuation of In-Advance and In-Arrears Long Tenor Swap.
+ * InArrearsSwap demonstrates the Construction and Valuation of a In-Arrears Swap.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class LongTenorSwap {
+public class InArrearsSwap {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -207,15 +207,13 @@ public class LongTenorSwap {
 		final JulianDate dtEffective,
 		final String strCurrency,
 		final String[] astrMaturityTenor,
-		final int iRefPeriodType,
-		final String strFloatingTenor,
-		final String strCompositeTenor)
+		final int iRefPeriodType)
 		throws Exception
 	{
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			AnalyticsHelper.TenorToFreq (strCompositeTenor),
+			2,
 			"Act/360",
 			false,
 			"Act/360",
@@ -226,16 +224,16 @@ public class LongTenorSwap {
 		);
 
 		ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-			strCompositeTenor,
+			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
-			ForwardLabel.Create (strCurrency, strFloatingTenor),
+			ForwardLabel.Create (strCurrency, "6M"),
 			iRefPeriodType,
 			0.
 		);
 
 		ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-			strCompositeTenor,
+			"6M",
 			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
 			null,
 			0.,
@@ -244,8 +242,8 @@ public class LongTenorSwap {
 		);
 
 		CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-			AnalyticsHelper.TenorToFreq (strCompositeTenor),
-			strCompositeTenor,
+			2,
+			"6M",
 			strCurrency,
 			null,
 			-1.,
@@ -256,8 +254,8 @@ public class LongTenorSwap {
 		);
 
 		CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-			AnalyticsHelper.TenorToFreq (strCompositeTenor),
-			strCompositeTenor,
+			2,
+			"6M",
 			strCurrency,
 			null,
 			1.,
@@ -276,14 +274,14 @@ public class LongTenorSwap {
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
 			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtEffective,
-				strCompositeTenor,
+				"6M",
 				astrMaturityTenor[i],
 				null
 			);
 
 			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtEffective,
-				strCompositeTenor,
+				"6M",
 				astrMaturityTenor[i],
 				null
 			);
@@ -440,31 +438,20 @@ public class LongTenorSwap {
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
 			},
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			"6M",
-			"6M"
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE
 		);
 
-		FixFloatComponent[] aSwapInAdvanceLongTenor = SwapInstrumentsFromMaturityTenor (
+		/*
+		 * Construct the Array of Swap Instruments and their Quotes from the given set of parameters
+		 */
+
+		FixFloatComponent[] aSwapInArrears = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
 			},
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			"3M",
-			"12M"
-		);
-
-		FixFloatComponent[] aSwapInArrearsLongTenor = SwapInstrumentsFromMaturityTenor (
-			dtSpot,
-			strCurrency,
-			new java.lang.String[] {
-				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
-			},
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ARREARS,
-			"3M",
-			"12M"
+			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ARREARS
 		);
 
 		double[] adblSwapQuote = new double[] {
@@ -534,7 +521,7 @@ public class LongTenorSwap {
 
 		System.out.println ("\n\t-------------------------------------------------------------------------------");
 
-		System.out.println ("\t            IN-ADVANCE/IN-ARREARS LONG TENOR SWAP METRIC COMPARISON");
+		System.out.println ("\t     IN-ADVANCE/IN-ARREARS SWAP INSTRUMENTS METRIC COMPARISON");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
@@ -548,35 +535,27 @@ public class LongTenorSwap {
 
 		System.out.println ("\t\t\t - In Advance Swap Rate");
 
-		System.out.println ("\t\t\t - In Advance Long Tenor Swap Rate");
+		System.out.println ("\t\t\t - In Arrears Swap Rate");
 
-		System.out.println ("\t\t\t - In Arrears Long Tenor Swap Rate");
-
-		System.out.println ("\t\t\t - In Advance Long Tenor Swap Rate Shift");
-
-		System.out.println ("\t\t\t - In Arrears Long Tenor Swap Rate Shift");
+		System.out.println ("\t\t\t - In Arrears Swap Rate Shift");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapInAdvance.length; ++i) {
-			double dblInAdvanceLongTenorFairPremium = aSwapInAdvanceLongTenor[i].measureValue (valParams, null, csqs, null, "FairPremium");
-
-			double dblInArrearsLongTenorFairPremium = aSwapInArrearsLongTenor[i].measureValue (valParams, null, csqs, null, "FairPremium");
+			double dblInArrearsFairPremium = aSwapInArrears[i].measureValue (valParams, null, csqs, null, "FairPremium");
 
 			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "CalibSwapRate"), 1, 4, 100.) + "% | " +
 				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 4, 100.) + "% | " +
 				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FairPremium"), 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceLongTenorFairPremium, 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInArrearsLongTenorFairPremium, 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceLongTenorFairPremium - adblSwapQuote[i], 1, 0, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInArrearsLongTenorFairPremium - adblSwapQuote[i], 1, 0, 10000.)
+				FormatUtil.FormatDouble (dblInArrearsFairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInArrearsFairPremium - adblSwapQuote[i], 1, 0, 10000.)
 			);
 		}
 
 		System.out.println ("\n\t-------------------------------------------------------------------------------");
 
-		System.out.println ("\t            IN-ADVANCE/IN-ARREARS LONG TENOR SWAP DV01 COMPARISON");
+		System.out.println ("\t     IN-ADVANCE/IN-ARREARS SWAP INSTRUMENTS DV01 COMPARISON");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
@@ -586,29 +565,21 @@ public class LongTenorSwap {
 
 		System.out.println ("\t\t\t - In Advance Swap DV01");
 
-		System.out.println ("\t\t\t - In Advance Long Tenor Swap DV01");
+		System.out.println ("\t\t\t - In Arrears Swap DV01");
 
-		System.out.println ("\t\t\t - In Arrears Long Tenor Swap DV01");
-
-		System.out.println ("\t\t\t - In Advance Long Tenor Swap DV01 Shift");
-
-		System.out.println ("\t\t\t - In Arrears Long Tenor Swap DV01 Shift");
+		System.out.println ("\t\t\t - In Arrears Step Down Swap DV01 Shift");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapInAdvance.length; ++i) {
 			double dblInAdvanceDV01 = aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FixedDV01");
 
-			double dblInAdvanceLongTenorDV01 = aSwapInAdvanceLongTenor[i].measureValue (valParams, null, csqs, null, "FixedDV01");
-
-			double dblInArrearsLongTenorDV01 = aSwapInAdvanceLongTenor[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+			double dblInArrearsDV01 = aSwapInArrears[i].measureValue (valParams, null, csqs, null, "FixedDV01");
 
 			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (dblInAdvanceDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceLongTenorDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInArrearsLongTenorDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceLongTenorDV01 - dblInAdvanceDV01, 1, 2, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInArrearsLongTenorDV01 - dblInAdvanceDV01, 1, 2, 10000.)
+				FormatUtil.FormatDouble (dblInArrearsDV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInArrearsDV01 - dblInAdvanceDV01, 1, 2, 10000.)
 			);
 		}
 

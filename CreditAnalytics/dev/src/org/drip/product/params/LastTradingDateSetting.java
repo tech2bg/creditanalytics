@@ -1,5 +1,5 @@
 
-package org.drip.product.option;
+package org.drip.product.params;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

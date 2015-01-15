@@ -1,5 +1,5 @@
 
-package org.drip.sample.swaps;
+package org.drip.sample.fixfloat;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.calib.*;
 import org.drip.product.creator.*;
+import org.drip.product.params.FactorSchedule;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
@@ -52,12 +53,12 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 /**
- * InAdvanceIMMSwap demonstrates the Construction and Valuation of a In-Advance IMM Swap.
+ * RollerCoasterSwap demonstrates the construction and Valuation of In-Advance Roller-Coaster Swap.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class InAdvanceIMMSwap {
+public class RollerCoasterSwap {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -205,8 +206,8 @@ public class InAdvanceIMMSwap {
 	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String strCurrency,
-		final String[] astrMaturityTenor,
-		final boolean bIsIMM)
+		final FactorSchedule fsNotional,
+		final String[] astrMaturityTenor)
 		throws Exception
 	{
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
@@ -247,7 +248,7 @@ public class InAdvanceIMMSwap {
 			null,
 			-1.,
 			null,
-			null,
+			fsNotional,
 			null,
 			null
 		);
@@ -259,7 +260,7 @@ public class InAdvanceIMMSwap {
 			null,
 			1.,
 			null,
-			null,
+			fsNotional,
 			null,
 			null
 		);
@@ -271,27 +272,15 @@ public class InAdvanceIMMSwap {
 		);
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<Double> lsFixedStreamEdgeDate = bIsIMM ? CompositePeriodBuilder.RegularEdgeDates (
+			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			) : CompositePeriodBuilder.IMMEdgeDates (
-				dtEffective,
-				3,
 				"6M",
 				astrMaturityTenor[i],
 				null
 			);
 
-			List<Double> lsFloatingStreamEdgeDate = bIsIMM ? CompositePeriodBuilder.RegularEdgeDates (
+			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
 				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			) : CompositePeriodBuilder.IMMEdgeDates (
-				dtEffective,
-				3,
 				"6M",
 				astrMaturityTenor[i],
 				null
@@ -364,6 +353,68 @@ public class InAdvanceIMMSwap {
 		return new LatentStateStretchSpec (
 			"SWAP",
 			aSegmentSpec
+		);
+	}
+
+	private static final FactorSchedule RollerCoaster1 (
+		final JulianDate dtSpot)
+	{
+		return FactorSchedule.FromDateFactorArray (
+			new double[] {
+				dtSpot.julian(),
+				dtSpot.addYears (2).julian(),
+				dtSpot.addYears (4).julian(),
+				dtSpot.addYears (6).julian(),
+				dtSpot.addYears (10).julian(),
+				dtSpot.addYears (15).julian(),
+				dtSpot.addYears (21).julian(),
+				dtSpot.addYears (29).julian(),
+				dtSpot.addYears (36).julian(),
+				dtSpot.addYears (51).julian()
+			},
+			new double[] {
+				1.00,
+				0.98,
+				0.94,
+				0.88,
+				0.80,
+				0.70,
+				0.81,
+				0.90,
+				0.96,
+				1.00
+			}
+		);
+	}
+
+	private static final FactorSchedule RollerCoaster2 (
+		final JulianDate dtSpot)
+	{
+		return FactorSchedule.FromDateFactorArray (
+			new double[] {
+				dtSpot.julian(),
+				dtSpot.addYears (2).julian(),
+				dtSpot.addYears (4).julian(),
+				dtSpot.addYears (6).julian(),
+				dtSpot.addYears (10).julian(),
+				dtSpot.addYears (15).julian(),
+				dtSpot.addYears (21).julian(),
+				dtSpot.addYears (29).julian(),
+				dtSpot.addYears (36).julian(),
+				dtSpot.addYears (51).julian()
+			},
+			new double[] {
+				1.00,
+				1.02,
+				1.06,
+				1.12,
+				1.20,
+				1.30,
+				1.19,
+				1.10,
+				1.04,
+				1.00
+			}
 		);
 	}
 
@@ -445,19 +496,28 @@ public class InAdvanceIMMSwap {
 		FixFloatComponent[] aSwapInAdvance = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
+			null,
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
-			},
-			false
+			}
 		);
 
-		FixFloatComponent[] aSwapInAdvanceIMM = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapInAdvanceRollerCoaster1 = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
+			RollerCoaster1 (dtSpot),
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
-			},
-			true
+			}
+		);
+
+		FixFloatComponent[] aSwapInAdvanceRollerCoaster2 = SwapInstrumentsFromMaturityTenor (
+			dtSpot,
+			strCurrency,
+			RollerCoaster2 (dtSpot),
+			new java.lang.String[] {
+				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y", "40Y", "50Y"
+			}
 		);
 
 		double[] adblSwapQuote = new double[] {
@@ -527,7 +587,7 @@ public class InAdvanceIMMSwap {
 
 		System.out.println ("\n\t-------------------------------------------------------------------------------");
 
-		System.out.println ("\t     IN-ADVANCE W+W/O IMM SWAP INSTRUMENTS METRIC COMPARISON");
+		System.out.println ("\t     IN-ADVANCE ROLLER COASTER SWAP METRIC COMPARISON");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
@@ -541,27 +601,35 @@ public class InAdvanceIMMSwap {
 
 		System.out.println ("\t\t\t - In Advance Swap Rate");
 
-		System.out.println ("\t\t\t - In Advance IMM Swap Rate");
+		System.out.println ("\t\t\t - In Advance Roller Coaster #1 Swap Rate");
 
-		System.out.println ("\t\t\t - In Advance IMM Swap Rate Shift");
+		System.out.println ("\t\t\t - In Advance Roller Coaster #2 Swap Rate");
+
+		System.out.println ("\t\t\t - In Advance Roller Coaster #1 Swap Rate Shift");
+
+		System.out.println ("\t\t\t - In Advance Roller Coaster #2 Swap Rate Shift");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapInAdvance.length; ++i) {
-			double dblInAdvanceIMMFairPremium = aSwapInAdvanceIMM[i].measureValue (valParams, null, csqs, null, "FairPremium");
+			double dblInAdvanceRollerCoaster1FairPremium = aSwapInAdvanceRollerCoaster1[i].measureValue (valParams, null, csqs, null, "FairPremium");
+
+			double dblInAdvanceRollerCoaster2FairPremium = aSwapInAdvanceRollerCoaster2[i].measureValue (valParams, null, csqs, null, "FairPremium");
 
 			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "CalibSwapRate"), 1, 4, 100.) + "% | " +
 				FormatUtil.FormatDouble (adblSwapQuote[i], 1, 4, 100.) + "% | " +
 				FormatUtil.FormatDouble (aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FairPremium"), 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceIMMFairPremium, 1, 4, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblInAdvanceIMMFairPremium - adblSwapQuote[i], 1, 0, 10000.)
+				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster1FairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster1FairPremium - adblSwapQuote[i], 1, 0, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster2FairPremium, 1, 4, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster2FairPremium - adblSwapQuote[i], 1, 0, 10000.)
 			);
 		}
 
 		System.out.println ("\n\t-------------------------------------------------------------------------------");
 
-		System.out.println ("\t     IN-ADVANCE W+W/O IMM SWAP INSTRUMENTS DV01 COMPARISON");
+		System.out.println ("\t     IN-ADVANCE ROLLER COASTER SWAP DV01 COMPARISON");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
@@ -571,21 +639,29 @@ public class InAdvanceIMMSwap {
 
 		System.out.println ("\t\t\t - In Advance Swap DV01");
 
-		System.out.println ("\t\t\t - In Advance IMM Swap DV01");
+		System.out.println ("\t\t\t - In Advance Roller Coaster #1 DV01");
 
-		System.out.println ("\t\t\t - In Advance IMM Swap DV01 Shift");
+		System.out.println ("\t\t\t - In Advance Roller Coaster #1 DV01 Shift");
+
+		System.out.println ("\t\t\t - In Advance Roller Coaster #2 DV01");
+
+		System.out.println ("\t\t\t - In Advance Roller Coaster #2 DV01 Shift");
 
 		System.out.println ("\t-------------------------------------------------------------------------------");
 
 		for (int i = 0; i < aSwapInAdvance.length; ++i) {
 			double dblInAdvanceDV01 = aSwapInAdvance[i].measureValue (valParams, null, csqs, null, "FixedDV01");
 
-			double dblInAdvanceIMMDV01 = aSwapInAdvanceIMM[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+			double dblInAdvanceRollerCoaster1DV01 = aSwapInAdvanceRollerCoaster1[i].measureValue (valParams, null, csqs, null, "FixedDV01");
+
+			double dblInAdvanceRollerCoaster2DV01 = aSwapInAdvanceRollerCoaster2[i].measureValue (valParams, null, csqs, null, "FixedDV01");
 
 			System.out.println ("\t[" + aSwapInAdvance[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (dblInAdvanceDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceIMMDV01, 2, 1, 10000.) + " | " +
-				FormatUtil.FormatDouble (dblInAdvanceIMMDV01 - dblInAdvanceDV01, 1, 2, 10000.)
+				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster1DV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster1DV01 - dblInAdvanceDV01, 1, 2, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster2DV01, 2, 1, 10000.) + " | " +
+				FormatUtil.FormatDouble (dblInAdvanceRollerCoaster2DV01 - dblInAdvanceDV01, 1, 2, 10000.)
 			);
 		}
 

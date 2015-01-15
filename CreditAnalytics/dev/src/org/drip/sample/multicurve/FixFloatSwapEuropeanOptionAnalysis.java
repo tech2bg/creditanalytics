@@ -7,8 +7,8 @@ import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
-import org.drip.market.product.FixFloatContainer;
-import org.drip.market.product.FixFloatConvention;
+import org.drip.market.otc.FixFloatConventionContainer;
+import org.drip.market.otc.FixFloatConvention;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -16,7 +16,7 @@ import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.option.FixFloatEuropeanOption;
-import org.drip.product.option.LastTradingDateSetting;
+import org.drip.product.params.LastTradingDateSetting;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
@@ -67,7 +67,7 @@ public class FixFloatSwapEuropeanOptionAnalysis {
 		final String strMaturityTenor,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatContainer.ConventionFromJurisdiction (
+		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
 			strCurrency,
 			"ALL",
 			strMaturityTenor,

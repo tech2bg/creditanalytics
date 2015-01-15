@@ -769,13 +769,13 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		ValuationParams valParams = new ValuationParams (dtToday, dtToday, strCurrency);
 
-		CompositePeriod period = lsCP.get (1);
+		CompositePeriod period = lsCP.get (0);
 
 		double[] adblOISVol = new double [] {0.1, 0.3, 0.5};
 		double[] adblUSDFundingVol = new double [] {0.1, 0.3, 0.5};
 		double[] adblUSDFundingUSDOISCorrelation = new double [] {-0.3, 0.0, 0.3};
 
-		System.out.println ("\n\t----------------------------------------------------------------------");
+		System.out.println ("\n\t-------------------------------------------------------------------------------------");
 
 		System.out.println ("\tInput Order (LHS) L->R:");
 
@@ -785,7 +785,7 @@ public class OvernightArithmeticCompoundingConvexity {
 
 		System.out.println ("\t\tUnadjusted Fair Premium, Compounding Adjustment Factor (% - Relative), Convexity Adjustment Factor (% - Relative)\n");
 
-		System.out.println ("\t----------------------------------------------------------------------");
+		System.out.println ("\t-------------------------------------------------------------------------------------");
 
 		for (double dblOISVol : adblOISVol) {
 			for (double dblUSDFundingVol : adblUSDFundingVol) {
@@ -803,5 +803,7 @@ public class OvernightArithmeticCompoundingConvexity {
 					);
 			}
 		}
+
+		System.out.println ("\t-------------------------------------------------------------------------------------");
 	}
 }

@@ -1,5 +1,8 @@
 
-package org.drip.market.product;
+package org.drip.sample.futures;
+
+import org.drip.market.exchange.*;
+import org.drip.service.api.CreditAnalytics;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -30,53 +33,40 @@ package org.drip.market.product;
  */
 
 /**
- * ShortTermFutures contains the details of the exchange-traded Short-Term Futures Contracts.
- *
+ * IRSFuturesDefinition demonstrates the functionality to retrieve the IRS Futures Definitions for the
+ *  various Jurisdictions.
+ * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class ShortTermFutures {
-	private java.lang.String[] _astrExchange = null;
-	private double _dblNotional = java.lang.Double.NaN;
-
-	/**
-	 * ShortTermFutures constructor
-	 * 
-	 * @param astrExchange Array of Exchanges
-	 * @param dblNotional Notional
-	 * 
-	 * @throws java.lang.Exception Thrown if inputs are invalid
-	 */
-
-	public ShortTermFutures (
-		final java.lang.String[] astrExchange,
-		final double dblNotional)
-		throws java.lang.Exception
+public class IRSFuturesDefinition {
+	private static final void DisplayConvention (
+		final String strCurrency,
+		final String strTenor)
 	{
-		if (null == (_astrExchange = astrExchange) || 0 == _astrExchange.length ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblNotional = dblNotional))
-			throw new java.lang.Exception ("ShortTermFutures ctr: Invalid Inputs");
+		DeliverableSwapFutures dsf = DeliverableSwapFuturesContainer.ProductInfo (
+			strCurrency,
+			strTenor
+		);
+
+		System.out.println ("\t[" + strCurrency + "-" + strTenor + "] => " +
+			dsf.nominal() + " | " +
+			dsf.rateIncrement() + " | " +
+			dsf.ltds()
+		);
 	}
 
-	/**
-	 * Retrieve the List of Exchanges
-	 * 
-	 * @return The List of Exchanges
-	 */
-
-	public java.lang.String[] exchanges()
+	public static final void main (
+		final String[] args)
 	{
-		return _astrExchange;
-	}
+		CreditAnalytics.Init ("");
 
-	/**
-	 * Retrieve the Traded Notional
-	 * 
-	 * @return The Exchange Notional
-	 */
+		DisplayConvention ("USD", "2Y");
 
-	public double notional()
-	{
-		return _dblNotional;
+		DisplayConvention ("USD", "5Y");
+
+		DisplayConvention ("USD", "10Y");
+
+		DisplayConvention ("USD", "30Y");
 	}
 }

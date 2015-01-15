@@ -75,20 +75,32 @@ public class EnvManager {
 			return null;
 		}
 
-		if (!org.drip.market.product.ShortTermFuturesContainer.Init()) {
+		if (!org.drip.market.exchange.ShortTermFuturesContainer.Init()) {
 			System.out.println ("EnvManager::InitEnv => Cannot Initialize Short Term Futures!");
 
 			return null;
 		}
 
-		if (!org.drip.market.product.FuturesOptionsContainer.Init()) {
+		if (!org.drip.market.exchange.FuturesOptionsContainer.Init()) {
 			System.out.println ("EnvManager::InitEnv => Cannot Initialize Short Term Futures Options!");
 
 			return null;
 		}
 
-		if (!org.drip.market.product.FixFloatContainer.Init()) {
+		if (!org.drip.market.otc.FixFloatConventionContainer.Init()) {
 			System.out.println ("EnvManager::InitEnv => Cannot Initialize Fix-Float Convention Settings!");
+
+			return null;
+		}
+
+		if (!org.drip.market.otc.FloatFloatConventionContainer.Init()) {
+			System.out.println ("EnvManager::InitEnv => Cannot Initialize Float-Float Convention Settings!");
+
+			return null;
+		}
+
+		if (!org.drip.market.exchange.DeliverableSwapFuturesContainer.Init()) {
+			System.out.println ("EnvManager::InitEnv => Cannot Initialize Deliverable Swap Futures Settings!");
 
 			return null;
 		}
