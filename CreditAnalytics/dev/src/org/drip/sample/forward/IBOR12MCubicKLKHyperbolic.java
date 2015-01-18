@@ -60,7 +60,7 @@ public class IBOR12MCubicKLKHyperbolic {
 		JulianDate dtValue = DateUtil.CreateFromYMD (2015, DateUtil.JANUARY, 7);
 
 		String strTenor = "12M";
-		String strCurrency = "EUR";
+		String strCurrency = "USD";
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 

@@ -128,7 +128,7 @@ public class EuropeanCallPut {
 		}
 
 		if (!fpg.compute (_dblStrike, dblTTE, dblRiskFreeRate, dblUnderlier, bIsForward,
-			dblTimeAveragedVolatility))
+			dblTimeAveragedVolatility, false))
 			return null;
 
 		double dblCallPrice = fpg.callPrice();
@@ -150,17 +150,27 @@ public class EuropeanCallPut {
 
 		mapMeasure.put ("CallDelta", fpg.callDelta());
 
+		mapMeasure.put ("CallGamma", fpg.callGamma());
+
 		mapMeasure.put ("CallPrice", dblCallPrice);
 
 		mapMeasure.put ("CallProb1", fpg.callProb1());
 
 		mapMeasure.put ("CallProb2", fpg.callProb2());
 
+		mapMeasure.put ("CallRho", fpg.callRho());
+
+		mapMeasure.put ("CallTheta", fpg.callTheta());
+
+		mapMeasure.put ("CallVega", fpg.callVega());
+
 		mapMeasure.put ("DF", fpg.df());
 
 		mapMeasure.put ("ImpliedCallVolatility", dblImpliedCallVolatility);
 
 		mapMeasure.put ("PutDelta", fpg.putDelta());
+
+		mapMeasure.put ("PutGamma", fpg.putGamma());
 
 		mapMeasure.put ("PutPrice", fpg.putPrice());
 
@@ -169,6 +179,12 @@ public class EuropeanCallPut {
 		mapMeasure.put ("PutProb1", fpg.putProb1());
 
 		mapMeasure.put ("PutProb2", fpg.putProb2());
+
+		mapMeasure.put ("PutRho", fpg.putRho());
+
+		mapMeasure.put ("PutTheta", fpg.putTheta());
+
+		mapMeasure.put ("PutVega", fpg.putVega());
 
 		mapMeasure.put ("TTE", dblTTE);
 
@@ -227,17 +243,27 @@ public class EuropeanCallPut {
 
 		setstrMeasureNames.add ("CallDelta");
 
+		setstrMeasureNames.add ("CallGamma");
+
 		setstrMeasureNames.add ("CallPrice");
 
 		setstrMeasureNames.add ("CallProb1");
 
 		setstrMeasureNames.add ("CallProb2");
 
+		setstrMeasureNames.add ("CallRho");
+
+		setstrMeasureNames.add ("CallTheta");
+
+		setstrMeasureNames.add ("CallVega");
+
 		setstrMeasureNames.add ("DF");
 
 		setstrMeasureNames.add ("ImpliedCallVolatility");
 
 		setstrMeasureNames.add ("PutDelta");
+
+		setstrMeasureNames.add ("PutGamma");
 
 		setstrMeasureNames.add ("PutPrice");
 
@@ -246,6 +272,12 @@ public class EuropeanCallPut {
 		setstrMeasureNames.add ("PutProb1");
 
 		setstrMeasureNames.add ("PutProb2");
+
+		setstrMeasureNames.add ("PutRho");
+
+		setstrMeasureNames.add ("PutTheta");
+
+		setstrMeasureNames.add ("PutVega");
 
 		setstrMeasureNames.add ("TTE");
 

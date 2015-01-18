@@ -1123,17 +1123,12 @@ public abstract class CompositePeriod {
 		} else if (!forwardLabel.match (pqs.forwardLabel())) {
 			java.util.List<org.drip.analytics.output.UnitPeriodMetrics> lsUPM = cpm.unitMetrics();
 
-			org.drip.analytics.rates.ForwardRateEstimator fre = csqs.forwardCurve (forwardLabel);
-
 			for (int i = 0; i < lsUPM.size(); ++i) {
 				org.drip.analytics.output.UnitPeriodMetrics upm = lsUPM.get (i);
 
 				try {
-					dblBaseRate = null != fre ? fre.forward (_lsCUP.get (i).endDate()) : csqs.fundingCurve
-						(fundingLabel()).libor (_lsCUP.get (i).startDate(), forwardLabel.tenor());
-
-					if (!prwc.updateValue (-1. * dblNotional * dblFX * upm.dcf() * (dblBaseRate + dblBasis) *
-						dblSurvival * dblDF * upm.convAdj().cumulative()))
+					if (!prwc.updateValue (-1. * dblNotional * dblFX * upm.dcf() * (_lsCUP.get (i).baseRate
+						(csqs) + dblBasis) * dblSurvival * dblDF * upm.convAdj().cumulative()))
 						return null;
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();

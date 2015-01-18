@@ -70,7 +70,8 @@ public class HestonImpliedVolatilitySurface {
 		double dblSpot = 1.;
 		double dblInitialVolatility = 0.1;
 
-		hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot, false, dblInitialVolatility);
+		hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot, false, dblInitialVolatility,
+			false);
 
 		return hsva.callPrice();
 	}

@@ -60,7 +60,7 @@ public class IBOR12MCubicPolyVanilla {
 		JulianDate dtValue = DateUtil.CreateFromYMD (2012, DateUtil.DECEMBER, 11);
 
 		String strTenor = "12M";
-		String strCurrency = "EUR";
+		String strCurrency = "USD";
 
 		ForwardLabel fri = ForwardLabel.Create (strCurrency, strTenor);
 

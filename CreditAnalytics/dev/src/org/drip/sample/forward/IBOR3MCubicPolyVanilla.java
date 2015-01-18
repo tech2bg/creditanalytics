@@ -201,7 +201,7 @@ public class IBOR3MCubicPolyVanilla {
 		JulianDate dtValue = DateUtil.CreateFromYMD (2012, DateUtil.DECEMBER, 11);
 
 		String strTenor = "3M";
-		String strCurrency = "EUR";
+		String strCurrency = "USD";
 
 		DiscountCurve dcEONIA = OvernightIndexCurve.MakeDC (
 			dtValue,

@@ -78,11 +78,11 @@ public abstract class ScenarioDiscountCurve {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param dcTSY The Treasury Discount Curve
-	 * @param adblQuotes Matched array of the calibration instrument quotes
-	 * @param dblBump Amount of bump to be applied
 	 * @param astrCalibMeasure Matched array of the calibration instrument measures
-	 * @param lsfc Latent State Fixings COntainer
-	 * @param quotingParams Quoting Parameters
+	 * @param adblQuote Matched array of the calibration instrument quotes
+	 * @param dblBump Amount of bump to be applied
+	 * @param lsfc Latent State Fixings Container
+	 * @param vcp Valuation Customization Parameters
 	 * @param iDCMode One of the values in the DC_ enum listed above.
 	 * 
 	 * @return Success (true), failure (false)
@@ -91,11 +91,11 @@ public abstract class ScenarioDiscountCurve {
 	public abstract boolean cookScenarioDC (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final double[] adblQuotes,
-		final double dblBump,
 		final java.lang.String[] astrCalibMeasure,
+		final double[] adblQuote,
+		final double dblBump,
 		final org.drip.param.market.LatentStateFixingsContainer lsfc,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final int iDCMode);
 
 	/**
@@ -105,14 +105,14 @@ public abstract class ScenarioDiscountCurve {
 	 * @param strCustomName Custom Scenario Name
 	 * @param valParams Valuation Parameters
 	 * @param dcTSY TSY Discount Curve
-	 * @param adblQuotes Double array of input quotes
 	 * @param astrCalibMeasure Array of calibration measures
+	 * @param adblQuote Double array of input quotes
 	 * @param lsfc Latent State Fixings Container
-	 * @param quotingParams Calibration quoting parameters
-	 * @param ntpTSY Node Tweak Parameters for the TSY Discount Curve
-	 * @param ntpDC Node Tweak Parameters for the Base Discount Curve
+	 * @param vcp Valuation Customization Parameters
+	 * @param rvtpTSY Node Tweak Parameters for the TSY Discount Curve
+	 * @param rvtpDC Node Tweak Parameters for the Base Discount Curve
 	 * 
-	 * @return Creates a custom discount curve
+	 * @return Create a custom discount curve
 	 */
 
 	public abstract boolean cookCustomDC (
@@ -120,12 +120,12 @@ public abstract class ScenarioDiscountCurve {
 		final java.lang.String strCustomName,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final double[] adblQuotes,
 		final java.lang.String[] astrCalibMeasure,
+		final double[] adblQuote,
 		final org.drip.param.market.LatentStateFixingsContainer lsfc,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
-		final org.drip.param.definition.ResponseValueTweakParams ntpTSY,
-		final org.drip.param.definition.ResponseValueTweakParams ntpDC);
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
+		final org.drip.param.definition.ResponseValueTweakParams rvtpTSY,
+		final org.drip.param.definition.ResponseValueTweakParams rvtpDC);
 
 	/**
 	 * Return the base Discount Curve

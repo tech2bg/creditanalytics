@@ -65,7 +65,7 @@ public class FloatFloatConventionContainer {
 				false, 2));
 
 			_mapConvention.put ("EUR", new org.drip.market.otc.FloatFloatConvention ("EUR", "6M", true, true,
-				false, 2));
+				true, 2));
 
 			_mapConvention.put ("GBP", new org.drip.market.otc.FloatFloatConvention ("GBP", "6M", true, true,
 				false, 0));
@@ -119,7 +119,7 @@ public class FloatFloatConventionContainer {
 	public static final org.drip.market.otc.FloatFloatConvention ConventionFromJurisdiction (
 		final java.lang.String strCurrency)
 	{
-		return null == strCurrency || strCurrency.isEmpty() || !_mapConvention.containsKey (strCurrency) ? null :
-			_mapConvention.get (strCurrency);
+		return null == strCurrency || strCurrency.isEmpty() || !_mapConvention.containsKey (strCurrency) ?
+			null : _mapConvention.get (strCurrency);
 	}
 }

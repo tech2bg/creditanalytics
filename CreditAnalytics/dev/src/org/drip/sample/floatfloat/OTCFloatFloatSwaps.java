@@ -9,7 +9,6 @@ import org.drip.analytics.support.*;
 import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.SingleStreamComponentBuilder;
 import org.drip.product.definition.*;
@@ -55,7 +54,7 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class OTCFloatFloatSwaps {
 
-	private static final FixFloatComponent OTCIRS (
+	private static final FixFloatComponent OTCFixFloat (
 		final JulianDate dtSpot,
 		final String strCurrency,
 		final String strMaturityTenor,
@@ -73,6 +72,24 @@ public class OTCFloatFloatSwaps {
 			strMaturityTenor,
 			dblCoupon,
 			0.,
+			1.
+		);
+	}
+
+	private static final FloatFloatComponent OTCFloatFloat (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strDerivedTenor,
+		final String strMaturityTenor,
+		final double dblBasis)
+	{
+		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+
+		return ffConv.createFloatFloatComponent (
+			dtSpot,
+			strDerivedTenor,
+			strMaturityTenor,
+			dblBasis,
 			1.
 		);
 	}
@@ -127,7 +144,7 @@ public class OTCFloatFloatSwaps {
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i)
-			aIRS[i] = OTCIRS (
+			aIRS[i] = OTCFixFloat (
 				dtSpot,
 				strCurrency,
 				astrMaturityTenor[i],
@@ -232,7 +249,7 @@ public class OTCFloatFloatSwaps {
 	 */
 
 	private static final FloatFloatComponent[] MakexM6MBasisSwap (
-		final JulianDate dtEffective,
+		final JulianDate dtSpot,
 		final String strCurrency,
 		final String[] astrMaturityTenor,
 		final int iTenorInMonths)
@@ -240,85 +257,14 @@ public class OTCFloatFloatSwaps {
 	{
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, "6M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
-			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, iTenorInMonths + "M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		CompositePeriodSetting cpsReference = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsDerived = new CompositePeriodSetting (
-			12 / iTenorInMonths,
-			iTenorInMonths + "M",
-			strCurrency,
-			null,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<Double> lsReferenceStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			);
-
-			List<Double> lsDerivedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aFFC[i] = OTCFloatFloat (
+				dtSpot,
+				strCurrency,
 				iTenorInMonths + "M",
 				astrMaturityTenor[i],
-				null
+				0.
 			);
-
-			Stream referenceStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsReferenceStreamEdgeDate,
-					cpsReference,
-					cfusReference
-				)
-			);
-
-			Stream derivedStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsDerivedStreamEdgeDate,
-					cpsDerived,
-					cfusDerived
-				)
-			);
-
-			aFFC[i] = new FloatFloatComponent (
-				referenceStream,
-				derivedStream,
-				new CashSettleParams (0, strCurrency, 0)
-			);
-		}
 
 		return aFFC;
 	}
@@ -414,7 +360,6 @@ public class OTCFloatFloatSwaps {
 				null
 			);
 
-			int i = 0;
 			int iFreq = 12 / iTenorInMonths;
 
 			/*
@@ -427,12 +372,13 @@ public class OTCFloatFloatSwaps {
 			 * 	c) Input Basis Swap Quote.
 			 */
 
-			for (String strMaturityTenor : astrxM6MFwdTenor) {
+			for (int i = 0; i < astrxM6MFwdTenor.length; ++i) {
+				FloatFloatComponent ffc = aFFC[i];
+				String strMaturityTenor = astrxM6MFwdTenor[i];
+
 				double dblFwdEndDate = dtSpot.addTenor (strMaturityTenor).julian();
 
 				double dblFwdStartDate = dtSpot.addTenor (strMaturityTenor).subtractTenor (strBasisTenor).julian();
-
-				FloatFloatComponent ffc = aFFC[i++];
 
 				CaseInsensitiveTreeMap<Double> mapQuarticValue = ffc.value (valParams, null, mktParamsQuarticFwd, null);
 
@@ -531,14 +477,12 @@ public class OTCFloatFloatSwaps {
 			null
 		);
 
-		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
-
-		FixedIncomeComponent ffc = ffConv.createFloatFloatComponent (
+		FloatFloatComponent ffc = OTCFloatFloat (
 			dtSpot,
+			strCurrency,
 			"3M",
-			"5Y",
-			0.,
-			1.
+			"10Y",
+			0.
 		);
 
 		ValuationParams valParams = new ValuationParams (
@@ -555,9 +499,9 @@ public class OTCFloatFloatSwaps {
 		);
 
 		System.out.println (
-			"\t[" + strCurrency + " | " + ffc.maturityDate() + "] => " +
-			FormatUtil.FormatDouble (mapFFCMeasures.get ("DerivedParBasisSpread"), 3, 1, 1.) + " | " +
-			FormatUtil.FormatDouble (mapFFCMeasures.get ("ReferenceParBasisSpread"), 3, 1, 1.)
+			"\t| " + strCurrency + "  [" + ffc.effectiveDate() + " -> " + ffc.maturityDate() + "]  =>  " +
+			FormatUtil.FormatDouble (mapFFCMeasures.get ("ReferenceParBasisSpread"), 1, 2, 1.) + "  |  " +
+			FormatUtil.FormatDouble (mapFFCMeasures.get ("DerivedParBasisSpread"), 1, 2, 1.) + "  |"
 		);
 	}
 
@@ -574,21 +518,27 @@ public class OTCFloatFloatSwaps {
 
 		JulianDate dtSpot = DateUtil.Today();
 
-		OTCFloatFloatRun ("USD", dtSpot, true);
+		OTCFloatFloatRun ("AUD", dtSpot, true);
 
-		System.out.println ("\t----------------------------------------");
+		System.out.println ("\t---------------------------------------------------------");
 
 		System.out.println ("\tL -> R:");
 
 		System.out.println ("\t\tCurrency");
 
-		System.out.println ("\t\tFloat-Float Maturity");
+		System.out.println ("\t\tFloat-Float Effective");
 
-		System.out.println ("\t\tDerived Par Basis Spread");
+		System.out.println ("\t\tFloat-Float Maturity");
 
 		System.out.println ("\t\tReference Par Basis Spread");
 
-		System.out.println ("\t----------------------------------------");
+		System.out.println ("\t\tDerived Par Basis Spread");
+
+		System.out.println ("\t---------------------------------------------------------");
+
+		System.out.println ("\t\tFLOAT-FLOAT SINGLE COMPONENT RUNS");
+
+		System.out.println ("\t---------------------------------------------------------");
 
 		OTCFloatFloatRun ("AUD", dtSpot, false);
 
@@ -600,7 +550,7 @@ public class OTCFloatFloatSwaps {
 
 		OTCFloatFloatRun ("DKK", dtSpot, false);
 
-		OTCFloatFloatRun ("EUR", dtSpot, false);
+		// OTCFloatFloatRun ("EUR", dtSpot, false);
 
 		OTCFloatFloatRun ("GBP", dtSpot, false);
 
@@ -618,12 +568,20 @@ public class OTCFloatFloatSwaps {
 
 		OTCFloatFloatRun ("SEK", dtSpot, false);
 
-		OTCFloatFloatRun ("SGD", dtSpot, false);
+		OTCFloatFloatRun ("SGD", dtSpot, false); 
 
 		OTCFloatFloatRun ("USD", dtSpot, false);
 
 		OTCFloatFloatRun ("ZAR", dtSpot, false);
 
-		System.out.println ("\t----------------------------------------");
+		System.out.println ("\t---------------------------------------------------------");
+
+		System.out.println ("\n\t---------------------------------------------------------");
+
+		System.out.println ("\t\tFIX-FLOAT COMPONENT PAIR RUNS");
+
+		System.out.println ("\t---------------------------------------------------------");
+
+		System.out.println ("\t---------------------------------------------------------");
 	}
 }

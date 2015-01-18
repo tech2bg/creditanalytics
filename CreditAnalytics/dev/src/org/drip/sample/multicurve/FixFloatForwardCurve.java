@@ -57,7 +57,7 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class FixFloatForwardCurve {
 
-	private static final FixFloatComponent OTCIRS (
+	private static final FixFloatComponent OTCFixFloat (
 		final JulianDate dtSpot,
 		final String strCurrency,
 		final String strMaturityTenor,
@@ -129,7 +129,7 @@ public class FixFloatForwardCurve {
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i)
-			aIRS[i] = OTCIRS (
+			aIRS[i] = OTCFixFloat (
 				dtSpot,
 				strCurrency,
 				astrMaturityTenor[i],

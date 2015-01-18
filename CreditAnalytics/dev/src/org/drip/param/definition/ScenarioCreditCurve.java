@@ -92,13 +92,13 @@ public abstract class ScenarioCreditCurve {
 	 * @param valParams ValuationParams
 	 * @param dc Base Discount Curve
 	 * @param dcTSY Treasury Discount Curve
-	 * @param adblQuotes Matched array of Quotes
-	 * @param dblRecovery Curve Recovery
 	 * @param astrCalibMeasure Matched array of Calibration measures
+	 * @param adblQuote Matched array of Quotes
+	 * @param dblRecovery Curve Recovery
 	 * @param lsfc Latent State Fixings Container
-	 * @param quotingParams Quoting Parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param bFlat Whether the calibration is to a flat curve
-	 * @param iCCScenario One of the values in the CC_ enum listed above. 
+	 * @param iScenario One of the values in the CC_ enum listed above. 
 	 * 
 	 * @return Success (true), failure (false)
 	 */
@@ -108,13 +108,13 @@ public abstract class ScenarioCreditCurve {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final double[] adblQuotes,
-		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
+		final double[] adblQuote,
+		final double dblRecovery,
 		final org.drip.param.market.LatentStateFixingsContainer lsfc,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final boolean bFlat,
-		final int iCCScenario);
+		final int iScenario);
 
 	/**
 	 * Cook the credit curve according to the desired tweak parameters
@@ -124,15 +124,15 @@ public abstract class ScenarioCreditCurve {
 	 * @param valParams Valuation Parameters
 	 * @param dc Discount Curve
 	 * @param dcTSY TSY Discount Curve
-	 * @param adblQuotes Double array of input quotes
-	 * @param dblRecovery Recovery Rate
 	 * @param astrCalibMeasure Array of calibration measures
+	 * @param adblQuote Double array of input quotes
+	 * @param dblRecovery Recovery Rate
 	 * @param lsfc Latent State Fixings Container
-	 * @param quotingParams Calibration quoting parameters
+	 * @param vcp Valuation Customization Parameters
 	 * @param bFlat Whether the calibration is flat
-	 * @param ntpDC Node Tweak Parameters for the Base Discount Curve
-	 * @param ntpTSY Node Tweak Parameters for the TSY Discount Curve
-	 * @param ntpCC Node Tweak Parameters for the Credit Curve
+	 * @param rvtpDC Node Tweak Parameters for the Base Discount Curve
+	 * @param rvtpTSY Node Tweak Parameters for the TSY Discount Curve
+	 * @param rvtpCC Node Tweak Parameters for the Credit Curve
 	 * 
 	 * @return True => Credit Curve successfully created
 	 */
@@ -143,15 +143,15 @@ public abstract class ScenarioCreditCurve {
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.analytics.rates.DiscountCurve dcTSY,
-		final double[] adblQuotes,
-		final double dblRecovery,
 		final java.lang.String[] astrCalibMeasure,
+		final double[] adblQuote,
+		final double dblRecovery,
 		final org.drip.param.market.LatentStateFixingsContainer lsfc,
-		final org.drip.param.valuation.ValuationCustomizationParams quotingParams,
+		final org.drip.param.valuation.ValuationCustomizationParams vcp,
 		final boolean bFlat,
-		final org.drip.param.definition.ResponseValueTweakParams ntpDC,
-		final org.drip.param.definition.ResponseValueTweakParams ntpTSY,
-		final org.drip.param.definition.ResponseValueTweakParams ntpCC);
+		final org.drip.param.definition.ResponseValueTweakParams rvtpDC,
+		final org.drip.param.definition.ResponseValueTweakParams rvtpTSY,
+		final org.drip.param.definition.ResponseValueTweakParams rvtpCC);
 
 	/**
 	 * Return the base credit curve

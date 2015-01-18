@@ -7,6 +7,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -58,6 +59,25 @@ import org.drip.state.representation.LatentStateSpecification;
  */
 
 public class IBORCurve {
+
+	private static final FloatFloatComponent OTCFloatFloat (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strDerivedTenor,
+		final String strMaturityTenor,
+		final double dblBasis)
+	{
+		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+
+		return ffConv.createFloatFloatComponent (
+			dtSpot,
+			strDerivedTenor,
+			strMaturityTenor,
+			dblBasis,
+			1.
+		);
+	}
+
 	private static final LatentStateStretchSpec ConstructStretch (
 		final String strStretchName,
 		final CalibratableFixedIncomeComponent[] aCalibComp,
@@ -286,97 +306,27 @@ public class IBORCurve {
 	 */
 
 	private static final FloatFloatComponent[] FloatFloatSwap (
-		final JulianDate dtEffective,
+		final JulianDate dtSpot,
 		final ForwardLabel fri,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
 		if (null == astrMaturityTenor || 0 == astrMaturityTenor.length) return null;
 
-		String strCurrency = fri.currency();
-
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
 		int iTenorInMonths = new Integer (fri.tenor().split ("M")[0]);
 
-		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, "6M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
+		String strCurrency = fri.currency();
 
-		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
-			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, iTenorInMonths + "M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		CompositePeriodSetting cpsReference = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsDerived = new CompositePeriodSetting (
-			12 / iTenorInMonths,
-			iTenorInMonths + "M",
-			strCurrency,
-			null,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<Double> lsReferenceStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			);
-
-			List<Double> lsDerivedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aFFC[i] = OTCFloatFloat (
+				dtSpot,
+				strCurrency,
 				iTenorInMonths + "M",
 				astrMaturityTenor[i],
-				null
+				0.
 			);
-
-			Stream referenceStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsReferenceStreamEdgeDate,
-					cpsReference,
-					cfusReference
-				)
-			);
-
-			Stream derivedStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsDerivedStreamEdgeDate,
-					cpsDerived,					cfusDerived
-				)
-			);
-
-			aFFC[i] = new FloatFloatComponent (
-				referenceStream,
-				derivedStream,
-				new CashSettleParams (0, strCurrency, 0)
-			);
-		}
 
 		return aFFC;
 	}

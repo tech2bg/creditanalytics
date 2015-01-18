@@ -574,7 +574,7 @@ public class ScenarioMarketSurfaceBuilder {
 						(strTenor);
 
 					if (!hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblUnderlier, bIsForward,
-						dblInitialVolatility))
+						dblInitialVolatility, false))
 						return null;
 
 					aadblImpliedNode[iStrike][iTenor++] = bPriceSurface ? hsva.callPrice() : new

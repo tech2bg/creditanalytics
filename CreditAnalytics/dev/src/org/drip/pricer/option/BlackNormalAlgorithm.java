@@ -59,7 +59,8 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 		final double dblRiskFreeRate,
 		final double dblUnderlier,
 		final boolean bIsForward,
-		final double dblVolatility)
+		final double dblVolatility,
+		final boolean bCalibMode)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblStrike) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblUnderlier) ||
@@ -108,14 +109,34 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 		return _dblDF;
 	}
 
+	@Override public double callPrice()
+	{
+		return _dblCallPrice;
+	}
+
 	@Override public double callDelta()
 	{
 		return _dblCallProb1;
 	}
 
-	@Override public double callPrice()
+	@Override public double callGamma()
 	{
-		return _dblCallPrice;
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callVega()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callRho()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callTheta()
+	{
+		return java.lang.Double.NaN;
 	}
 
 	@Override public double callProb1()
@@ -128,11 +149,6 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 		return _dblCallProb2;
 	}
 
-	@Override public double putDelta()
-	{
-		return -1. * _dblPutProb1;
-	}
-
 	@Override public double putPrice()
 	{
 		return _dblPutPrice;
@@ -141,6 +157,31 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 	@Override public double putPriceFromParity()
 	{
 		return _dblPutPriceFromParity;
+	}
+
+	@Override public double putDelta()
+	{
+		return -1. * _dblPutProb1;
+	}
+
+	@Override public double putGamma()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putVega()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putRho()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putTheta()
+	{
+		return java.lang.Double.NaN;
 	}
 
 	@Override public double putProb1()
@@ -185,7 +226,7 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 				throws java.lang.Exception
 			{
 				if (!compute (dblStrike, dbTimeToExpiry, dblRiskFreeRate, dblUnderlier, bIsForward,
-					java.lang.Math.abs (dblSpotVolatility)))
+					java.lang.Math.abs (dblSpotVolatility), true))
 					throw new java.lang.Exception
 						("BlackNormalAlgorithm::implyBlackScholesVolatility => Cannot compute Measure");
 

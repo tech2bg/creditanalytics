@@ -44,12 +44,12 @@ public class CalibrationParams {
 	private org.drip.param.valuation.WorkoutInfo _wi = null;
 
 	/**
-	 * Creates a standard calibration parameter instance around the price measure and base type
+	 * Create a standard calibration parameter instance around the price measure and base type
 	 * 
 	 * @return CalibrationParams instance
 	 */
 
-	public static final CalibrationParams MakeStdCalibParams()
+	public static final CalibrationParams Standard()
 	{
 		try {
 			return new CalibrationParams ("Price", 0, null);

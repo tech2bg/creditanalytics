@@ -296,7 +296,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 	{
 		if (null == valParams || null == mpc) return null;
 
-		org.drip.param.market.CurveSurfaceQuoteSet csqsBase = mpc.scenMarketParams (this, "Base");
+		org.drip.param.market.CurveSurfaceQuoteSet csqsBase = mpc.scenarioMarketParams (this, "Base");
 
 		if (null == csqsBase) return null;
 
@@ -310,7 +310,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 
 		if (!compOp.setBaseMeasures (mapBaseMeasures)) return null;
 
-		org.drip.param.market.CurveSurfaceQuoteSet csqsFlatCreditBumpUp = mpc.scenMarketParams (this,
+		org.drip.param.market.CurveSurfaceQuoteSet csqsFlatCreditBumpUp = mpc.scenarioMarketParams (this,
 			"FlatCreditBumpUp");
 
 		if (null != csqsFlatCreditBumpUp) {
@@ -331,7 +331,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 					mapFlatCreditDeltaMeasures.put (strKey, me.getValue() - mapBaseMeasures.get (strKey));
 				}
 
-				org.drip.param.market.CurveSurfaceQuoteSet csqsFlatCreditBumpDown = mpc.scenMarketParams
+				org.drip.param.market.CurveSurfaceQuoteSet csqsFlatCreditBumpDown = mpc.scenarioMarketParams
 					(this, "FlatCreditBumpDn");
 
 				if (compOp.setFlatCreditDeltaMeasures (mapFlatCreditDeltaMeasures) && null !=
@@ -364,7 +364,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 			}
 		}
 
-		org.drip.param.market.CurveSurfaceQuoteSet csqsRRBumpUp = mpc.scenMarketParams (this, "RRBumpUp");
+		org.drip.param.market.CurveSurfaceQuoteSet csqsRRBumpUp = mpc.scenarioMarketParams (this, "RRBumpUp");
 
 		if (null != csqsRRBumpUp) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapRRBumpUpMeasures = value
@@ -383,7 +383,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 					mapFlatRRDeltaMeasures.put (strKey, me.getValue() - mapBaseMeasures.get (strKey));
 				}
 
-				org.drip.param.market.CurveSurfaceQuoteSet csqsRRBumpDown = mpc.scenMarketParams (this,
+				org.drip.param.market.CurveSurfaceQuoteSet csqsRRBumpDown = mpc.scenarioMarketParams (this,
 					"RRBumpDn");
 
 				if (compOp.setFlatRRDeltaMeasures (mapFlatRRDeltaMeasures) && null != csqsRRBumpDown) {
@@ -411,7 +411,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 			}
 		}
 
-		org.drip.param.market.CurveSurfaceQuoteSet csqsIRCreditBumpUp = mpc.scenMarketParams (this,
+		org.drip.param.market.CurveSurfaceQuoteSet csqsIRCreditBumpUp = mpc.scenarioMarketParams (this,
 			"IRCreditBumpUp");
 
 		if (null != csqsIRCreditBumpUp) {
@@ -431,7 +431,7 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 					mapFlatIRDeltaMeasures.put (strKey, me.getValue() - mapBaseMeasures.get (strKey));
 				}
 
-				org.drip.param.market.CurveSurfaceQuoteSet csqsIRCreditBumpDown = mpc.scenMarketParams (this,
+				org.drip.param.market.CurveSurfaceQuoteSet csqsIRCreditBumpDown = mpc.scenarioMarketParams (this,
 					"IRCreditBumpDn");
 
 				if (compOp.setFlatIRDeltaMeasures (mapFlatIRDeltaMeasures) && null != csqsIRCreditBumpDown) {
@@ -529,12 +529,12 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 			}
 		}
 
-		if (null != mpc.irTenorMarketParams (this, true)) {
+		if (null != mpc.fundingTenorMarketParams (this, true)) {
 			compOp.setTenorIRDeltaMeasures (new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>());
 
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-				mapIRTenorUpCSQS = mpc.irTenorMarketParams (this, true);
+				mapIRTenorUpCSQS = mpc.fundingTenorMarketParams (this, true);
 
 			if (null != mapIRTenorUpCSQS && null != mapIRTenorUpCSQS.entrySet()) {
 				for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
@@ -558,12 +558,12 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 				}
 			}
 
-			if (null != mpc.irTenorMarketParams (this, false)) {
+			if (null != mpc.fundingTenorMarketParams (this, false)) {
 				compOp.setTenorIRGammaMeasures (new
 					org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double>>());
 
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-					mapIRTenorDnCSQS = mpc.irTenorMarketParams (this, false);
+					mapIRTenorDnCSQS = mpc.fundingTenorMarketParams (this, false);
 
 				if (null != mapIRTenorDnCSQS & null != mapIRTenorDnCSQS.entrySet()) {
 					for (java.util.Map.Entry<java.lang.String, org.drip.param.market.CurveSurfaceQuoteSet>
@@ -621,13 +621,13 @@ public abstract class FixedIncomeComponent implements org.drip.product.definitio
 		if (null == strCustomScenName || strCustomScenName.isEmpty() || null == valParams || null == mpc)
 			return null;
 
-		org.drip.param.market.CurveSurfaceQuoteSet csqsCustom = mpc.scenMarketParams (this,
+		org.drip.param.market.CurveSurfaceQuoteSet csqsCustom = mpc.scenarioMarketParams (this,
 			strCustomScenName);
 
 		if (null == csqsCustom) return null;
 
 		if (null == mapBaseMeasures) {
-			org.drip.param.market.CurveSurfaceQuoteSet csqsBase = mpc.scenMarketParams (this, "Base");
+			org.drip.param.market.CurveSurfaceQuoteSet csqsBase = mpc.scenarioMarketParams (this, "Base");
 
 			if (null == csqsBase || null == (mapBaseMeasures = value (valParams, pricerParams, csqsBase,
 				vcp)))

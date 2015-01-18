@@ -71,7 +71,7 @@ public class HestonPayoffTransform {
 		double dblSpot = 1.;
 		double dblSpotVolatility = 0.1;
 
-		hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot, false, dblSpotVolatility);
+		hsva.compute (dblStrike, dblTimeToExpiry, dblRiskFreeRate, dblSpot, false, dblSpotVolatility, false);
 
 		return bProb1 ? hsva.callProb1() : hsva.callProb2();
 	}

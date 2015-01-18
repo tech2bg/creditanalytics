@@ -46,6 +46,7 @@ public interface FokkerPlanckGenerator {
 	 * @param dblUnderlier Option Underlier Value
 	 * @param bIsForward TRUE => The Underlier represents the Forward, FALSE => it represents Spot
 	 * @param dblInitialVolatility Option Initial Volatility Value
+	 * @param bCalibMode TRUE => Run on Calibration Mode
 	 * 
 	 * @return TRUE => Computation Successful
 	 */
@@ -56,7 +57,8 @@ public interface FokkerPlanckGenerator {
 		final double dblRiskFreeRate,
 		final double dblUnderlier,
 		final boolean bIsForward,
-		final double dblInitialVolatility);
+		final double dblInitialVolatility,
+		final boolean bCalibMode);
 
 	/**
 	 * The Option Terminal Discount Factor
@@ -81,6 +83,38 @@ public interface FokkerPlanckGenerator {
 	 */
 
 	public abstract double callDelta();
+
+	/**
+	 * The Call Option Gamma
+	 * 
+	 * @return The Call Option Gamma
+	 */
+
+	public abstract double callGamma();
+
+	/**
+	 * The Call Option Vega
+	 * 
+	 * @return The Call Option Vega
+	 */
+
+	public abstract double callVega();
+
+	/**
+	 * The Call Option Rho
+	 * 
+	 * @return The Call Option Rho
+	 */
+
+	public abstract double callRho();
+
+	/**
+	 * The Call Option Theta
+	 * 
+	 * @return The Call Option Theta
+	 */
+
+	public abstract double callTheta();
 
 	/**
 	 * The Call Prob 1 Term
@@ -121,6 +155,38 @@ public interface FokkerPlanckGenerator {
 	 */
 
 	public abstract double putDelta();
+
+	/**
+	 * The Put Option Gamma
+	 * 
+	 * @return The Put Option Gamma
+	 */
+
+	public abstract double putGamma();
+
+	/**
+	 * The Put Option Vega
+	 * 
+	 * @return The Put Option Vega
+	 */
+
+	public abstract double putVega();
+
+	/**
+	 * The Put Option Rho
+	 * 
+	 * @return The Put Option Rho
+	 */
+
+	public abstract double putRho();
+
+	/**
+	 * The Put Option Theta
+	 * 
+	 * @return The Put Option Theta
+	 */
+
+	public abstract double putTheta();
 
 	/**
 	 * The Put Prob 1 Term

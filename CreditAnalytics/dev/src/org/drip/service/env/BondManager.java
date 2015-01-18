@@ -330,7 +330,7 @@ public class BondManager {
 			|| null == mpc || java.lang.Double.isNaN (dblBidPrice) || java.lang.Double.isNaN (dblAskPrice))
 			return null;
 
-		org.drip.param.market.CurveSurfaceQuoteSet mktParams = mpc.scenMarketParams (bond, "Base");
+		org.drip.param.market.CurveSurfaceQuoteSet mktParams = mpc.scenarioMarketParams (bond, "Base");
 
 		if (null == mktParams) return null;
 
@@ -404,7 +404,7 @@ public class BondManager {
 						System.out.println ("Setting rate for index " + bond.rateIndex() + " and date " +
 							bond.periodFixingDate (valParams.valueDate()));
 
-					mpc.addFixings (bond.periodFixingDate (valParams.valueDate()), bond.forwardLabel().get
+					mpc.addFixing (bond.periodFixingDate (valParams.valueDate()), bond.forwardLabel().get
 						(0), 0.0042);
 				}
 
@@ -472,7 +472,7 @@ public class BondManager {
 							(org.drip.analytics.date.DateUtil.Year (bond.maturityDate().julian()) - 2000);
 
 					if (bond.isFloater())
-						mpc.addFixings (bond.periodFixingDate (valParams.valueDate()),
+						mpc.addFixing (bond.periodFixingDate (valParams.valueDate()),
 							bond.forwardLabel().get (0), 0.0042);
 
 					CalcBondMeasures (strRunName, bond, valParams, mpc, 0.01 * dblBidPrice, 0.01 *
@@ -540,8 +540,8 @@ public class BondManager {
 						org.drip.param.valuation.ValuationParams (dt, dt.addBusDays (3, "USD"), "USD");
 
 					if (bond.isFloater())
-						mpc.addFixings (bond.periodFixingDate (valParams.valueDate()),
-							bond.forwardLabel().get (0), 0.0042);
+						mpc.addFixing (bond.periodFixingDate (valParams.valueDate()), bond.forwardLabel().get
+							(0), 0.0042);
 
 					double dblMidPrice = java.lang.Double.NaN;
 
@@ -1137,7 +1137,7 @@ public class BondManager {
 				(dblPrice).append (", ");
 
 		try {
-			wi = bond.exerciseYieldFromPrice (valParams, mpc.scenMarketParams (bond, "Base"), null,
+			wi = bond.exerciseYieldFromPrice (valParams, mpc.scenarioMarketParams (bond, "Base"), null,
 				dblPrice);
 		} catch (java.lang.Exception e) {
 			System.out.println (e.getMessage() + "; " + bond.name() + " for price=" + dblPrice);
@@ -1148,22 +1148,22 @@ public class BondManager {
 		}
 
 		try {
-			dblZSpread = bond.zspreadFromPrice (valParams, mpc.scenMarketParams (bond, "Base"), null,
+			dblZSpread = bond.zspreadFromPrice (valParams, mpc.scenarioMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblGSpread = bond.gSpreadFromPrice (valParams, mpc.scenMarketParams (bond, "Base"), null,
+			dblGSpread = bond.gSpreadFromPrice (valParams, mpc.scenarioMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblISpread = bond.gSpreadFromPrice (valParams, mpc.scenMarketParams (bond, "Base"), null,
+			dblISpread = bond.gSpreadFromPrice (valParams, mpc.scenarioMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblTSYSpread = bond.gSpreadFromPrice (valParams, mpc.scenMarketParams (bond, "Base"), null,
+			dblTSYSpread = bond.gSpreadFromPrice (valParams, mpc.scenarioMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblASWSpread = bond.aswFromPrice (valParams, mpc.scenMarketParams (bond, "Base"), null,
+			dblASWSpread = bond.aswFromPrice (valParams, mpc.scenarioMarketParams (bond, "Base"), null,
 				wi.date(), wi.factor(), dblPrice);
 
-			dblCreditBasis = bond.creditBasisFromPrice (valParams, mpc.scenMarketParams (bond, "Base"),
+			dblCreditBasis = bond.creditBasisFromPrice (valParams, mpc.scenarioMarketParams (bond, "Base"),
 				null, wi.date(), wi.factor(), dblPrice);
 
 			AppendField (sbSQLInsertBondClose, wi.yield(), false);
@@ -1260,8 +1260,8 @@ public class BondManager {
 
 				try {
 					if (bond.isFloater())
-						mpc.addFixings (bond.periodFixingDate (valParams.valueDate()),
-							bond.forwardLabel().get (0), 0.0042);
+						mpc.addFixing (bond.periodFixingDate (valParams.valueDate()), bond.forwardLabel().get
+							(0), 0.0042);
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 

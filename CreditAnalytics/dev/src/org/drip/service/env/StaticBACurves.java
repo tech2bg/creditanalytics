@@ -258,8 +258,8 @@ public class StaticBACurves {
 			if (!(irscTSY = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurrency + "TSY",
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
-						dt.addBusDays (3, strCurrency), strCurrency), null, adblCompCalibValue, 0.0001,
-							astrCalibMeasure, mpc.fixings(), null, 15)) {
+						dt.addBusDays (3, strCurrency), strCurrency), null, astrCalibMeasure,
+							adblCompCalibValue, 0.0001, mpc.fixings(), null, 15)) {
 				System.out.println ("Cannot cook " + strCurrency + "TSY curve!");
 
 				return false;
@@ -273,7 +273,7 @@ public class StaticBACurves {
 		System.out.println (strCurrency + "TSYDC Cooked in: " + (System.nanoTime() - lStart) * 1.e-09 +
 			" sec");
 
-		if (!mpc.addScenDC (strCurrency + "TSY", irscTSY)) {
+		if (!mpc.addScenarioDiscountCurve (strCurrency + "TSY", irscTSY)) {
 			System.out.println ("Cannot add scenario CC!");
 
 			return false;
@@ -331,8 +331,8 @@ public class StaticBACurves {
 			if (!(irsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurrency + "EDSF",
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
-						dt.addBusDays (3, strCurrency), strCurrency), null, adblCompCalibValue, 0.0001,
-							astrCalibMeasure, mpc.fixings(), null, 15)) {
+						dt.addBusDays (3, strCurrency), strCurrency), null, astrCalibMeasure,
+							adblCompCalibValue, 0.0001, mpc.fixings(), null, 15)) {
 				System.out.println ("Cannot cook " + strCurrency + " curve!");
 
 				return false;
@@ -346,7 +346,7 @@ public class StaticBACurves {
 		System.out.println (strCurrency + "EDSFDC Cooked in: " + (System.nanoTime() - lStart) * 1.e-09 +
 			" sec");
 
-		if (!mpc.addScenDC (strCurrency + "EDSF", irsc)) {
+		if (!mpc.addScenarioDiscountCurve (strCurrency + "EDSF", irsc)) {
 			System.out.println ("Cannot add " + strCurrency + "EDSF scen curve to MPC!");
 
 			return false;
@@ -587,20 +587,20 @@ public class StaticBACurves {
 
 		long lStart = System.nanoTime();
 
-		if (!mpc.addFixings (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
+		if (!mpc.addFixing (dt.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
 			"-6M"), 0.0042))
 			return false;
 
 		try {
-			if (!mpc.addFixings (org.drip.analytics.date.DateUtil.CreateFromYMD (2010, 12, 14),
+			if (!mpc.addFixing (org.drip.analytics.date.DateUtil.CreateFromYMD (2010, 12, 14),
 				org.drip.state.identifier.ForwardLabel.Standard ("USD-3M"), 0.0042))
 				return false;
 
 			(irsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurrency,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dt,
-						dt.addBusDays (3, strCurrency), strCurrency), null, adblCompCalibValue, 0.0001,
-							astrCalibMeasure, mpc.fixings(), null, 15);
+						dt.addBusDays (3, strCurrency), strCurrency), null, astrCalibMeasure,
+							adblCompCalibValue, 0.0001, mpc.fixings(), null, 15);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -610,7 +610,7 @@ public class StaticBACurves {
 		System.out.println ("IRSDC[" + strCurrency + "] Cooked in: " + (System.nanoTime() - lStart) * 1.e-09
 			+ " sec");
 
-		if (!mpc.addScenDC (strCurrency, irsc)) {
+		if (!mpc.addScenarioDiscountCurve (strCurrency, irsc)) {
 			System.out.println ("Cannot add " + strCurrency + " scen curve to MPC!");
 
 			return false;
@@ -682,9 +682,9 @@ public class StaticBACurves {
 
 		try {
 			if (!(ccsc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDS)).cookScenarioCC
-				(strCC, new org.drip.param.valuation.ValuationParams (dt, dt, strIR), mpc.scenMarketParams
+				(strCC, new org.drip.param.valuation.ValuationParams (dt, dt, strIR), mpc.scenarioMarketParams
 					(aCDS[0], "Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
-						(aCDS[0].payCurrency())), null, adblQuotes, dblRecovery, astrCalibMeasure, null,
+						(aCDS[0].payCurrency())), null, astrCalibMeasure, adblQuotes, dblRecovery, null,
 							null, false, 63)) {
 				System.out.println ("CC[" + strCC + "] failed to cook");
 
@@ -694,7 +694,7 @@ public class StaticBACurves {
 			System.out.println ("CC[" + strCC + "] Cooked in: " + (System.nanoTime() - lStart) * 1.e-09 +
 				" sec");
 
-			if (!mpc.addScenCC (strCC, ccsc)) {
+			if (!mpc.addScenarioCreditCurve (strCC, ccsc)) {
 				System.out.println ("Cannot add " + strCC + " scen credit curve to MPC!");
 
 				return false;

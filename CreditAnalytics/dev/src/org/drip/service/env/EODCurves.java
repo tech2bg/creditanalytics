@@ -420,7 +420,7 @@ public class EODCurves {
 		try {
 			if (!(ccsc = org.drip.param.creator.CreditScenarioCurveBuilder.CreateCCSC (aCDS)).cookScenarioCC
 				(strSPN, new org.drip.param.valuation.ValuationParams (dtEOD, dtEOD.addBusDays (3,
-					strCurrency), "USD"), dc, null, adblQuotes, dblRecovery, astrCalibMeasure, null, null,
+					strCurrency), "USD"), dc, null, astrCalibMeasure, adblQuotes, dblRecovery, null, null,
 						false, s_iCreditCalibMode)) {
 				System.out.println ("CC[" + strSPN + "] failed to cook");
 
@@ -923,8 +923,8 @@ public class EODCurves {
 			(ircsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurveName,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dtEOD,
-						dtEOD.addBusDays (3, strCurrency), "USD"), null, adblCompCalibValue, 0.0001,
-							astrCalibMeasure, lsfc, null, s_iIRCalibMode);
+						dtEOD.addBusDays (3, strCurrency), "USD"), null, astrCalibMeasure,
+							adblCompCalibValue, 0.0001, lsfc, null, s_iIRCalibMode);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -1141,8 +1141,8 @@ public class EODCurves {
 			(ircsc = org.drip.param.creator.ScenarioDiscountCurveBuilder.FromIRCSG (strCurveName,
 				org.drip.state.creator.DiscountCurveBuilder.BOOTSTRAP_MODE_CONSTANT_FORWARD,
 					aCompCalib)).cookScenarioDC (new org.drip.param.valuation.ValuationParams (dtEOD,
-						dtEOD.addBusDays (3, strCurrency), "USD"), null, adblCompCalibValue, 0.0001,
-							astrCalibMeasure, lsfc, null, s_iIRCalibMode);
+						dtEOD.addBusDays (3, strCurrency), "USD"), null, astrCalibMeasure,
+							adblCompCalibValue, 0.0001, lsfc, null, s_iIRCalibMode);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -1222,7 +1222,7 @@ public class EODCurves {
 
 		if (null == ircsg) return false;
 
-		if (!mpc.addScenDC (strCurveName, ircsg)) return false;
+		if (!mpc.addScenarioDiscountCurve (strCurveName, ircsg)) return false;
 
 		System.out.println ("DC[" + strCurveName + "] Cooked in: " + (System.nanoTime() - lStart) * 1.e-09 +
 			" sec");
@@ -1273,7 +1273,7 @@ public class EODCurves {
 			return false;
 		}
 
-		if (!mpc.addScenDC (strCurveName, ircsg)) {
+		if (!mpc.addScenarioDiscountCurve (strCurveName, ircsg)) {
 			if (s_bBlog) System.out.println ("Cannot cook " + strCurveName + "!");
 
 			return false;
@@ -1328,7 +1328,7 @@ public class EODCurves {
 		if (null == mpc || null == stmt || null == dtEOD || null == strCurrency || strCurrency.isEmpty())
 			return false;
 
-		mpc.addFixings (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
+		mpc.addFixing (dtEOD.addDays (2), org.drip.state.identifier.ForwardLabel.Standard (strCurrency +
 			"-6M"), 0.0042);
 
 		if (!LoadEODIRToMPC (mpc, stmt, dtEOD, strCurrency, "swap", strCurrency)) {
@@ -1377,17 +1377,17 @@ public class EODCurves {
 		final java.lang.String strSPN,
 		final java.lang.String strCurrency)
 	{
-		if (null == mpc || null == mpc.irsg() || null == stmt || null == dtEOD || null == strCurrency ||
-			strCurrency.isEmpty() || null == strSPN || strSPN.isEmpty() || null == mpc.irsg().get
-				(strCurrency) || null == mpc.irsg().get (strCurrency).base())
+		if (null == mpc || null == mpc.scenarioDiscountCurveMap() || null == stmt || null == dtEOD || null == strCurrency ||
+			strCurrency.isEmpty() || null == strSPN || strSPN.isEmpty() || null == mpc.scenarioDiscountCurveMap().get
+				(strCurrency) || null == mpc.scenarioDiscountCurveMap().get (strCurrency).base())
 			return false;
 
-		org.drip.param.definition.ScenarioCreditCurve ccsg = BuildEODCreditCurve (stmt, dtEOD, mpc.irsg().get
+		org.drip.param.definition.ScenarioCreditCurve ccsg = BuildEODCreditCurve (stmt, dtEOD, mpc.scenarioDiscountCurveMap().get
 			(strCurrency).base(), strSPN, strCurrency);
 
 		if (null == ccsg) return false;
 
-		if (!mpc.addScenCC (strSPN, ccsg)) return false;
+		if (!mpc.addScenarioCreditCurve (strSPN, ccsg)) return false;
 
 		return true;
 	}

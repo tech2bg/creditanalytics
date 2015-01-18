@@ -5,11 +5,9 @@ import java.util.*;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
-import org.drip.analytics.support.*;
 import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
-import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
@@ -26,6 +24,7 @@ import org.drip.state.identifier.*;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -56,7 +55,7 @@ import org.drip.state.identifier.*;
 
 public class FRAStdAnalysis {
 
-	private static final FixFloatComponent OTCIRS (
+	private static final FixFloatComponent OTCFixFloat (
 		final JulianDate dtSpot,
 		final String strCurrency,
 		final String strMaturityTenor,
@@ -74,6 +73,24 @@ public class FRAStdAnalysis {
 			strMaturityTenor,
 			dblCoupon,
 			0.,
+			1.
+		);
+	}
+
+	private static final FloatFloatComponent OTCFloatFloat (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strDerivedTenor,
+		final String strMaturityTenor,
+		final double dblBasis)
+	{
+		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+
+		return ffConv.createFloatFloatComponent (
+			dtSpot,
+			strDerivedTenor,
+			strMaturityTenor,
+			dblBasis,
 			1.
 		);
 	}
@@ -128,7 +145,7 @@ public class FRAStdAnalysis {
 		FixFloatComponent[] aIRS = new FixFloatComponent[astrMaturityTenor.length];
 
 		for (int i = 0; i < astrMaturityTenor.length; ++i)
-			aIRS[i] = OTCIRS (
+			aIRS[i] = OTCFixFloat (
 				dtSpot,
 				strCurrency,
 				astrMaturityTenor[i],
@@ -253,7 +270,7 @@ public class FRAStdAnalysis {
 	 */
 
 	private static final FloatFloatComponent[] MakexM6MBasisSwap (
-		final JulianDate dtEffective,
+		final JulianDate dtSpot,
 		final String strCurrency,
 		final String[] astrMaturityTenor,
 		final int iTenorInMonths)
@@ -261,91 +278,14 @@ public class FRAStdAnalysis {
 	{
 		FloatFloatComponent[] aFFC = new FloatFloatComponent[astrMaturityTenor.length];
 
-		ComposableFloatingUnitSetting cfusReference = new ComposableFloatingUnitSetting (
-			"6M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, "6M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		ComposableFloatingUnitSetting cfusDerived = new ComposableFloatingUnitSetting (
-			iTenorInMonths + "M",
-			CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-			null,
-			ForwardLabel.Create (strCurrency, iTenorInMonths + "M"),
-			CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-			0.
-		);
-
-		CompositePeriodSetting cpsReference = new CompositePeriodSetting (
-			2,
-			"6M",
-			strCurrency,
-			null,
-			-1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CompositePeriodSetting cpsDerived = new CompositePeriodSetting (
-			12 / iTenorInMonths,
-			iTenorInMonths + "M",
-			strCurrency,
-			null,
-			1.,
-			null,
-			null,
-			null,
-			null
-		);
-
-		CashSettleParams csp = new CashSettleParams (
-			0,
-			strCurrency,
-			0
-		);
-
-		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			List<Double> lsReferenceStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
-				astrMaturityTenor[i],
-				null
-			);
-
-			List<Double> lsDerivedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aFFC[i] = OTCFloatFloat (
+				dtSpot,
+				strCurrency,
 				iTenorInMonths + "M",
 				astrMaturityTenor[i],
-				null
+				0.
 			);
-
-			Stream referenceStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsReferenceStreamEdgeDate,
-					cpsReference,
-					cfusReference
-				)
-			);
-
-			Stream derivedStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsDerivedStreamEdgeDate,
-					cpsDerived,
-					cfusDerived
-				)
-			);
-
-			aFFC[i] = new FloatFloatComponent (
-				referenceStream,
-				derivedStream,
-				csp
-			);
-		}
 
 		return aFFC;
 	}
@@ -574,7 +514,7 @@ public class FRAStdAnalysis {
 		CreditAnalytics.Init ("");
 
 		String strTenor = "3M";
-		String strCurrency = "EUR";
+		String strCurrency = "CHF";
 
 		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 

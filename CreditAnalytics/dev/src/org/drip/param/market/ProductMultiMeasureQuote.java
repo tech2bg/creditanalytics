@@ -44,7 +44,7 @@ public class ProductMultiMeasureQuote extends org.drip.param.definition.ProductQ
 	private java.lang.String _strMarketQuoteField = "";
 	private org.drip.param.definition.Quote _mktQuote = null;
 
-	org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.Quote> _mapQuotes = new
+	org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.Quote> _mapQuote = new
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.Quote>();
 
 	/**
@@ -60,7 +60,7 @@ public class ProductMultiMeasureQuote extends org.drip.param.definition.ProductQ
 		final org.drip.param.definition.Quote q,
 		final boolean bIsMarketQuote)
 	{
-		_mapQuotes.put (strQuoteField, q);
+		_mapQuote.put (strQuoteField, q);
 
 		if (bIsMarketQuote) {
 			_mktQuote = q;
@@ -81,17 +81,15 @@ public class ProductMultiMeasureQuote extends org.drip.param.definition.ProductQ
 
 	@Override public boolean removeMarketQuote()
 	{
-		_mktQuote = null;
 		_strMarketQuoteField = "";
+		_mktQuote = null;
 		return true;
 	}
 
 	@Override public org.drip.param.definition.Quote quote (
 		final java.lang.String strQuoteField)
 	{
-		if (null == strQuoteField || strQuoteField.isEmpty()) return null;
-
-		return _mapQuotes.get (strQuoteField);
+		return null == strQuoteField || strQuoteField.isEmpty() ? null : _mapQuote.get (strQuoteField);
 	}
 
 	@Override public org.drip.param.definition.Quote marketQuote()
@@ -109,13 +107,11 @@ public class ProductMultiMeasureQuote extends org.drip.param.definition.ProductQ
 	{
 		if (null == strQuoteField || strQuoteField.isEmpty()) return false;
 
-		_mapQuotes.remove (strQuoteField);
+		_mapQuote.remove (strQuoteField);
 
 		if (!_strMarketQuoteField.equalsIgnoreCase (strQuoteField)) return true;
 
-		removeMarketQuote();
-
-		return true;
+		return removeMarketQuote();
 	}
 
 	@Override public boolean containsQuote (
@@ -123,7 +119,7 @@ public class ProductMultiMeasureQuote extends org.drip.param.definition.ProductQ
 	{
 		if (null == strQuoteField || strQuoteField.isEmpty()) return false;
 
-		return _mapQuotes.containsKey (strQuoteField) || (null != _strMarketQuoteField &&
+		return _mapQuote.containsKey (strQuoteField) || (null != _strMarketQuoteField &&
 			_strMarketQuoteField.equalsIgnoreCase (strQuoteField));
 	}
 }

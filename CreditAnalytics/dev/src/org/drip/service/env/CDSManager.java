@@ -97,14 +97,14 @@ public class CDSManager {
 		final java.lang.String strCurrency)
 	{
 		if (null == stmt || null == dtEOD || null == strSPN || strSPN.isEmpty() || null == mpc || null ==
-			mpc.ccsg() || null == mpc.ccsg().get (strSPN))
+			mpc.scenarioCreditCurveMap() || null == mpc.scenarioCreditCurveMap().get (strSPN))
 			return false;
 
-		org.drip.param.definition.ScenarioCreditCurve ccsg = mpc.ccsg().get (strSPN);
+		org.drip.param.definition.ScenarioCreditCurve scenarioCreditCurveMap = mpc.scenarioCreditCurveMap().get (strSPN);
 
-		if (null == ccsg.base() || null == ccsg.base().calibComp()) return false;
+		if (null == scenarioCreditCurveMap.base() || null == scenarioCreditCurveMap.base().calibComp()) return false;
 
-		org.drip.analytics.definition.CreditCurve cc = ccsg.base();
+		org.drip.analytics.definition.CreditCurve cc = scenarioCreditCurveMap.base();
 
 		org.drip.product.definition.CreditDefaultSwap[] aCDS =
 			(org.drip.product.definition.CreditDefaultSwap[]) cc.calibComp();
@@ -148,7 +148,7 @@ public class CDSManager {
 		for (int i = 0; i < aCDS.length; ++i) {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<java.lang.Double> mapCalc = aCDS[1].value
 				(valParams, pricerParams, org.drip.param.creator.MarketParamsBuilder.Create
-					(mpc.scenMarketParams (aCDS[i], "Base").fundingCurve
+					(mpc.scenarioMarketParams (aCDS[i], "Base").fundingCurve
 						(org.drip.state.identifier.FundingLabel.Standard (aCDS[1].payCurrency())), null,
 							null, cc, null, null, null, null), null);
 
@@ -217,7 +217,7 @@ public class CDSManager {
 			if (s_bCalcFlatSpread) {
 				try {
 					dblFlatSpread100 = aCDS[i].calibFlatSpread (valParams, pricerParams,
-						org.drip.param.creator.MarketParamsBuilder.Create (mpc.scenMarketParams (aCDS[i],
+						org.drip.param.creator.MarketParamsBuilder.Create (mpc.scenarioMarketParams (aCDS[i],
 							"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
 								(aCDS[i].payCurrency())), null, null, cc, null, null, null, null), null);
 				} catch (java.lang.Exception e) {
@@ -269,7 +269,7 @@ public class CDSManager {
 			if (s_bCalcFlatSpread) {
 				try {
 					dblFlatSpread500 = aCDS[i].calibFlatSpread (valParams, pricerParams, 
-						org.drip.param.creator.MarketParamsBuilder.Create (mpc.scenMarketParams (aCDS[i],
+						org.drip.param.creator.MarketParamsBuilder.Create (mpc.scenarioMarketParams (aCDS[i],
 							"Base").fundingCurve (org.drip.state.identifier.FundingLabel.Standard
 								(aCDS[i].payCurrency())), null, null, cc, null, null, null, null), null);
 				} catch (java.lang.Exception e) {
@@ -337,12 +337,12 @@ public class CDSManager {
 		final org.drip.analytics.date.JulianDate dtEOD,
 		final java.lang.String strCurrency)
 	{
-		if (null == mpc || null == mpc.ccsg() || null == mpc.ccsg().entrySet()) return false;
+		if (null == mpc || null == mpc.scenarioCreditCurveMap() || null == mpc.scenarioCreditCurveMap().entrySet()) return false;
 
 		boolean bAllSPNSuccess = true;
 
 		for (java.util.Map.Entry<java.lang.String, org.drip.param.definition.ScenarioCreditCurve> meCCSG
-			: mpc.ccsg().entrySet()) {
+			: mpc.scenarioCreditCurveMap().entrySet()) {
 			if (null == meCCSG.getKey()) continue;
 
 			if (!SaveSPNEOD (stmt, mpc, meCCSG.getKey(), dtEOD, strCurrency)) bAllSPNSuccess = false;

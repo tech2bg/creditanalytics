@@ -8,9 +8,6 @@ package org.drip.param.market;
 /*!
  * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
- * Copyright (C) 2012 Lakshmi Krishnamurthy
- * Copyright (C) 2011 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html

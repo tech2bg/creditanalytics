@@ -20,6 +20,7 @@ import org.drip.state.identifier.*;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
@@ -60,7 +61,7 @@ public class FRAMkt {
 		CreditAnalytics.Init ("");
 
 		String strTenor = "6M";
-		String strCurrency = "EUR";
+		String strCurrency = "JPY";
 		double dblEURIBOR6MVol = 0.37;
 		double dblEONIAVol = 0.37;
 		double dblEONIAEURIBOR6MCorrelation = 0.8;

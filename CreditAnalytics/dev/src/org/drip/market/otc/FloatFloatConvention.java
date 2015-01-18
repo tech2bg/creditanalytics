@@ -207,14 +207,14 @@ public class FloatFloatConvention {
 	 * @return Instance of the Float-Float Component
 	 */
 
-	public org.drip.product.definition.FixedIncomeComponent createFloatFloatComponent (
+	public org.drip.product.rates.FloatFloatComponent createFloatFloatComponent (
 		final org.drip.analytics.date.JulianDate dtSpot,
 		final java.lang.String strDerivedTenor,
 		final java.lang.String strMaturityTenor,
 		final double dblBasis,
 		final double dblNotional)
 	{
-		if (null == dtSpot) return null;
+		if (_bIsComponentPair || null == dtSpot) return null;
 
 		org.drip.state.identifier.ForwardLabel forwardLabelReference =
 			org.drip.state.identifier.ForwardLabel.Create
@@ -225,8 +225,6 @@ public class FloatFloatConvention {
 
 		org.drip.analytics.date.JulianDate dtEffective = dtSpot.addBusDays (_iSpotLag,
 			forwardLabelReference.floaterIndex().calendar());
-
-		if (null == dtEffective) return null;
 
 		org.drip.state.identifier.ForwardLabel forwardLabelDerived =
 			org.drip.state.identifier.ForwardLabel.Create
@@ -269,7 +267,8 @@ public class FloatFloatConvention {
 			org.drip.param.period.CompositePeriodSetting cpsDerived = new
 				org.drip.param.period.CompositePeriodSetting
 					(org.drip.analytics.support.AnalyticsHelper.TenorToFreq (strDerivedTenorComposite),
-						strDerivedTenorComposite, _strCurrency, null, dblNotional, null, null, null, null);
+						strDerivedTenorComposite, _strCurrency, null, -1. * dblNotional, null, null, null,
+							null);
 
 			java.util.List<java.lang.Double> lsDerivedEdgeDate =
 				org.drip.analytics.support.CompositePeriodBuilder.RegularEdgeDates (dtEffective,
@@ -310,7 +309,7 @@ public class FloatFloatConvention {
 		final double dblBasis,
 		final double dblNotional)
 	{
-		if (null == dtSpot) return null;
+		if (!_bIsComponentPair || null == dtSpot) return null;
 
 		org.drip.market.definition.IBORIndex floaterIndex =
 			org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction (_strCurrency);

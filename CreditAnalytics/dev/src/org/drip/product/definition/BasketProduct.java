@@ -993,36 +993,36 @@ public abstract class BasketProduct implements org.drip.product.definition.Baske
 
 		org.drip.analytics.output.BasketMeasures bkop = new org.drip.analytics.output.BasketMeasures();
 
-		if (!bkop.setBaseMeasures (value (valParams, pricerParams, mpc.scenMarketParams (this, "Base"),
+		if (!bkop.setBaseMeasures (value (valParams, pricerParams, mpc.scenarioMarketParams (this, "Base"),
 			vcp)))
 			return null;
 
 		FlatDeltaGammaMeasureMap dgmmCredit = accumulateDeltaGammaMeasures (valParams, pricerParams,
-			mpc.scenMarketParams (this, "FlatCreditBumpUp"), mpc.scenMarketParams (this, "FlatCreditBumpDn"),
+			mpc.scenarioMarketParams (this, "FlatCreditBumpUp"), mpc.scenarioMarketParams (this, "FlatCreditBumpDn"),
 				vcp, bkop.baseMeasures());
 
 		if (null != dgmmCredit && !bkop.setFlatCreditDeltaMeasures (dgmmCredit._mapDelta))
 			bkop.setFlatCreditGammaMeasures (dgmmCredit._mapGamma);
 
 		FlatDeltaGammaMeasureMap dgmmRates = accumulateDeltaGammaMeasures (valParams, pricerParams,
-			mpc.scenMarketParams (this, "FlatIRBumpUp"), mpc.scenMarketParams (this, "FlatIRBumpDn"), vcp,
+			mpc.scenarioMarketParams (this, "FlatIRBumpUp"), mpc.scenarioMarketParams (this, "FlatIRBumpDn"), vcp,
 				bkop.baseMeasures());
 
 		if (null != dgmmRates && bkop.setFlatIRDeltaMeasures (dgmmRates._mapDelta))
 			bkop.setFlatIRGammaMeasures (dgmmRates._mapGamma);
 
 		FlatDeltaGammaMeasureMap dgmmRecovery = accumulateDeltaGammaMeasures (valParams, pricerParams,
-			mpc.scenMarketParams (this, "FlatRRBumpUp"), mpc.scenMarketParams (this, "FlatRRBumpDn"), vcp,
+			mpc.scenarioMarketParams (this, "FlatRRBumpUp"), mpc.scenarioMarketParams (this, "FlatRRBumpDn"), vcp,
 				bkop.baseMeasures());
 
 		if (null != dgmmRecovery && bkop.setFlatRRDeltaMeasures (dgmmRates._mapDelta))
 			bkop.setFlatRRGammaMeasures (dgmmRates._mapGamma);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-			mapCSQSIRTenorUp = mpc.dcFlatBump (this, true);
+			mapCSQSIRTenorUp = mpc.fundingFlatBump (this, true);
 
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-			mapCSQSIRTenorDown = mpc.dcFlatBump (this, false);
+			mapCSQSIRTenorDown = mpc.fundingFlatBump (this, false);
 
 		TenorDeltaGammaMeasureMap mapDGMMRatesTenor = accumulateTenorDeltaGammaMeasures (valParams,
 			pricerParams, mapCSQSIRTenorUp, mapCSQSIRTenorDown, vcp, bkop.baseMeasures(), null);
@@ -1107,13 +1107,13 @@ public abstract class BasketProduct implements org.drip.product.definition.Baske
 		if (null == valParams || null == mpc) return null;
 
 		if (null == mapBase) {
-			org.drip.param.market.CurveSurfaceQuoteSet csqsBase = mpc.scenMarketParams (this, "Base");
+			org.drip.param.market.CurveSurfaceQuoteSet csqsBase = mpc.scenarioMarketParams (this, "Base");
 
 			if (null == csqsBase || null == (mapBase = value (valParams, pricerParams, csqsBase, vcp)))
 				return null;
 		}
 
-		org.drip.param.market.CurveSurfaceQuoteSet csqsScen = mpc.scenMarketParams (this, strCustomScenName);
+		org.drip.param.market.CurveSurfaceQuoteSet csqsScen = mpc.scenarioMarketParams (this, strCustomScenName);
 
 		if (null == csqsScen) return null;
 

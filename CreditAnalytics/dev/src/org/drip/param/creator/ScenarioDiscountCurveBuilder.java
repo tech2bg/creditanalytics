@@ -193,8 +193,8 @@ public class ScenarioDiscountCurveBuilder {
 			aCalibInst);
 
 		if (null == irsg || !irsg.cookScenarioDC (org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), null, adblQuotes, 0.,
-				astrCalibMeasure, lsfc, null, org.drip.param.definition.ScenarioDiscountCurve.DC_BASE))
+			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), null, astrCalibMeasure,
+				adblQuotes, 0., lsfc, null, org.drip.param.definition.ScenarioDiscountCurve.DC_BASE))
 			return null;
 
 		return irsg.base();

@@ -57,14 +57,14 @@ public abstract class ScenarioMarketParams {
 	 * Add the named scenario DC
 	 * 
 	 * @param strName Name
-	 * @param irsg Corresponding IRCurveScenarioContainer instance
+	 * @param sdc Corresponding ScenarioDiscountCurve instance
 	 * 
 	 * @return Added successfully (true)
 	 */
 
-	public abstract boolean addScenDC (
+	public abstract boolean addScenarioDiscountCurve (
 		final java.lang.String strName,
-		final org.drip.param.definition.ScenarioDiscountCurve irsg);
+		final org.drip.param.definition.ScenarioDiscountCurve sdc);
 
 	/**
 	 * Remove the named scenario DC
@@ -74,7 +74,7 @@ public abstract class ScenarioMarketParams {
 	 * @return Removed successfully (true)
 	 */
 
-	public abstract boolean removeScenDC (
+	public abstract boolean removeScenarioDiscountCurve (
 		final java.lang.String strName);
 
 	/**
@@ -86,7 +86,7 @@ public abstract class ScenarioMarketParams {
 	 * @return Added successfully (true)
 	 */
 
-	public abstract boolean addScenFC (
+	public abstract boolean addScenarioForwardCurve (
 		final java.lang.String strName,
 		final org.drip.param.definition.ScenarioForwardCurve sfc);
 
@@ -98,21 +98,21 @@ public abstract class ScenarioMarketParams {
 	 * @return Removed successfully (true)
 	 */
 
-	public abstract boolean removeScenFC (
+	public abstract boolean removeScenarioForwardCurve (
 		final java.lang.String strName);
 
 	/**
 	 * Add the named scenario CC
 	 * 
 	 * @param strName Name
-	 * @param ccsg Corresponding org.drip.param.definition.CreditScenarioCurve instance
+	 * @param scc ScenarioCreditCurve Instance
 	 * 
 	 * @return Added successfully (true)
 	 */
 
-	public abstract boolean addScenCC (
+	public abstract boolean addScenarioCreditCurve (
 		final java.lang.String strName,
-		final org.drip.param.definition.ScenarioCreditCurve ccsg);
+		final org.drip.param.definition.ScenarioCreditCurve scc);
 
 	/**
 	 * Removes the named scenario CC
@@ -122,21 +122,21 @@ public abstract class ScenarioMarketParams {
 	 * @return Removed successfully (true)
 	 */
 
-	public abstract boolean removeScenCC (
+	public abstract boolean removeScenarioCreditCurve (
 		final java.lang.String strName);
 
 	/**
 	 * Add the named Treasury Quote
 	 * 
 	 * @param strBenchmark Name
-	 * @param cqTSY Treasury Quote
+	 * @param pqTSY Treasury Quote
 	 * 
 	 * @return Added successfully (true)
 	 */
 
 	public abstract boolean addTSYQuote (
 		final java.lang.String strBenchmark,
-		final org.drip.param.definition.ProductQuote cqTSY);
+		final org.drip.param.definition.ProductQuote pqTSY);
 
 	/**
 	 * Remove the named Treasury Quote
@@ -191,7 +191,7 @@ public abstract class ScenarioMarketParams {
 	 * @return Added successfully (true)
 	 */
 
-	public abstract boolean addFixings (
+	public abstract boolean addFixing (
 		final org.drip.analytics.date.JulianDate dtFix,
 		final org.drip.state.identifier.LatentStateLabel lsl,
 		final double dblFixing);
@@ -205,7 +205,7 @@ public abstract class ScenarioMarketParams {
 	 * @return Successfully removed (true)
 	 */
 
-	public abstract boolean removeFixings (
+	public abstract boolean removeFixing (
 		final org.drip.analytics.date.JulianDate dtFix,
 		final org.drip.state.identifier.LatentStateLabel lsl);
 
@@ -220,15 +220,15 @@ public abstract class ScenarioMarketParams {
 	/**
 	 * Add the component quote
 	 * 
-	 * @param strCompID Component ID
-	 * @param cqComp Component Quote
+	 * @param strComponentID Component ID
+	 * @param cqComponent Component Quote
 	 * 
 	 * @return Added successfully (true)
 	 */
 
-	public abstract boolean addCompQuote (
-		final java.lang.String strCompID,
-		final org.drip.param.definition.ProductQuote cqComp);
+	public abstract boolean addComponentQuote (
+		final java.lang.String strComponentID,
+		final org.drip.param.definition.ProductQuote cqComponent);
 
 	/**
 	 * Remove the component quote
@@ -238,41 +238,41 @@ public abstract class ScenarioMarketParams {
 	 * @return Removed successfully (true)
 	 */
 
-	public abstract boolean removeCompQuote (
-		final java.lang.String strCompID);
+	public abstract boolean removeComponentQuote (
+		final java.lang.String strComponentID);
 
 	/**
 	 * Add the full map of component quotes
 	 * 
-	 * @param mCompQuotes Map of Component Quotes
+	 * @param mapComponentQuote Map of Component Quotes
 	 * 
 	 * @return Added successfully (true)
 	 */
 
-	public abstract boolean addCompQuotes (
+	public abstract boolean addComponentQuote (
 		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
-			mCompQuotes);
+			mapComponentQuote);
 
 	/**
 	 * Retrieve the quote for the given component
 	 * 
-	 * @param strCompID Component ID
+	 * @param strComponentID Component ID
 	 * 
 	 * @return ComponentQuote
 	 */
 
-	public abstract org.drip.param.definition.ProductQuote compQuote (
-		final java.lang.String strCompID);
+	public abstract org.drip.param.definition.ProductQuote componentQuote (
+		final java.lang.String strComponentID);
 
 	/**
 	 * Retrieve the full map of component quotes
 	 * 
-	 * @return mCompQuotes Map of Component Quotes
+	 * @return The Map of Component Quotes
 	 */
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
-			compQuotes();
+			componentQuotes();
 
 	/**
 	 * Add the named scenario Market Parameters
@@ -283,7 +283,7 @@ public abstract class ScenarioMarketParams {
 	 * @return True => Added successfully
 	 */
 
-	public abstract boolean addScenMarketParams (
+	public abstract boolean addScenarioMarketParams (
 		final java.lang.String strScenarioName,
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs);
 
@@ -295,34 +295,34 @@ public abstract class ScenarioMarketParams {
 	 * @return Named Market Parameters
 	 */
 
-	public abstract org.drip.param.market.CurveSurfaceQuoteSet scenMarketParams (
+	public abstract org.drip.param.market.CurveSurfaceQuoteSet scenarioMarketParams (
 		final java.lang.String strScenarioName);
 
 	/**
 	 * Get the Market Parameters corresponding to the component and the scenario
 	 * 
 	 * @param comp Component
-	 * @param strScen Scenario
+	 * @param strScenario Scenario
 	 * 
 	 * @return The Market Parameters
 	 */
 
-	public abstract org.drip.param.market.CurveSurfaceQuoteSet scenMarketParams (
+	public abstract org.drip.param.market.CurveSurfaceQuoteSet scenarioMarketParams (
 		final org.drip.product.definition.FixedIncomeComponent comp,
-		final java.lang.String strScen);
+		final java.lang.String strScenario);
 
 	/**
-	 * Get the map of tenor IR bumped Market Parameters corresponding to the component
+	 * Get the Map of Funding Tenor Bumped Market Parameters corresponding to the Component
 	 * 
 	 * @param comp Component
-	 * @param bBumpUp Bump up (True)
+	 * @param bBumpUp TRUE => Bump Up
 	 * 
-	 * @return Map of the tenor IR bumped Market Parameters
+	 * @return Map of the Funding Tenor Bumped Market Parameters
 	 */
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-			irTenorMarketParams (
+			fundingTenorMarketParams (
 				final org.drip.product.definition.FixedIncomeComponent comp,
 				final boolean bBumpUp);
 
@@ -360,27 +360,27 @@ public abstract class ScenarioMarketParams {
 	 * Get the Market Parameters for the given basket product and the scenario
 	 * 
 	 * @param bp BasketProduct
-	 * @param strScen Scenario
+	 * @param strScenario Named Scenario
 	 * 
 	 * @return Market Parameters Instance
 	 */
 
-	public abstract org.drip.param.market.CurveSurfaceQuoteSet scenMarketParams (
+	public abstract org.drip.param.market.CurveSurfaceQuoteSet scenarioMarketParams (
 		final org.drip.product.definition.BasketProduct bp,
-		final java.lang.String strScen);
+		final java.lang.String strScenario);
 
 	/**
-	 * Get the map of IR Parallel bumped curves for the given Basket Product
+	 * Get the Map of Funding Parallel Bumped Curves for the given Basket Product
 	 * 
 	 * @param bp BasketProduct
 	 * @param bBump True (Bump Up), False (Bump Down)
 	 * 
-	 * @return Map of the IR Tenor bumped curves
+	 * @return Map of the Funding Parallel Bumped curves
 	 */
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>
-			dcFlatBump (
+			fundingFlatBump (
 				final org.drip.product.definition.BasketProduct bp,
 				final boolean bBump);
 
@@ -390,7 +390,7 @@ public abstract class ScenarioMarketParams {
 	 * @param bp BasketProduct
 	 * @param bBump True (Bump Up), False (Bump Down)
 	 * 
-	 * @return Map of the IR Tenor bumped curves
+	 * @return Map of the Forward Rate Flat Bumped Curves
 	 */
 
 	public abstract
@@ -400,12 +400,12 @@ public abstract class ScenarioMarketParams {
 				final boolean bBump);
 
 	/**
-	 * Get the map of credit Flat Flat curves for the given Basket Product
+	 * Get the Map of credit Flat Bumped Curves for the given Basket Product
 	 * 
 	 * @param bp BasketProduct
 	 * @param bBump True (Bump Up), False (Bump Down)
 	 * 
-	 * @return Map of the credit Flat bumped curves
+	 * @return Map of the Credit Flat Bumped Curves
 	 */
 
 	public abstract
@@ -415,12 +415,12 @@ public abstract class ScenarioMarketParams {
 				final boolean bBump);
 
 	/**
-	 * Get the map of Recovery Flat bumped curves for the given Basket Product
+	 * Get the map of Recovery Flat Bumped Curves for the given Basket Product
 	 * 
 	 * @param bp BasketProduct
 	 * @param bBump True (Bump Up), False (Bump Down)
 	 * 
-	 * @return Map of the Recovery Tenor bumped curves
+	 * @return Map of the Recovery Flat Bumped Curves
 	 */
 
 	public abstract
@@ -430,17 +430,17 @@ public abstract class ScenarioMarketParams {
 				final boolean bBump);
 
 	/**
-	 * Get the double map of DC Tenor bumped curves for each DC curve for the given Basket Product
+	 * Get the Double Map of Funding Tenor Bumped Curves for each Funding Curve for the given Basket Product
 	 * 
 	 * @param bp BasketProduct
 	 * @param bBump True (Bump Up), False (Bump Down)
 	 * 
-	 * @return Double Map of the IR Tenor bumped Market Parameters
+	 * @return Double Map of the Funding Tenor Bumped Market Parameters
 	 */
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.market.CurveSurfaceQuoteSet>>
-			dcTenorBump (
+			fundingTenorBump (
 				final org.drip.product.definition.BasketProduct bp,
 				final boolean bBump);
 
@@ -460,22 +460,22 @@ public abstract class ScenarioMarketParams {
 				final boolean bBump);
 
 	/**
-	 * Retrieve the map of RatesScenarioCurve
+	 * Retrieve the Map of ScenarioDiscountCurve Instances
 	 * 
-	 * @return Map of RatesScenarioCurve
+	 * @return Map of ScenarioDiscountCurve Instances
 	 */
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioDiscountCurve>
-			irsg();
+			scenarioDiscountCurveMap();
 
 	/**
-	 * Retrieve the map of org.drip.param.definition.CreditScenarioCurve
+	 * Retrieve the Map of ScenarioCreditCurve Instances
 	 * 
-	 * @return Map of org.drip.param.definition.CreditScenarioCurve
+	 * @return Map of ScenarioCreditCurve Instances
 	 */
 
 	public abstract
 		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ScenarioCreditCurve>
-			ccsg();
+			scenarioCreditCurveMap();
 }

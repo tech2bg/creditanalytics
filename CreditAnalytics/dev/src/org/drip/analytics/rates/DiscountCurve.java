@@ -222,8 +222,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 
 		org.drip.analytics.date.JulianDate dtStart = epoch();
 
-		return forward (dtStart.addTenor (strTenor1).julian(), dtStart.addTenor
-			(strTenor2).julian());
+		return forward (dtStart.addTenor (strTenor1).julian(), dtStart.addTenor (strTenor2).julian());
 	}
 
 	@Override public double zero (
@@ -266,17 +265,16 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 	}
 
 	@Override public double libor (
-		final double dblDate,
+		final double dblStartDate,
 		final java.lang.String strTenor)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == strTenor || strTenor.isEmpty())
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblStartDate) || null == strTenor ||
+			strTenor.isEmpty())
 			throw new java.lang.Exception ("DiscountCurve::libor => Invalid Inputs");
 
-		double dblEndDate = new org.drip.analytics.date.JulianDate (dblDate).addTenor (strTenor).julian();
-
-		return ((df (dblDate) / df (dblEndDate)) - 1.) / org.drip.analytics.daycount.Convention.YearFraction
-			(dblDate, dblEndDate, "Act/360", false, null, "");
+		return libor (dblStartDate, new org.drip.analytics.date.JulianDate (dblStartDate).addTenor
+			(strTenor).julian());
 	}
 
 	@Override public double libor (

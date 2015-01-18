@@ -498,7 +498,8 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 		final double dblRiskFreeRate,
 		final double dblUnderlier,
 		final boolean bIsForward,
-		final double dblInitialVolatility)
+		final double dblInitialVolatility,
+		final boolean bCalibMode)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblStrike) ||!org.drip.quant.common.NumberUtil.IsValid
 			(dblUnderlier) ||!org.drip.quant.common.NumberUtil.IsValid (dblInitialVolatility) ||
@@ -595,6 +596,36 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 		return _dblDF;
 	}
 
+	@Override public double callPrice()
+	{
+		return _dblCallPrice;
+	}
+
+	@Override public double callDelta()
+	{
+		return _dblCallDelta;
+	}
+
+	@Override public double callGamma()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callVega()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callRho()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callTheta()
+	{
+		return java.lang.Double.NaN;
+	}
+
 	@Override public double callProb1()
 	{
 		return _dblCallProb1;
@@ -605,21 +636,6 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 		return _dblCallProb2;
 	}
 
-	@Override public double callDelta()
-	{
-		return _dblCallDelta;
-	}
-
-	@Override public double callPrice()
-	{
-		return _dblCallPrice;
-	}
-
-	@Override public double putDelta()
-	{
-		return java.lang.Double.NaN;
-	}
-
 	@Override public double putPrice()
 	{
 		return java.lang.Double.NaN;
@@ -628,6 +644,31 @@ public class HestonStochasticVolatilityAlgorithm implements org.drip.pricer.opti
 	@Override public double putPriceFromParity()
 	{
 		return _dblPutPriceFromParity;
+	}
+
+	@Override public double putDelta()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putGamma()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putVega()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putRho()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putTheta()
+	{
+		return java.lang.Double.NaN;
 	}
 
 	@Override public double putProb1()
