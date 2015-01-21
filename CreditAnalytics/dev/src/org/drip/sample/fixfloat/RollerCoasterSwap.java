@@ -4,14 +4,12 @@ package org.drip.sample.fixfloat;
 import java.util.List;
 
 import org.drip.analytics.date.*;
-import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
-import org.drip.product.calib.*;
 import org.drip.product.creator.*;
 import org.drip.product.params.FactorSchedule;
 import org.drip.product.rates.*;
@@ -21,9 +19,9 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
+import org.drip.state.estimator.LatentStateStretchBuilder;
 import org.drip.state.identifier.*;
 import org.drip.state.inference.*;
-import org.drip.state.representation.LatentStateSpecification;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -121,80 +119,6 @@ public class RollerCoasterSwap {
 		}
 
 		return aDeposit;
-	}
-
-	private static final LatentStateStretchSpec DepositStretch (
-		final SingleStreamComponent[] aDeposit,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
-
-		for (int i = 0; i < aDeposit.length; ++i) {
-			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aDeposit[i].payCurrency())
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			depositQuote.setForwardRate (adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aDeposit[i],
-				depositQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"DEPOSIT",
-			aSegmentSpec
-		);
-	}
-
-	private static final LatentStateStretchSpec EDFStretch (
-		final SingleStreamComponent[] aEDF,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aEDF.length];
-
-		for (int i = 0; i < aEDF.length; ++i) {
-			FloatingStreamQuoteSet edfQuote = new FloatingStreamQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aEDF[i].payCurrency())
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aEDF[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			edfQuote.setForwardRate (adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aEDF[i],
-				edfQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"EDF",
-			aSegmentSpec
-		);
 	}
 
 	/*
@@ -317,45 +241,6 @@ public class RollerCoasterSwap {
 		return aIRS;
 	}
 
-	private static final LatentStateStretchSpec SwapStretch (
-		final FixFloatComponent[] aIRS,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aIRS.length];
-
-		for (int i = 0; i < aIRS.length; ++i) {
-			FixFloatQuoteSet fixFloatQuote = new FixFloatQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aIRS[i].payCurrency())
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aIRS[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			fixFloatQuote.setPV (0.);
-
-			fixFloatQuote.setSwapRate (adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aIRS[i],
-				fixFloatQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"SWAP",
-			aSegmentSpec
-		);
-	}
-
 	private static final FactorSchedule RollerCoaster1 (
 		final JulianDate dtSpot)
 	{
@@ -461,8 +346,10 @@ public class RollerCoasterSwap {
 		 * Construct the Deposit Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec depositStretch = DepositStretch (
+		LatentStateStretchSpec depositStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"DEPOSIT",
 			aDepositComp,
+			"ForwardRate",
 			adblDepositQuote
 		);
 
@@ -484,8 +371,10 @@ public class RollerCoasterSwap {
 		 * Construct the EDF Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec edfStretch = EDFStretch (
+		LatentStateStretchSpec edfStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"EDF",
 			aEDFComp,
+			"ForwardRate",
 			adblEDFQuote
 		);
 
@@ -528,8 +417,10 @@ public class RollerCoasterSwap {
 		 * Construct the Swap Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec swapStretch = SwapStretch (
+		LatentStateStretchSpec swapStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"SWAP",
 			aSwapInAdvance,
+			"SwapRate",
 			adblSwapQuote
 		);
 

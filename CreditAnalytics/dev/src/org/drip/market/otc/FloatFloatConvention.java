@@ -300,7 +300,7 @@ public class FloatFloatConvention {
 	 * @return Instance of the Fix-Float Component Pair
 	 */
 
-	public org.drip.product.definition.BasketProduct createFixFloatComponentPair (
+	public org.drip.product.fx.ComponentPair createFixFloatComponentPair (
 		final org.drip.analytics.date.JulianDate dtSpot,
 		final java.lang.String strDerivedTenor,
 		final java.lang.String strMaturityTenor,

@@ -40,17 +40,31 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 	private double _dblPutRho = java.lang.Double.NaN;
 	private double _dblCallRho = java.lang.Double.NaN;
 	private double _dblPutVega = java.lang.Double.NaN;
+	private double _dblPutVeta = java.lang.Double.NaN;
+	private double _dblPutCharm = java.lang.Double.NaN;
+	private double _dblPutColor = java.lang.Double.NaN;
 	private double _dblPutGamma = java.lang.Double.NaN;
 	private double _dblPutPrice = java.lang.Double.NaN;
 	private double _dblPutProb1 = java.lang.Double.NaN;
 	private double _dblPutProb2 = java.lang.Double.NaN;
+	private double _dblPutSpeed = java.lang.Double.NaN;
 	private double _dblPutTheta = java.lang.Double.NaN;
+	private double _dblPutVanna = java.lang.Double.NaN;
+	private double _dblPutVomma = java.lang.Double.NaN;
 	private double _dblCallVega = java.lang.Double.NaN;
+	private double _dblCallVeta = java.lang.Double.NaN;
+	private double _dblCallCharm = java.lang.Double.NaN;
+	private double _dblCallColor = java.lang.Double.NaN;
 	private double _dblCallGamma = java.lang.Double.NaN;
 	private double _dblCallPrice = java.lang.Double.NaN;
 	private double _dblCallProb1 = java.lang.Double.NaN;
 	private double _dblCallProb2 = java.lang.Double.NaN;
+	private double _dblCallSpeed = java.lang.Double.NaN;
 	private double _dblCallTheta = java.lang.Double.NaN;
+	private double _dblCallVanna = java.lang.Double.NaN;
+	private double _dblCallVomma = java.lang.Double.NaN;
+	private double _dblPutUltima = java.lang.Double.NaN;
+	private double _dblCallUltima = java.lang.Double.NaN;
 	private double _dblPutPriceFromParity = java.lang.Double.NaN;
 
 	/**
@@ -63,7 +77,7 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 
 	@Override public boolean compute (
 		final double dblStrike,
-		final double dbTimeToExpiry,
+		final double dblTimeToExpiry,
 		final double dblRiskFreeRate,
 		final double dblUnderlier,
 		final boolean bIsForward,
@@ -73,23 +87,30 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblStrike) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblUnderlier) ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblVolatility) ||
-					!org.drip.quant.common.NumberUtil.IsValid (dbTimeToExpiry) ||
+					!org.drip.quant.common.NumberUtil.IsValid (dblTimeToExpiry) ||
 						!org.drip.quant.common.NumberUtil.IsValid (dblRiskFreeRate))
 			return false;
 
-		double dblD1D2Diff = dblVolatility * java.lang.Math.sqrt (dbTimeToExpiry);
+		double dblD1D2Diff = dblVolatility * java.lang.Math.sqrt (dblTimeToExpiry);
 
-		_dblDF = java.lang.Math.exp (-1. * dblRiskFreeRate * dbTimeToExpiry);
+		_dblDF = java.lang.Math.exp (-1. * dblRiskFreeRate * dblTimeToExpiry);
 
 		double dblD1 = java.lang.Double.NaN;
 		double dblD2 = java.lang.Double.NaN;
 		double dblVega = java.lang.Double.NaN;
+		double dblVeta = java.lang.Double.NaN;
+		double dblCharm = java.lang.Double.NaN;
+		double dblColor = java.lang.Double.NaN;
 		double dblGamma = java.lang.Double.NaN;
+		double dblSpeed = java.lang.Double.NaN;
+		double dblVanna = java.lang.Double.NaN;
+		double dblVomma = java.lang.Double.NaN;
+		double dblUltima = java.lang.Double.NaN;
 		double dblTimeDecay = java.lang.Double.NaN;
 		double dblForward = bIsForward ? dblUnderlier : dblUnderlier / _dblDF;
 
 		if (0. != dblVolatility) {
-			dblD1 = (java.lang.Math.log (dblForward / dblStrike) + dbTimeToExpiry * (0.5 * dblVolatility *
+			dblD1 = (java.lang.Math.log (dblForward / dblStrike) + dblTimeToExpiry * (0.5 * dblVolatility *
 				dblVolatility)) / dblD1D2Diff;
 
 			dblD2 = dblD1 - dblD1D2Diff;
@@ -111,11 +132,22 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 			if (!bCalibMode) {
 				double dblD1Density = org.drip.quant.distribution.Gaussian.Density (dblD1);
 
-				double dblTimeRoot = java.lang.Math.sqrt (dbTimeToExpiry);
+				double dblTimeRoot = java.lang.Math.sqrt (dblTimeToExpiry);
 
 				dblVega = dblD1Density * dblUnderlier * dblTimeRoot;
+				dblVomma = dblVega * dblD1 * dblD2 / dblVolatility;
 				dblGamma = dblD1Density / (dblUnderlier * dblVolatility * dblTimeRoot);
+				dblUltima = dblGamma * (dblD1 * dblD2 - 1.) / dblVolatility;
+				dblSpeed = -1. * dblGamma / dblUnderlier * (1. + (dblD1 / (dblVolatility * dblTimeRoot)));
 				dblTimeDecay = -0.5 * dblUnderlier * dblD1Density * dblVolatility / dblTimeRoot;
+				dblVanna = dblVega / dblUnderlier * (1. - (dblD1 / (dblVolatility * dblTimeRoot)));
+				dblCharm = dblD1Density * (2. * dblRiskFreeRate * dblTimeToExpiry - dblVolatility * dblD2 *
+					dblTimeRoot) / (2. * dblVolatility * dblTimeToExpiry * dblTimeRoot);
+				dblVeta = dblUnderlier * dblD1Density * dblTimeRoot * ((dblRiskFreeRate * dblD1 /
+					(dblVolatility * dblTimeRoot)) - ((1. + dblD1 * dblD2) / (2. * dblTimeToExpiry)));
+				dblColor = -0.5 * dblD1Density / (dblUnderlier * dblVolatility * dblTimeToExpiry *
+					dblTimeRoot) * (1. + dblD1 * (2. * dblRiskFreeRate * dblTimeToExpiry - dblVolatility *
+						dblD2 * dblTimeRoot) / (dblVolatility * dblTimeRoot));
 			}
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -123,18 +155,32 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 			return false;
 		}
 
+		_dblCallVega = dblVega;
+		_dblCallVeta = dblVeta;
+		_dblCallCharm = dblCharm;
+		_dblCallColor = dblColor;
+		_dblCallGamma = dblGamma;
+		_dblCallSpeed = dblSpeed;
+		_dblCallVanna = dblVanna;
+		_dblCallVomma = dblVomma;
+		_dblCallUltima = dblUltima;
+		_dblCallRho = dblUnderlier * dblTimeToExpiry * _dblCallProb2;
+		_dblCallTheta = dblTimeDecay - dblRiskFreeRate * _dblCallRho;
 		_dblCallPrice = _dblDF * (dblForward * _dblCallProb1 - dblStrike * _dblCallProb2);
-		_dblPutPrice = _dblDF * (-1. * dblForward * _dblPutProb1 + dblStrike * _dblPutProb2);
-		_dblPutPriceFromParity = _dblDF * (_dblCallPrice + dblStrike - dblForward);
 
 		_dblPutVega = dblVega;
-		_dblCallVega = dblVega;
+		_dblPutVeta = dblVeta;
+		_dblPutCharm = dblCharm;
+		_dblPutColor = dblColor;
 		_dblPutGamma = dblGamma;
-		_dblCallGamma = dblGamma;
-		_dblCallRho = dblUnderlier * dbTimeToExpiry * _dblCallProb2;
-		_dblCallTheta = dblTimeDecay - dblRiskFreeRate * _dblCallRho;
-		_dblPutRho = -1. * dblUnderlier * dbTimeToExpiry * _dblPutProb2;
+		_dblPutSpeed = dblSpeed;
+		_dblPutVanna = dblVanna;
+		_dblPutVomma = dblVomma;
+		_dblPutUltima = dblUltima;
+		_dblPutRho = -1. * dblUnderlier * dblTimeToExpiry * _dblPutProb2;
 		_dblPutTheta = dblTimeDecay - dblRiskFreeRate * _dblPutRho;
+		_dblPutPriceFromParity = _dblDF * (_dblCallPrice + dblStrike - dblForward);
+		_dblPutPrice = _dblDF * (-1. * dblForward * _dblPutProb1 + dblStrike * _dblPutProb2);
 		return true;
 	}
 
@@ -143,9 +189,14 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 		return _dblDF;
 	}
 
-	@Override public double callPrice()
+	@Override public double callCharm()
 	{
-		return _dblCallPrice;
+		return _dblCallCharm;
+	}
+
+	@Override public double callColor()
+	{
+		return _dblCallColor;
 	}
 
 	@Override public double callDelta()
@@ -158,19 +209,9 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 		return _dblCallGamma;
 	}
 
-	@Override public double callVega()
+	@Override public double callPrice()
 	{
-		return _dblCallVega;
-	}
-
-	@Override public double callTheta()
-	{
-		return _dblCallTheta;
-	}
-
-	@Override public double callRho()
-	{
-		return _dblCallRho;
+		return _dblCallPrice;
 	}
 
 	@Override public double callProb1()
@@ -183,14 +224,54 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 		return _dblCallProb2;
 	}
 
-	@Override public double putPrice()
+	@Override public double callRho()
 	{
-		return _dblPutPrice;
+		return _dblCallRho;
 	}
 
-	@Override public double putPriceFromParity()
+	@Override public double callSpeed()
 	{
-		return _dblPutPriceFromParity;
+		return _dblCallSpeed;
+	}
+
+	@Override public double callTheta()
+	{
+		return _dblCallTheta;
+	}
+
+	@Override public double callUltima()
+	{
+		return _dblCallUltima;
+	}
+
+	@Override public double callVanna()
+	{
+		return _dblCallVanna;
+	}
+
+	@Override public double callVega()
+	{
+		return _dblCallVega;
+	}
+
+	@Override public double callVeta()
+	{
+		return _dblCallVeta;
+	}
+
+	@Override public double callVomma()
+	{
+		return _dblCallVomma;
+	}
+
+	@Override public double putCharm()
+	{
+		return _dblPutCharm;
+	}
+
+	@Override public double putColor()
+	{
+		return _dblPutColor;
 	}
 
 	@Override public double putDelta()
@@ -203,19 +284,14 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 		return _dblPutGamma;
 	}
 
-	@Override public double putVega()
+	@Override public double putPrice()
 	{
-		return _dblPutVega;
+		return _dblPutPrice;
 	}
 
-	@Override public double putRho()
+	@Override public double putPriceFromParity()
 	{
-		return _dblPutRho;
-	}
-
-	@Override public double putTheta()
-	{
-		return _dblPutTheta;
+		return _dblPutPriceFromParity;
 	}
 
 	@Override public double putProb1()
@@ -226,6 +302,46 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 	@Override public double putProb2()
 	{
 		return _dblPutProb2;
+	}
+
+	@Override public double putRho()
+	{
+		return _dblPutRho;
+	}
+
+	@Override public double putSpeed()
+	{
+		return _dblPutSpeed;
+	}
+
+	@Override public double putTheta()
+	{
+		return _dblPutTheta;
+	}
+
+	@Override public double putUltima()
+	{
+		return _dblPutUltima;
+	}
+
+	@Override public double putVanna()
+	{
+		return _dblPutVanna;
+	}
+
+	@Override public double putVega()
+	{
+		return _dblPutVega;
+	}
+
+	@Override public double putVeta()
+	{
+		return _dblPutVeta;
+	}
+
+	@Override public double putVomma()
+	{
+		return _dblPutVomma;
 	}
 
 	/**

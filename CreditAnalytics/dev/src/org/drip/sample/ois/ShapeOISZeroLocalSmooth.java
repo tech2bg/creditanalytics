@@ -3,15 +3,13 @@ package org.drip.sample.ois;
 
 import java.util.List;
 
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
-import org.drip.product.calib.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
@@ -25,7 +23,6 @@ import org.drip.spline.stretch.*;
 import org.drip.state.estimator.*;
 import org.drip.state.identifier.*;
 import org.drip.state.inference.*;
-import org.drip.state.representation.LatentStateSpecification;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -162,45 +159,6 @@ public class ShapeOISZeroLocalSmooth {
 			);
 
 		return aDeposit;
-	}
-
-	private static final LatentStateStretchSpec DepositStretch (
-		final SingleStreamComponent[] aDeposit,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
-
-		String strCurrency = aDeposit[0].payCurrency();
-
-		for (int i = 0; i < aDeposit.length; ++i) {
-			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (strCurrency)
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			depositQuote.set ("ForwardRate", adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aDeposit[i],
-				depositQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"   DEPOSIT   ",
-			aSegmentSpec
-		);
 	}
 
 	/*
@@ -466,46 +424,6 @@ public class ShapeOISZeroLocalSmooth {
 		return aOIS;
 	}
 
-	private static final LatentStateStretchSpec OISStretch (
-		final String strName,
-		final FixFloatComponent[] aOIS,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aOIS.length];
-
-		String strCurrency = aOIS[0].payCurrency();
-
-		for (int i = 0; i < aOIS.length; ++i) {
-			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (strCurrency)
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aOIS[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			oisQuote.setSwapRate (adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aOIS[i],
-				oisQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			strName,
-			aSegmentSpec
-		);
-	}
-
 	/*
 	 * This sample demonstrates the usage of different local smoothing techniques involved in the OIS discount
 	 * 	curve creation. It shows the following:
@@ -600,7 +518,7 @@ public class ShapeOISZeroLocalSmooth {
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aDeposit = DepositInstrumentsFromMaturityDays (
+		SingleStreamComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			strCurrency,
 			new int[] {
@@ -616,8 +534,10 @@ public class ShapeOISZeroLocalSmooth {
 		 * Construct the Deposit Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec depositStretch = DepositStretch (
-			aDeposit,
+		LatentStateStretchSpec depositStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"   DEPOSIT   ",
+			aDepositComp,
+			"ForwardRate",
 			adblDepositQuote
 		);
 
@@ -645,9 +565,10 @@ public class ShapeOISZeroLocalSmooth {
 		 * Construct the Short End OIS Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec oisShortEndStretch = OISStretch (
-			"SHORT_END_OIS",
+		LatentStateStretchSpec oisShortEndStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"SHORT END OIS",
 			aShortEndOISComp,
+			"SwapRate",
 			adblShortEndOISQuote
 		);
 
@@ -679,9 +600,10 @@ public class ShapeOISZeroLocalSmooth {
 		 * Construct the OIS Future Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec oisFutureStretch = OISStretch (
-			"OIS_FUTURE",
+		LatentStateStretchSpec oisFutureStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			" OIS FUTURE  ",
 			aOISFutureComp,
+			"SwapRate",
 			adblOISFutureQuote
 		);
 
@@ -723,9 +645,10 @@ public class ShapeOISZeroLocalSmooth {
 		 * Construct the Long End OIS Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec oisLongEndStretch = OISStretch (
-			"LONG_END_OIS",
+		LatentStateStretchSpec oisLongEndStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"LONG END OIS ",
 			aLongEndOISComp,
+			"SwapRate",
 			adblLongEndOISQuote
 		);
 
@@ -1049,52 +972,52 @@ public class ShapeOISZeroLocalSmooth {
 
 		System.out.println ("\t--------------------------------------------------------------------------------------------------------------------------------------------");
 
-		for (int i = 0; i < aDeposit.length; ++i)
-			System.out.println ("\t[" + aDeposit[i].maturityDate() + "] = " +
+		for (int i = 0; i < aDepositComp.length; ++i)
+			System.out.println ("\t[" + aDepositComp[i].maturityDate() + "] = " +
 				FormatUtil.FormatDouble (
-					aDeposit[i].measureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						MarketParamsBuilder.Create (dcShapePreserving, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aDeposit[i].measureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						MarketParamsBuilder.Create (dcLocalAkima, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aDeposit[i].measureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						MarketParamsBuilder.Create (dcLocalHarmonic, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "    |   " +
 				FormatUtil.FormatDouble (
-					aDeposit[i].measureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						MarketParamsBuilder.Create (dcLocalHyman83, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aDeposit[i].measureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						MarketParamsBuilder.Create (dcLocalHyman89, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aDeposit[i].measureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						MarketParamsBuilder.Create (dcLocalHuynhLeFloch, null, null, null, null, null, null),
 						null,
 						"Rate"),
 					1, 6, 1.) + "   |   " +
 				FormatUtil.FormatDouble (
-					aDeposit[i].measureValue (
+					aDepositComp[i].measureValue (
 						valParams, null,
 						MarketParamsBuilder.Create (dcLocalKruger, null, null, null, null, null, null),
 						null,

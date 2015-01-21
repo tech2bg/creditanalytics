@@ -148,6 +148,10 @@ public class EuropeanCallPut {
 
 		mapMeasure.put ("CalcTime", (System.nanoTime() - lStartTime) * 1.e-09);
 
+		mapMeasure.put ("CallCharm", fpg.callCharm());
+
+		mapMeasure.put ("CallColor", fpg.callColor());
+
 		mapMeasure.put ("CallDelta", fpg.callDelta());
 
 		mapMeasure.put ("CallGamma", fpg.callGamma());
@@ -160,13 +164,27 @@ public class EuropeanCallPut {
 
 		mapMeasure.put ("CallRho", fpg.callRho());
 
+		mapMeasure.put ("CallSpeed", fpg.callSpeed());
+
 		mapMeasure.put ("CallTheta", fpg.callTheta());
 
+		mapMeasure.put ("CallUltima", fpg.callUltima());
+
+		mapMeasure.put ("CallVanna", fpg.callVanna());
+
 		mapMeasure.put ("CallVega", fpg.callVega());
+
+		mapMeasure.put ("CallVeta", fpg.callVeta());
+
+		mapMeasure.put ("CallVomma", fpg.callVomma());
 
 		mapMeasure.put ("DF", fpg.df());
 
 		mapMeasure.put ("ImpliedCallVolatility", dblImpliedCallVolatility);
+
+		mapMeasure.put ("PutCharm", fpg.putCharm());
+
+		mapMeasure.put ("PutColor", fpg.putColor());
 
 		mapMeasure.put ("PutDelta", fpg.putDelta());
 
@@ -182,9 +200,19 @@ public class EuropeanCallPut {
 
 		mapMeasure.put ("PutRho", fpg.putRho());
 
+		mapMeasure.put ("PutSpeed", fpg.putSpeed());
+
 		mapMeasure.put ("PutTheta", fpg.putTheta());
 
+		mapMeasure.put ("PutUltima", fpg.putUltima());
+
+		mapMeasure.put ("PutVanna", fpg.putVanna());
+
 		mapMeasure.put ("PutVega", fpg.putVega());
+
+		mapMeasure.put ("PutVeta", fpg.putVeta());
+
+		mapMeasure.put ("PutVomma", fpg.putVomma());
 
 		mapMeasure.put ("TTE", dblTTE);
 
@@ -241,6 +269,10 @@ public class EuropeanCallPut {
 
 		setstrMeasureNames.add ("CalcTime");
 
+		setstrMeasureNames.add ("CallCharm");
+
+		setstrMeasureNames.add ("CallColor");
+
 		setstrMeasureNames.add ("CallDelta");
 
 		setstrMeasureNames.add ("CallGamma");
@@ -253,13 +285,27 @@ public class EuropeanCallPut {
 
 		setstrMeasureNames.add ("CallRho");
 
+		setstrMeasureNames.add ("CallSpeed");
+
 		setstrMeasureNames.add ("CallTheta");
 
+		setstrMeasureNames.add ("CallUltima");
+
+		setstrMeasureNames.add ("CallVanna");
+
 		setstrMeasureNames.add ("CallVega");
+
+		setstrMeasureNames.add ("CallVeta");
+
+		setstrMeasureNames.add ("CallVomma");
 
 		setstrMeasureNames.add ("DF");
 
 		setstrMeasureNames.add ("ImpliedCallVolatility");
+
+		setstrMeasureNames.add ("PutCharm");
+
+		setstrMeasureNames.add ("PutColor");
 
 		setstrMeasureNames.add ("PutDelta");
 
@@ -275,9 +321,19 @@ public class EuropeanCallPut {
 
 		setstrMeasureNames.add ("PutRho");
 
+		setstrMeasureNames.add ("PutSpeed");
+
 		setstrMeasureNames.add ("PutTheta");
 
+		setstrMeasureNames.add ("PutUltima");
+
+		setstrMeasureNames.add ("PutVanna");
+
 		setstrMeasureNames.add ("PutVega");
+
+		setstrMeasureNames.add ("PutVeta");
+
+		setstrMeasureNames.add ("PutVomma");
 
 		setstrMeasureNames.add ("TTE");
 

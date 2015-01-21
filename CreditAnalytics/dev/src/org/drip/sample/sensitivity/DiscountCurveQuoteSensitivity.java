@@ -2,12 +2,10 @@
 package org.drip.sample.sensitivity;
 
 import org.drip.analytics.date.*;
-import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.*;
-import org.drip.product.calib.*;
 import org.drip.product.creator.*;
 import org.drip.product.definition.*;
 import org.drip.product.rates.*;
@@ -18,9 +16,9 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.*;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
+import org.drip.state.estimator.LatentStateStretchBuilder;
 import org.drip.state.identifier.*;
 import org.drip.state.inference.*;
-import org.drip.state.representation.LatentStateSpecification;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -122,82 +120,6 @@ public class DiscountCurveQuoteSensitivity {
 		return aDeposit;
 	}
 
-	private static final LatentStateStretchSpec DepositStretch (
-		final SingleStreamComponent[] aDeposit,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
-
-		String strCurrency = aDeposit[0].payCurrency();
-
-		for (int i = 0; i < aDeposit.length; ++i) {
-			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (strCurrency)
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			depositQuote.set ("ForwardRate", adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aDeposit[i],
-				depositQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"DEPOSIT",
-			aSegmentSpec
-		);
-	}
-
-	private static final LatentStateStretchSpec EDFStretch (
-		final SingleStreamComponent[] aEDF,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aEDF.length];
-
-		for (int i = 0; i < aEDF.length; ++i) {
-			FloatingStreamQuoteSet edfQuote = new FloatingStreamQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aEDF[i].payCurrency())
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aEDF[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			edfQuote.setForwardRate (adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aEDF[i],
-				edfQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"EDF",
-			aSegmentSpec
-		);
-	}
-
 	/*
 	 * Construct the Array of Swap Instruments from the given set of parameters
 	 * 
@@ -226,45 +148,6 @@ public class DiscountCurveQuoteSensitivity {
 		}
 
 		return aIRS;
-	}
-
-	private static final LatentStateStretchSpec SwapStretch (
-		final FixFloatComponent[] aIRS,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aIRS.length];
-
-		for (int i = 0; i < aIRS.length; ++i) {
-			FixFloatQuoteSet fixFloatQuote = new FixFloatQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aIRS[i].payCurrency())
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aIRS[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			fixFloatQuote.setPV (0.);
-
-			fixFloatQuote.setSwapRate (adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aIRS[i],
-				fixFloatQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"SWAP",
-			aSegmentSpec
-		);
 	}
 
 	private static final void TenorJack (
@@ -332,7 +215,7 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Array of DEPOSIT Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aDeposit = DepositInstrumentsFromMaturityDays (
+		SingleStreamComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			strCurrency,
 			new int[] {
@@ -347,8 +230,10 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Deposit Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec depositStretch = DepositStretch (
-			aDeposit,
+		LatentStateStretchSpec depositStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"DEPOSIT",
+			aDepositComp,
+			"ForwardRate",
 			adblDepositQuote
 		);
 
@@ -356,7 +241,7 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Array of FUTURE Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aEDF = SingleStreamComponentBuilder.FuturesPack (
+		SingleStreamComponent[] aEDFComp = SingleStreamComponentBuilder.FuturesPack (
 			dtSpot,
 			8,
 			strCurrency
@@ -370,8 +255,10 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the EDF Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec edfStretch = EDFStretch (
-			aEDF,
+		LatentStateStretchSpec edfStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"EDF",
+			aEDFComp,
+			"ForwardRate",
 			adblEDFQuote
 		);
 
@@ -379,7 +266,7 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Array of SWAP Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aSwap = SwapInstrumentsFromMaturityTenor (
+		FixFloatComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
 			dtSpot,
 			strCurrency,
 			new java.lang.String[] {
@@ -395,8 +282,10 @@ public class DiscountCurveQuoteSensitivity {
 		 * Construct the Swap Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec swapStretch = SwapStretch (
-			aSwap,
+		LatentStateStretchSpec swapStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"SWAP",
+			aSwapComp,
+			"SwapRate",
 			adblSwapQuote
 		);
 
@@ -518,9 +407,9 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aDeposit.length; ++i)
-			System.out.println ("\t[" + aDeposit[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null,
+		for (int i = 0; i < aDepositComp.length; ++i)
+			System.out.println ("\t[" + aDepositComp[i].maturityDate() + "] = " +
+				FormatUtil.FormatDouble (aDepositComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
 
@@ -535,9 +424,9 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aEDF.length; ++i)
-			System.out.println ("\t[" + aEDF[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aEDF[i].measureValue (valParams, null,
+		for (int i = 0; i < aEDFComp.length; ++i)
+			System.out.println ("\t[" + aEDFComp[i].maturityDate() + "] = " +
+				FormatUtil.FormatDouble (aEDFComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblEDFQuote[i], 1, 6, 1.));
 
@@ -552,9 +441,9 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aSwap.length; ++i)
-			System.out.println ("\t[" + aSwap[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aSwap[i].measureValue (valParams, null,
+		for (int i = 0; i < aSwapComp.length; ++i)
+			System.out.println ("\t[" + aSwapComp[i].maturityDate() + "] = " +
+				FormatUtil.FormatDouble (aSwapComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "CalibSwapRate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblSwapQuote[i], 1, 6, 1.));
 
@@ -568,10 +457,10 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aDeposit.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDeposit[i].maturityDate(), "PV");
+		for (int i = 0; i < aDepositComp.length; ++i) {
+			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aDepositComp[i].maturityDate(), "PV");
 
-			System.out.println (aDeposit[i].maturityDate() + " => " + wj.displayString());
+			System.out.println (aDepositComp[i].maturityDate() + " => " + wj.displayString());
 		}
 
 		/*
@@ -584,10 +473,10 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aEDF.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aEDF[i].maturityDate(), "PV");
+		for (int i = 0; i < aEDFComp.length; ++i) {
+			org.drip.quant.calculus.WengertJacobian wj = dc.jackDDFDManifestMeasure (aEDFComp[i].maturityDate(), "PV");
 
-			System.out.println (aEDF[i].maturityDate() + " => " + wj.displayString());
+			System.out.println (aEDFComp[i].maturityDate() + " => " + wj.displayString());
 		}
 
 		/*
@@ -600,10 +489,10 @@ public class DiscountCurveQuoteSensitivity {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aSwap.length; ++i) {
-			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aSwap[i].maturityDate(), "PV");
+		for (int i = 0; i < aSwapComp.length; ++i) {
+			org.drip.quant.calculus.WengertJacobian wjDFQuote = dc.jackDDFDManifestMeasure (aSwapComp[i].maturityDate(), "PV");
 
-			System.out.println (aSwap[i].maturityDate() + " => " + wjDFQuote.displayString());
+			System.out.println (aSwapComp[i].maturityDate() + " => " + wjDFQuote.displayString());
 		}
 
 		System.out.println ("\n\t----------------------------------------------------------------");

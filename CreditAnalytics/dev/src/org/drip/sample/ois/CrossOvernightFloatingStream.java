@@ -5,7 +5,6 @@ import java.util.*;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.daycount.Convention;
-import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.market.definition.OvernightIndex;
@@ -13,9 +12,7 @@ import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
-import org.drip.product.calib.*;
 import org.drip.product.creator.*;
-import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
 import org.drip.quant.common.*;
 import org.drip.quant.function1D.*;
@@ -23,9 +20,9 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
+import org.drip.state.estimator.LatentStateStretchBuilder;
 import org.drip.state.identifier.*;
 import org.drip.state.inference.*;
-import org.drip.state.representation.LatentStateSpecification;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -89,82 +86,6 @@ public class CrossOvernightFloatingStream {
 			);
 
 		return aDeposit;
-	}
-
-	private static final LatentStateStretchSpec DepositStretch (
-		final SingleStreamComponent[] aDeposit,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
-
-		String strCurrency = aDeposit[0].payCurrency();
-
-		for (int i = 0; i < aDeposit.length; ++i) {
-			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (strCurrency)
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			depositQuote.set ("ForwardRate", adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aDeposit[i],
-				depositQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"DEPOSIT",
-			aSegmentSpec
-		);
-	}
-
-	private static final LatentStateStretchSpec EDFStretch (
-		final SingleStreamComponent[] aEDF,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aEDF.length];
-
-		for (int i = 0; i < aEDF.length; ++i) {
-			FloatingStreamQuoteSet edfQuote = new FloatingStreamQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (aEDF[i].payCurrency())
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aEDF[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			edfQuote.setForwardRate (adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aEDF[i],
-				edfQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"EDF",
-			aSegmentSpec
-		);
 	}
 
 	/*
@@ -297,45 +218,6 @@ public class CrossOvernightFloatingStream {
 		return aOIS;
 	}
 
-	private static final LatentStateStretchSpec OISStretch (
-		final CalibratableFixedIncomeComponent[] aCFIC,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aCFIC.length];
-
-		String strCurrency = aCFIC[0].payCurrency();
-
-		for (int i = 0; i < aCFIC.length; ++i) {
-			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (strCurrency)
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aCFIC[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			oisQuote.setSwapRate (adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aCFIC[i],
-				oisQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"OIS",
-			aSegmentSpec
-		);
-	}
-
 	private static final DiscountCurve CustomOISCurveBuilderSample (
 		final JulianDate dtSpot,
 		final String strCurrency)
@@ -361,8 +243,10 @@ public class CrossOvernightFloatingStream {
 		 * Construct the Deposit Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec depositStretch = DepositStretch (
+		LatentStateStretchSpec depositStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"DEPOSIT",
 			aDepositComp,
+			"ForwardRate",
 			adblDepositQuote
 		);
 
@@ -384,8 +268,10 @@ public class CrossOvernightFloatingStream {
 		 * Construct the Cash Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec edfStretch = EDFStretch (
+		LatentStateStretchSpec edfStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"EDF",
 			aEDFComp,
+			"ForwardRate",
 			adblEDFQuote
 		);
 
@@ -416,8 +302,10 @@ public class CrossOvernightFloatingStream {
 		 * Construct the OIS Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec oisStretch = OISStretch (
+		LatentStateStretchSpec oisStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"SWAP",
 			aOISComp,
+			"SwapRate",
 			adblOISQuote
 		);
 

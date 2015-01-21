@@ -109,9 +109,14 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 		return _dblDF;
 	}
 
-	@Override public double callPrice()
+	@Override public double callCharm()
 	{
-		return _dblCallPrice;
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callColor()
+	{
+		return java.lang.Double.NaN;
 	}
 
 	@Override public double callDelta()
@@ -124,19 +129,9 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 		return java.lang.Double.NaN;
 	}
 
-	@Override public double callVega()
+	@Override public double callPrice()
 	{
-		return java.lang.Double.NaN;
-	}
-
-	@Override public double callRho()
-	{
-		return java.lang.Double.NaN;
-	}
-
-	@Override public double callTheta()
-	{
-		return java.lang.Double.NaN;
+		return _dblCallPrice;
 	}
 
 	@Override public double callProb1()
@@ -149,14 +144,54 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 		return _dblCallProb2;
 	}
 
-	@Override public double putPrice()
+	@Override public double callRho()
 	{
-		return _dblPutPrice;
+		return java.lang.Double.NaN;
 	}
 
-	@Override public double putPriceFromParity()
+	@Override public double callSpeed()
 	{
-		return _dblPutPriceFromParity;
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callTheta()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callUltima()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callVanna()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callVega()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callVeta()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double callVomma()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putCharm()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putColor()
+	{
+		return java.lang.Double.NaN;
 	}
 
 	@Override public double putDelta()
@@ -169,19 +204,14 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 		return java.lang.Double.NaN;
 	}
 
-	@Override public double putVega()
+	@Override public double putPrice()
 	{
-		return java.lang.Double.NaN;
+		return _dblPutPrice;
 	}
 
-	@Override public double putRho()
+	@Override public double putPriceFromParity()
 	{
-		return java.lang.Double.NaN;
-	}
-
-	@Override public double putTheta()
-	{
-		return java.lang.Double.NaN;
+		return _dblPutPriceFromParity;
 	}
 
 	@Override public double putProb1()
@@ -192,6 +222,46 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 	@Override public double putProb2()
 	{
 		return _dblPutProb2;
+	}
+
+	@Override public double putRho()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putSpeed()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putTheta()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putUltima()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putVanna()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putVega()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putVeta()
+	{
+		return java.lang.Double.NaN;
+	}
+
+	@Override public double putVomma()
+	{
+		return java.lang.Double.NaN;
 	}
 
 	/**

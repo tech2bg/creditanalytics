@@ -69,12 +69,20 @@ public interface FokkerPlanckGenerator {
 	public abstract double df();
 
 	/**
-	 * The Call Option Price
+	 * The Call Option Charm
 	 * 
-	 * @return The Call Option Price
+	 * @return The Call Option Charm
 	 */
 
-	public abstract double callPrice();
+	public abstract double callCharm();
+
+	/**
+	 * The Call Option Color
+	 * 
+	 * @return The Call Option Color
+	 */
+
+	public abstract double callColor();
 
 	/**
 	 * The Call Option Delta
@@ -93,28 +101,12 @@ public interface FokkerPlanckGenerator {
 	public abstract double callGamma();
 
 	/**
-	 * The Call Option Vega
+	 * The Call Option Price
 	 * 
-	 * @return The Call Option Vega
+	 * @return The Call Option Price
 	 */
 
-	public abstract double callVega();
-
-	/**
-	 * The Call Option Rho
-	 * 
-	 * @return The Call Option Rho
-	 */
-
-	public abstract double callRho();
-
-	/**
-	 * The Call Option Theta
-	 * 
-	 * @return The Call Option Theta
-	 */
-
-	public abstract double callTheta();
+	public abstract double callPrice();
 
 	/**
 	 * The Call Prob 1 Term
@@ -133,20 +125,84 @@ public interface FokkerPlanckGenerator {
 	public abstract double callProb2();
 
 	/**
-	 * The Put Option Price
+	 * The Call Option Rho
 	 * 
-	 * @return The Put Option Price
+	 * @return The Call Option Rho
 	 */
 
-	public abstract double putPrice();
+	public abstract double callRho();
 
 	/**
-	 * The Put Option Price Computed from the Put-Call Parity Relation
+	 * The Call Option Speed
 	 * 
-	 * @return The Put Option Price Computed from the Put-Call Parity Relation
+	 * @return The Call Option Speed
 	 */
 
-	public abstract double putPriceFromParity();
+	public abstract double callSpeed();
+
+	/**
+	 * The Call Option Theta
+	 * 
+	 * @return The Call Option Theta
+	 */
+
+	public abstract double callTheta();
+
+	/**
+	 * The Call Option Ultima
+	 * 
+	 * @return The Call Option Ultima
+	 */
+
+	public abstract double callUltima();
+
+	/**
+	 * The Call Option Vanna
+	 * 
+	 * @return The Call Option Vanna
+	 */
+
+	public abstract double callVanna();
+
+	/**
+	 * The Call Option Vega
+	 * 
+	 * @return The Call Option Vega
+	 */
+
+	public abstract double callVega();
+
+	/**
+	 * The Call Option Veta
+	 * 
+	 * @return The Call Option Veta
+	 */
+
+	public abstract double callVeta();
+
+	/**
+	 * The Call Option Vomma
+	 * 
+	 * @return The Call Option Vomma
+	 */
+
+	public abstract double callVomma();
+
+	/**
+	 * The Put Option Charm
+	 * 
+	 * @return The Put Option Charm
+	 */
+
+	public abstract double putCharm();
+
+	/**
+	 * The Put Option Color
+	 * 
+	 * @return The Put Option Color
+	 */
+
+	public abstract double putColor();
 
 	/**
 	 * The Put Option Delta
@@ -165,28 +221,20 @@ public interface FokkerPlanckGenerator {
 	public abstract double putGamma();
 
 	/**
-	 * The Put Option Vega
+	 * The Put Option Price
 	 * 
-	 * @return The Put Option Vega
+	 * @return The Put Option Price
 	 */
 
-	public abstract double putVega();
+	public abstract double putPrice();
 
 	/**
-	 * The Put Option Rho
+	 * The Put Option Price Computed from the Put-Call Parity Relation
 	 * 
-	 * @return The Put Option Rho
+	 * @return The Put Option Price Computed from the Put-Call Parity Relation
 	 */
 
-	public abstract double putRho();
-
-	/**
-	 * The Put Option Theta
-	 * 
-	 * @return The Put Option Theta
-	 */
-
-	public abstract double putTheta();
+	public abstract double putPriceFromParity();
 
 	/**
 	 * The Put Prob 1 Term
@@ -203,4 +251,68 @@ public interface FokkerPlanckGenerator {
 	 */
 
 	public abstract double putProb2();
+
+	/**
+	 * The Put Option Rho
+	 * 
+	 * @return The Put Option Rho
+	 */
+
+	public abstract double putRho();
+
+	/**
+	 * The Put Option Speed
+	 * 
+	 * @return The Put Option Speed
+	 */
+
+	public abstract double putSpeed();
+
+	/**
+	 * The Put Option Theta
+	 * 
+	 * @return The Put Option Theta
+	 */
+
+	public abstract double putTheta();
+
+	/**
+	 * The Put Option Ultima
+	 * 
+	 * @return The Put Option Ultima
+	 */
+
+	public abstract double putUltima();
+
+	/**
+	 * The Put Option Vanna
+	 * 
+	 * @return The Put Option Vanna
+	 */
+
+	public abstract double putVanna();
+
+	/**
+	 * The Put Option Vega
+	 * 
+	 * @return The Put Option Vega
+	 */
+
+	public abstract double putVega();
+
+	/**
+	 * The Put Option Veta
+	 * 
+	 * @return The Put Option Veta
+	 */
+
+	public abstract double putVeta();
+
+	/**
+	 * The Put Option Vomma
+	 * 
+	 * @return The Put Option Vomma
+	 */
+
+	public abstract double putVomma();
 }

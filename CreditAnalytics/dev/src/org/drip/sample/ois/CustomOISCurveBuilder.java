@@ -3,15 +3,12 @@ package org.drip.sample.ois;
 
 import java.util.List;
 
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.definition.LatentStateStatic;
+import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
-import org.drip.product.calib.*;
 import org.drip.product.creator.*;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
@@ -20,9 +17,9 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
+import org.drip.state.estimator.LatentStateStretchBuilder;
 import org.drip.state.identifier.*;
 import org.drip.state.inference.*;
-import org.drip.state.representation.LatentStateSpecification;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -90,45 +87,6 @@ public class CustomOISCurveBuilder {
 			);
 
 		return aDeposit;
-	}
-
-	private static final LatentStateStretchSpec DepositStretch (
-		final SingleStreamComponent[] aDeposit,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aDeposit.length];
-
-		String strCurrency = aDeposit[0].payCurrency();
-
-		for (int i = 0; i < aDeposit.length; ++i) {
-			FloatingStreamQuoteSet depositQuote = new FloatingStreamQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (strCurrency)
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aDeposit[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			depositQuote.set ("ForwardRate", adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aDeposit[i],
-				depositQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			"DEPOSIT",
-			aSegmentSpec
-		);
 	}
 
 	/*
@@ -394,46 +352,6 @@ public class CustomOISCurveBuilder {
 		return aOIS;
 	}
 
-	private static final LatentStateStretchSpec OISStretch (
-		final String strName,
-		final FixFloatComponent[] aOIS,
-		final double[] adblQuote)
-		throws Exception
-	{
-		LatentStateSegmentSpec[] aSegmentSpec = new LatentStateSegmentSpec[aOIS.length];
-
-		String strCurrency = aOIS[0].payCurrency();
-
-		for (int i = 0; i < aOIS.length; ++i) {
-			FixFloatQuoteSet oisQuote = new FixFloatQuoteSet (
-				new LatentStateSpecification[] {
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FUNDING,
-						LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
-						FundingLabel.Standard (strCurrency)
-					),
-					new LatentStateSpecification (
-						LatentStateStatic.LATENT_STATE_FORWARD,
-						LatentStateStatic.FORWARD_QM_FORWARD_RATE,
-						aOIS[i].forwardLabel().get ("DERIVED")
-					)
-				}
-			);
-
-			oisQuote.setSwapRate (adblQuote[i]);
-
-			aSegmentSpec[i] = new LatentStateSegmentSpec (
-				aOIS[i],
-				oisQuote
-			);
-		}
-
-		return new LatentStateStretchSpec (
-			strName,
-			aSegmentSpec
-		);
-	}
-
 	private static final void CustomOISCurveBuilderSample (
 		final JulianDate dtSpot,
 		final String strCurrency,
@@ -450,7 +368,7 @@ public class CustomOISCurveBuilder {
 		 * Construct the Array of Deposit Instruments and their Quotes from the given set of parameters
 		 */
 
-		SingleStreamComponent[] aDeposit = DepositInstrumentsFromMaturityDays (
+		SingleStreamComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
 			dtSpot,
 			strCurrency,
 			new int[] {
@@ -466,8 +384,10 @@ public class CustomOISCurveBuilder {
 		 * Construct the Deposit Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec depositStretch = DepositStretch (
-			aDeposit,
+		LatentStateStretchSpec depositStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"DEPOSIT",
+			aDepositComp,
+			"ForwardRate",
 			adblDepositQuote
 		);
 
@@ -495,9 +415,10 @@ public class CustomOISCurveBuilder {
 		 * Construct the Short End OIS Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec oisShortEndStretch = OISStretch (
-			"SHORT_END_OIS",
+		LatentStateStretchSpec oisShortEndStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"OIS_SHORT_END",
 			aShortEndOISComp,
+			"SwapRate",
 			adblShortEndOISQuote
 		);
 
@@ -529,9 +450,10 @@ public class CustomOISCurveBuilder {
 		 * Construct the OIS Future Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec oisFutureStretch = OISStretch (
+		LatentStateStretchSpec oisFutureStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
 			"OIS_FUTURE",
 			aOISFutureComp,
+			"SwapRate",
 			adblOISFutureQuote
 		);
 
@@ -573,9 +495,10 @@ public class CustomOISCurveBuilder {
 		 * Construct the Long End OIS Instrument Set Stretch Builder
 		 */
 
-		LatentStateStretchSpec oisLongEndStretch = OISStretch (
-			"LONG_END_OIS",
+		LatentStateStretchSpec oisLongEndStretch = LatentStateStretchBuilder.ForwardFundingStretchSpec (
+			"OIS_LONG_END",
 			aLongEndOISComp,
+			"SwapRate",
 			adblLongEndOISQuote
 		);
 
@@ -635,9 +558,9 @@ public class CustomOISCurveBuilder {
 
 		System.out.println ("\t----------------------------------------------------------------");
 
-		for (int i = 0; i < aDeposit.length; ++i)
-			System.out.println ("\t[" + aDeposit[i].effectiveDate() + " => " + aDeposit[i].maturityDate() + "] = " +
-				FormatUtil.FormatDouble (aDeposit[i].measureValue (valParams, null,
+		for (int i = 0; i < aDepositComp.length; ++i)
+			System.out.println ("\t[" + aDepositComp[i].effectiveDate() + " => " + aDepositComp[i].maturityDate() + "] = " +
+				FormatUtil.FormatDouble (aDepositComp[i].measureValue (valParams, null,
 					MarketParamsBuilder.Create (dc, null, null, null, null, null, null),
 						null, "Rate"), 1, 6, 1.) + " | " + FormatUtil.FormatDouble (adblDepositQuote[i], 1, 6, 1.));
 

@@ -269,7 +269,7 @@ public class CCBSForwardCurve {
 			null
 		);
 
-		LatentStateStretchSpec stretchSpec = CCBSStretchBuilder.ForwardStretch (
+		LatentStateStretchSpec stretchSpec = LatentStateStretchBuilder.ComponentPairForwardStretch (
 			"FLOATFLOAT",
 			aCCSP,
 			valParams,
