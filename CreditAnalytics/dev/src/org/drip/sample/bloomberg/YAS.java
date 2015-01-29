@@ -326,7 +326,12 @@ public class YAS {
 
 		System.out.println ("\n--------");
 
-		ValuationParams valParams = ValuationParams.CreateValParams (dtSettle, 0, "", Convention.DATE_ROLL_ACTUAL);
+		ValuationParams valParams = ValuationParams.Spot (
+			dtSettle,
+			0,
+			"",
+			Convention.DATE_ROLL_ACTUAL
+		);
 
 		double dblPrice = 0.97828;
 

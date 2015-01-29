@@ -123,7 +123,8 @@ public class FixFloatConvention {
 					_floatConv.createStream (dtEffective, strMaturityTenor, dblFloatBasis, -1. *
 						dblNotional), null);
 
-			ffc.setPrimaryCode ("IRS." + _fixedConv.currency() + "." + strMaturityTenor);
+			ffc.setPrimaryCode ("IRS::" + ffc.forwardLabel().get ("DERIVED").fullyQualifiedName() + "." +
+				strMaturityTenor);
 
 			return ffc;
 		} catch (java.lang.Exception e) {

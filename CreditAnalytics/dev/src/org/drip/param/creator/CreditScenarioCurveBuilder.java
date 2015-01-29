@@ -87,11 +87,10 @@ public class CreditScenarioCurveBuilder {
 	{
 		org.drip.param.definition.ScenarioCreditCurve ccsc = CreateCCSC (aCalibInst);
 
-		if (null == ccsc || !ccsc.cookScenarioCC (strName,
-			org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0, "",
-				org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, null, astrCalibMeasure,
-					adblQuotes, dblRecovery, null, null, bFlat,
-						org.drip.param.definition.ScenarioCreditCurve.CC_BASE))
+		if (null == ccsc || !ccsc.cookScenarioCC (strName, org.drip.param.valuation.ValuationParams.Spot (dt,
+			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, null, astrCalibMeasure,
+				adblQuotes, dblRecovery, null, null, bFlat,
+					org.drip.param.definition.ScenarioCreditCurve.CC_BASE))
 			return null;
 
 		return ccsc.base();

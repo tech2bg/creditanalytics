@@ -1,0 +1,156 @@
+
+package org.drip.market.otc;
+
+/*
+ * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ */
+
+/*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
+ * 
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
+ * 
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *   	you may not use this file except in compliance with the License.
+ *   
+ *  You may obtain a copy of the License at
+ *  	http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  	distributed under the License is distributed on an "AS IS" BASIS,
+ *  	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  
+ *  See the License for the specific language governing permissions and
+ *  	limitations under the License.
+ */
+
+/**
+ * CrossFloatConventionContainer contains the Conventions of Standard OTC Cross-Currency Float-Float Swaps.
+ *
+ * @author Lakshmi Krishnamurthy
+ */
+
+public class CrossFloatConventionContainer {
+	private static final java.util.Map<java.lang.String, org.drip.market.otc.CrossCurrencyFloatConvention>
+		_mapConvention = new java.util.TreeMap<java.lang.String,
+			org.drip.market.otc.CrossCurrencyFloatConvention>();
+
+	private static final boolean AddCrossCurrencyConvention (
+		final org.drip.market.otc.CrossFloatStreamConvention referenceConvention,
+		final org.drip.market.otc.CrossFloatStreamConvention derivedConvention)
+	{
+		org.drip.market.otc.CrossCurrencyFloatConvention xccyConvention = null;
+
+		try {
+			xccyConvention = new org.drip.market.otc.CrossCurrencyFloatConvention (referenceConvention,
+				derivedConvention, org.drip.param.period.FixingSetting.FIXING_COMPOSITE_PERIOD_END);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return false;
+		}
+
+		java.lang.String strDerivedCurrency = derivedConvention.currency();
+
+		java.lang.String strReferenceCurrency = referenceConvention.currency();
+
+		_mapConvention.put (strReferenceCurrency + "_" + strDerivedCurrency, xccyConvention);
+
+		_mapConvention.put (strDerivedCurrency + "_" + strReferenceCurrency, xccyConvention);
+
+		return true;
+	}
+
+	/**
+	 * Initialize the Cross-Currency Float-Float Conventions Container with the pre-set Floating Stream
+	 * 	Contracts
+	 * 
+	 * @return TRUE => The Cross-Currency Float-Float Conventions Container successfully initialized
+	 */
+
+	public static final boolean Init()
+	{
+		try {
+			org.drip.market.otc.CrossFloatStreamConvention referenceConventionDerivedQuote = new
+				org.drip.market.otc.CrossFloatStreamConvention ("USD", "3M", false);
+
+			if (!AddCrossCurrencyConvention (referenceConventionDerivedQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("AUD", "3M", true)))
+				return false;
+
+			if (!AddCrossCurrencyConvention (referenceConventionDerivedQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("CAD", "3M", true)))
+				return false;
+
+			if (!AddCrossCurrencyConvention (referenceConventionDerivedQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("CHF", "3M", true)))
+				return false;
+
+			if (!AddCrossCurrencyConvention (referenceConventionDerivedQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("DKK", "3M", true)))
+				return false;
+
+			if (!AddCrossCurrencyConvention (referenceConventionDerivedQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("EUR", "3M", true)))
+				return false;
+
+			if (!AddCrossCurrencyConvention (referenceConventionDerivedQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("GBP", "3M", true)))
+				return false;
+
+			if (!AddCrossCurrencyConvention (referenceConventionDerivedQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("JPY", "3M", true)))
+				return false;
+
+			if (!AddCrossCurrencyConvention (referenceConventionDerivedQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("NOK", "3M", true)))
+				return false;
+
+			if (!AddCrossCurrencyConvention (referenceConventionDerivedQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("PLN", "3M", true)))
+				return false;
+
+			if (!AddCrossCurrencyConvention (referenceConventionDerivedQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("SEK", "3M", true)))
+				return false;
+
+			org.drip.market.otc.CrossFloatStreamConvention referenceConventionReferenceQuote = new
+				org.drip.market.otc.CrossFloatStreamConvention ("USD", "3M", true);
+
+			if (!AddCrossCurrencyConvention (referenceConventionReferenceQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("CLP", "3M", false)))
+				return false;
+
+			if (!AddCrossCurrencyConvention (referenceConventionReferenceQuote, new
+				org.drip.market.otc.CrossFloatStreamConvention ("MXN", "3M", false)))
+				return false;
+
+			return true;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Retrieve the Cross-Currency Float-Float Convention Instance from the Jurisdiction Name
+	 * 
+	 * @param strCurrency The Jurisdiction Name
+	 * 
+	 * @return The Float-Float Convention Instance
+	 */
+
+	public static final org.drip.market.otc.CrossCurrencyFloatConvention ConventionFromJurisdiction (
+		final java.lang.String strCurrency)
+	{
+		java.lang.String strKey = "USD_" + strCurrency;
+
+		return null == strCurrency || strCurrency.isEmpty() || !_mapConvention.containsKey (strKey) ? null :
+			_mapConvention.get (strKey);
+	}
+}

@@ -1118,7 +1118,7 @@ public class CreditAnalytics {
 
 		if (null == dcEOD || null == ccEOD) return null;
 
-		return cds.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
+		return cds.value (org.drip.param.valuation.ValuationParams.Standard (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.Standard(), org.drip.param.creator.MarketParamsBuilder.Create
 				(dcEOD, null, null, ccEOD, null, null, null, null), null);
 	}
@@ -1402,7 +1402,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice)
 	{
-		return BondWorkoutInfoFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondWorkoutInfoFromPrice (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
@@ -1497,7 +1497,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice) throws java.lang.Exception
 	{
-		return BondYieldFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondYieldFromPrice (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
@@ -1586,7 +1586,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.rates.DiscountCurve dc,
 		final double dblPrice) throws java.lang.Exception
 	{
-		return BondZSpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
+		return BondZSpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt,
 			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
@@ -1675,7 +1675,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondOASFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0,
+		return BondOASFromPrice (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt, 0,
 			"", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
@@ -1765,7 +1765,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondISpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
+		return BondISpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt,
 			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
@@ -1856,7 +1856,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondDiscountMarginFromPrice (strBondId,
-			org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0, "",
+			org.drip.param.valuation.ValuationParams.Spot (dt, 0, "",
 				org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblPrice, null);
 	}
 
@@ -1952,7 +1952,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondTSYSpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondTSYSpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblPrice, null);
 	}
 
@@ -2047,7 +2047,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondGSpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
+		return BondGSpreadFromPrice (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt,
 			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblPrice, null);
 	}
 
@@ -2143,7 +2143,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondCreditBasisFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondCreditBasisFromPrice (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, cc, dblPrice, null);
 	}
 
@@ -2239,7 +2239,7 @@ public class CreditAnalytics {
 		final double dblPrice)
 		throws java.lang.Exception
 	{
-		return BondPECSFromPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0,
+		return BondPECSFromPrice (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt, 0,
 			"", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, cc, dblPrice, null);
 	}
 
@@ -2300,7 +2300,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondPriceFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondPriceFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread, null);
 	}
 
@@ -2357,7 +2357,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondYieldFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondYieldFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dcTSY, dcTSY, dblTSYSpread);
 	}
 
@@ -2418,7 +2418,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondZSpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondZSpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread, null);
 	}
 
@@ -2479,7 +2479,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondOASFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
+		return BondOASFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt,
 			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread, null);
 	}
 
@@ -2538,7 +2538,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondISpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondISpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread);
 	}
 
@@ -2598,7 +2598,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondISpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondISpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread);
 	}
 
@@ -2657,7 +2657,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondGSpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondGSpreadFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblTSYSpread);
 	}
 
@@ -2721,7 +2721,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondCreditBasisFromTSYSpread (strBondId,
-			org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0, "",
+			org.drip.param.valuation.ValuationParams.Spot (dt, 0, "",
 				org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, cc, dblTSYSpread, null);
 	}
 
@@ -2784,7 +2784,7 @@ public class CreditAnalytics {
 		final double dblTSYSpread)
 		throws java.lang.Exception
 	{
-		return BondPECSFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondPECSFromTSYSpread (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, cc, dblTSYSpread,
 				null);
 	}
@@ -2842,7 +2842,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondPriceFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
+		return BondPriceFromYield (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt,
 			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblYield, null);
 	}
 
@@ -2899,7 +2899,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondZSpreadFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
+		return BondZSpreadFromYield (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt,
 			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblYield, null);
 	}
 
@@ -2956,7 +2956,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondISpreadFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
+		return BondISpreadFromYield (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt,
 			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblYield, null);
 	}
 
@@ -3014,7 +3014,7 @@ public class CreditAnalytics {
 		throws java.lang.Exception
 	{
 		return BondDiscountMarginFromYield (strBondId,
-			org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0, "",
+			org.drip.param.valuation.ValuationParams.Spot (dt, 0, "",
 				org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dblYield, null);
 	}
 
@@ -3075,7 +3075,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondGSpreadFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt,
+		return BondGSpreadFromYield (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt,
 			0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, dcTSY, dblYield, null);
 	}
 
@@ -3136,7 +3136,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondCreditBasisFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams
+		return BondCreditBasisFromYield (strBondId, org.drip.param.valuation.ValuationParams.Spot
 			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, cc, dblYield, null);
 	}
 
@@ -3197,7 +3197,7 @@ public class CreditAnalytics {
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		return BondPECSFromYield (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0,
+		return BondPECSFromYield (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt, 0,
 			"", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, cc, dblYield, null);
 	}
 
@@ -3254,7 +3254,7 @@ public class CreditAnalytics {
 		final org.drip.analytics.definition.CreditCurve cc)
 		throws java.lang.Exception
 	{
-		return BondCreditPrice (strBondId, org.drip.param.valuation.ValuationParams.CreateValParams (dt, 0,
+		return BondCreditPrice (strBondId, org.drip.param.valuation.ValuationParams.Spot (dt, 0,
 			"", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), dc, cc, null);
 	}
 
@@ -3461,7 +3461,7 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.convexityFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.convexityFromPrice (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
 				null), null, dblPrice);
 	}
@@ -3504,7 +3504,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.definition.CreditCurve ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		return bond.creditBasisFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.creditBasisFromPrice (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, ccEOD, null, null,
 				null, null), null, dblPrice);
 	}
@@ -3547,7 +3547,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.definition.CreditCurve ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		return bond.pecsFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.pecsFromPrice (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, ccEOD, null, null,
 				null, null), null, dblPrice);
 	}
@@ -3583,7 +3583,7 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.durationFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.durationFromPrice (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
 				null), null, dblPrice);
 	}
@@ -3626,7 +3626,7 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.gSpreadFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.gSpreadFromPrice (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, dcTSY, null, null, null, null,
 				null), null, dblPrice);
 	}
@@ -3663,7 +3663,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.iSpreadFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.iSpreadFromPrice (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
 				null), null, dblPrice);
 	}
@@ -3700,7 +3700,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.discountMarginFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams
+		return bond.discountMarginFromPrice (org.drip.param.valuation.ValuationParams.Standard
 			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null,
 				null, null), null, dblPrice);
 	}
@@ -3737,7 +3737,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.oasFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
+		return bond.oasFromPrice (org.drip.param.valuation.ValuationParams.Standard (dtEOD, strIR),
 			org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null, null),
 				null, dblPrice);
 	}
@@ -3778,7 +3778,7 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODTSYCurve (strTSY, dtEOD);
 
-		return bond.tsySpreadFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.tsySpreadFromPrice (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null, null, null,
 				org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null, dblPrice);
 	}
@@ -3815,7 +3815,7 @@ public class CreditAnalytics {
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
 		org.drip.param.valuation.WorkoutInfo wi = bond.exerciseYieldFromPrice
-			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
+			(org.drip.param.valuation.ValuationParams.Standard (dtEOD, strIR),
 				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null,
 					null, null, null, null, null), null, dblPrice);
 
@@ -3858,7 +3858,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.zspreadFromPrice (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.zspreadFromPrice (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
 				null), null, dblPrice);
 	}
@@ -4084,7 +4084,7 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.convexityFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.convexityFromYield (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
 				null), null, dblYield);
 	}
@@ -4127,7 +4127,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.definition.CreditCurve ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		return bond.creditBasisFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.creditBasisFromYield (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, ccEOD, null, null,
 				null, null), null, dblYield);
 	}
@@ -4170,7 +4170,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.definition.CreditCurve ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		return bond.pecsFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.pecsFromYield (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, ccEOD, null, null,
 				null, null), null, dblYield);
 	}
@@ -4206,7 +4206,7 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.durationFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.durationFromYield (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
 				null), null, dblYield);
 	}
@@ -4249,7 +4249,7 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.gSpreadFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.gSpreadFromYield (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, dcTSY, null, null, null, null,
 				null), null, dblYield);
 	}
@@ -4286,7 +4286,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.iSpreadFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.iSpreadFromYield (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
 				null), null, dblYield);
 	}
@@ -4323,7 +4323,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.discountMarginFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams
+		return bond.discountMarginFromYield (org.drip.param.valuation.ValuationParams.Standard
 			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null,
 				null, null), null, dblYield);
 	}
@@ -4360,7 +4360,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.oasFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
+		return bond.oasFromYield (org.drip.param.valuation.ValuationParams.Standard (dtEOD, strIR),
 			org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null, null),
 				null, dblYield);
 	}
@@ -4396,7 +4396,7 @@ public class CreditAnalytics {
 
 		if (null != strIR && !strIR.isEmpty()) dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.priceFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.priceFromYield (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
 				null), null, dblYield);
 	}
@@ -4437,7 +4437,7 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
-		return bond.tsySpreadFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.tsySpreadFromYield (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null, null, null,
 				org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null, dblYield);
 	}
@@ -4474,7 +4474,7 @@ public class CreditAnalytics {
 
 		org.drip.analytics.rates.DiscountCurve dcEOD = LoadEODFullIRCurve (strIR, dtEOD);
 
-		return bond.zspreadFromYield (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.zspreadFromYield (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, null, null, null, null,
 				null), null, dblYield);
 	}
@@ -4725,7 +4725,7 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODTSYCurve (strTSY, dtEOD);
 
-		return bond.convexityFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
+		return bond.convexityFromTSYSpread (org.drip.param.valuation.ValuationParams.Standard
 			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null,
 				null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 					dblTSYSpread);
@@ -4776,7 +4776,7 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
-		return bond.creditBasisFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
+		return bond.creditBasisFromTSYSpread (org.drip.param.valuation.ValuationParams.Standard
 			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, ccEOD,
 				null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 					dblTSYSpread);
@@ -4827,7 +4827,7 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
-		return bond.pecsFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.pecsFromTSYSpread (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, ccEOD, null, null,
 				org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 					dblTSYSpread);
@@ -4870,7 +4870,7 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
-		return bond.durationFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams
+		return bond.durationFromTSYSpread (org.drip.param.valuation.ValuationParams.Standard
 			(dtEOD, strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null,
 				null, null, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 					dblTSYSpread);
@@ -4916,7 +4916,7 @@ public class CreditAnalytics {
 		org.drip.analytics.rates.DiscountCurve dcTSY = LoadEODTSYCurve (strIR, dtEOD);
 
 		return bond.gSpreadFromTSYSpreadToOptimalExercise
-			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
+			(org.drip.param.valuation.ValuationParams.Standard (dtEOD, strIR),
 				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, dcTSY, null, null, null,
 					org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 						dblTSYSpread);
@@ -4962,7 +4962,7 @@ public class CreditAnalytics {
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.iSpreadFromTSYSpreadToOptimalExercise
-			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
+			(org.drip.param.valuation.ValuationParams.Standard (dtEOD, strIR),
 				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null, null, null,
 					org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 						dblTSYSpread);
@@ -5008,7 +5008,7 @@ public class CreditAnalytics {
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
 		return bond.discountMarginFromTSYSpreadToOptimalExercise
-			(org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
+			(org.drip.param.valuation.ValuationParams.Standard (dtEOD, strIR),
 				org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null, null, null,
 					org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 						dblTSYSpread);
@@ -5053,7 +5053,7 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
-		return bond.oasFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.oasFromTSYSpread (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null, null, null,
 				org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 					dblTSYSpread);
@@ -5096,7 +5096,7 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
-		return bond.priceFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.priceFromTSYSpread (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null, null, null,
 				org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 					dblTSYSpread);
@@ -5139,7 +5139,7 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
-		return bond.yieldFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.yieldFromTSYSpread (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null, null, null,
 				org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 					dblTSYSpread);
@@ -5184,7 +5184,7 @@ public class CreditAnalytics {
 
 		if (null == strTSY || strTSY.isEmpty()) dcTSY = LoadEODEDSFCurve (strTSY, dtEOD);
 
-		return bond.zspreadFromTSYSpread (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD,
+		return bond.zspreadFromTSYSpread (org.drip.param.valuation.ValuationParams.Standard (dtEOD,
 			strIR), org.drip.param.creator.MarketParamsBuilder.Create (dcEOD, null, dcTSY, null, null, null,
 				org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt, dtEOD, strIR), null), null,
 					dblTSYSpread);
@@ -5444,7 +5444,7 @@ public class CreditAnalytics {
 
 		if (null == strCC || strCC.isEmpty()) ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
+		return bond.value (org.drip.param.valuation.ValuationParams.Standard (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.Standard(), org.drip.param.creator.MarketParamsBuilder.Create
 				(dcEOD, dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
 					dtEOD, strIR), null), null);
@@ -5523,7 +5523,7 @@ public class CreditAnalytics {
 
 		if (null == strCC || strCC.isEmpty()) ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
+		return bond.value (org.drip.param.valuation.ValuationParams.Standard (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.Standard(), org.drip.param.creator.MarketParamsBuilder.Create
 				(dcEOD, dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
 					dtEOD, strIR), null), null);
@@ -5602,7 +5602,7 @@ public class CreditAnalytics {
 
 		if (null == strCC || strCC.isEmpty()) ccEOD = LoadEODCDSCreditCurve (strCC, strIR, dtEOD);
 
-		return bond.value (org.drip.param.valuation.ValuationParams.CreateStdValParams (dtEOD, strIR),
+		return bond.value (org.drip.param.valuation.ValuationParams.Standard (dtEOD, strIR),
 			org.drip.param.pricer.PricerParams.Standard(), org.drip.param.creator.MarketParamsBuilder.Create
 				(dcEOD, dcTSY, ccEOD, bond.name(), cq, org.drip.service.env.EODCurves.GetTSYQuotes (s_stmt,
 					dtEOD, strIR), null), null);

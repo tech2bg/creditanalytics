@@ -305,8 +305,9 @@ public class LatentStateStretchBuilder {
 	 * @param aCCSP Array of Calibration Cross Currency Swap Pair Instances
 	 * @param valParams The Valuation Parameters
 	 * @param mktParams The Basket Market Parameters to imply the Market Quote Measure
-	 * @param adblReferenceComponentBasis Array of the Reference Component Reference Leg Basis Spread
-	 * @param bBasisOnDerivedLeg TRUE => Apply the Basis on the Derived Leg (FALSE => Reference Leg)
+	 * @param adblBasis Array of the Basis on either the Reference Component or the Derived Component
+	 * @param bBasisOnDerivedComponent TRUE => Apply the Basis on the Derived Component
+	 * @param bBasisOnDerivedStream TRUE => Apply the Basis on the Derived Stream (FALSE => Reference Stream)
 	 * 
 	 * return Instance of LatentStateStretchSpec
 	 */
@@ -316,14 +317,15 @@ public class LatentStateStretchBuilder {
 		final org.drip.product.fx.ComponentPair[] aCCSP,
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
-		final double[] adblReferenceComponentBasis,
-		final boolean bBasisOnDerivedLeg)
+		final double[] adblBasis,
+		final boolean bBasisOnDerivedComponent,
+		final boolean bBasisOnDerivedStream)
 	{
-		if (null == aCCSP || null == mktParams || null == adblReferenceComponentBasis) return null;
+		if (null == aCCSP || null == mktParams || null == adblBasis) return null;
 
 		int iNumCCSP = aCCSP.length;
 
-		if (0 == iNumCCSP || adblReferenceComponentBasis.length != iNumCCSP) return null;
+		if (0 == iNumCCSP || adblBasis.length != iNumCCSP) return null;
 
 		org.drip.state.inference.LatentStateSegmentSpec[] aSegmentSpec = new
 			org.drip.state.inference.LatentStateSegmentSpec[iNumCCSP];
@@ -333,7 +335,7 @@ public class LatentStateStretchBuilder {
 
 			try {
 				if (null == (aSegmentSpec[i] = aCCSP[i].derivedForwardSpec (valParams, mktParams,
-					adblReferenceComponentBasis[i], bBasisOnDerivedLeg)))
+					adblBasis[i], bBasisOnDerivedComponent, bBasisOnDerivedStream)))
 					return null;
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();

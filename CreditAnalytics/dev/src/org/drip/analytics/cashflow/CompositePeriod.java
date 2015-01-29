@@ -1082,13 +1082,13 @@ public abstract class CompositePeriod {
 		org.drip.product.calib.CompositePeriodQuoteSet cpqs = periodQuoteSet (pqs, csqs);
 
 		try {
-			dblFX = fx (csqs);
-
 			dblDF = df (csqs);
 
-			double dblEndDate = endDate();
+			dblFX = fx (csqs);
 
 			dblSurvival = survival (csqs);
+
+			double dblEndDate = endDate();
 
 			dblBasis = cpqs.containsBasis() ? cpqs.basis() : 0.;
 
@@ -1145,8 +1145,7 @@ public abstract class CompositePeriod {
 				if (cpqs.containsBaseRate()) {
 					if (!prwc.addPredictorResponseWeight (dblDateAnchor, 1.)) return null;
 
-					if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblDateAnchor, 1.))
-						return null;
+					if (!prwc.addDResponseWeightDManifestMeasure ("PV", dblDateAnchor, 1.)) return null;
 				} else {
 					double dblForwardLoading = dblNotional * dblFX * upm.dcf() * dblSurvival * dblDF *
 						upm.convAdj().cumulative();

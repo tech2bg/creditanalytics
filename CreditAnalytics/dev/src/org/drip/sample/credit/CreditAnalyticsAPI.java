@@ -162,7 +162,12 @@ public class CreditAnalyticsAPI {
 		 * Valuation Parameters
 		 */
 
-		ValuationParams valParams = ValuationParams.CreateValParams (dtStart, 0, "", Convention.DATE_ROLL_ACTUAL);
+		ValuationParams valParams = ValuationParams.Spot (
+			dtStart,
+			0,
+			"",
+			Convention.DATE_ROLL_ACTUAL
+		);
 
 		/*
 		 * Standard Credit Pricer Parameters (check javadoc for details)
@@ -219,7 +224,12 @@ public class CreditAnalyticsAPI {
 		 * Valuation Parameters
 		 */
 
-		ValuationParams valParams = ValuationParams.CreateValParams (dtStart, 0, "", Convention.DATE_ROLL_ACTUAL);
+		ValuationParams valParams = ValuationParams.Spot (
+			dtStart,
+			0,
+			"",
+			Convention.DATE_ROLL_ACTUAL
+		);
 
 		/*
 		 * Standard Credit Pricer Parameters (check javadoc for details)

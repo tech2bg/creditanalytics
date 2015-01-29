@@ -424,7 +424,7 @@ public class MultiLegSwapAPI {
 		 * Set up the valuation and the market parameters
 		 */
 
-		ValuationParams valParams = ValuationParams.CreateValParams (
+		ValuationParams valParams = ValuationParams.Spot (
 			dtValue,
 			0,
 			"",

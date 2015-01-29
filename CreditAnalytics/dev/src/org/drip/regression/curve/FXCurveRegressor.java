@@ -158,8 +158,8 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 						(dtToday, "EUR", null, 0.04)))
 						return false;
 
-					if (null == (_valParams = org.drip.param.valuation.ValuationParams.CreateValParams
-						(dtToday, 0, "USD", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL)))
+					if (null == (_valParams = org.drip.param.valuation.ValuationParams.Spot (dtToday, 0,
+						"USD", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL)))
 						return false;
 
 					return true;
@@ -231,8 +231,8 @@ public class FXCurveRegressor implements org.drip.regression.core.RegressorSet {
 						(dtToday, "EUR", null, 0.04)))
 						return false;
 
-					if (null == (_valParams = org.drip.param.valuation.ValuationParams.CreateValParams
-						(dtToday, 0, "USD", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL)))
+					if (null == (_valParams = org.drip.param.valuation.ValuationParams.Spot (dtToday, 0,
+						"USD", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL)))
 						return false;
 
 						for (int i = 0; i < NUM_FX_NODES; ++i)

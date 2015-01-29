@@ -12,12 +12,15 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.SingleStreamComponentBuilder;
 import org.drip.product.definition.*;
+import org.drip.product.fx.ComponentPair;
 import org.drip.product.rates.*;
 import org.drip.quant.common.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
-import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
+import org.drip.spline.stretch.*;
+import org.drip.state.estimator.LatentStateStretchBuilder;
 import org.drip.state.identifier.ForwardLabel;
+import org.drip.state.inference.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -94,13 +97,35 @@ public class OTCFloatFloatSwaps {
 		);
 	}
 
+	private static final ComponentPair OTCComponentPair (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strDerivedTenor,
+		final String strMaturityTenor,
+		final double dblReferenceFixedCoupon,
+		final double dblDerivedFixedCoupon,
+		final double dblDerivedStreamBasis)
+	{
+		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+
+		return ffConv.createFixFloatComponentPair (
+			dtSpot,
+			strDerivedTenor,
+			strMaturityTenor,
+			dblReferenceFixedCoupon,
+			dblDerivedFixedCoupon,
+			dblDerivedStreamBasis,
+			1.
+		);
+	}
+
 	/*
-	 * Construct the Array of Deposit Instruments from the given set of parameters
+	 * Construct the Array of Deposit from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final CalibratableFixedIncomeComponent[] DepositInstrumentsFromMaturityDays (
+	private static final CalibratableFixedIncomeComponent[] DepositFromMaturityDays (
 		final JulianDate dtEffective,
 		final int[] aiDay,
 		final int iNumFutures,
@@ -134,7 +159,7 @@ public class OTCFloatFloatSwaps {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
+	private static final FixFloatComponent[] SwapFromMaturityTenor (
 		final JulianDate dtSpot,
 		final String strCurrency,
 		final String[] astrMaturityTenor,
@@ -172,7 +197,7 @@ public class OTCFloatFloatSwaps {
 		 * Construct the array of Deposit instruments and their quotes.
 		 */
 
-		CalibratableFixedIncomeComponent[] aDepositComp = DepositInstrumentsFromMaturityDays (
+		CalibratableFixedIncomeComponent[] aDepositComp = DepositFromMaturityDays (
 			dtSpot,
 			new int[] {
 			},
@@ -209,7 +234,7 @@ public class OTCFloatFloatSwaps {
 			"SwapRate"      // 10Y
 		};
 
-		CalibratableFixedIncomeComponent[] aSwapComp = SwapInstrumentsFromMaturityTenor (
+		CalibratableFixedIncomeComponent[] aSwapComp = SwapFromMaturityTenor (
 			dtSpot,
 			strCurrency,
 			new java.lang.String[] {
@@ -248,7 +273,7 @@ public class OTCFloatFloatSwaps {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FloatFloatComponent[] MakexM6MBasisSwap (
+	private static final FloatFloatComponent[] OTCFloatFloat (
 		final JulianDate dtSpot,
 		final String strCurrency,
 		final String[] astrMaturityTenor,
@@ -269,7 +294,72 @@ public class OTCFloatFloatSwaps {
 		return aFFC;
 	}
 
-	private static final ForwardCurve xM6MBasisSample (
+	/*
+	 * Construct an array of fix-float component pairs from the corresponding reference (6M) and the derived legs.
+	 * 
+	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
+	 */
+
+	private static final ComponentPair[] OTCComponentPair (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String[] astrMaturityTenor,
+		final int iTenorInMonths,
+		final CurveSurfaceQuoteSet csqs)
+		throws Exception
+	{
+		if (null == astrMaturityTenor || 0 == astrMaturityTenor.length) return null;
+
+		ComponentPair[] aFFCP = new ComponentPair[astrMaturityTenor.length];
+
+		ValuationParams valParams = new ValuationParams (
+			dtSpot,
+			dtSpot,
+			strCurrency
+		);
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			ComponentPair cp = OTCComponentPair (
+				dtSpot,
+				strCurrency,
+				iTenorInMonths + "M",
+				astrMaturityTenor[i],
+				0.,
+				0.,
+				0.
+			);
+
+			double dblReferenceFixedCoupon = cp.referenceComponent().measureValue (
+				valParams,
+				null,
+				csqs,
+				null,
+				"FairPremium"
+			);
+
+			double dblDerivedFixedCoupon = cp.derivedComponent().measureValue (
+				valParams,
+				null,
+				csqs,
+				null,
+				"FairPremium"
+			);
+
+			aFFCP[i] = OTCComponentPair (
+				dtSpot,
+				strCurrency,
+				iTenorInMonths + "M",
+				astrMaturityTenor[i],
+				dblReferenceFixedCoupon,
+				dblDerivedFixedCoupon,
+				0.
+			);
+		}
+
+		return aFFCP;
+	}
+
+	private static final ForwardCurve MakeFloatFloatFC (
 		final JulianDate dtSpot,
 		final String strCurrency,
 		final DiscountCurve dc,
@@ -295,7 +385,7 @@ public class OTCFloatFloatSwaps {
 		 * Construct the 6M-xM float-float basis swap.
 		 */
 
-		FloatFloatComponent[] aFFC = MakexM6MBasisSwap (
+		FloatFloatComponent[] aFFC = OTCFloatFloat (
 			dtSpot,
 			strCurrency,
 			astrxM6MFwdTenor,
@@ -337,7 +427,7 @@ public class OTCFloatFloatSwaps {
 			mktParams,
 			null,
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
-			new PolynomialFunctionSetParams (5),
+			new PolynomialFunctionSetParams (4),
 			aFFC,
 			"DerivedParBasisSpread",
 			adblxM6MBasisSwapQuote,
@@ -345,6 +435,7 @@ public class OTCFloatFloatSwaps {
 		);
 
 		if (bDisplay) {
+
 			/*
 			 * Set the discount curve + quartic polynomial forward curve based component market parameters.
 			 */
@@ -395,7 +486,142 @@ public class OTCFloatFloatSwaps {
 		return fcxMQuartic;
 	}
 
-	private static final ForwardCurve MakeFC (
+	private static final ForwardCurve MakeComponentPairFC (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final DiscountCurve dc,
+		final int iTenorInMonths,
+		final String[] astrComponentPairTenor,
+		final double[] adblComponentPairQuote,
+		final boolean bDisplay)
+		throws Exception
+	{
+		if (bDisplay) {
+			System.out.println ("\n\t----------------------------------------------------------------");
+
+			System.out.println ("\t----------------------------------------------------------------");
+		}
+
+		ValuationParams valParams = new ValuationParams (
+			dtSpot,
+			dtSpot,
+			strCurrency
+		);
+
+		/*
+		 * Set the discount curve based component market parameters.
+		 */
+
+		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (
+			dc,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
+
+		org.drip.product.fx.ComponentPair[] aComponentPair = OTCComponentPair (
+			dtSpot,
+			strCurrency,
+			astrComponentPairTenor,
+			iTenorInMonths,
+			mktParams
+		);
+
+		/*
+		 * Construct the Float-Float Component Set Stretch Builder
+		 */
+
+		LatentStateStretchSpec fixFloatCPStretch = LatentStateStretchBuilder.ComponentPairForwardStretch (
+			"FIXFLOATCP",
+			aComponentPair,
+			valParams,
+			mktParams,
+			adblComponentPairQuote,
+			true,
+			true
+		);
+
+		LatentStateStretchSpec[] aStretchSpec = new LatentStateStretchSpec[] {
+			fixFloatCPStretch
+		};
+
+		/*
+		 * Set up the Linear Curve Calibrator using the following parameters:
+		 * 	- Cubic Exponential Mixture Basis Spline Set
+		 * 	- Ck = 2, Segment Curvature Penalty = 2
+		 * 	- Quadratic Rational Shape Controller
+		 * 	- Natural Boundary Setting
+		 */
+
+		LinearLatentStateCalibrator lcc = new LinearLatentStateCalibrator (
+			new org.drip.spline.params.SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (5),
+				org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2),
+				new org.drip.spline.params.ResponseScalingShapeControl (
+					true,
+					new org.drip.quant.function1D.QuadraticRationalShapeControl (0.)
+				),
+				null
+			),
+			BoundarySettings.NaturalStandard(),
+			MultiSegmentSequence.CALIBRATE,
+			null,
+			null
+		);
+
+		/*
+		 * Construct the Shape Preserving Forward Curve by applying the linear curve calibrator to the array
+		 *  of Deposit and Swap Stretches.
+		 */
+
+		ForwardCurve fcDerived = ScenarioForwardCurveBuilder.ShapePreservingForwardCurve (
+			lcc,
+			aStretchSpec,
+			aComponentPair[0].derivedComponent().forwardLabel().get ("DERIVED"),
+			valParams,
+			null,
+			mktParams,
+			null,
+			dc.libor (dtSpot, iTenorInMonths + "M")
+		);
+
+		/*
+		 * Set the discount curve + cubic polynomial forward curve based component market parameters.
+		 */
+
+		mktParams.setForwardCurve (fcDerived);
+
+		if (bDisplay) {
+
+			/*
+			 * Cross-Comparison of the Fix-Float Component Pair "DerivedParBasisSpread" metric.
+			 */
+
+			if (null != aComponentPair && null != adblComponentPairQuote) {
+				System.out.println ("\t----------------------------------------------------------------");
+
+				System.out.println ("\t     FIX-FLOAT COMPONENT PAIR QUOTE RECOVERY");
+
+				System.out.println ("\t----------------------------------------------------------------");
+
+				for (int i = 0; i < aComponentPair.length; ++i)
+					System.out.println ("\t[" + aComponentPair[i].effective() + " - " + aComponentPair[i].maturity() + "] = " +
+						FormatUtil.FormatDouble (aComponentPair[i].derivedComponent().measureValue (valParams, null, mktParams, null, "DerivedParBasisSpread"), 1, 2, 1.) + " | " +
+							FormatUtil.FormatDouble (adblComponentPairQuote[i], 1, 2, 10000.) + " | " +
+								FormatUtil.FormatDouble (fcDerived.forward (aComponentPair[i].maturity()), 1, 4, 100.) + "% | " +
+									FormatUtil.FormatDouble (dc.libor (aComponentPair[i].maturity().subtractTenor ("3M"), iTenorInMonths + "M"), 1, 4, 100.) + "%");
+			}
+		}
+
+		return fcDerived;
+	}
+
+	private static final ForwardCurve MakeFloatFloatFC (
 		final String strCurrency,
 		final DiscountCurve dc,
 		final boolean bDisplay)
@@ -411,7 +637,7 @@ public class OTCFloatFloatSwaps {
 			System.out.println ("-------------------    3M-6M Basis Swap    -----------------");
 		}
 
-		ForwardCurve fc3M = xM6MBasisSample (
+		ForwardCurve fc3M = MakeFloatFloatFC (
 			dc.epoch(),
 			strCurrency,
 			dc,
@@ -445,7 +671,49 @@ public class OTCFloatFloatSwaps {
 		return fc3M;
 	}
 
-	public static final void OTCFloatFloatRun (
+	private static final ForwardCurve MakeComponentPairFC (
+		final String strCurrency,
+		final DiscountCurve dc,
+		final boolean bDisplay)
+		throws Exception
+	{
+		/*
+		 * Build and run the sampling for the 3M-6M Tenor Basis Swap from its instruments and quotes.
+		 */
+
+		ForwardCurve fc3M = MakeComponentPairFC (
+			dc.epoch(),
+			strCurrency,
+			dc,
+			3,
+			new String[] {
+				"1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+			},
+			new double[] {
+				0.00186,    //  1Y
+				0.00127,    //  2Y
+				0.00097,    //  3Y
+				0.00080,    //  4Y
+				0.00067,    //  5Y
+				0.00058,    //  6Y
+				0.00051,    //  7Y
+				0.00046,    //  8Y
+				0.00042,    //  9Y
+				0.00038,    // 10Y
+				0.00035,    // 11Y
+				0.00033,    // 12Y
+				0.00028,    // 15Y
+				0.00022,    // 20Y
+				0.00020,    // 25Y
+				0.00018     // 30Y
+			},
+			bDisplay
+		);
+
+		return fc3M;
+	}
+
+	private static final void OTCFloatFloatRun (
 		final String strCurrency,
 		final JulianDate dtSpot,
 		final boolean bDisplay)
@@ -460,7 +728,7 @@ public class OTCFloatFloatSwaps {
 			strCurrency
 		);
 
-		ForwardCurve fc3M = MakeFC (
+		ForwardCurve fc3M = MakeFloatFloatFC (
 			strCurrency,
 			dc,
 			bDisplay
@@ -503,6 +771,86 @@ public class OTCFloatFloatSwaps {
 			FormatUtil.FormatDouble (mapFFCMeasures.get ("ReferenceParBasisSpread"), 1, 2, 1.) + "  |  " +
 			FormatUtil.FormatDouble (mapFFCMeasures.get ("DerivedParBasisSpread"), 1, 2, 1.) + "  |"
 		);
+	}
+
+	private static final void OTCComponentPairRun (
+		final String strCurrency,
+		final JulianDate dtSpot,
+		final boolean bDisplay)
+		throws Exception
+	{
+		/*
+		 * Construct the Discount Curve using its instruments and quotes
+		 */
+
+		DiscountCurve dc = MakeDC (
+			dtSpot,
+			strCurrency
+		);
+
+		ForwardCurve fc3M = MakeComponentPairFC (
+			strCurrency,
+			dc,
+			bDisplay
+		);
+
+		CurveSurfaceQuoteSet csqs = MarketParamsBuilder.Create (
+			dc,
+			fc3M,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
+		);
+
+		ComponentPair cp = OTCComponentPair (
+			dtSpot,
+			strCurrency,
+			"3M",
+			"10Y",
+			0.,
+			0.,
+			0.
+		);
+
+		ValuationParams valParams = new ValuationParams (
+			dtSpot,
+			dtSpot,
+			strCurrency
+		);
+
+		Map<String, Double> mapComponentPairMeasures = cp.value (
+			valParams,
+			null,
+			csqs,
+			null
+		);
+
+		System.out.println ("\t---------------------------------------------------------");
+
+		System.out.println ("\tL -> R:");
+
+		System.out.println ("\t\tCurrency");
+
+		System.out.println ("\t\tFloat-Float Effective");
+
+		System.out.println ("\t\tFloat-Float Maturity");
+
+		System.out.println ("\t\tDerived Component Reference Par Basis Spread");
+
+		System.out.println ("\t\tDerived Component Derived Par Basis Spread");
+
+		System.out.println ("\t---------------------------------------------------------");
+
+		System.out.println (
+			"\t| " + strCurrency + "  [" + cp.effective() + " -> " + cp.maturity() + "]  =>  " +
+			FormatUtil.FormatDouble (mapComponentPairMeasures.get ("DerivedCompReferenceBasis"), 1, 2, 1.) + "  |  " +
+			FormatUtil.FormatDouble (mapComponentPairMeasures.get ("DerivedCompDerivedBasis"), 1, 2, 1.) + "  |"
+		);
+
+		System.out.println ("\t---------------------------------------------------------");
 	}
 
 	public static final void main (
@@ -550,8 +898,6 @@ public class OTCFloatFloatSwaps {
 
 		OTCFloatFloatRun ("DKK", dtSpot, false);
 
-		// OTCFloatFloatRun ("EUR", dtSpot, false);
-
 		OTCFloatFloatRun ("GBP", dtSpot, false);
 
 		OTCFloatFloatRun ("HKD", dtSpot, false);
@@ -582,6 +928,6 @@ public class OTCFloatFloatSwaps {
 
 		System.out.println ("\t---------------------------------------------------------");
 
-		System.out.println ("\t---------------------------------------------------------");
+		OTCComponentPairRun ("EUR", dtSpot, true);
 	}
 }

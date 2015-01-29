@@ -437,6 +437,8 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 
 		try {
 			dblValueNotional = notional (dblValueDate);
+
+			mapResult.put ("InitialNotional", initialNotional());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -553,6 +555,8 @@ public class FixFloatComponent extends org.drip.product.rates.DualStreamComponen
 		setstrMeasureNames.add ("FloatDV01");
 
 		setstrMeasureNames.add ("Fixing01");
+
+		setstrMeasureNames.add ("InitialNotional");
 
 		setstrMeasureNames.add ("ParFixedCoupon");
 

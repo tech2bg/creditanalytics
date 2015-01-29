@@ -71,7 +71,6 @@ public class PricerParams {
 
 	private int _iUnitSize = 7;
 	private boolean _bSurvToPayDate = false;
-	private boolean _bAmetranoBianchettiForwardQuanto = false;
 	private int _iDiscretizationScheme = PERIOD_DISCRETIZATION_DAY_STEP;
 	private org.drip.param.definition.CalibrationParams _calibParams = null;
 
@@ -83,7 +82,7 @@ public class PricerParams {
 
 	public static final PricerParams Standard()
 	{
-		return new PricerParams (7, null, false, PERIOD_DISCRETIZATION_DAY_STEP, false);
+		return new PricerParams (7, null, false, PERIOD_DISCRETIZATION_DAY_STEP);
 	}
 
 	/**
@@ -94,21 +93,18 @@ public class PricerParams {
 	 * @param calibParams Optional Calibration Params
 	 * @param bSurvToPayDate Survival to Pay Date (True) or Period End Date (false)
 	 * @param iDiscretizationScheme Discretization Scheme In Use
-	 * @param bAmetranoBianchettiForwardQuanto TRUE => Ametrano-Bianchetti (2013) Forward Mode On
 	 */
 
 	public PricerParams (
 		final int iUnitSize,
 		final org.drip.param.definition.CalibrationParams calibParams,
 		final boolean bSurvToPayDate,
-		final int iDiscretizationScheme,
-		final boolean bAmetranoBianchettiForwardQuanto)
+		final int iDiscretizationScheme)
 	{
 		_iUnitSize = iUnitSize;
 		_calibParams = calibParams;
 		_bSurvToPayDate = bSurvToPayDate;
 		_iDiscretizationScheme = iDiscretizationScheme;
-		_bAmetranoBianchettiForwardQuanto = bAmetranoBianchettiForwardQuanto;
 	}
 
 	/**
@@ -153,16 +149,5 @@ public class PricerParams {
 	public int discretizationScheme()
 	{
 		return _iDiscretizationScheme;
-	}
-
-	/**
-	 * Retrieve the Flag indicating if the Ametrano-Bianchetti Mode has been turned on
-	 *  
-	 * @return TRUE => Ametrano-Bianchetti Mode has been turned on
-	 */
-
-	public boolean ametranoBianchettiMode()
-	{
-		return _bAmetranoBianchettiForwardQuanto;
 	}
 }

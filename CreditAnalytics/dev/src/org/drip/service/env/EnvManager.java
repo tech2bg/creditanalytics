@@ -105,6 +105,13 @@ public class EnvManager {
 			return null;
 		}
 
+		if (!org.drip.market.otc.CrossFloatConventionContainer.Init()) {
+			System.out.println
+				("EnvManager::InitEnv => Cannot Initialize Cros-Currency Float-Float Convention Settings!");
+
+			return null;
+		}
+
 		return org.drip.param.config.ConfigLoader.OracleInit (strConfig);
 	}
 

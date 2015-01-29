@@ -275,6 +275,7 @@ public class CCBSForwardCurve {
 			valParams,
 			mktParams,
 			adblCrossCurrencyBasis,
+			false,
 			bBasisOnDerivedLeg
 		);
 
@@ -300,11 +301,6 @@ public class CCBSForwardCurve {
 				dtValue.addTenor ("3M").julian()
 			)
 		);
-
-		CurveSurfaceQuoteSet mktParamsDerived = MarketParamsBuilder.Create
-			(dcDerived, fc3MDerived, null, null, null, null, null, null);
-
-		mktParamsDerived.setForwardCurve (fc6MDerived);
 
 		mktParams.setForwardCurve (fc3MDerived);
 

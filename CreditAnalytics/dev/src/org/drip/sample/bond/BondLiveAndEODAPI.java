@@ -284,7 +284,12 @@ public class BondLiveAndEODAPI {
 		ExplicitBootCreditCurve cc = CreditCurveBuilder.FromFlatHazard (dtToday.julian(), "CC", "USD",
 			0.02, 0.);
 
-		ValuationParams valParams = ValuationParams.CreateValParams (dtToday, 0, "", Convention.DATE_ROLL_ACTUAL);
+		ValuationParams valParams = ValuationParams.Spot (
+			dtToday,
+			0,
+			"",
+			Convention.DATE_ROLL_ACTUAL
+		);
 
 		PricerParams pricerParams = PricerParams.Standard();
 

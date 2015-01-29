@@ -64,8 +64,10 @@ public class FloatFloatConvention {
 			(org.drip.market.definition.IBORIndexContainer.IndexFromJurisdiction (_strCurrency),
 				strFloaterTenor);
 
-		java.lang.String strFloaterTenorComposite = _bIsDerivedCompoundedToReference ?
-			fixedConv.compositePeriodTenor() : strFloaterTenor;
+		/* java.lang.String strFloaterTenorComposite = _bIsDerivedCompoundedToReference ?
+			fixedConv.compositePeriodTenor() : strFloaterTenor; */
+
+		java.lang.String strFloaterTenorComposite = strFloaterTenor;
 
 		try {
 			org.drip.param.period.ComposableFloatingUnitSetting cfus = new
@@ -89,7 +91,13 @@ public class FloatFloatConvention {
 				(org.drip.analytics.support.CompositePeriodBuilder.FloatingCompositeUnit (lsEdgeDate, cps,
 					cfus));
 
-			return new org.drip.product.rates.FixFloatComponent (streamFixed, streamFloater, null);
+			org.drip.product.rates.FixFloatComponent ffc = new org.drip.product.rates.FixFloatComponent
+				(streamFixed, streamFloater, null);
+
+			ffc.setPrimaryCode ("IRS::" + ffc.forwardLabel().get ("DERIVED").fullyQualifiedName() + "." +
+				strMaturityTenor);
+
+			return ffc;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -328,7 +336,7 @@ public class FloatFloatConvention {
 				-1. * dblNotional);
 
 		try {
-			return new org.drip.product.fx.ComponentPair (_strCurrency + "_" + _strReferenceTenor + "/" +
+			return new org.drip.product.fx.ComponentPair (_strCurrency + "::" + _strReferenceTenor + "/" +
 				strDerivedTenor + "_" + strMaturityTenor, ffcReference, ffcDerived, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

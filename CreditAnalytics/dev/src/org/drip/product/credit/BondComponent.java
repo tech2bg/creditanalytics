@@ -1917,7 +1917,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		double dblCashPayDate = java.lang.Double.NaN;
 
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
-			false, s_iDiscretizationScheme, false);
+			false, s_iDiscretizationScheme);
 
 		for (org.drip.analytics.cashflow.CompositePeriod period : couponPeriods()) {
 			double dblPeriodPayDate = period.payDate();

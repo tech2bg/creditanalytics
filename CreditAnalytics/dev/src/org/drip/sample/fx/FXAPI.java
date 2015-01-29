@@ -110,8 +110,12 @@ public class FXAPI {
 			System.out.println (cp.code() + "[" + (i + 1) + "]=" + FormatUtil.FormatDouble (adblFXFwd[i], 1, 3, 100.));
 		}
 
-		ValuationParams valParams = ValuationParams.CreateValParams (DateUtil.Today(), 0, "USD",
-			Convention.DATE_ROLL_ACTUAL);
+		ValuationParams valParams = ValuationParams.Spot (
+			DateUtil.Today(),
+			0,
+			"USD",
+			Convention.DATE_ROLL_ACTUAL
+		);
 
 		/*
 		 * Create the FX forward instrument

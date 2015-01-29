@@ -444,7 +444,7 @@ public class BondAnalyticsAPI {
 			 * Construct Valuation Parameters
 			 */
 
-			ValuationParams valParams = ValuationParams.CreateValParams (
+			ValuationParams valParams = ValuationParams.Spot (
 				DateUtil.Today(),
 				0,
 				"",
@@ -555,7 +555,12 @@ public class BondAnalyticsAPI {
 		 * Valuation Parameters
 		 */
 
-		ValuationParams valParams = ValuationParams.CreateValParams (DateUtil.Today(), 0, "USD", Convention.DATE_ROLL_ACTUAL);
+		ValuationParams valParams = ValuationParams.Spot (
+			DateUtil.Today(),
+			0,
+			"USD",
+			Convention.DATE_ROLL_ACTUAL
+		);
 
 		/*
 		 * Theoretical Price

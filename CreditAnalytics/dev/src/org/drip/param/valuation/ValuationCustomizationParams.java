@@ -130,7 +130,7 @@ public class ValuationCustomizationParams {
 	 * @return TRUE => Spread Quoted
 	 */
 
-	public boolean isSpreadQuoted()
+	public boolean spreadQuoted()
 	{
 		return _bSpreadQuoted;
 	}

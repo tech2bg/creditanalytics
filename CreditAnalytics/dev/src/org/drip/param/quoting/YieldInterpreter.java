@@ -94,25 +94,55 @@ public class YieldInterpreter extends org.drip.param.quoting.MeasureInterpreter 
 		_bApplyEOMAdj = bApplyEOMAdj;
 	}
 
+	/**
+	 * Retrieve the Day Count Convention
+	 * 
+	 * @return The Day Count Convention
+	 */
+
 	public java.lang.String dayCount()
 	{
 		return _strDC;
 	}
+
+	/**
+	 * Retrieve the Frequency
+	 * 
+	 * @return The Frequency
+	 */
 
 	public int freq()
 	{
 		return _iFreq;
 	}
 
+	/**
+	 * Retrieve the EOM Adjustment
+	 * 
+	 * @return The EOM Adjustment
+	 */
+
 	public boolean eomAdj()
 	{
 		return _bApplyEOMAdj;
 	}
 
+	/**
+	 * Retrieve the Act/Act Day Count Parameters
+	 * 
+	 * @return The Act/Act Day Count Parameters
+	 */
+
 	public org.drip.analytics.daycount.ActActDCParams aap()
 	{
 		return _aap;
 	}
+
+	/**
+	 * Retrieve the Calendar
+	 * 
+	 * @return The Calendar
+	 */
 
 	public java.lang.String calendar()
 	{

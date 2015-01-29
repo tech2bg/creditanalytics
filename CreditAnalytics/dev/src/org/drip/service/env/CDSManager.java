@@ -110,7 +110,7 @@ public class CDSManager {
 			(org.drip.product.definition.CreditDefaultSwap[]) cc.calibComp();
 
 		org.drip.param.pricer.PricerParams pricerParams = new org.drip.param.pricer.PricerParams (7, null,
-			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP, false);
+			false, org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP);
 
 		org.drip.param.valuation.ValuationParams valParams = null;
 

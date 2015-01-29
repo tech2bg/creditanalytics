@@ -121,8 +121,9 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	 * 
 	 * @param valParams Valuation Parameters
 	 * @param mktParams Market Parameters
-	 * @param dblReferenceComponentBasis The Reference Component Basis
-	 * @param bBasisOnDerivedLeg TRUE => Apply the Basis on the Derived Leg (FALSE => Reference Leg)
+	 * @param dblBasis The Basis on either the Reference Component or the Derived Component
+	 * @param bBasisOnDerivedComponent TRUE => Apply the Basis on the Derived Component
+	 * @param bBasisOnDerivedStream TRUE => Apply the Basis on the Derived Stream (FALSE => Reference Stream)
 	 * 
 	 * @return The Derived Forward Latent State Segment Specification
 	 */
@@ -130,8 +131,9 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 	public org.drip.state.inference.LatentStateSegmentSpec derivedForwardSpec (
 		final org.drip.param.valuation.ValuationParams valParams,
 		final org.drip.param.market.CurveSurfaceQuoteSet mktParams,
-		final double dblReferenceComponentBasis,
-		final boolean bBasisOnDerivedLeg)
+		final double dblBasis,
+		final boolean bBasisOnDerivedComponent,
+		final boolean bBasisOnDerivedStream)
 	{
 		org.drip.product.calib.ProductQuoteSet pqs = null;
 		org.drip.state.identifier.ForwardLabel forwardLabel = null;
@@ -145,7 +147,8 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.state.identifier.ForwardLabel>
 				mapForwardLabel = comp.forwardLabel();
 
-			if (null != mapForwardLabel && 0 != mapForwardLabel.size()) forwardLabel = mapForwardLabel.get (0);
+			if (null != mapForwardLabel && 0 != mapForwardLabel.size())
+				forwardLabel = mapForwardLabel.get (0);
 		}
 
 		try { 
@@ -167,21 +170,43 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 		java.lang.String strReferenceComponentName = rcReference.name();
 
+		org.drip.product.definition.CalibratableFixedIncomeComponent rcDerived = derivedComponent();
+
+		java.lang.String strDerivedComponentName = rcDerived.name();
+
 		java.lang.String strReferenceComponentPV = strReferenceComponentName + "[PV]";
-		java.lang.String strReferenceComponentReferenceLegCleanDV01 = strReferenceComponentName +
-			"[ReferenceCleanDV01]";
-		java.lang.String strReferenceComponentDerivedLegCleanDV01 = strReferenceComponentName +
-			"[DerivedCleanDV01]";
 
-		if (null == mapOP || !mapOP.containsKey (strReferenceComponentPV) || !mapOP.containsKey
-			(strReferenceComponentReferenceLegCleanDV01) || !mapOP.containsKey
-				(strReferenceComponentDerivedLegCleanDV01))
-			return null;
+		if (!bBasisOnDerivedComponent) {
+			java.lang.String strReferenceComponentDerivedStreamCleanDV01 = strReferenceComponentName +
+				"[DerivedCleanDV01]";
+			java.lang.String strReferenceComponentReferenceStreamCleanDV01 = strReferenceComponentName +
+				"[ReferenceCleanDV01]";
 
-		if (!pqs.set ("PV", -1. * (mapOP.get (strReferenceComponentPV) + 10000. * (bBasisOnDerivedLeg ?
-			mapOP.get (strReferenceComponentDerivedLegCleanDV01) : mapOP.get
-				(strReferenceComponentReferenceLegCleanDV01)) * dblReferenceComponentBasis)))
-			return null;
+			if (null == mapOP || !mapOP.containsKey (strReferenceComponentPV) || !mapOP.containsKey
+				(strReferenceComponentReferenceStreamCleanDV01) || !mapOP.containsKey
+					(strReferenceComponentDerivedStreamCleanDV01))
+				return null;
+
+			if (!pqs.set ("PV", -1. * (mapOP.get (strReferenceComponentPV) + 10000. * (bBasisOnDerivedStream
+				? mapOP.get (strReferenceComponentDerivedStreamCleanDV01) : mapOP.get
+					(strReferenceComponentReferenceStreamCleanDV01)) * dblBasis)))
+				return null;
+		} else {
+			java.lang.String strDerivedComponentReferenceStreamCleanDV01 = strDerivedComponentName +
+				"[ReferenceCleanDV01]";
+			java.lang.String strDerivedComponentDerivedStreamCleanDV01 = strDerivedComponentName +
+				"[DerivedCleanDV01]";
+
+			if (null == mapOP || !mapOP.containsKey (strReferenceComponentPV) || !mapOP.containsKey
+				(strDerivedComponentReferenceStreamCleanDV01) || !mapOP.containsKey
+					(strDerivedComponentDerivedStreamCleanDV01))
+				return null;
+
+			if (!pqs.set ("PV", -1. * (mapOP.get (strReferenceComponentPV) + 10000. * (bBasisOnDerivedStream
+				? mapOP.get (strDerivedComponentDerivedStreamCleanDV01) : mapOP.get
+					(strDerivedComponentReferenceStreamCleanDV01)) * dblBasis)))
+				return null;
+		}
 
 		try {
 			return new org.drip.state.inference.LatentStateSegmentSpec (comp, pqs);

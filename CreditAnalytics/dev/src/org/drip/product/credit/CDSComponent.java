@@ -740,8 +740,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 				SpreadCalibrator.CALIBRATION_TYPE_NODE_PARALLEL_BUMP).calibrateHazardFromPrice (valParams,
 					new org.drip.param.pricer.PricerParams (7,
 						org.drip.param.definition.CalibrationParams.Standard(), false,
-							org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP, false), csqs,
-								vcp, dblMarketMeasure);
+							org.drip.param.pricer.PricerParams.PERIOD_DISCRETIZATION_DAY_STEP), csqs, vcp,
+								dblMarketMeasure);
 
 			if (null != scop) {
 				ccMarket = scop._ccCalib;

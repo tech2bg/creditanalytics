@@ -192,9 +192,9 @@ public class ScenarioDiscountCurveBuilder {
 		org.drip.param.definition.ScenarioDiscountCurve irsg = FromIRCSG (strCurrency, strBootstrapMode,
 			aCalibInst);
 
-		if (null == irsg || !irsg.cookScenarioDC (org.drip.param.valuation.ValuationParams.CreateValParams
-			(dt, 0, "", org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), null, astrCalibMeasure,
-				adblQuotes, 0., lsfc, null, org.drip.param.definition.ScenarioDiscountCurve.DC_BASE))
+		if (null == irsg || !irsg.cookScenarioDC (org.drip.param.valuation.ValuationParams.Spot (dt, 0, "",
+			org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), null, astrCalibMeasure, adblQuotes, 0.,
+				lsfc, null, org.drip.param.definition.ScenarioDiscountCurve.DC_BASE))
 			return null;
 
 		return irsg.base();

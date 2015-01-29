@@ -43,8 +43,8 @@ public class CompositePeriodSetting {
 	private org.drip.product.params.FactorSchedule _fsCoupon = null;
 	private org.drip.product.params.FactorSchedule _fsNotional = null;
 	private org.drip.state.identifier.CreditLabel _creditLabel = null;
-	private org.drip.analytics.daycount.DateAdjustParams _dapPay = null;
 	private org.drip.param.period.FixingSetting _fxFixingSetting = null;
+	private org.drip.analytics.daycount.DateAdjustParams _dapPay = null;
 
 	/**
 	 * CompositePeriodSetting Constructor

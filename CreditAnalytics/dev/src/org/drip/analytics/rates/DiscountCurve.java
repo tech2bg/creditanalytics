@@ -351,7 +351,7 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		org.drip.param.market.CurveSurfaceQuoteSet csqs = org.drip.param.creator.MarketParamsBuilder.Create
 			(this, null, null, null, null, null, null, lsfc);
 
-		return irs.measureValue (org.drip.param.valuation.ValuationParams.CreateValParams (dtStart, 0, "",
+		return irs.measureValue (org.drip.param.valuation.ValuationParams.Spot (dtStart, 0, "",
 			org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), null, csqs, null, "FixedDV01");
 	}
 
@@ -525,8 +525,8 @@ public abstract class DiscountCurve implements org.drip.analytics.rates.Discount
 		int iNumComponents = aCalibComp.length;
 		org.drip.quant.calculus.WengertJacobian wjCompPVDF = null;
 
-		org.drip.param.valuation.ValuationParams valParams =
-			org.drip.param.valuation.ValuationParams.CreateSpotValParams (dblDate);
+		org.drip.param.valuation.ValuationParams valParams = org.drip.param.valuation.ValuationParams.Spot
+			(dblDate);
 
 		org.drip.param.market.CurveSurfaceQuoteSet csqs =
 			org.drip.param.creator.MarketParamsBuilder.Create (this, null, null, null, null, null,

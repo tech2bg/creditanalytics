@@ -372,7 +372,7 @@ public class BondRVMeasuresAPI {
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, dcTSY, null, null, null,
 			MakeTSYQuotes (astrTSYTenor, adblTSYYield), null);
 
-		ValuationParams valParams = ValuationParams.CreateValParams (
+		ValuationParams valParams = ValuationParams.Spot (
 			dtSettle,
 			0,
 			"",

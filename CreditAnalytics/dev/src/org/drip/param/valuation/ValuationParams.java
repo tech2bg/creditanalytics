@@ -56,7 +56,7 @@ public class ValuationParams {
 	 * @return Valuation Parameters instance
 	 */
 
-	public static final ValuationParams CreateValParams (
+	public static final ValuationParams Spot (
 		final org.drip.analytics.date.JulianDate dtValue,
 		final int iCashSettleLag,
 		final java.lang.String strCalendar,
@@ -76,23 +76,6 @@ public class ValuationParams {
 	}
 
 	/**
-	 * Create the standard T+2B settle parameters for the given valuation date and calendar
-	 *  
-	 * @param dtValue Valuation Date
-	 * @param strCalendar Settle Calendar
-	 * 
-	 * @return Valuation Parameters instance
-	 */
-
-	public static final ValuationParams CreateStdValParams (
-		final org.drip.analytics.date.JulianDate dtValue,
-		final java.lang.String strCalendar)
-	{
-		return CreateValParams (dtValue, 2, strCalendar,
-			org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING);
-	}
-
-	/**
 	 * Create the spot valuation parameters for the given valuation date (uses the T+0 settle)
 	 *  
 	 * @param dblDate Valuation Date
@@ -100,7 +83,7 @@ public class ValuationParams {
 	 * @return Valuation Parameters instance
 	 */
 
-	public static final ValuationParams CreateSpotValParams (
+	public static final ValuationParams Spot (
 		final double dblDate)
 	{
 		try {
@@ -112,6 +95,22 @@ public class ValuationParams {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Create the standard T+2B settle parameters for the given valuation date and calendar
+	 *  
+	 * @param dtValue Valuation Date
+	 * @param strCalendar Settle Calendar
+	 * 
+	 * @return Valuation Parameters instance
+	 */
+
+	public static final ValuationParams Standard (
+		final org.drip.analytics.date.JulianDate dtValue,
+		final java.lang.String strCalendar)
+	{
+		return Spot (dtValue, 2, strCalendar, org.drip.analytics.daycount.Convention.DATE_ROLL_FOLLOWING);
 	}
 
 	/**

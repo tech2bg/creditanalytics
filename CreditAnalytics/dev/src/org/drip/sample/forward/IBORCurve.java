@@ -322,26 +322,58 @@ public class IBORCurve {
 
 	private static final ComponentPair[] FixFloatComponentPair (
 		final JulianDate dtSpot,
+		final CurveSurfaceQuoteSet csqs,
 		final ForwardLabel friDerived,
-		final String[] astrMaturityTenor,
-		final double[] adblReferenceFixedCoupon,
-		final double[] adblDerivedFixedCoupon)
+		final String[] astrMaturityTenor)
 		throws Exception
 	{
 		if (null == astrMaturityTenor || 0 == astrMaturityTenor.length) return null;
 
 		ComponentPair[] aFFCP = new ComponentPair[astrMaturityTenor.length];
 
-		for (int i = 0; i < astrMaturityTenor.length; ++i)
+		ValuationParams valParams = new ValuationParams (
+			dtSpot,
+			dtSpot,
+			friDerived.currency()
+		);
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			ComponentPair cp = OTCComponentPair (
+				dtSpot,
+				friDerived.currency(),
+				friDerived.tenor(),
+				astrMaturityTenor[i],
+				0.,
+				0.,
+				0.
+			);
+
+			double dblReferenceFixedCoupon = cp.referenceComponent().measureValue (
+				valParams,
+				null,
+				csqs,
+				null,
+				"FairPremium"
+			);
+
+			double dblDerivedFixedCoupon = cp.derivedComponent().measureValue (
+				valParams,
+				null,
+				csqs,
+				null,
+				"FairPremium"
+			);
+
 			aFFCP[i] = OTCComponentPair (
 				dtSpot,
 				friDerived.currency(),
 				friDerived.tenor(),
 				astrMaturityTenor[i],
-				adblReferenceFixedCoupon[i],
-				adblDerivedFixedCoupon[i],
+				dblReferenceFixedCoupon,
+				dblDerivedFixedCoupon,
 				0.
 			);
+		}
 
 		return aFFCP;
 	}
@@ -644,13 +676,9 @@ public class IBORCurve {
 		final String strFixFloatCalibMeasure,
 		final String[] astrComponentPairTenor,
 		final double[] adblComponentPairQuote,
-		final double[] adblComponentPairReferenceCoupon,
-		final double[] adblComponentPairDerivedCoupon,
 		final String strComponentPairCalibMeasure,
 		final String[] astrSyntheticComponentPairTenor,
 		final double[] adblSyntheticComponentPairQuote,
-		final double[] adblSyntheticComponentPairReferenceCoupon,
-		final double[] adblSyntheticComponentPairDerivedCoupon,
 		final String strSyntheticComponentPairCalibMeasure,
 		final String strHeaderComment,
 		final boolean bPrintMetric)
@@ -741,10 +769,9 @@ public class IBORCurve {
 
 		org.drip.product.fx.ComponentPair[] aComponentPair = FixFloatComponentPair (
 			dtValue,
+			mktParams,
 			fri,
-			astrComponentPairTenor,
-			adblComponentPairReferenceCoupon,
-			adblComponentPairDerivedCoupon
+			astrComponentPairTenor
 		);
 
 		/*
@@ -757,15 +784,15 @@ public class IBORCurve {
 			valParams,
 			mktParams,
 			adblComponentPairQuote,
+			true,
 			true
 		);
 
 		org.drip.product.fx.ComponentPair[] aSyntheticComponentPair = FixFloatComponentPair (
 			dtValue,
+			mktParams,
 			fri,
-			astrSyntheticComponentPairTenor,
-			adblSyntheticComponentPairReferenceCoupon,
-			adblSyntheticComponentPairDerivedCoupon
+			astrSyntheticComponentPairTenor
 		);
 
 		/*
@@ -778,6 +805,7 @@ public class IBORCurve {
 			valParams,
 			mktParams,
 			adblSyntheticComponentPairQuote,
+			true,
 			true
 		);
 
@@ -883,7 +911,7 @@ public class IBORCurve {
 			}
 
 			/*
-			 * Cross-Comparison of the Float-Float Calibration Instrument "DerivedParBasisSpread" metric.
+			 * Cross-Comparison of the Fix-Float Component Pair "DerivedParBasisSpread" metric.
 			 */
 
 			if (null != aComponentPair && null != adblComponentPairQuote) {
@@ -901,7 +929,7 @@ public class IBORCurve {
 			}
 
 			/*
-			 * Cross-Comparison of the Synthetic Float-Float Calibration Instrument "DerivedParBasisSpread" metric.
+			 * Cross-Comparison of the Synthetic Float-Float Component Pair "DerivedParBasisSpread" metric.
 			 */
 
 			if (null != aSyntheticComponentPair && null != adblSyntheticComponentPairQuote) {

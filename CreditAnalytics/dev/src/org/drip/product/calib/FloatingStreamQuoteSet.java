@@ -154,7 +154,7 @@ public class FloatingStreamQuoteSet extends org.drip.product.calib.ProductQuoteS
 	 * @return TRUE => The Spread successfully set
 	 */
 
-	public boolean setSpread(
+	public boolean setSpread (
 		final double dblSpread)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpread)) return false;

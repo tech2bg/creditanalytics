@@ -80,10 +80,6 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 
 		_dblCallProb1 = dblD1D2Diff * dblN / dblForward;
 
-		System.out.println ("\tdblForward: " + dblForward);
-
-		System.out.println ("\tdblStrike: " + dblStrike);
-
 		try {
 			_dblPutProb1 = dblD * dblD1D2Diff * org.drip.quant.distribution.Gaussian.CDF (-1. * dblD) /
 				dblForward;
