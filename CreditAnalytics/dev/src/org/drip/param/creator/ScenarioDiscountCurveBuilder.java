@@ -86,8 +86,8 @@ public class ScenarioDiscountCurveBuilder {
 					java.lang.String strMaturityTenor = ((int) ((dtMaturity.julian() - dtEffective.julian())
 						* 12 / 365.25)) + "M";
 
-					org.drip.market.otc.FixFloatConvention ffConv =
-						org.drip.market.otc.FixFloatConventionContainer.ConventionFromJurisdiction (strCurrency,
+					org.drip.market.otc.FixedFloatSwapConvention ffConv =
+						org.drip.market.otc.IBORFixedFloatContainer.ConventionFromJurisdiction (strCurrency,
 							"ALL", strMaturityTenor, "MAIN");
 
 					if (null == ffConv) return null;

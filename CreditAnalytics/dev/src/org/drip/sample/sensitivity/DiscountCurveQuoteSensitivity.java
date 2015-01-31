@@ -77,7 +77,7 @@ public class DiscountCurveQuoteSensitivity {
 		final String strMaturityTenor,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
+		FixedFloatSwapConvention ffConv = IBORFixedFloatContainer.ConventionFromJurisdiction (
 			strCurrency,
 			"ALL",
 			strMaturityTenor,

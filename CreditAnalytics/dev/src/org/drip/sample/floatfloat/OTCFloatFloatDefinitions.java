@@ -41,13 +41,14 @@ public class OTCFloatFloatDefinitions {
 	private static final void DisplayOTCInfo (
 		String strCurrency)
 	{
-		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		System.out.println (
 			"\t\t" + strCurrency + " => " +
 			ffConv.referenceTenor() + " | " +
 			ffConv.spotLag() + " | " +
-			ffConv.basisOnDerivedSide() + " | " +
+			ffConv.basisOnDerivedStream() + " | " +
+			ffConv.basisOnDerivedComponent() + " | " +
 			ffConv.derivedCompoundedToReference() + " | " +
 			ffConv.componentPair()
 		);
@@ -68,9 +69,11 @@ public class OTCFloatFloatDefinitions {
 
 		System.out.println ("\t\t\tSpot Lag");
 
-		System.out.println ("\t\t\tBasis on Derived Side");
+		System.out.println ("\t\t\tBasis on Derived Stream");
 
-		System.out.println ("\t\t\tDerived Leg Compounded To Reference Leg");
+		System.out.println ("\t\t\tBasis on Derived Component");
+
+		System.out.println ("\t\t\tDerived Stream Compounded To Reference Stream");
 
 		System.out.println ("\t\t\tComponent Pair");
 

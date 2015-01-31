@@ -63,7 +63,7 @@ public class OTCFloatFloatSwaps {
 		final String strMaturityTenor,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
+		FixedFloatSwapConvention ffConv = IBORFixedFloatContainer.ConventionFromJurisdiction (
 			strCurrency,
 			"ALL",
 			strMaturityTenor,
@@ -86,7 +86,7 @@ public class OTCFloatFloatSwaps {
 		final String strMaturityTenor,
 		final double dblBasis)
 	{
-		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFloatFloatComponent (
 			dtSpot,
@@ -106,7 +106,7 @@ public class OTCFloatFloatSwaps {
 		final double dblDerivedFixedCoupon,
 		final double dblDerivedStreamBasis)
 	{
-		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFixFloatComponentPair (
 			dtSpot,
@@ -496,12 +496,6 @@ public class OTCFloatFloatSwaps {
 		final boolean bDisplay)
 		throws Exception
 	{
-		if (bDisplay) {
-			System.out.println ("\n\t----------------------------------------------------------------");
-
-			System.out.println ("\t----------------------------------------------------------------");
-		}
-
 		ValuationParams valParams = new ValuationParams (
 			dtSpot,
 			dtSpot,
@@ -535,14 +529,16 @@ public class OTCFloatFloatSwaps {
 		 * Construct the Float-Float Component Set Stretch Builder
 		 */
 
+		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
+
 		LatentStateStretchSpec fixFloatCPStretch = LatentStateStretchBuilder.ComponentPairForwardStretch (
 			"FIXFLOATCP",
 			aComponentPair,
 			valParams,
 			mktParams,
 			adblComponentPairQuote,
-			true,
-			true
+			ffConv.basisOnDerivedComponent(),
+			ffConv.basisOnDerivedStream()
 		);
 
 		LatentStateStretchSpec[] aStretchSpec = new LatentStateStretchSpec[] {
@@ -597,6 +593,9 @@ public class OTCFloatFloatSwaps {
 		mktParams.setForwardCurve (fcDerived);
 
 		if (bDisplay) {
+			System.out.println ("\n\t----------------------------------------------------------------");
+
+			System.out.println ("\t----------------------------------------------------------------");
 
 			/*
 			 * Cross-Comparison of the Fix-Float Component Pair "DerivedParBasisSpread" metric.
@@ -612,10 +611,33 @@ public class OTCFloatFloatSwaps {
 				for (int i = 0; i < aComponentPair.length; ++i)
 					System.out.println ("\t[" + aComponentPair[i].effective() + " - " + aComponentPair[i].maturity() + "] = " +
 						FormatUtil.FormatDouble (aComponentPair[i].derivedComponent().measureValue (valParams, null, mktParams, null, "DerivedParBasisSpread"), 1, 2, 1.) + " | " +
-							FormatUtil.FormatDouble (adblComponentPairQuote[i], 1, 2, 10000.) + " | " +
-								FormatUtil.FormatDouble (fcDerived.forward (aComponentPair[i].maturity()), 1, 4, 100.) + "% | " +
-									FormatUtil.FormatDouble (dc.libor (aComponentPair[i].maturity().subtractTenor ("3M"), iTenorInMonths + "M"), 1, 4, 100.) + "%");
+							FormatUtil.FormatDouble (aComponentPair[i].derivedComponent().measureValue (valParams, null, mktParams, null, "ReferenceParBasisSpread"), 1, 2, 1.) + " | " +
+								FormatUtil.FormatDouble (adblComponentPairQuote[i], 1, 2, 10000.) + " | " +
+									FormatUtil.FormatDouble (fcDerived.forward (aComponentPair[i].maturity()), 1, 4, 100.) + "% | " +
+										FormatUtil.FormatDouble (dc.libor (aComponentPair[i].maturity().subtractTenor ("3M"), iTenorInMonths + "M"), 1, 4, 100.) + "%");
 			}
+
+			System.out.println ("\t---------------------------------------------------------");
+
+			System.out.println ("\n\t---------------------------------------------------------");
+
+			System.out.println ("\t\tFIX-FLOAT COMPONENT PAIR RUNS");
+
+			System.out.println ("\t---------------------------------------------------------");
+
+			System.out.println ("\tL -> R:");
+
+			System.out.println ("\t\tCurrency");
+
+			System.out.println ("\t\tFloat-Float Effective");
+
+			System.out.println ("\t\tFloat-Float Maturity");
+
+			System.out.println ("\t\tDerived Component Derived Stream Par Basis Spread");
+
+			System.out.println ("\t\tDerived Component Reference Stream Par Basis Spread");
+
+			System.out.println ("\t---------------------------------------------------------");
 		}
 
 		return fcDerived;
@@ -776,6 +798,7 @@ public class OTCFloatFloatSwaps {
 	private static final void OTCComponentPairRun (
 		final String strCurrency,
 		final JulianDate dtSpot,
+		final String strMaturityTenor,
 		final boolean bDisplay)
 		throws Exception
 	{
@@ -809,7 +832,7 @@ public class OTCFloatFloatSwaps {
 			dtSpot,
 			strCurrency,
 			"3M",
-			"10Y",
+			strMaturityTenor,
 			0.,
 			0.,
 			0.
@@ -828,29 +851,11 @@ public class OTCFloatFloatSwaps {
 			null
 		);
 
-		System.out.println ("\t---------------------------------------------------------");
-
-		System.out.println ("\tL -> R:");
-
-		System.out.println ("\t\tCurrency");
-
-		System.out.println ("\t\tFloat-Float Effective");
-
-		System.out.println ("\t\tFloat-Float Maturity");
-
-		System.out.println ("\t\tDerived Component Reference Par Basis Spread");
-
-		System.out.println ("\t\tDerived Component Derived Par Basis Spread");
-
-		System.out.println ("\t---------------------------------------------------------");
-
 		System.out.println (
 			"\t| " + strCurrency + "  [" + cp.effective() + " -> " + cp.maturity() + "]  =>  " +
-			FormatUtil.FormatDouble (mapComponentPairMeasures.get ("DerivedCompReferenceBasis"), 1, 2, 1.) + "  |  " +
-			FormatUtil.FormatDouble (mapComponentPairMeasures.get ("DerivedCompDerivedBasis"), 1, 2, 1.) + "  |"
+			FormatUtil.FormatDouble (mapComponentPairMeasures.get ("DerivedCompDerivedBasis"), 1, 2, 1.) + "  |  " +
+			FormatUtil.FormatDouble (mapComponentPairMeasures.get ("DerivedCompReferenceBasis"), 1, 2, 1.) + "  |"
 		);
-
-		System.out.println ("\t---------------------------------------------------------");
 	}
 
 	public static final void main (
@@ -878,9 +883,9 @@ public class OTCFloatFloatSwaps {
 
 		System.out.println ("\t\tFloat-Float Maturity");
 
-		System.out.println ("\t\tReference Par Basis Spread");
+		System.out.println ("\t\tReference Stream Par Basis Spread");
 
-		System.out.println ("\t\tDerived Par Basis Spread");
+		System.out.println ("\t\tDerived Stream Par Basis Spread");
 
 		System.out.println ("\t---------------------------------------------------------");
 
@@ -920,14 +925,36 @@ public class OTCFloatFloatSwaps {
 
 		OTCFloatFloatRun ("ZAR", dtSpot, false);
 
+		OTCComponentPairRun ("EUR", dtSpot, "1Y", true);
+
+		OTCComponentPairRun ("EUR", dtSpot, "2Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "3Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "4Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "5Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "6Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "7Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "8Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "9Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "11Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "12Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "15Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "20Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "25Y", false);
+
+		OTCComponentPairRun ("EUR", dtSpot, "30Y", false);
+
 		System.out.println ("\t---------------------------------------------------------");
-
-		System.out.println ("\n\t---------------------------------------------------------");
-
-		System.out.println ("\t\tFIX-FLOAT COMPONENT PAIR RUNS");
-
-		System.out.println ("\t---------------------------------------------------------");
-
-		OTCComponentPairRun ("EUR", dtSpot, true);
 	}
 }

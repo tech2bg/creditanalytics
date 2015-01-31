@@ -63,7 +63,7 @@ public class LIBORFuturesOption {
 		final String strMaturityTenor,
 		final double dblBasis)
 	{
-		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFloatFloatComponent (
 			dtSpot,

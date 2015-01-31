@@ -137,8 +137,8 @@ public class DeliverableSwapFutures {
 		final org.drip.analytics.date.JulianDate dtSpot,
 		final double dblFixedCoupon)
 	{
-		org.drip.market.otc.FixFloatConvention ffConv =
-			org.drip.market.otc.FixFloatConventionContainer.ConventionFromJurisdictionMaturity (_strCurrency,
+		org.drip.market.otc.FixedFloatSwapConvention ffConv =
+			org.drip.market.otc.IBORFixedFloatContainer.ConventionFromJurisdictionMaturity (_strCurrency,
 				_strTenor);
 
 		return null == ffConv ? null : ffConv.createFixFloatComponent (dtSpot, _strTenor, dblFixedCoupon, 0.,

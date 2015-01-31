@@ -35,19 +35,19 @@ package org.drip.market.otc;
  */
 
 public class CrossFloatConventionContainer {
-	private static final java.util.Map<java.lang.String, org.drip.market.otc.CrossCurrencyFloatConvention>
+	private static final java.util.Map<java.lang.String, org.drip.market.otc.CrossFloatSwapConvention>
 		_mapConvention = new java.util.TreeMap<java.lang.String,
-			org.drip.market.otc.CrossCurrencyFloatConvention>();
+			org.drip.market.otc.CrossFloatSwapConvention>();
 
 	private static final boolean AddCrossCurrencyConvention (
 		final org.drip.market.otc.CrossFloatStreamConvention referenceConvention,
 		final org.drip.market.otc.CrossFloatStreamConvention derivedConvention)
 	{
-		org.drip.market.otc.CrossCurrencyFloatConvention xccyConvention = null;
+		org.drip.market.otc.CrossFloatSwapConvention xccyConvention = null;
 
 		try {
-			xccyConvention = new org.drip.market.otc.CrossCurrencyFloatConvention (referenceConvention,
-				derivedConvention, org.drip.param.period.FixingSetting.FIXING_COMPOSITE_PERIOD_END);
+			xccyConvention = new org.drip.market.otc.CrossFloatSwapConvention (referenceConvention,
+				derivedConvention, org.drip.param.period.FixingSetting.FIXING_PRESET_STATIC, false, 2);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -145,12 +145,36 @@ public class CrossFloatConventionContainer {
 	 * @return The Float-Float Convention Instance
 	 */
 
-	public static final org.drip.market.otc.CrossCurrencyFloatConvention ConventionFromJurisdiction (
+	public static final org.drip.market.otc.CrossFloatSwapConvention ConventionFromJurisdiction (
 		final java.lang.String strCurrency)
 	{
+		if (null == strCurrency || strCurrency.isEmpty()) return null;
+
 		java.lang.String strKey = "USD_" + strCurrency;
 
-		return null == strCurrency || strCurrency.isEmpty() || !_mapConvention.containsKey (strKey) ? null :
-			_mapConvention.get (strKey);
+		return !_mapConvention.containsKey (strKey) ? null : _mapConvention.get (strKey);
+	}
+
+	/**
+	 * Retrieve the Cross-Currency Float-Float Convention Instance from the Reference/Derived Jurisdiction
+	 * 	Names
+	 * 
+	 * @param strReferenceCurrency The Reference Jurisdiction Name
+	 * @param strDerivedCurrency The Derived Jurisdiction Name
+	 * 
+	 * @return The Float-Float Convention Instance
+	 */
+
+	public static final org.drip.market.otc.CrossFloatSwapConvention ConventionFromJurisdiction (
+		final java.lang.String strReferenceCurrency,
+		final java.lang.String strDerivedCurrency)
+	{
+		if (null == strReferenceCurrency || strReferenceCurrency.isEmpty() || null == strDerivedCurrency ||
+			strDerivedCurrency.isEmpty())
+			return null;
+
+		java.lang.String strKey = strReferenceCurrency + "_" + strDerivedCurrency;
+
+		return !_mapConvention.containsKey (strKey) ? null : _mapConvention.get (strKey);
 	}
 }

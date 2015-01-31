@@ -1,7 +1,7 @@
 
 package org.drip.sample.fixfloat;
 
-import org.drip.market.otc.FixFloatConventionContainer;
+import org.drip.market.otc.IBORFixedFloatContainer;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -46,7 +46,7 @@ public class OTCFixFloatDefinitions {
 	{
 		System.out.println (
 			"\t" + strCurrency + "-" + strLocation + "-" + strMaturityTenor + "-" + strIndex + " => " +
-			FixFloatConventionContainer.ConventionFromJurisdiction (
+			IBORFixedFloatContainer.ConventionFromJurisdiction (
 				strCurrency,
 				strLocation,
 				strMaturityTenor,
@@ -56,7 +56,7 @@ public class OTCFixFloatDefinitions {
 	}
 
 	public static final void main (
-		String[] args)
+		final String[] args)
 	{
 		CreditAnalytics.Init ("");
 

@@ -61,7 +61,7 @@ public class FRAStdAnalysis {
 		final String strMaturityTenor,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
+		FixedFloatSwapConvention ffConv = IBORFixedFloatContainer.ConventionFromJurisdiction (
 			strCurrency,
 			"ALL",
 			strMaturityTenor,
@@ -84,7 +84,7 @@ public class FRAStdAnalysis {
 		final String strMaturityTenor,
 		final double dblBasis)
 	{
-		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFloatFloatComponent (
 			dtSpot,

@@ -65,7 +65,7 @@ public class IBORCurve {
 		final String strMaturityTenor,
 		final double dblBasis)
 	{
-		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFloatFloatComponent (
 			dtSpot,
@@ -85,7 +85,7 @@ public class IBORCurve {
 		final double dblDerivedFixedCoupon,
 		final double dblBasis)
 	{
-		FloatFloatConvention ffConv = FloatFloatConventionContainer.ConventionFromJurisdiction (strCurrency);
+		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFixFloatComponentPair (
 			dtSpot,

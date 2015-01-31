@@ -66,7 +66,7 @@ public class OTCFixFloatSwaps {
 		final String strIndex,
 		final double dblCoupon)
 	{
-		FixFloatConvention ffConv = FixFloatConventionContainer.ConventionFromJurisdiction (
+		FixedFloatSwapConvention ffConv = IBORFixedFloatContainer.ConventionFromJurisdiction (
 			strCurrency,
 			strLocation,
 			strMaturityTenor,

@@ -303,6 +303,22 @@ public class IBORIndexContainer {
 			_mapNamedIBORIndex.put ("ZAR-JIBAR", iborZAR);
 
 			_mapNamedIBORIndex.put ("ZAR-LIBOR", iborZAR);
+
+			org.drip.market.definition.IBORIndex iborCLP = new org.drip.market.definition.IBORIndex
+				("CLP-LIBOR", "LIBOR", "CLP", "Act/360", "CLP", 2, "ON", "12M",
+					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
+
+			_mapJurisdictionIBORIndex.put ("CLP", iborCLP);
+
+			_mapNamedIBORIndex.put ("CLP-LIBOR", iborCLP);
+
+			org.drip.market.definition.IBORIndex iborMXN = new org.drip.market.definition.IBORIndex
+				("MXN-LIBOR", "LIBOR", "MXN", "Act/360", "MXN", 2, "ON", "12M",
+					org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC);
+
+			_mapJurisdictionIBORIndex.put ("MXN", iborMXN);
+
+			_mapNamedIBORIndex.put ("MXN-LIBOR", iborMXN);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
