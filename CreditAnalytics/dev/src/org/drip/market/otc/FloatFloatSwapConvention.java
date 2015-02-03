@@ -29,12 +29,12 @@ package org.drip.market.otc;
  */
 
 /**
- * IBORFloatFloatConvention contains the Details of the IBOR Float-Float Component of an OTC contact.
+ * FloatFloatSwapConvention contains the Details of the IBOR Float-Float Component of an OTC contact.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class IBORFloatFloatConvention {
+public class FloatFloatSwapConvention {
 	private int _iSpotLag = -1;
 	private boolean _bIsComponentPair = false;
 	private java.lang.String _strCurrency = "";
@@ -105,7 +105,7 @@ public class IBORFloatFloatConvention {
 	}
 
 	/**
-	 * IBORFloatFloatConvention Constructor
+	 * FloatFloatSwapConvention Constructor
 	 * 
 	 * @param strCurrency The Currency
 	 * @param strReferenceTenor The Reference Tenor
@@ -118,7 +118,7 @@ public class IBORFloatFloatConvention {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public IBORFloatFloatConvention (
+	public FloatFloatSwapConvention (
 		final java.lang.String strCurrency,
 		final java.lang.String strReferenceTenor,
 		final boolean bBasisOnDerivedStream,
@@ -130,7 +130,7 @@ public class IBORFloatFloatConvention {
 	{
 		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty() || null == (_strReferenceTenor =
 			strReferenceTenor) || _strReferenceTenor.isEmpty() || 0 > (_iSpotLag = iSpotLag))
-			throw new java.lang.Exception ("IBORFloatFloatConvention ctr: Invalid Inputs");
+			throw new java.lang.Exception ("FloatFloatSwapConvention ctr: Invalid Inputs");
 
 		_bIsComponentPair = bIsComponentPair;
 		_bBasisOnDerivedStream = bBasisOnDerivedStream;

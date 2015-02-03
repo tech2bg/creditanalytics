@@ -86,7 +86,7 @@ public class OTCFloatFloatSwaps {
 		final String strMaturityTenor,
 		final double dblBasis)
 	{
-		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
+		FloatFloatSwapConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFloatFloatComponent (
 			dtSpot,
@@ -106,7 +106,7 @@ public class OTCFloatFloatSwaps {
 		final double dblDerivedFixedCoupon,
 		final double dblDerivedStreamBasis)
 	{
-		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
+		FloatFloatSwapConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFixFloatComponentPair (
 			dtSpot,
@@ -529,7 +529,7 @@ public class OTCFloatFloatSwaps {
 		 * Construct the Float-Float Component Set Stretch Builder
 		 */
 
-		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
+		FloatFloatSwapConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		LatentStateStretchSpec fixFloatCPStretch = LatentStateStretchBuilder.ComponentPairForwardStretch (
 			"FIXFLOATCP",

@@ -88,23 +88,4 @@ public class DualStreamComponentBuilder {
 
 		return null;
 	}
-
-	/**
-	 * Make the DualStreamComponent Instance from the Reference and the Derived Component Streams
-	 * 
-	 * @param streamReference The Reference Stream
-	 * @param streamDerived The Derived Stream
-	 * @param csp Cash Settle Parameters
-	 * 
-	 * @return The DualStreamComponent Instance
-	 */
-
-	public static final org.drip.product.rates.DualStreamComponent MakeDualStream (
-		final org.drip.product.rates.Stream streamReference,
-		final org.drip.product.rates.Stream streamDerived,
-		final org.drip.param.valuation.CashSettleParams csp)
-	{
-		return null == streamReference || null == streamDerived ? null : MakeFloatFloat (streamReference,
-			streamDerived, csp);
-	}
 }

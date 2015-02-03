@@ -1,7 +1,7 @@
 
-package org.drip.sample.floatfloat;
+package org.drip.sample.multicurve;
 
-import org.drip.market.otc.*;
+import org.drip.market.otc.SwapOptionSettlementContainer;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -32,30 +32,22 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * OTCFloatFloatDefinitions contains all the pre-fixed Definitions of the OTC Float-Float Swap Contracts.
+ * OTCSwapOptionSettlements contains all the pre-fixed Definitions of the OTC Swap Option Settlements.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class OTCFloatFloatDefinitions {
-	private static final void DisplayOTCInfo (
-		String strCurrency)
+public class OTCSwapOptionSettlements {
+	private static final void DisplayOTCSwapOptionSettlement (
+		final String strCurrency)
 	{
-		FloatFloatSwapConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
-
-		System.out.println (
-			"\t\t" + strCurrency + " => " +
-			ffConv.referenceTenor() + " | " +
-			ffConv.spotLag() + " | " +
-			ffConv.basisOnDerivedStream() + " | " +
-			ffConv.basisOnDerivedComponent() + " | " +
-			ffConv.derivedCompoundedToReference() + " | " +
-			ffConv.componentPair()
+		System.out.println ("\t\t" + strCurrency + " => " +
+			SwapOptionSettlementContainer.ConventionFromJurisdiction (strCurrency)
 		);
 	}
 
 	public static final void main (
-		String[] args)
+		final String[] args)
 	{
 		CreditAnalytics.Init ("");
 
@@ -63,55 +55,31 @@ public class OTCFloatFloatDefinitions {
 
 		System.out.println ("\t\tL -> R:");
 
-		System.out.println ("\t\t\tCurrency");
+		System.out.println ("\t\t\tReference Currency");
 
-		System.out.println ("\t\t\tReference Tenor");
+		System.out.println ("\t\t\tSettlement Type");
 
-		System.out.println ("\t\t\tSpot Lag");
-
-		System.out.println ("\t\t\tBasis on Derived Stream");
-
-		System.out.println ("\t\t\tBasis on Derived Component");
-
-		System.out.println ("\t\t\tDerived Stream Compounded To Reference Stream");
-
-		System.out.println ("\t\t\tComponent Pair");
+		System.out.println ("\t\t\tSettlement Quote Valuation (for Cash Settled Options)");
 
 		System.out.println ("\t--------------------------------------------------------------------------------------------------------");
 
-		DisplayOTCInfo ("AUD");
+		DisplayOTCSwapOptionSettlement ("AUD");
 
-		DisplayOTCInfo ("CAD");
+		DisplayOTCSwapOptionSettlement ("CHF");
 
-		DisplayOTCInfo ("CHF");
+		DisplayOTCSwapOptionSettlement ("DKK");
 
-		DisplayOTCInfo ("CNY");
+		DisplayOTCSwapOptionSettlement ("EUR");
 
-		DisplayOTCInfo ("DKK");
+		DisplayOTCSwapOptionSettlement ("GBP");
 
-		DisplayOTCInfo ("EUR");
+		DisplayOTCSwapOptionSettlement ("JPY");
 
-		DisplayOTCInfo ("GBP");
+		DisplayOTCSwapOptionSettlement ("NOK");
 
-		DisplayOTCInfo ("HKD");
+		DisplayOTCSwapOptionSettlement ("SEK");
 
-		DisplayOTCInfo ("INR");
-
-		DisplayOTCInfo ("JPY");
-
-		DisplayOTCInfo ("NOK");
-
-		DisplayOTCInfo ("NZD");
-
-		DisplayOTCInfo ("PLN");
-
-		DisplayOTCInfo ("SEK");
-
-		DisplayOTCInfo ("SGD");
-
-		DisplayOTCInfo ("USD");
-
-		DisplayOTCInfo ("ZAR");
+		DisplayOTCSwapOptionSettlement ("USD");
 
 		System.out.println ("\t--------------------------------------------------------------------------------------------------------");
 	}

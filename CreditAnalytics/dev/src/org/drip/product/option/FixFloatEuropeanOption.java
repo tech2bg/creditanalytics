@@ -98,11 +98,12 @@ public class FixFloatEuropeanOption extends org.drip.product.option.FixedIncomeO
 
 		double dblExerciseDate = exerciseDate().julian();
 
+		org.drip.analytics.date.JulianDate dtEffective = _stir.effectiveDate();
+
 		org.drip.product.params.LastTradingDateSetting ltds = lastTradingDateSetting();
 
 		try {
-			if (null != ltds && dblValueDate >= ltds.lastTradingDate (_stir.effectiveDate().julian(),
-				calendar()))
+			if (null != ltds && dblValueDate >= ltds.lastTradingDate (dtEffective.julian(), calendar()))
 				return null;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -110,8 +111,10 @@ public class FixFloatEuropeanOption extends org.drip.product.option.FixedIncomeO
 			return null;
 		}
 
+		java.lang.String strPayCurrency = _stir.payCurrency();
+
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (_stir.payCurrency()));
+			(org.drip.state.identifier.FundingLabel.Standard (strPayCurrency));
 
 		if (null == dcFunding) return null;
 
@@ -211,6 +214,43 @@ public class FixFloatEuropeanOption extends org.drip.product.option.FixedIncomeO
 
 			mapResult.put ("PV", dblSpotPrice);
 
+			org.drip.market.otc.SwapOptionSettlement sos =
+				org.drip.market.otc.SwapOptionSettlementContainer.ConventionFromJurisdiction
+					(strPayCurrency);
+
+			if (null != sos) {
+				int iSettlementType = sos.settlementType();
+
+				int iSettlementQuote = sos.settlementQuote();
+
+				mapResult.put ("SettleType", (double) iSettlementType);
+
+				mapResult.put ("SettleQuote", (double) iSettlementQuote);
+
+				if (org.drip.market.otc.SwapOptionSettlement.SETTLEMENT_TYPE_CASH_SETTLED == iSettlementType)
+				{
+					if (org.drip.market.otc.SwapOptionSettlement.SETTLEMENT_QUOTE_EXACT_CURVE ==
+						iSettlementQuote)
+						mapResult.put ("SettleAmount", dblSpotPrice);
+					else if (org.drip.market.otc.SwapOptionSettlement.SETTLEMENT_QUOTE_IRR ==
+						iSettlementQuote && (strManifestMeasure.equalsIgnoreCase ("FairPremium") ||
+							strManifestMeasure.equalsIgnoreCase ("SwapRate") ||
+								strManifestMeasure.equalsIgnoreCase ("Rate"))) {
+						org.drip.product.rates.Stream streamDerived = _stir.derivedStream();
+
+						if (csqs.setFundingCurve
+							(org.drip.state.creator.DiscountCurveBuilder.CreateFromFlatYield (dtEffective,
+								strPayCurrency, dcFunding.collateralParams(), dblATMManifestMeasure,
+									streamDerived.couponDC(), streamDerived.freq())) && null !=
+										(mapSTIROutput = _stir.value (valParams, pricerParams, csqs,
+											quotingParams)))
+								mapResult.put ("SettleAmount", dblForwardIntrinsic * 10000. *
+									mapSTIROutput.get ("CleanFixedDV01"));
+					}
+				}
+			} else
+				mapResult.put ("SettleAmount", dblSpotPrice);
+
 			mapResult.put ("SpotPrice", dblSpotPrice);
 
 			mapResult.put ("Upfront", dblSpotPrice);
@@ -246,6 +286,12 @@ public class FixFloatEuropeanOption extends org.drip.product.option.FixedIncomeO
 		setstrMeasureNames.add ("Price");
 
 		setstrMeasureNames.add ("PV");
+
+		setstrMeasureNames.add ("SettleAmount");
+
+		setstrMeasureNames.add ("SettleQuote");
+
+		setstrMeasureNames.add ("SettleType");
 
 		setstrMeasureNames.add ("SpotPrice");
 

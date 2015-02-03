@@ -85,7 +85,7 @@ public class FRAStdOption {
 		final String strMaturityTenor,
 		final double dblBasis)
 	{
-		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
+		FloatFloatSwapConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFloatFloatComponent (
 			dtSpot,
@@ -549,7 +549,11 @@ public class FRAStdOption {
 			true,
 			dblStrike,
 			1.,
-			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
+			new LastTradingDateSetting (
+				LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY,
+				"",
+				Double.NaN
+			),
 			strCurrency,
 			strCurrency
 		);
@@ -574,7 +578,11 @@ public class FRAStdOption {
 			false,
 			dblStrike,
 			1.,
-			new LastTradingDateSetting (LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY, "", Double.NaN),
+			new LastTradingDateSetting (
+				LastTradingDateSetting.MID_CURVE_OPTION_QUARTERLY,
+				"",
+				Double.NaN
+			),
 			strCurrency,
 			strCurrency
 		);

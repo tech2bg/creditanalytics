@@ -8,11 +8,14 @@ import org.drip.analytics.daycount.Convention;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.market.definition.OvernightIndex;
+import org.drip.market.otc.FixedFloatSwapConvention;
+import org.drip.market.otc.OvernightFixedFloatContainer;
 import org.drip.param.creator.*;
 import org.drip.param.market.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
+import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
 import org.drip.quant.common.*;
 import org.drip.quant.function1D.*;
@@ -61,6 +64,25 @@ import org.drip.state.inference.*;
 
 public class CrossOvernightFloatingStream {
 
+	private static final FixFloatComponent OTCOISFixFloat (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strMaturityTenor,
+		final double dblCoupon)
+	{
+		FixedFloatSwapConvention ffConv = OvernightFixedFloatContainer.ConventionFromJurisdiction (
+			strCurrency
+		);
+
+		return ffConv.createFixFloatComponent (
+			dtSpot,
+			strMaturityTenor,
+			dblCoupon,
+			0.,
+			1.
+		);
+	}
+
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
 	 * 
@@ -89,131 +111,27 @@ public class CrossOvernightFloatingStream {
 	}
 
 	/*
-	 * Construct the Array of OIS Instruments from the given set of parameters
+	 * Construct the Array of Swap Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OISInstrumentsFromMaturityTenor (
-		final JulianDate dtEffective,
+	private static final FixFloatComponent[] OISFromMaturityTenor (
+		final JulianDate dtSpot,
+		final String strCurrency,
 		final String[] astrMaturityTenor,
-		final double[] adblCoupon,
-		final String strCurrency)
+		final double[] adblCoupon)
 		throws Exception
 	{
 		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
 
-		UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-			2,
-			"Act/360",
-			false,
-			"Act/360",
-			false,
-			strCurrency,
-			false,
-			CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
-		);
-
-		CashSettleParams csp = new CashSettleParams (
-			0,
-			strCurrency,
-			0
-		);
-
-		for (int i = 0; i < astrMaturityTenor.length; ++i) {
-			java.lang.String strFixedTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
-				astrMaturityTenor[i],
-				"6M"
-			) ? astrMaturityTenor[i] : "6M";
-
-			java.lang.String strFloatingTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
-				astrMaturityTenor[i],
-				"3M"
-			) ? astrMaturityTenor[i] : "3M";
-
-			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-				"ON",
-				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
-				null,
-				ForwardLabel.Create (strCurrency, "ON"),
-				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				0.
-			);
-
-			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-				strFixedTenor,
-				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-				null,
-				adblCoupon[i],
-				0.,
-				strCurrency
-			);
-
-			CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-				4,
-				strFloatingTenor,
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aOIS[i] = OTCOISFixFloat (
+				dtSpot,
 				strCurrency,
-				null,
-				-1.,
-				null,
-				null,
-				null,
-				null
-			);
-
-			CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-				2,
-				strFixedTenor,
-				strCurrency,
-				null,
-				1.,
-				null,
-				null,
-				null,
-				null
-			);
-
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				strFixedTenor,
 				astrMaturityTenor[i],
-				null
+				adblCoupon[i]
 			);
-
-			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				strFloatingTenor,
-				astrMaturityTenor[i],
-				null
-			);
-
-			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsFloatingStreamEdgeDate,
-					cpsFloating,
-					cfusFloating
-				)
-			);
-
-			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeUnit (
-					lsFixedStreamEdgeDate,
-					cpsFixed,
-					ucasFixed,
-					cfusFixed
-				)
-			);
-
-			FixFloatComponent ois = new FixFloatComponent (
-				fixedStream,
-				floatingStream,
-				csp
-			);
-
-			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
-
-			aOIS[i] = ois;
-		}
 
 		return aOIS;
 	}
@@ -289,13 +207,13 @@ public class CrossOvernightFloatingStream {
 			0.03488     // 10Y
 		};
 
-		FixFloatComponent[] aOISComp = OISInstrumentsFromMaturityTenor (
+		CalibratableFixedIncomeComponent[] aOISComp = OISFromMaturityTenor (
 			dtSpot,
+			strCurrency,
 			new java.lang.String[] {
 				"4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y"
 			},
-			adblOISQuote,
-			strCurrency
+			adblOISQuote
 		);
 
 		/*
@@ -329,7 +247,8 @@ public class CrossOvernightFloatingStream {
 				new PolynomialFunctionSetParams (4),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				null),
+				null
+			),
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,

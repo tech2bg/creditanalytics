@@ -298,7 +298,6 @@ public class OTCOIS {
 			adblLongEndOISQuote
 		);
 
-
 		/*
 		 * Construct the Long End OIS Instrument Set Stretch Builder
 		 */

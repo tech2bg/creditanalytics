@@ -100,14 +100,14 @@ public class DiscountCurveBuilder {
 		try {
 			if (null == strBootstrapMode)
 				return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams,
-					adblDate, adblRate);
+					adblDate, adblRate, false, "", -1);
 
 			if (BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF.equalsIgnoreCase (strBootstrapMode))
 				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (dtStart, strCurrency,
 					collatParams, adblDate, adblRate);
 
 			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams,
-				adblDate, adblRate);
+				adblDate, adblRate, false, "", -1);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -121,7 +121,7 @@ public class DiscountCurveBuilder {
 	 * @param dtStart Start Date
 	 * @param strCurrency Currency
 	 * @param collatParams Collateralization Parameters
-	 * @param dblRate Date
+	 * @param dblRate Rate
 	 * 
 	 * @return Discount Curve
 	 */
@@ -136,7 +136,41 @@ public class DiscountCurveBuilder {
 
 		try {
 			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams, new
-				double[] {dtStart.julian()}, new double[] {dblRate});
+				double[] {dtStart.julian()}, new double[] {dblRate}, false, "", -1);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Create a Discount Curve from the Flat Yield
+	 * 
+	 * @param dtStart Start Date
+	 * @param strCurrency Currency
+	 * @param collatParams Collateralization Parameters
+	 * @param dblYield Yield
+	 * @param strCompoundingDayCount Day Count Convention to be used for Discrete Compounding
+	 * @param iCompoundingFreq Frequency to be used for Discrete Compounding
+	 * 
+	 * @return The Discount Curve Instance
+	 */
+
+	public static final org.drip.analytics.rates.ExplicitBootDiscountCurve CreateFromFlatYield (
+		final org.drip.analytics.date.JulianDate dtStart,
+		final java.lang.String strCurrency,
+		final org.drip.param.valuation.CollateralizationParams collatParams,
+		final double dblYield,
+		final java.lang.String strCompoundingDayCount,
+		final int iCompoundingFreq)
+	{
+		if (null == dtStart || !org.drip.quant.common.NumberUtil.IsValid (dblYield)) return null;
+
+		try {
+			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams, new
+				double[] {dtStart.julian()}, new double[] {dblYield}, true, strCompoundingDayCount,
+					iCompoundingFreq);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -169,14 +203,14 @@ public class DiscountCurveBuilder {
 		try {
 			if (null == strBootstrapMode)
 				return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams,
-					adblDate, adblRate);
+					adblDate, adblRate, true, "", -1);
 
 			if (BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF.equalsIgnoreCase (strBootstrapMode))
 				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (dtStart, strCurrency,
 					collatParams, adblDate, adblRate);
 
 			return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams,
-				adblDate, adblRate);
+				adblDate, adblRate, false, "", -1);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

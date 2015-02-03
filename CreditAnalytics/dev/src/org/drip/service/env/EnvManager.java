@@ -116,7 +116,14 @@ public class EnvManager {
 
 		if (!org.drip.market.otc.CrossFloatConventionContainer.Init()) {
 			System.out.println
-				("EnvManager::InitEnv => Cannot Initialize Cros-Currency Float-Float Convention Settings!");
+				("EnvManager::InitEnv => Cannot Initialize Cross-Currency Float-Float Convention Settings!");
+
+			return null;
+		}
+
+		if (!org.drip.market.otc.SwapOptionSettlementContainer.Init()) {
+			System.out.println
+				("EnvManager::InitEnv => Cannot Initialize the Sweap Option Settlement Conventions!");
 
 			return null;
 		}

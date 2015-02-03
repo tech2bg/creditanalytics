@@ -85,7 +85,7 @@ public class FixFloatSwapAnalysis {
 		final String strMaturityTenor,
 		final double dblBasis)
 	{
-		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
+		FloatFloatSwapConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFloatFloatComponent (
 			dtSpot,
@@ -607,7 +607,7 @@ public class FixFloatSwapAnalysis {
 		CreditAnalytics.Init ("");
 
 		String strTenor = "3M";
-		String strCurrency = "EUR";
+		String strCurrency = "USD";
 
 		JulianDate dtToday = DateUtil.Today().addTenor ("0D");
 

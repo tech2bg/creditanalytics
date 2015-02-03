@@ -7,10 +7,13 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
 import org.drip.market.definition.FloaterIndex;
+import org.drip.market.otc.FixedFloatSwapConvention;
+import org.drip.market.otc.OvernightFixedFloatContainer;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.SingleStreamComponentBuilder;
+import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
 import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -84,17 +87,58 @@ public class OvernightIndexCurve {
 		return aDeposit;
 	}
 
+	private static final FixFloatComponent OTCOISFixFloat (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strMaturityTenor,
+		final double dblCoupon)
+	{
+		FixedFloatSwapConvention ffConv = OvernightFixedFloatContainer.ConventionFromJurisdiction (
+			strCurrency
+		);
+
+		return null == ffConv ? null : ffConv.createFixFloatComponent (
+			dtSpot,
+			strMaturityTenor,
+			dblCoupon,
+			0.,
+			1.
+		);
+	}
+
 	/*
 	 * Construct the Array of Overnight Index Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
+	private static final FixFloatComponent[] OISFromMaturityTenor (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String[] astrMaturityTenor,
+		final double[] adblCoupon)
+		throws Exception
+	{
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			if (null == (aOIS[i] = OTCOISFixFloat (
+				dtSpot,
+				strCurrency,
+				astrMaturityTenor[i],
+				adblCoupon[i]
+			)))
+			return null;
+		}
+
+		return aOIS;
+	}
+
 	private static final FixFloatComponent[] OvernightIndexFromMaturityTenor (
 		final JulianDate dtEffective,
+		final String strCurrency,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
-		final String strCurrency,
 		final FloaterIndex fi)
 		throws Exception
 	{
@@ -221,12 +265,35 @@ public class OvernightIndexCurve {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
+	private static final FixFloatComponent[] OISFuturesFromMaturityTenor (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String[] astrStartTenor,
+		final String[] astrMaturityTenor,
+		final double[] adblCoupon)
+		throws Exception
+	{
+		FixFloatComponent[] aOISFutures = new FixFloatComponent[astrMaturityTenor.length];
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i) {
+			if (null == (aOISFutures[i] = OTCOISFixFloat (
+				dtSpot.addTenor (astrStartTenor[i]),
+				strCurrency,
+				astrMaturityTenor[i],
+				adblCoupon[i]
+			)))
+			return null;
+		}
+
+		return aOISFutures;
+	}
+
 	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
 		final JulianDate dtSpot,
+		final String strCurrency,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
 		final double[] adblCoupon,
-		final String strCurrency,
 		final FloaterIndex fi)
 		throws Exception
 	{
@@ -391,13 +458,24 @@ public class OvernightIndexCurve {
 		 * Construct the Array of Short End OIS Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
+		CalibratableFixedIncomeComponent[] aShortEndOISComp = OISFromMaturityTenor (
 			dtSpot,
-			astrShortEndOISMaturityTenor,
-			adblShortEndOISQuote,
 			strCurrency,
-			fi
+			new java.lang.String[] {
+				"1W", "2W", "3W", "1M"
+			},
+			adblShortEndOISQuote
 		);
+
+		if (null == aShortEndOISComp)
+			aShortEndOISComp = OvernightIndexFromMaturityTenor (dtSpot,
+				strCurrency,
+				new java.lang.String[] {
+					"1W", "2W", "3W", "1M"
+				},
+				adblShortEndOISQuote,
+				fi
+			);
 
 		/*
 		 * Construct the Short End OIS Instrument Set Stretch Builder
@@ -414,14 +492,31 @@ public class OvernightIndexCurve {
 		 * Construct the Array of OIS Futures Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
+		CalibratableFixedIncomeComponent[] aOISFutureComp = OISFuturesFromMaturityTenor (
 			dtSpot,
-			astrOISFutureMaturityTenor,
-			astrOISFutureTenor,
-			adblOISFutureQuote,
 			strCurrency,
-			fi
+			new java.lang.String[] {
+				"1M", "2M", "3M", "4M", "5M"
+			},
+			new java.lang.String[] {
+				"1M", "1M", "1M", "1M", "1M"
+			},
+			adblOISFutureQuote
 		);
+
+		if (null == aOISFutureComp)
+			aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
+				dtSpot,
+				strCurrency,
+				new java.lang.String[] {
+					"1M", "2M", "3M", "4M", "5M"
+				},
+				new java.lang.String[] {
+					"1M", "1M", "1M", "1M", "1M"
+				},
+				adblOISFutureQuote,
+				fi
+			);
 
 		/*
 		 * Construct the OIS Future Instrument Set Stretch Builder
@@ -438,12 +533,13 @@ public class OvernightIndexCurve {
 		 * Construct the Array of Long End OIS Instruments and their Quotes from the given set of parameters
 		 */
 
-		FixFloatComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
+		CalibratableFixedIncomeComponent[] aLongEndOISComp = OISFromMaturityTenor (
 			dtSpot,
-			astrLongEndOISMaturityTenor,
-			adblLongEndOISQuote,
 			strCurrency,
-			fi
+			new java.lang.String[] {
+				"15M", "18M", "21M", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
+			},
+			adblLongEndOISQuote
 		);
 
 		/*

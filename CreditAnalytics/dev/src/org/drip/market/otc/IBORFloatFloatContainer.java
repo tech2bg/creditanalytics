@@ -35,8 +35,8 @@ package org.drip.market.otc;
  */
 
 public class IBORFloatFloatContainer {
-	private static final java.util.Map<java.lang.String, org.drip.market.otc.IBORFloatFloatConvention>
-		_mapConvention = new java.util.TreeMap<java.lang.String, org.drip.market.otc.IBORFloatFloatConvention>();
+	private static final java.util.Map<java.lang.String, org.drip.market.otc.FloatFloatSwapConvention>
+		_mapConvention = new java.util.TreeMap<java.lang.String, org.drip.market.otc.FloatFloatSwapConvention>();
 
 	/**
 	 * Initialize the Float-Float Conventions Container with the pre-set Float-Float Contracts
@@ -48,55 +48,55 @@ public class IBORFloatFloatContainer {
 	public static final boolean Init()
 	{
 		try {
-			_mapConvention.put ("AUD", new org.drip.market.otc.IBORFloatFloatConvention ("AUD", "6M", true,
+			_mapConvention.put ("AUD", new org.drip.market.otc.FloatFloatSwapConvention ("AUD", "6M", true,
 				false, true, false, 1));
 
-			_mapConvention.put ("CAD", new org.drip.market.otc.IBORFloatFloatConvention ("CAD", "6M", true,
+			_mapConvention.put ("CAD", new org.drip.market.otc.FloatFloatSwapConvention ("CAD", "6M", true,
 				false, true, false, 0));
 
-			_mapConvention.put ("CHF", new org.drip.market.otc.IBORFloatFloatConvention ("CHF", "6M", true,
+			_mapConvention.put ("CHF", new org.drip.market.otc.FloatFloatSwapConvention ("CHF", "6M", true,
 				false, true, false, 2));
 
-			_mapConvention.put ("CNY", new org.drip.market.otc.IBORFloatFloatConvention ("CNY", "6M", true,
+			_mapConvention.put ("CNY", new org.drip.market.otc.FloatFloatSwapConvention ("CNY", "6M", true,
 				false, true, false, 2));
 
-			_mapConvention.put ("DKK", new org.drip.market.otc.IBORFloatFloatConvention ("DKK", "6M", true,
+			_mapConvention.put ("DKK", new org.drip.market.otc.FloatFloatSwapConvention ("DKK", "6M", true,
 				false, true, false, 2));
 
-			_mapConvention.put ("EUR", new org.drip.market.otc.IBORFloatFloatConvention ("EUR", "6M", false,
+			_mapConvention.put ("EUR", new org.drip.market.otc.FloatFloatSwapConvention ("EUR", "6M", false,
 				true, false, true, 2));
 
-			_mapConvention.put ("GBP", new org.drip.market.otc.IBORFloatFloatConvention ("GBP", "6M", true,
+			_mapConvention.put ("GBP", new org.drip.market.otc.FloatFloatSwapConvention ("GBP", "6M", true,
 				false, true, false, 0));
 
-			_mapConvention.put ("HKD", new org.drip.market.otc.IBORFloatFloatConvention ("HKD", "6M", true,
+			_mapConvention.put ("HKD", new org.drip.market.otc.FloatFloatSwapConvention ("HKD", "6M", true,
 				false, true, false, 0));
 
-			_mapConvention.put ("INR", new org.drip.market.otc.IBORFloatFloatConvention ("INR", "6M", true,
+			_mapConvention.put ("INR", new org.drip.market.otc.FloatFloatSwapConvention ("INR", "6M", true,
 				false, true, false, 2));
 
-			_mapConvention.put ("JPY", new org.drip.market.otc.IBORFloatFloatConvention ("JPY", "6M", true,
+			_mapConvention.put ("JPY", new org.drip.market.otc.FloatFloatSwapConvention ("JPY", "6M", true,
 				false, true, false, 2));
 
-			_mapConvention.put ("NOK", new org.drip.market.otc.IBORFloatFloatConvention ("NOK", "6M", true,
+			_mapConvention.put ("NOK", new org.drip.market.otc.FloatFloatSwapConvention ("NOK", "6M", true,
 				false, true, false, 2));
 
-			_mapConvention.put ("NZD", new org.drip.market.otc.IBORFloatFloatConvention ("NZD", "6M", true,
+			_mapConvention.put ("NZD", new org.drip.market.otc.FloatFloatSwapConvention ("NZD", "6M", true,
 				false, true, false, 0));
 
-			_mapConvention.put ("PLN", new org.drip.market.otc.IBORFloatFloatConvention ("PLN", "6M", true,
+			_mapConvention.put ("PLN", new org.drip.market.otc.FloatFloatSwapConvention ("PLN", "6M", true,
 				false, true, false, 2));
 
-			_mapConvention.put ("SEK", new org.drip.market.otc.IBORFloatFloatConvention ("SEK", "6M", true,
+			_mapConvention.put ("SEK", new org.drip.market.otc.FloatFloatSwapConvention ("SEK", "6M", true,
 				false, true, false, 2));
 
-			_mapConvention.put ("SGD", new org.drip.market.otc.IBORFloatFloatConvention ("SGD", "6M", true,
+			_mapConvention.put ("SGD", new org.drip.market.otc.FloatFloatSwapConvention ("SGD", "6M", true,
 				false, true, false, 2));
 
-			_mapConvention.put ("USD", new org.drip.market.otc.IBORFloatFloatConvention ("USD", "6M", true,
+			_mapConvention.put ("USD", new org.drip.market.otc.FloatFloatSwapConvention ("USD", "6M", true,
 				false, true, false, 2));
 
-			_mapConvention.put ("ZAR", new org.drip.market.otc.IBORFloatFloatConvention ("ZAR", "6M", true,
+			_mapConvention.put ("ZAR", new org.drip.market.otc.FloatFloatSwapConvention ("ZAR", "6M", true,
 				false, true, false, 0));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -115,7 +115,7 @@ public class IBORFloatFloatContainer {
 	 * @return The Float-Float Convention Instance
 	 */
 
-	public static final org.drip.market.otc.IBORFloatFloatConvention ConventionFromJurisdiction (
+	public static final org.drip.market.otc.FloatFloatSwapConvention ConventionFromJurisdiction (
 		final java.lang.String strCurrency)
 	{
 		return null == strCurrency || strCurrency.isEmpty() || !_mapConvention.containsKey (strCurrency) ?

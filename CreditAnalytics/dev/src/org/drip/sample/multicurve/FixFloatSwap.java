@@ -85,7 +85,7 @@ public class FixFloatSwap {
 		final String strMaturityTenor,
 		final double dblBasis)
 	{
-		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
+		FloatFloatSwapConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFloatFloatComponent (
 			dtSpot,
@@ -615,7 +615,7 @@ public class FixFloatSwap {
 		CreditAnalytics.Init ("");
 
 		String strTenor = "3M";
-		String strCurrency = "EUR";
+		String strCurrency = "USD";
 		double dblForwardVolatility = 0.3;
 		double dblFundingVolatility = 0.1;
 		double dblForwardFundingCorr = 0.2;

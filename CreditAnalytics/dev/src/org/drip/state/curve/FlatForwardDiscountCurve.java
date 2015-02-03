@@ -51,7 +51,20 @@ package org.drip.state.curve;
 
 public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitBootDiscountCurve {
 	private double _adblDate[] = null;
-	private double _adblRate[] = null;
+	private int _iCompoundingFreq = -1;
+	private double _adblForwardRate[] = null;
+	private boolean _bDiscreteCompounding = false;
+	private java.lang.String _strCompoundingDayCount = "";
+
+	private double yearFract (
+		final double dblStartDate,
+		final double dblEndDate)
+		throws java.lang.Exception
+	{
+		return _bDiscreteCompounding ? org.drip.analytics.daycount.Convention.YearFraction (dblStartDate,
+			dblEndDate, _strCompoundingDayCount, false, null, currency()) : (dblEndDate - dblStartDate) /
+				365.25;
+	}
 
 	private FlatForwardDiscountCurve shiftManifestMeasure (
 		final double[] adblShift)
@@ -84,7 +97,8 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		try {
 			FlatForwardDiscountCurve frdc = new FlatForwardDiscountCurve (new
 				org.drip.analytics.date.JulianDate (_dblEpochDate), _strCurrency, collateralParams(),
-					_adblDate, _adblRate);
+					_adblDate, _adblForwardRate, _bDiscreteCompounding, _strCompoundingDayCount,
+						_iCompoundingFreq);
 
 			for (int i = 0; i < iNumComp; ++i) {
 				java.lang.String strInstrumentCode = aCalibInst[i].primaryCode();
@@ -111,7 +125,10 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	 * @param strCurrency Currency
 	 * @param collatParams Collateralization Parameters
 	 * @param adblDate Array of Dates
-	 * @param adblRate Array of Rates
+	 * @param adblForwardRate Array of Forward Rates
+	 * @param bDiscreteCompounding TRUE => Compounding is Discrete
+	 * @param strCompoundingDayCount Day Count Convention to be used for Discrete Compounding
+	 * @param iCompoundingFreq Frequency to be used for Discrete Compounding
 	 * 
 	 * @throws java.lang.Exception Thrown if the curve cannot be created
 	 */
@@ -121,25 +138,31 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final java.lang.String strCurrency,
 		final org.drip.param.valuation.CollateralizationParams collatParams,
 		final double[] adblDate,
-		final double[] adblRate)
+		final double[] adblForwardRate,
+		final boolean bDiscreteCompounding,
+		final java.lang.String strCompoundingDayCount,
+		final int iCompoundingFreq)
 		throws java.lang.Exception
 	{
 		super (dtStart.julian(), strCurrency, collatParams);
 
-		if (null == adblDate || null == adblRate)
+		if (null == adblDate || null == adblForwardRate)
 			throw new java.lang.Exception ("FlatForwardDiscountCurve ctr: Invalid inputs");
 
 		int iNumDate = adblDate.length;
 
-		if (0 == iNumDate || iNumDate != adblRate.length)
+		if (0 == iNumDate || iNumDate != adblForwardRate.length)
 			throw new java.lang.Exception ("FlatForwardDiscountCurve ctr: Invalid inputs");
 
 		_adblDate = new double[iNumDate];
-		_adblRate = new double[iNumDate];
+		_iCompoundingFreq = iCompoundingFreq;
+		_adblForwardRate = new double[iNumDate];
+		_bDiscreteCompounding = bDiscreteCompounding;
+		_strCompoundingDayCount = strCompoundingDayCount;
 
 		for (int i = 0; i < iNumDate; ++i) {
 			_adblDate[i] = adblDate[i];
-			_adblRate[i] = adblRate[i];
+			_adblForwardRate[i] = adblForwardRate[i];
 		}
 	}
 
@@ -150,9 +173,12 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		super (dc.epoch().julian(), dc.currency(), dc.collateralParams());
 
 		_adblDate = dc._adblDate;
-		_adblRate = dc._adblRate;
 		_strCurrency = dc._strCurrency;
 		_dblEpochDate = dc._dblEpochDate;
+		_adblForwardRate = dc._adblForwardRate;
+		_iCompoundingFreq = dc._iCompoundingFreq;
+		_bDiscreteCompounding = dc._bDiscreteCompounding;
+		_strCompoundingDayCount = dc._strCompoundingDayCount;
 	}
 
 	@Override public org.drip.param.valuation.CollateralizationParams collateralParams()
@@ -170,20 +196,31 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		if (dblDate <= _dblEpochDate) return 1.;
 
 		int i = 0;
+		double dblDF = 1.;
 		double dblExpArg = 0.;
 		int iNumDate = _adblDate.length;
 		double dblStartDate = _dblEpochDate;
 
 		while (i < iNumDate && (int) dblDate >= (int) _adblDate[i]) {
-			dblExpArg -= _adblRate[i] * (_adblDate[i] - dblStartDate);
+			if (_bDiscreteCompounding)
+				dblDF *= java.lang.Math.pow (1. + (_adblForwardRate[i] / _iCompoundingFreq), yearFract
+					(dblStartDate, _adblDate[i]) * _iCompoundingFreq);
+			else
+				dblExpArg -= _adblForwardRate[i] * yearFract (dblStartDate, _adblDate[i]);
+
 			dblStartDate = _adblDate[i++];
 		}
 
 		if (i >= iNumDate) i = iNumDate - 1;
 
-		dblExpArg -= _adblRate[i] * (dblDate - dblStartDate);
+		if (_bDiscreteCompounding)
+			dblDF *= java.lang.Math.pow (1. + (_adblForwardRate[i] / _iCompoundingFreq), yearFract
+				(dblStartDate, dblDate) * _iCompoundingFreq);
+		else
+			dblExpArg -= _adblForwardRate[i] * yearFract (dblStartDate, dblDate);
 
-		return (java.lang.Math.exp (dblExpArg / 365.25)) * turnAdjust (epoch().julian(), dblDate);
+		return (_bDiscreteCompounding ? dblDF : java.lang.Math.exp (dblExpArg)) * turnAdjust (_dblEpochDate,
+			dblDate);
 	}
 
 	@Override public double forward (
@@ -271,7 +308,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final org.drip.param.definition.ResponseValueTweakParams rvtp)
 	{
 		return shiftManifestMeasure (org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure
-			(_adblRate, rvtp));
+			(_adblForwardRate, rvtp));
 	}
 
 	@Override public FlatForwardDiscountCurve parallelShiftQuantificationMetric (
@@ -279,15 +316,16 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblShift)) return null;
 
-		int iNumDate = _adblRate.length;
-		double[] adblRate = new double[iNumDate];
+		int iNumDate = _adblForwardRate.length;
+		double[] adblForwardRate = new double[iNumDate];
 
 		for (int i = 0; i < iNumDate; ++i)
-			adblRate[i] = _adblRate[i] + dblShift;
+			adblForwardRate[i] = _adblForwardRate[i] + dblShift;
 
 		try {
 			return new FlatForwardDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
-				_strCurrency, collateralParams(), _adblDate, adblRate);
+				_strCurrency, collateralParams(), _adblDate, adblForwardRate, _bDiscreteCompounding,
+					_strCompoundingDayCount, _iCompoundingFreq);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -301,7 +339,8 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		try {
 			return new FlatForwardDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
 				_strCurrency, collateralParams(), _adblDate,
-					org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure (_adblRate, rvtp));
+					org.drip.analytics.support.AnalyticsHelper.TweakManifestMeasure (_adblForwardRate,
+						rvtp), _bDiscreteCompounding, _strCompoundingDayCount, _iCompoundingFreq);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -326,7 +365,8 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 				adblShiftedRate[i] = zero (adblDate[i]) + adblBasis[i];
 
 			return new FlatForwardDiscountCurve (new org.drip.analytics.date.JulianDate (_dblEpochDate),
-				_strCurrency, collateralParams(), adblDate, adblShiftedRate);
+				_strCurrency, collateralParams(), adblDate, adblShiftedRate, _bDiscreteCompounding,
+					_strCompoundingDayCount, _iCompoundingFreq);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -351,7 +391,7 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		org.drip.quant.calculus.WengertJacobian wj = null;
 
 		try {
-			wj = new org.drip.quant.calculus.WengertJacobian (1, _adblRate.length);
+			wj = new org.drip.quant.calculus.WengertJacobian (1, _adblForwardRate.length);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -372,14 +412,14 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 			return null;
 		}
 
-		while (i < _adblRate.length && (int) dblDate >= (int) _adblDate[i]) {
+		while (i < _adblForwardRate.length && (int) dblDate >= (int) _adblDate[i]) {
 			if (!wj.accumulatePartialFirstDerivative (0, i, dblDF * (dblStartDate - _adblDate[i]) / 365.25))
 				return null;
 
 			dblStartDate = _adblDate[i++];
 		}
 
-		if (i >= _adblRate.length) i = _adblRate.length - 1;
+		if (i >= _adblForwardRate.length) i = _adblForwardRate.length - 1;
 
 		return wj.accumulatePartialFirstDerivative (0, i, dblDF * (dblStartDate - dblDate) / 365.25) ? wj :
 			null;
@@ -389,11 +429,11 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final int iNodeIndex,
 		final double dblValue)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblRate.length)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblForwardRate.length)
 			return false;
 
-		for (int i = iNodeIndex; i < _adblRate.length; ++i)
-			_adblRate[i] = dblValue;
+		for (int i = iNodeIndex; i < _adblForwardRate.length; ++i)
+			_adblForwardRate[i] = dblValue;
 
 		return true;
 	}
@@ -402,11 +442,11 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 		final int iNodeIndex,
 		final double dblValue)
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblRate.length)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue) || iNodeIndex > _adblForwardRate.length)
 			return false;
 
-		for (int i = iNodeIndex; i < _adblRate.length; ++i)
-			_adblRate[i] += dblValue;
+		for (int i = iNodeIndex; i < _adblForwardRate.length; ++i)
+			_adblForwardRate[i] += dblValue;
 
 		return true;
 	}
@@ -416,8 +456,8 @@ public class FlatForwardDiscountCurve extends org.drip.analytics.rates.ExplicitB
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblValue)) return false;
 
-		for (int i = 0; i < _adblRate.length; ++i)
-			_adblRate[i] = dblValue;
+		for (int i = 0; i < _adblForwardRate.length; ++i)
+			_adblForwardRate[i] = dblValue;
 
 		return true;
 	}

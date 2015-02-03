@@ -7,6 +7,7 @@ import org.drip.analytics.date.*;
 import org.drip.analytics.definition.LatentStateStatic;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.*;
+import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
@@ -133,6 +134,25 @@ import org.drip.state.inference.*;
  */
 
 public class ShapeOvernightZeroLocalSmooth {
+
+	private static final FixFloatComponent OTCOISFixFloat (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String strMaturityTenor,
+		final double dblCoupon)
+	{
+		FixedFloatSwapConvention ffConv = OvernightFixedFloatContainer.ConventionFromJurisdiction (
+			strCurrency
+		);
+
+		return ffConv.createFixFloatComponent (
+			dtSpot,
+			strMaturityTenor,
+			dblCoupon,
+			0.,
+			1.
+		);
+	}
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -291,137 +311,51 @@ public class ShapeOvernightZeroLocalSmooth {
 		return aOIS;
 	}
 
+	private static final FixFloatComponent[] OISFromMaturityTenor (
+		final JulianDate dtSpot,
+		final String strCurrency,
+		final String[] astrMaturityTenor,
+		final double[] adblCoupon)
+		throws Exception
+	{
+		FixFloatComponent[] aOIS = new FixFloatComponent[astrMaturityTenor.length];
+
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aOIS[i] = OTCOISFixFloat (
+				dtSpot,
+				strCurrency,
+				astrMaturityTenor[i],
+				adblCoupon[i]
+			);
+
+		return aOIS;
+	}
+
 	/*
 	 * Construct the Array of Overnight Index Future Instruments from the given set of parameters
 	 * 
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FixFloatComponent[] OvernightIndexFutureFromMaturityTenor (
+	private static final FixFloatComponent[] OISFuturesFromMaturityTenor (
 		final JulianDate dtSpot,
+		final String strCurrency,
 		final String[] astrStartTenor,
 		final String[] astrMaturityTenor,
-		final double[] adblCoupon,
-		final String strCurrency)
+		final double[] adblCoupon)
 		throws Exception
 	{
-		FixFloatComponent[] aOIS = new FixFloatComponent[astrStartTenor.length];
+		FixFloatComponent[] aOISFutures = new FixFloatComponent[astrMaturityTenor.length];
 
-		CashSettleParams csp = new CashSettleParams (
-			0,
-			strCurrency,
-			0
-		);
-
-		for (int i = 0; i < astrStartTenor.length; ++i) {
-			JulianDate dtEffective = dtSpot.addTenor (astrStartTenor[i]);
-
-			java.lang.String strFixedTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
-				astrMaturityTenor[i],
-				"6M"
-			) ? astrMaturityTenor[i] : "6M";
-
-			java.lang.String strFloatingTenor = AnalyticsHelper.LEFT_TENOR_LESSER == AnalyticsHelper.TenorCompare (
-				astrMaturityTenor[i],
-				"3M"
-			) ? astrMaturityTenor[i] : "3M";
-
-			ComposableFixedUnitSetting cfusFixed = new ComposableFixedUnitSetting (
-				strFixedTenor,
-				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR,
-				null,
-				adblCoupon[i],
-				0.,
-				strCurrency
-			);
-
-			UnitCouponAccrualSetting ucasFixed = new UnitCouponAccrualSetting (
-				2,
-				"Act/360",
-				false,
-				"Act/360",
-				false,
+		for (int i = 0; i < astrMaturityTenor.length; ++i)
+			aOISFutures[i] = OTCOISFixFloat (
+				dtSpot.addTenor (astrStartTenor[i]),
 				strCurrency,
-				false,
-				CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC
-			);
-
-			ComposableFloatingUnitSetting cfusFloating = new ComposableFloatingUnitSetting (
-				"ON",
-				CompositePeriodBuilder.EDGE_DATE_SEQUENCE_OVERNIGHT,
-				null,
-				ForwardLabel.Create (strCurrency, "ON"),
-				CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
-				0.
-			);
-
-			CompositePeriodSetting cpsFloating = new CompositePeriodSetting (
-				4,
-				strFloatingTenor,
-				strCurrency,
-				null,
-				-1.,
-				null,
-				null,
-				null,
-				null
-			);
-
-			CompositePeriodSetting cpsFixed = new CompositePeriodSetting (
-				2,
-				strFixedTenor,
-				strCurrency,
-				null,
-				1.,
-				null,
-				null,
-				null,
-				null
-			);
-
-			List<Double> lsFixedStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"6M",
 				astrMaturityTenor[i],
-				null
+				adblCoupon[i]
 			);
 
-			List<Double> lsFloatingStreamEdgeDate = CompositePeriodBuilder.RegularEdgeDates (
-				dtEffective,
-				"3M",
-				astrMaturityTenor[i],
-				null
-			);
-
-			Stream floatingStream = new Stream (
-				CompositePeriodBuilder.FloatingCompositeUnit (
-					lsFloatingStreamEdgeDate,
-					cpsFloating,
-					cfusFloating
-				)
-			);
-
-			Stream fixedStream = new Stream (
-				CompositePeriodBuilder.FixedCompositeUnit (
-					lsFixedStreamEdgeDate,
-					cpsFixed,
-					ucasFixed,
-					cfusFixed
-				)
-			);
-
-			FixFloatComponent ois = new FixFloatComponent (
-				fixedStream,
-				floatingStream,
-				csp
-			);
-
-			ois.setPrimaryCode ("OIS." + astrMaturityTenor[i] + "." + strCurrency);
-
-			aOIS[i] = ois;
-		}
-
-		return aOIS;
+		return aOISFutures;
 	}
 
 	/*
@@ -552,13 +486,13 @@ public class ShapeOvernightZeroLocalSmooth {
 			0.00074     //   1M
 		};
 
-		FixFloatComponent[] aShortEndOISComp = OvernightIndexFromMaturityTenor (
+		CalibratableFixedIncomeComponent[] aShortEndOISComp = OISFromMaturityTenor (
 			dtSpot,
+			strCurrency,
 			new java.lang.String[] {
 				"1W", "2W", "3W", "1M"
 			},
-			adblShortEndOISQuote,
-			strCurrency
+			adblShortEndOISQuote
 		);
 
 		/*
@@ -584,16 +518,16 @@ public class ShapeOvernightZeroLocalSmooth {
 			-0.00014     //   5M x 1M
 		};
 
-		FixFloatComponent[] aOISFutureComp = OvernightIndexFutureFromMaturityTenor (
+		CalibratableFixedIncomeComponent[] aOISFutureComp = OISFuturesFromMaturityTenor (
 			dtSpot,
+			strCurrency,
 			new java.lang.String[] {
 				"1M", "2M", "3M", "4M", "5M"
 			},
 			new java.lang.String[] {
 				"1M", "1M", "1M", "1M", "1M"
 			},
-			adblOISFutureQuote,
-			strCurrency
+			adblOISFutureQuote
 		);
 
 		/*
@@ -632,13 +566,13 @@ public class ShapeOvernightZeroLocalSmooth {
 			0.02038     //  30Y
 		};
 
-		FixFloatComponent[] aLongEndOISComp = OvernightIndexFromMaturityTenor (
+		CalibratableFixedIncomeComponent[] aLongEndOISComp = OISFromMaturityTenor (
 			dtSpot,
+			strCurrency,
 			new java.lang.String[] {
 				"15M", "18M", "21M", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y", "10Y", "11Y", "12Y", "15Y", "20Y", "25Y", "30Y"
 			},
-			adblLongEndOISQuote,
-			strCurrency
+			adblLongEndOISQuote
 		);
 
 		/*
@@ -673,7 +607,8 @@ public class ShapeOvernightZeroLocalSmooth {
 				new ExponentialMixtureSetParams (new double[] {0.01, 0.05, 0.25}),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				null),
+				null
+			),
 			BoundarySettings.NaturalStandard(),
 			MultiSegmentSequence.CALIBRATE,
 			null,
@@ -698,7 +633,8 @@ public class ShapeOvernightZeroLocalSmooth {
 				new PolynomialFunctionSetParams (4),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				null),
+				null
+			),
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null,
@@ -725,7 +661,8 @@ public class ShapeOvernightZeroLocalSmooth {
 				new PolynomialFunctionSetParams (4),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				null),
+				null
+			),
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null,
@@ -752,7 +689,8 @@ public class ShapeOvernightZeroLocalSmooth {
 				new PolynomialFunctionSetParams (4),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				null),
+				null
+			),
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null,
@@ -779,7 +717,8 @@ public class ShapeOvernightZeroLocalSmooth {
 				new PolynomialFunctionSetParams (4),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				null),
+				null
+			),
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null,
@@ -806,7 +745,8 @@ public class ShapeOvernightZeroLocalSmooth {
 				new PolynomialFunctionSetParams (4),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				null),
+				null
+			),
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null,
@@ -832,7 +772,8 @@ public class ShapeOvernightZeroLocalSmooth {
 				new PolynomialFunctionSetParams (4),
 				SegmentInelasticDesignControl.Create (2, 2),
 				new ResponseScalingShapeControl (true, new QuadraticRationalShapeControl (0.)),
-				null),
+				null
+			),
 			MultiSegmentSequence.CALIBRATE,
 			null,
 			null,

@@ -140,7 +140,7 @@ public class FixFloatQuoteSet extends org.drip.product.calib.ProductQuoteSet {
 	{
 		if (!containsDerivedParBasisSpread())
 			throw new java.lang.Exception
-				("FloatFloatQuoteSet::derivedParBasisSpread => Does not contain the Derived Par Basis Spread");
+				("FixFloatQuoteSet::derivedParBasisSpread => Does not contain the Derived Par Basis Spread");
 
 		return _mapQuote.get ("DerivedParBasisSpread");
 	}
@@ -187,7 +187,7 @@ public class FixFloatQuoteSet extends org.drip.product.calib.ProductQuoteSet {
 	{
 		if (!containsReferenceParBasisSpread())
 			throw new java.lang.Exception
-				("FloatFloatQuoteSet::referenceParBasisSpread => Does not contain the Reference Par Basis Spread");
+				("FixFloatQuoteSet::referenceParBasisSpread => Does not contain the Reference Par Basis Spread");
 
 		return _mapQuote.get ("ReferenceParBasisSpread");
 	}

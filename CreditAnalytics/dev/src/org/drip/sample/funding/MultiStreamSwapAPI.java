@@ -47,7 +47,7 @@ import org.drip.state.identifier.*;
  *  	limitations under the License.
 
 /**
- * MultiLegSwapAPI illustrates the creation, invocation, and usage of the MultiLegSwap. It shows how to:
+ * MultiStreamSwapAPI illustrates the creation, invocation, and usage of the MultiStreamSwap. It shows how to:
  * 	- Create the Discount Curve from the rates instruments.
  *  - Set up the valuation and the market parameters.
  * 	- Create the Rates Basket from the fixed/float streams.
@@ -56,7 +56,7 @@ import org.drip.state.identifier.*;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultiLegSwapAPI {
+public class MultiStreamSwapAPI {
 
 	private static final FixFloatComponent OTCIRS (
 		final JulianDate dtSpot,

@@ -41,6 +41,36 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 	private double _dblSpread = java.lang.Double.NaN;
 	private org.drip.analytics.cashflow.ReferenceIndexPeriod _refIndexPeriod = null;
 
+	private org.drip.analytics.date.JulianDate lookBackProjectionDate (
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+	{
+		int iSkipBackDay = 0;
+		org.drip.analytics.date.JulianDate dtFixing = null;
+
+		org.drip.state.identifier.ForwardLabel forwardLabel = _refIndexPeriod.forwardLabel();
+
+		org.drip.market.definition.FloaterIndex floaterIndex = forwardLabel.floaterIndex();
+
+		int iLookBackProjectionWindow = (floaterIndex instanceof org.drip.market.definition.OvernightIndex) ?
+			((org.drip.market.definition.OvernightIndex) floaterIndex).publicationLag() : 0;
+
+		try {
+			dtFixing = new org.drip.analytics.date.JulianDate (_refIndexPeriod.fixingDate());
+
+			while (iSkipBackDay <= iLookBackProjectionWindow) {
+				if (csqs.available (dtFixing, forwardLabel)) return dtFixing;
+
+				if (null == (dtFixing = dtFixing.subtractBusDays (1, floaterIndex.calendar()))) return null;
+
+				iSkipBackDay += 1;
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	/**
 	 * The ComposableUnitFloatingPeriod constructor
 	 * 
@@ -83,11 +113,11 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 	{
 		if (null == csqs) return java.lang.Double.NaN;
 
-		double dblFixingDate = _refIndexPeriod.fixingDate();
-
 		org.drip.state.identifier.ForwardLabel forwardLabel = _refIndexPeriod.forwardLabel();
 
-		if (csqs.available (dblFixingDate, forwardLabel)) return csqs.fixing (dblFixingDate, forwardLabel);
+		org.drip.analytics.date.JulianDate dtValidFixing = lookBackProjectionDate (csqs);
+
+		if (null != dtValidFixing) return csqs.fixing (dtValidFixing, forwardLabel);
 
 		double dblReferencePeriodEndDate = _refIndexPeriod.endDate();
 
@@ -100,7 +130,7 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 
 		if (null == dcFunding)
 			throw new java.lang.Exception
-				("ComposableUnitFloatingPeriod::referenceRate => Cannot locate Funding Curve " +
+				("ComposableUnitFloatingPeriod::baseRate => Cannot locate Funding Curve " +
 					forwardLabel.currency());
 
 		double dblReferencePeriodStartDate = _refIndexPeriod.startDate();

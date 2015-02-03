@@ -140,7 +140,7 @@ public class ForwardDecompositionUtil {
 
 		for (int i = 0; i < iNumForward; ++i) {
 			try {
-				if (null == (aRC[i] = org.drip.product.creator.DualStreamComponentBuilder.MakeDualStream
+				if (null == (aRC[i] = org.drip.product.creator.DualStreamComponentBuilder.MakeFloatFloat
 					(aStreamReferenceForward[i], aStreamDerivedForward[i], new
 						org.drip.param.valuation.CashSettleParams (0, streamDerived.couponCurrency(), 0))))
 					return null;

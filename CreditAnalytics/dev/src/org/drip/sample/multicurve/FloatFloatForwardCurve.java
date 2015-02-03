@@ -111,7 +111,7 @@ public class FloatFloatForwardCurve {
 		final String strMaturityTenor,
 		final double dblBasis)
 	{
-		IBORFloatFloatConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
+		FloatFloatSwapConvention ffConv = IBORFloatFloatContainer.ConventionFromJurisdiction (strCurrency);
 
 		return ffConv.createFloatFloatComponent (
 			dtSpot,
