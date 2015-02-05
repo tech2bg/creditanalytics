@@ -42,7 +42,8 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 	private org.drip.analytics.cashflow.ReferenceIndexPeriod _refIndexPeriod = null;
 
 	private org.drip.analytics.date.JulianDate lookBackProjectionDate (
-		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
+		final org.drip.param.market.CurveSurfaceQuoteSet csqs,
+		final org.drip.market.definition.OvernightIndex oisIndex)
 	{
 		int iSkipBackDay = 0;
 		org.drip.analytics.date.JulianDate dtFixing = null;
@@ -51,8 +52,7 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 
 		org.drip.market.definition.FloaterIndex floaterIndex = forwardLabel.floaterIndex();
 
-		int iLookBackProjectionWindow = (floaterIndex instanceof org.drip.market.definition.OvernightIndex) ?
-			((org.drip.market.definition.OvernightIndex) floaterIndex).publicationLag() : 0;
+		int iLookBackProjectionWindow = oisIndex.publicationLag();
 
 		try {
 			dtFixing = new org.drip.analytics.date.JulianDate (_refIndexPeriod.fixingDate());
@@ -76,6 +76,7 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 	 * 
 	 * @param dblStartDate Accrual Start Date
 	 * @param dblEndDate Accrual End Date
+	 * @param strTenor The Composable Period Tenor
 	 * @param refIndexPeriod The Reference Index Period
 	 * @param dblSpread The Floater Spread
 	 * 
@@ -85,11 +86,12 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 	public ComposableUnitFloatingPeriod (
 		final double dblStartDate,
 		final double dblEndDate,
+		final java.lang.String strTenor,
 		final org.drip.analytics.cashflow.ReferenceIndexPeriod refIndexPeriod,
 		final double dblSpread)
 		throws java.lang.Exception
 	{
-		super (dblStartDate, dblEndDate, refIndexPeriod.forwardLabel().ucas());
+		super (dblStartDate, dblEndDate, strTenor, refIndexPeriod.forwardLabel().ucas());
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblSpread = dblSpread))
 			throw new java.lang.Exception ("ComposableUnitFloatingPeriod ctr: Invalid Inputs");
@@ -115,9 +117,19 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 
 		org.drip.state.identifier.ForwardLabel forwardLabel = _refIndexPeriod.forwardLabel();
 
-		org.drip.analytics.date.JulianDate dtValidFixing = lookBackProjectionDate (csqs);
+		org.drip.market.definition.FloaterIndex floaterIndex = forwardLabel.floaterIndex();
 
-		if (null != dtValidFixing) return csqs.fixing (dtValidFixing, forwardLabel);
+		if (!(floaterIndex instanceof org.drip.market.definition.OvernightIndex)) {
+			double dblFixingDate = _refIndexPeriod.fixingDate();
+
+			if (csqs.available (dblFixingDate, forwardLabel))
+				return csqs.fixing (dblFixingDate, forwardLabel);
+		} else {
+			org.drip.analytics.date.JulianDate dtValidFixing = lookBackProjectionDate (csqs,
+				(org.drip.market.definition.OvernightIndex) floaterIndex);
+
+			if (null != dtValidFixing) return csqs.fixing (dtValidFixing, forwardLabel);
+		}
 
 		double dblReferencePeriodEndDate = _refIndexPeriod.endDate();
 
@@ -125,23 +137,26 @@ public class ComposableUnitFloatingPeriod extends org.drip.analytics.cashflow.Co
 
 		if (null != fre) return fre.forward (dblReferencePeriodEndDate);
 
+		java.lang.String strForwardCurrency = forwardLabel.currency();
+
 		org.drip.analytics.rates.DiscountCurve dcFunding = csqs.fundingCurve
-			(org.drip.state.identifier.FundingLabel.Standard (forwardLabel.currency()));
+			(org.drip.state.identifier.FundingLabel.Standard (strForwardCurrency));
 
 		if (null == dcFunding)
 			throw new java.lang.Exception
 				("ComposableUnitFloatingPeriod::baseRate => Cannot locate Funding Curve " +
-					forwardLabel.currency());
-
-		double dblReferencePeriodStartDate = _refIndexPeriod.startDate();
+					strForwardCurrency);
 
 		double dblEpochDate = dcFunding.epoch().julian();
 
-		if (dblEpochDate > dblReferencePeriodStartDate)
-			dblReferencePeriodEndDate = new org.drip.analytics.date.JulianDate (dblReferencePeriodStartDate =
-				dblEpochDate).addTenor (forwardLabel.tenor()).julian();
+		double dblReferencePeriodStartDate = _refIndexPeriod.startDate();
 
-		return dcFunding.libor (dblReferencePeriodStartDate, dblReferencePeriodEndDate, fullCouponDCF());
+		if (dblEpochDate > dblReferencePeriodStartDate)
+			dblReferencePeriodEndDate = new org.drip.analytics.date.JulianDate
+				(dblReferencePeriodStartDate = dblEpochDate).addTenor (forwardLabel.tenor()).julian();
+
+		return dcFunding.libor (dblReferencePeriodStartDate, dblReferencePeriodEndDate,
+			_refIndexPeriod.dcf());
 	}
 
 	@Override public double basis()

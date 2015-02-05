@@ -37,6 +37,7 @@ package org.drip.analytics.cashflow;
  */
 
 public class ReferenceIndexPeriod {
+	private double _dblDCF = java.lang.Double.NaN;
 	private double _dblEndDate = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
 	private double _dblFixingDate = java.lang.Double.NaN;
@@ -68,6 +69,12 @@ public class ReferenceIndexPeriod {
 			_forwardLabel.floaterIndex().spotLagDAPBackward();
 
 		_dblFixingDate = null == dapFixing ? dblStartDate : dapFixing.roll (dblStartDate);
+
+		org.drip.param.period.UnitCouponAccrualSetting ucas = _forwardLabel.ucas();
+
+		_dblDCF = ucas.couponDCFOffOfFreq() ? 1. / ucas.freq() :
+			org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate, _dblEndDate, ucas.couponDC(),
+				ucas.couponEOMAdjustment(), null, ucas.calendar());
 	}
 
 	/**
@@ -112,5 +119,18 @@ public class ReferenceIndexPeriod {
 	public org.drip.state.identifier.ForwardLabel forwardLabel()
 	{
 		return _forwardLabel;
+	}
+
+	/**
+	 * Retrieve the Reference Period Day Count Fraction
+	 * 
+	 * @return The Reference Period Day Count Fraction
+	 * 
+	 * @throws java.lang.Exception Thrown if the Reference Period Day Count Fraction cannot be calculated
+	 */
+
+	public double dcf()
+	{
+		return _dblDCF;
 	}
 }

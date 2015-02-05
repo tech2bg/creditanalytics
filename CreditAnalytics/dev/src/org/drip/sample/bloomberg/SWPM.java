@@ -1,6 +1,7 @@
 
 package org.drip.sample.bloomberg;
 
+import org.drip.analytics.cashflow.ComposableUnitFloatingPeriod;
 import org.drip.analytics.cashflow.CompositePeriod;
 import org.drip.analytics.date.*;
 import org.drip.analytics.rates.DiscountCurve;
@@ -275,7 +276,9 @@ public class SWPM {
 
 		LatentStateFixingsContainer lsfc = new LatentStateFixingsContainer();
 
-		lsfc.add (dtEffective, swap.derivedStream().forwardLabel(), dblFixing);
+		ComposableUnitFloatingPeriod cufs = ((ComposableUnitFloatingPeriod) (swap.derivedStream().periods().get (0).periods().get (0)));
+
+		lsfc.add (cufs.referenceIndexPeriod().fixingDate(), swap.derivedStream().forwardLabel(), dblFixing);
 
 		CurveSurfaceQuoteSet mktParams = MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc);
 
@@ -307,7 +310,7 @@ public class SWPM {
 		 * Set up the fixings bumped market parameters - these use base discount curve and the bumped fixing
 		 */
 
-		lsfc.add (dtEffective, swap.derivedStream().forwardLabel(), dblFixing + 0.0001);
+		lsfc.add (cufs.referenceIndexPeriod().fixingDate(), swap.derivedStream().forwardLabel(), dblFixing + 0.0001);
 
 		CurveSurfaceQuoteSet mktParamsFixingsBumped = MarketParamsBuilder.Create (dc, null, null, null, null, null, lsfc);
 

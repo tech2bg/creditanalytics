@@ -57,6 +57,8 @@ public abstract class ComposableUnitPeriod {
 
 	public static final int NODE_RIGHT_OF_SEGMENT = 4;
 
+	private int _iFreq = -1;
+	private java.lang.String _strTenor = "";
 	private double _dblEndDate = java.lang.Double.NaN;
 	private double _dblStartDate = java.lang.Double.NaN;
 	private double _dblFullCouponDCF = java.lang.Double.NaN;
@@ -65,18 +67,21 @@ public abstract class ComposableUnitPeriod {
 	protected ComposableUnitPeriod (
 		final double dblStartDate,
 		final double dblEndDate,
+		final java.lang.String strTenor,
 		final org.drip.param.period.UnitCouponAccrualSetting ucas)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblStartDate = dblStartDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblEndDate = dblEndDate) || _dblStartDate >=
-				_dblEndDate || null == (_ucas = ucas))
+				_dblEndDate || null == (_strTenor = strTenor) || strTenor.isEmpty() || null == (_ucas =
+					ucas))
 			throw new java.lang.Exception ("ComposableUnitPeriod ctr: Invalid Inputs");
 
-		_dblFullCouponDCF = _ucas.couponDCFOffOfFreq() ? 1. / _ucas.freq() :
+		_iFreq = org.drip.analytics.support.AnalyticsHelper.TenorToFreq (_strTenor);
+
+		_dblFullCouponDCF = _ucas.couponDCFOffOfFreq() ? 1. / _iFreq :
 			org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate, _dblEndDate,
 				_ucas.couponDC(), _ucas.couponEOMAdjustment(), null, _ucas.calendar());
-		
 	}
 
 	/**
@@ -109,7 +114,7 @@ public abstract class ComposableUnitPeriod {
 
 	public int freq()
 	{
-		return _ucas.freq();
+		return _iFreq;
 	}
 
 	/**
@@ -208,10 +213,7 @@ public abstract class ComposableUnitPeriod {
 
 	public java.lang.String tenor()
 	{
-		int iTenorInMonths = 12 / freq() ;
-
-		return 1 == iTenorInMonths || 2 == iTenorInMonths || 3 == iTenorInMonths || 6 == iTenorInMonths || 12
-			== iTenorInMonths ? iTenorInMonths + "M" : "ON";
+		return _strTenor;
 	}
 
 	/**

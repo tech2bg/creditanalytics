@@ -617,6 +617,8 @@ public class AnalyticsHelper {
 		if (null == strTenor || strTenor.isEmpty())
 			throw new java.lang.Exception ("AnalyticsHelper::TenorToFreq => Invalid Inputs");
 
+		if ("ON".equalsIgnoreCase (strTenor)) return 365;
+
 		char chTenor = strTenor.charAt (strTenor.length() - 1);
 
 		int iTimeUnit = (int) new java.lang.Double (strTenor.substring (0, strTenor.length() -

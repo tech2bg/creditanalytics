@@ -203,7 +203,7 @@ public class DiscountCurveBuilder {
 		try {
 			if (null == strBootstrapMode)
 				return new org.drip.state.curve.FlatForwardDiscountCurve (dtStart, strCurrency, collatParams,
-					adblDate, adblRate, true, "", -1);
+					adblDate, adblRate, false, "", -1);
 
 			if (BOOTSTRAP_MODE_POLYNOMIAL_SPLINE_DF.equalsIgnoreCase (strBootstrapMode))
 				return new org.drip.state.curve.NonlinearDiscountFactorDiscountCurve (dtStart, strCurrency,

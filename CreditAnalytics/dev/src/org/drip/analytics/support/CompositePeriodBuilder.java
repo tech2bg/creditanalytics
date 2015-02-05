@@ -524,11 +524,15 @@ public class CompositePeriodBuilder {
 
 		java.lang.String strForwardTenor = forwardLabel.tenor();
 
+		double dblReferencePeriodStartDate = REFERENCE_PERIOD_IN_ARREARS == iReferencePeriodArrearsType ?
+			dtStart.addTenor (strForwardTenor).julian() : dtStart.julian();
+
+		double dblReferencePeriodEndDate = REFERENCE_PERIOD_IN_ARREARS == iReferencePeriodArrearsType ?
+			dtEnd.addTenor (strForwardTenor).julian() : dtEnd.julian();
+
 		try {
-			return new org.drip.analytics.cashflow.ReferenceIndexPeriod (REFERENCE_PERIOD_IN_ARREARS ==
-				iReferencePeriodArrearsType ? dtStart.addTenor (strForwardTenor).julian() : dtStart.julian(),
-					REFERENCE_PERIOD_IN_ARREARS == iReferencePeriodArrearsType ? dtEnd.addTenor
-						(strForwardTenor).julian() : dtEnd.julian(), forwardLabel);
+			return new org.drip.analytics.cashflow.ReferenceIndexPeriod (dblReferencePeriodStartDate,
+				dblReferencePeriodEndDate, forwardLabel);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -788,8 +792,10 @@ public class CompositePeriodBuilder {
 
 		org.drip.state.identifier.ForwardLabel forwardLabel = cfus.forwardLabel();
 
+		java.lang.String strCalendar = forwardLabel.floaterIndex().calendar();
+
 		java.util.List<java.lang.Double> lsUnitEdgeDate = UnitDateEdges (dblUnitPeriodStartDate,
-			dblUnitPeriodEndDate, forwardLabel.floaterIndex().calendar(), cfus);
+			dblUnitPeriodEndDate, strCalendar, cfus);
 
 		if (null == lsUnitEdgeDate) return null;
 
@@ -802,17 +808,29 @@ public class CompositePeriodBuilder {
 
 		double dblSpread = cfus.spread();
 
+		java.lang.String strUnitTenor = cfus.tenor();
+
+		java.lang.String strForwardTenor = forwardLabel.tenor();
+
 		int iReferencePeriodArrearsType = cfus.referencePeriodArrearsType();
+
+		boolean bComposableForwardPeriodsMatch = cfus.tenor().equalsIgnoreCase (strForwardTenor);
 
 		for (int i = 1; i < iNumDate; ++i) {
 			double dblUnitStartDate = lsUnitEdgeDate.get (i - 1);
 
 			double dblUnitEndDate = lsUnitEdgeDate.get (i);
 
+			double dblReferencePeriodEndDate = dblUnitEndDate;
+
 			try {
+				double dblReferencePeriodStartDate = bComposableForwardPeriodsMatch ? dblUnitStartDate : new
+					org.drip.analytics.date.JulianDate (dblUnitEndDate).subtractTenorAndAdjust
+						(strForwardTenor, strCalendar).julian();
+
 				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFloatingPeriod (dblUnitStartDate,
-					dblUnitEndDate, MakeReferencePeriod (dblUnitStartDate, dblUnitEndDate, forwardLabel,
-						iReferencePeriodArrearsType), dblSpread));
+					dblUnitEndDate, strUnitTenor, MakeReferencePeriod (dblReferencePeriodStartDate,
+						dblReferencePeriodEndDate, forwardLabel, iReferencePeriodArrearsType), dblSpread));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

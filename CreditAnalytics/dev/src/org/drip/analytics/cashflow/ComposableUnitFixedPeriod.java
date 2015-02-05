@@ -58,7 +58,7 @@ public class ComposableUnitFixedPeriod extends org.drip.analytics.cashflow.Compo
 		final org.drip.param.period.ComposableFixedUnitSetting cufs)
 		throws java.lang.Exception
 	{
-		super (dblStartDate, dblEndDate, ucas);
+		super (dblStartDate, dblEndDate, cufs.tenor(), ucas);
 
 		if (null == (_cufs = cufs))
 			throw new java.lang.Exception ("ComposableUnitFixedPeriod ctr: Invalid Inputs");

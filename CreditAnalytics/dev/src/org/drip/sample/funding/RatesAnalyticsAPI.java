@@ -334,6 +334,10 @@ public class RatesAnalyticsAPI {
 
 		CreditAnalytics.Init (strConfig);
 
+		long lStart = System.nanoTime();
+
 		DiscountCurveFromRatesInstruments();
+
+		System.out.println ("Time Taken: " + ((int)(1.e-09 * (System.nanoTime() - lStart))) + " sec");
 	}
 }
