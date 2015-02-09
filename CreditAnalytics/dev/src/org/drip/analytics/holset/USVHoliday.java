@@ -44,10 +44,10 @@ public class USVHoliday implements org.drip.analytics.holset.LocationHoliday {
 		return "USV";
 	}
 
-	public org.drip.analytics.holiday.Locale getHolidaySet()
+	public org.drip.analytics.eventday.Locale getHolidaySet()
 	{
-		org.drip.analytics.holiday.Locale lh = new
-			org.drip.analytics.holiday.Locale();
+		org.drip.analytics.eventday.Locale lh = new
+			org.drip.analytics.eventday.Locale();
 
 		lh.addStaticHoliday ("03 Independence Day Observed-JUL-2009", "");
 

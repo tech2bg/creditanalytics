@@ -44,10 +44,10 @@ public class KPWHoliday implements org.drip.analytics.holset.LocationHoliday {
 		return "KPW";
 	}
 
-	public org.drip.analytics.holiday.Locale getHolidaySet()
+	public org.drip.analytics.eventday.Locale getHolidaySet()
 	{
-		org.drip.analytics.holiday.Locale lh = new
-			org.drip.analytics.holiday.Locale();
+		org.drip.analytics.eventday.Locale lh = new
+			org.drip.analytics.eventday.Locale();
 
 		lh.addStaticHoliday ("01-JAN-1997", "New Years day");
 

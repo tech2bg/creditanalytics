@@ -101,7 +101,7 @@ public class Convention {
 	private static final int INIT_FROM_HOLS_SOURCE = 4;
 
 	private static int s_iInitHols = INIT_FROM_HOLS_SOURCE;
-	private static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>
+	private static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale>
 		s_mapLocHols = null;
 
 	private static
@@ -157,13 +157,13 @@ public class Convention {
 
 	private static final boolean AddLH (
 		final org.drip.analytics.holset.LocationHoliday lh,
-		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale> mapHols)
+		final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale> mapHols)
 	{
 		if (null == lh || null == mapHols) return false;
 
 		java.lang.String strLocation = lh.getHolidayLoc();
 
-		org.drip.analytics.holiday.Locale locHols = lh.getHolidaySet();
+		org.drip.analytics.eventday.Locale locHols = lh.getHolidaySet();
 
 		if (null == locHols || null == strLocation || strLocation.isEmpty()) return false;
 
@@ -172,11 +172,11 @@ public class Convention {
 		return true;
 	}
 
-	private static final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>
+	private static final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale>
 		SetHolsFromSource()
 	{
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale> mapHols = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale> mapHols = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale>();
 
 		AddLH (new org.drip.analytics.holset.AEDHoliday(), mapHols);
 
@@ -438,7 +438,7 @@ public class Convention {
 
 		for (java.lang.String strCalendar : astrCalendars) {
 			if (null != strCalendar && null != s_mapLocHols.get (strCalendar)) {
-				org.drip.analytics.holiday.Locale lh = s_mapLocHols.get (strCalendar);
+				org.drip.analytics.eventday.Locale lh = s_mapLocHols.get (strCalendar);
 
 				if (null == lh) continue;
 
@@ -448,7 +448,7 @@ public class Convention {
 
 				if (null == lh.holidays() || 0 == (WEEKDAY_HOLS & iHolType)) continue;
 
-				for (org.drip.analytics.holiday.Base hol : lh.holidays()) {
+				for (org.drip.analytics.eventday.Base hol : lh.holidays()) {
 					try {
 						if (null != hol && (int) dblDate == (int) hol.dateInYear
 							(org.drip.analytics.date.DateUtil.Year (dblDate), true))
@@ -530,7 +530,7 @@ public class Convention {
 
 		for (java.lang.String strCalendar : astrCalendars) {
 			if (null != strCalendar && null != s_mapLocHols.get (strCalendar)) {
-				org.drip.analytics.holiday.Locale lh = s_mapLocHols.get (strCalendar);
+				org.drip.analytics.eventday.Locale lh = s_mapLocHols.get (strCalendar);
 
 				if (null == lh || null == lh.weekendDays() || null == lh.weekendDays().days()) continue;
 
@@ -932,11 +932,11 @@ public class Convention {
 
 		double dblDate = org.drip.analytics.date.DateUtil.CreateFromYMD (2011, 5, 5).julian();
 
-		org.drip.analytics.holiday.Locale lh = s_mapLocHols.get ("HKD");
+		org.drip.analytics.eventday.Locale lh = s_mapLocHols.get ("HKD");
 
 		System.out.println (lh.weekendDays());
 
-		for (org.drip.analytics.holiday.Base hol : lh.holidays()) {
+		for (org.drip.analytics.eventday.Base hol : lh.holidays()) {
 			double dblHoliday = hol.dateInYear (org.drip.analytics.date.DateUtil.Year (dblDate), true);
 
 			System.out.println (dblHoliday + "=" + org.drip.analytics.date.DateUtil.FromJulian

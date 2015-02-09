@@ -44,10 +44,10 @@ public class CAEHoliday implements org.drip.analytics.holset.LocationHoliday {
 		return "CAE";
 	}
 
-	public org.drip.analytics.holiday.Locale getHolidaySet()
+	public org.drip.analytics.eventday.Locale getHolidaySet()
 	{
-		org.drip.analytics.holiday.Locale lh = new
-			org.drip.analytics.holiday.Locale();
+		org.drip.analytics.eventday.Locale lh = new
+			org.drip.analytics.eventday.Locale();
 
 		lh.addStaticHoliday ("14-APR-1995", "holiday");
 

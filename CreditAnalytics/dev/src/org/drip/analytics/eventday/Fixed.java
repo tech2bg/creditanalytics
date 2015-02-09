@@ -1,6 +1,5 @@
 
-package org.drip.analytics.holiday;
-
+package org.drip.analytics.eventday;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -34,66 +33,49 @@ package org.drip.analytics.holiday;
  */
 
 /**
- * Variable class contains the rule characterizing the variable holiday’s month, day in week, week in month,
- * 	and the weekend days. Specific holidays in the given year are generated using these rules.
+ * Fixed contains the fixed holiday’s date and month. Holidays are generated on a per-year basis by applying
+ * 	the year, and by adjusting the date generated.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class Variable extends Base {
+public class Fixed extends Base {
+	private int _iDay = 0;
 	private int _iMonth = 0;
-	private int _iWeekDay = 0;
-	private int _iWeekInMonth = 0;
-	private boolean _bFromFront = true;
 	private Weekend _wkend = null;
 
 	/**
-	 * Construct the object from the week, day, month, from front/back, week end, and description
+	 * Construct the object from the day, month, weekend, and description
 	 * 
-	 * @param iWeekInMonth Week of the Month
-	 * @param iWeekDay Day of the Week
+	 * @param iDay Day
 	 * @param iMonth Month
-	 * @param bFromFront From Front (true), Back (false)
-	 * @param wkend Weekend
+	 * @param wkend Weekend Object
 	 * @param strDescription Description
 	 */
 
-	public Variable (
-		final int iWeekInMonth,
-		final int iWeekDay,
+	public Fixed (
+		final int iDay,
 		final int iMonth,
-		final boolean bFromFront,
 		final Weekend wkend,
 		final java.lang.String strDescription)
 	{
 		super (strDescription);
 
+		_iDay = iDay;
 		_wkend = wkend;
 		_iMonth = iMonth;
-		_iWeekDay = iWeekDay;
-		_bFromFront = bFromFront;
-		_iWeekInMonth = iWeekInMonth;
 	}
 
 	@Override public double dateInYear (
 		final int iYear,
-		final boolean bAdjustForWeekend)
+		final boolean bAdjust)
 	{
 		double dblDate = java.lang.Double.NaN;
 
 		try {
-			if (_bFromFront)
-				dblDate = (org.drip.analytics.date.DateUtil.CreateFromYMD (iYear, _iMonth,
-					_iWeekDay)).julian() + (7 * (_iWeekInMonth - 1));
-			else {
-				dblDate = (org.drip.analytics.date.DateUtil.CreateFromYMD (iYear, _iMonth,
-					org.drip.analytics.date.DateUtil.DaysInMonth (_iMonth, iYear))).julian() - (7 *
-						(_iWeekInMonth - 1));
+			dblDate = org.drip.analytics.date.DateUtil.CreateFromYMD (iYear, _iMonth, _iDay).julian();
 
-				while (_iWeekDay != (dblDate % 7)) --dblDate;
-			}
-
-			if (bAdjustForWeekend) return Base.rollHoliday (dblDate, true, _wkend);
+			if (bAdjust) return Base.rollHoliday (dblDate, true, _wkend);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

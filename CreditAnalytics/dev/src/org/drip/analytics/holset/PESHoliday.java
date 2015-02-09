@@ -44,10 +44,10 @@ public class PESHoliday implements org.drip.analytics.holset.LocationHoliday {
 		return "PES";
 	}
 
-	public org.drip.analytics.holiday.Locale getHolidaySet()
+	public org.drip.analytics.eventday.Locale getHolidaySet()
 	{
-		org.drip.analytics.holiday.Locale lh = new
-			org.drip.analytics.holiday.Locale();
+		org.drip.analytics.eventday.Locale lh = new
+			org.drip.analytics.eventday.Locale();
 
 		lh.addStaticHoliday ("09-FEB-1994", "Lunar New Year");
 

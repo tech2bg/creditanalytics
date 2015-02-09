@@ -44,10 +44,10 @@ public class PHPHoliday implements org.drip.analytics.holset.LocationHoliday {
 		return "PHP";
 	}
 
-	public org.drip.analytics.holiday.Locale getHolidaySet()
+	public org.drip.analytics.eventday.Locale getHolidaySet()
 	{
-		org.drip.analytics.holiday.Locale lh = new
-			org.drip.analytics.holiday.Locale();
+		org.drip.analytics.eventday.Locale lh = new
+			org.drip.analytics.eventday.Locale();
 
 		lh.addStaticHoliday ("01-JAN-1999", "New Years Day");
 

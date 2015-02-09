@@ -123,7 +123,14 @@ public class EnvManager {
 
 		if (!org.drip.market.otc.SwapOptionSettlementContainer.Init()) {
 			System.out.println
-				("EnvManager::InitEnv => Cannot Initialize the Sweap Option Settlement Conventions!");
+				("EnvManager::InitEnv => Cannot Initialize the Swap Option Settlement Conventions!");
+
+			return null;
+		}
+
+		if (!org.drip.market.exchange.BondFuturesConventionContainer.Init()) {
+			System.out.println
+				("EnvManager::InitEnv => Cannot Initialize the Bond Futures Convention Conventions!");
 
 			return null;
 		}

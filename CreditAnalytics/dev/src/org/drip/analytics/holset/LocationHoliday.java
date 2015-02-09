@@ -55,5 +55,5 @@ public interface LocationHoliday {
 	 * @return Locale instance
 	 */
 
-	public org.drip.analytics.holiday.Locale getHolidaySet();
+	public org.drip.analytics.eventday.Locale getHolidaySet();
 }

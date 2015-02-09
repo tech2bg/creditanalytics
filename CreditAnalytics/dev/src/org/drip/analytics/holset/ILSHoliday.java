@@ -44,10 +44,10 @@ public class ILSHoliday implements org.drip.analytics.holset.LocationHoliday {
 		return "ILS";
 	}
 
-	public org.drip.analytics.holiday.Locale getHolidaySet()
+	public org.drip.analytics.eventday.Locale getHolidaySet()
 	{
-		org.drip.analytics.holiday.Locale lh = new
-			org.drip.analytics.holiday.Locale();
+		org.drip.analytics.eventday.Locale lh = new
+			org.drip.analytics.eventday.Locale();
 
 		lh.addStaticHoliday ("12-MAR-1998", "Feast of Purim");
 

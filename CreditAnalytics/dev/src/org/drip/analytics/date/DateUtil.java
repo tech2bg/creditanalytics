@@ -817,6 +817,29 @@ public class DateUtil {
 	}
 
 	/**
+	 * Return the Day of the Week corresponding to the input java.util.Date
+	 * 
+	 * @param dt java.util.Date Input
+	 * 
+	 * @return The Day Of The Week
+	 * 
+	 * @throws java.lang.Exception Thrown if input date is invalid
+	 */
+
+	public static final int DayOfTheWeek (
+		final java.util.Date dt)
+		throws java.lang.Exception
+	{
+		if (null == dt) throw new java.lang.Exception ("DateUtil::DayOfTheWeek => Invalid Date");
+
+		java.util.Calendar cal = java.util.Calendar.getInstance();
+
+		cal.setTime (dt);
+
+		return cal.get (java.util.Calendar.DAY_OF_WEEK);
+	}
+
+	/**
 	 * Return the Day corresponding to the input java.util.Date
 	 * 
 	 * @param dt java.util.Date Input
@@ -957,6 +980,34 @@ public class DateUtil {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Retrieve a Java Date Instance from the Julian Date Instance
+	 * 
+	 * @param dt Julian Date Instance
+	 * 
+	 * @return The Java Date Instance
+	 */
+
+	public static final java.util.Date JavaDateFromJulianDate (
+		final org.drip.analytics.date.JulianDate dt)
+	{
+		if (null == dt) return null;
+
+		java.util.Calendar cal = java.util.Calendar.getInstance();
+
+		double dblDate = dt.julian();
+
+		try {
+			cal.set (Year (dblDate), Month (dblDate) - 1, Day (dblDate));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		return cal.getTime();
 	}
 
 	/**

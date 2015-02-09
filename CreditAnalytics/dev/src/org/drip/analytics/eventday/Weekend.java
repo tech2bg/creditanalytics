@@ -1,5 +1,5 @@
 
-package org.drip.analytics.holiday;
+package org.drip.analytics.eventday;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

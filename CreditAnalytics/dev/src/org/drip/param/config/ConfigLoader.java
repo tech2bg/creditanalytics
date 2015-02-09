@@ -184,7 +184,7 @@ public class ConfigLoader {
 	 * @return LocHolidays
 	 */
 
-	public static org.drip.analytics.holiday.Locale LocationHolidays (
+	public static org.drip.analytics.eventday.Locale LocationHolidays (
 		final org.w3c.dom.Document doc,
 		final java.lang.String strLoc)
 	{
@@ -196,7 +196,7 @@ public class ConfigLoader {
 			(0).getNodeType())
 			return null;
 
-		org.drip.analytics.holiday.Locale locHols = new org.drip.analytics.holiday.Locale();
+		org.drip.analytics.eventday.Locale locHols = new org.drip.analytics.eventday.Locale();
 
 		org.w3c.dom.Element e = (org.w3c.dom.Element) nlLoc.item (0);
 
@@ -342,7 +342,7 @@ public class ConfigLoader {
 	 * @return Map of the holiday calendars
 	 */
 
-	public static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>
+	public static org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale>
 		LoadHolidayCalendars (
 			final java.lang.String strConfigFile)
 		{
@@ -350,12 +350,12 @@ public class ConfigLoader {
 
 		if (null == doc) return null;
 
-		org.drip.analytics.holiday.Locale lhNYB = LocationHolidays (doc, "NYB");
+		org.drip.analytics.eventday.Locale lhNYB = LocationHolidays (doc, "NYB");
 
 		if (null == lhNYB) return null;
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale> mapHols = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale> mapHols = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale>();
 
 		mapHols.put ("NYB", lhNYB);
 
@@ -417,12 +417,12 @@ public class ConfigLoader {
 	 * @return Map of the holiday calendars
 	 */
 
-	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>
+	public static final org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale>
 		LoadHolidayCalendarsFromDB (
 			final java.lang.String strConfigFile)
 	{
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale> mapHols = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale>();
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale> mapHols = new
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale>();
 
 		java.sql.Statement stmt = OracleInit (strConfigFile);
 
@@ -439,9 +439,9 @@ public class ConfigLoader {
 				java.util.Date dtSQLHoliday = rs.getDate ("Holiday");
 
 				if (null != dtSQLHoliday) {
-					org.drip.analytics.holiday.Locale lh = mapHols.get (strLocation);
+					org.drip.analytics.eventday.Locale lh = mapHols.get (strLocation);
 
-					if (null == lh) lh = new org.drip.analytics.holiday.Locale();
+					if (null == lh) lh = new org.drip.analytics.eventday.Locale();
 
 					lh.addStaticHoliday (org.drip.analytics.date.DateUtil.CreateFromYMD
 						(org.drip.analytics.date.DateUtil.Year (dtSQLHoliday),
@@ -461,7 +461,7 @@ public class ConfigLoader {
 		aiWeekend[1] = org.drip.analytics.date.DateUtil.SUNDAY;
 		aiWeekend[0] = org.drip.analytics.date.DateUtil.SATURDAY;
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.analytics.holiday.Locale> me :
+		for (java.util.Map.Entry<java.lang.String, org.drip.analytics.eventday.Locale> me :
 			mapHols.entrySet())
 			me.getValue().addWeekend (aiWeekend);
 
@@ -477,10 +477,10 @@ public class ConfigLoader {
 	{
 		java.lang.String strConfigFile = "c:\\Lakshmi\\java\\BondAnal\\Config.xml";
 
-		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.holiday.Locale> mapHols =
+		org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.eventday.Locale> mapHols =
 			LoadHolidayCalendars (strConfigFile);
 
-		for (java.util.Map.Entry<java.lang.String, org.drip.analytics.holiday.Locale> me :
+		for (java.util.Map.Entry<java.lang.String, org.drip.analytics.eventday.Locale> me :
 			mapHols.entrySet())
 			System.out.println (me.getKey() + "=" + me.getValue());
 

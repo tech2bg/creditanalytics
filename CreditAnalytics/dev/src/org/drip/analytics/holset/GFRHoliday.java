@@ -44,10 +44,10 @@ public class GFRHoliday implements org.drip.analytics.holset.LocationHoliday {
 		return "GFR";
 	}
 
-	public org.drip.analytics.holiday.Locale getHolidaySet()
+	public org.drip.analytics.eventday.Locale getHolidaySet()
 	{
-		org.drip.analytics.holiday.Locale lh = new
-			org.drip.analytics.holiday.Locale();
+		org.drip.analytics.eventday.Locale lh = new
+			org.drip.analytics.eventday.Locale();
 
 		lh.addStaticHoliday ("24-DEC-2004", "Christmas Eve");
 
