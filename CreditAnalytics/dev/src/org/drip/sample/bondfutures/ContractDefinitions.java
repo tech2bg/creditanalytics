@@ -32,12 +32,12 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * BondFuturesDefinitions contains all the pre-fixed Definitions of the Bond Futures Contracts.
+ * ContractDefinitions contains all the pre-fixed Definitions of the Bond Futures Contracts.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BondFuturesDefinitions {
+public class ContractDefinitions {
 	private static final void DisplayBondFuturesInfo (
 		String strCurrency,
 		String strUnderlierType,
@@ -65,19 +65,41 @@ public class BondFuturesDefinitions {
 
 		DisplayBondFuturesInfo ("AUD", "BANK", "BILLS", "3M");
 
-		DisplayBondFuturesInfo ("USD", "TREASURY", "BOND", "ULTRA");
+		DisplayBondFuturesInfo ("AUD", "TREASURY", "BOND", "3Y");
 
-		DisplayBondFuturesInfo ("USD", "TREASURY", "BOND", "30Y");
+		DisplayBondFuturesInfo ("AUD", "TREASURY", "BOND", "10Y");
 
-		DisplayBondFuturesInfo ("USD", "TREASURY", "NOTE", "10Y");
+		DisplayBondFuturesInfo ("EUR", "EURO", "SCHATZ", "2Y");
 
-		DisplayBondFuturesInfo ("USD", "TREASURY", "NOTE", "5Y");
+		DisplayBondFuturesInfo ("EUR", "EURO", "BOBL", "5Y");
 
-		DisplayBondFuturesInfo ("USD", "TREASURY", "NOTE", "3Y");
+		DisplayBondFuturesInfo ("EUR", "EURO", "BUND", "10Y");
+
+		DisplayBondFuturesInfo ("EUR", "EURO", "BUXL", "30Y");
+
+		DisplayBondFuturesInfo ("EUR", "TREASURY", "BONO", "10Y");
+
+		DisplayBondFuturesInfo ("GBP", "SHORT", "GILT", "2Y");
+
+		DisplayBondFuturesInfo ("GBP", "MEDIUM", "GILT", "5Y");
+
+		DisplayBondFuturesInfo ("GBP", "LONG", "GILT", "10Y");
+
+		DisplayBondFuturesInfo ("JPY", "TREASURY", "JGB", "5Y");
+
+		DisplayBondFuturesInfo ("JPY", "TREASURY", "JGB", "10Y");
 
 		DisplayBondFuturesInfo ("USD", "TREASURY", "NOTE", "2Y");
 
-		DisplayBondFuturesInfo ("EUR", "EURO", "BUXL", "30Y");
+		DisplayBondFuturesInfo ("USD", "TREASURY", "NOTE", "3Y");
+
+		DisplayBondFuturesInfo ("USD", "TREASURY", "NOTE", "5Y");
+
+		DisplayBondFuturesInfo ("USD", "TREASURY", "NOTE", "10Y");
+
+		DisplayBondFuturesInfo ("USD", "TREASURY", "BOND", "30Y");
+
+		DisplayBondFuturesInfo ("USD", "TREASURY", "BOND", "ULTRA");
 
 		System.out.println ("--------------------------------------------------------------------------------------------------------\n");
 	}

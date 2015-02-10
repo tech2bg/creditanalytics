@@ -49,10 +49,17 @@ public class DateInMonth {
 
 	public static final int INSTANCE_GENERATOR_RULE_WEEK_DAY = 2;
 
+	/**
+	 * Instance Date Generation Rule - Generate Using the Specific Day of the Month
+	 */
+
+	public static final int INSTANCE_GENERATOR_RULE_SPECIFIC_DAY_OF_MONTH = 3;
+
 	private int _iLag = -1;
 	private int _iDayOfWeek = -1;
 	private int _iWeekInMonth = -1;
 	private boolean _bFromBack = false;
+	private int _iSpecificDayInMonth = -1;
 	private int _iInstanceGeneratorRule = -1;
 
 	/**
@@ -63,6 +70,7 @@ public class DateInMonth {
 	 * @param iLag The Lag
 	 * @param iDayOfWeek Day of Week
 	 * @param iWeekInMonth Week in the Month
+	 * @param iSpecificDayInMonth Specific Daye In Month
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
@@ -72,17 +80,19 @@ public class DateInMonth {
 		final boolean bFromBack,
 		final int iLag,
 		final int iDayOfWeek,
-		final int iWeekInMonth)
+		final int iWeekInMonth,
+		final int iSpecificDayInMonth)
 		throws java.lang.Exception
 	{
 		_bFromBack = bFromBack;
 
 		if (INSTANCE_GENERATOR_RULE_EDGE_LAG == (_iInstanceGeneratorRule = iInstanceGeneratorRule)) {
 			if (0 > (_iLag = iLag)) throw new java.lang.Exception ("DateInMonth ctr: Invalid Inputs");
-		} else {
+		} else if (INSTANCE_GENERATOR_RULE_WEEK_DAY == _iInstanceGeneratorRule) {
 			_iDayOfWeek = iDayOfWeek;
 			_iWeekInMonth = iWeekInMonth;
-		}
+		} else
+			_iSpecificDayInMonth = iSpecificDayInMonth;
 	}
 
 	/**
@@ -140,43 +150,95 @@ public class DateInMonth {
 		return _iDayOfWeek;
 	}
 
-	public double instanceDay (
+	/**
+	 * Retrieve the Specific Day in Month
+	 * 
+	 * @return The Specific Day in Month
+	 */
+
+	public int specificDayInMonth()
+	{
+		return _iSpecificDayInMonth;
+	}
+
+	/**
+	 * Generate the Particular Day of the Year, the Month, according to the Calendar
+	 * 
+	 * @param iYear Target Year
+	 * @param iMonth Target Month
+	 * @param strCalendar Target Calendar
+	 * 
+	 * @return The Particular Day
+	 */
+
+	public org.drip.analytics.date.JulianDate instanceDay (
 		final int iYear,
 		final int iMonth,
 		final java.lang.String strCalendar)
-		throws java.lang.Exception
 	{
-		if (INSTANCE_GENERATOR_RULE_EDGE_LAG == _iInstanceGeneratorRule)
-			return _bFromBack ? org.drip.analytics.date.DateUtil.CreateFromYMD (iYear, iMonth,
-				org.drip.analytics.date.DateUtil.DaysInMonth (iYear, iMonth)).subtractBusDays (_iLag,
-					strCalendar).julian() : org.drip.analytics.date.DateUtil.CreateFromYMD (iYear, iMonth,
-						1).addBusDays (_iLag, strCalendar).julian();
+		try {
+			if (INSTANCE_GENERATOR_RULE_EDGE_LAG == _iInstanceGeneratorRule) {
+				if (_bFromBack) {
+					org.drip.analytics.date.JulianDate dtBase =
+						org.drip.analytics.date.DateUtil.CreateFromYMD (iYear, iMonth,
+							org.drip.analytics.date.DateUtil.DaysInMonth (iMonth, iYear));
 
-		if (_bFromBack) {
-			org.drip.analytics.date.JulianDate dtEOM = org.drip.analytics.date.DateUtil.CreateFromYMD (iYear,
-				iMonth, org.drip.analytics.date.DateUtil.DaysInMonth (iYear, iMonth));
+					return null == dtBase ? null : dtBase.subtractBusDays (_iLag, strCalendar);
+				}
 
-			while (_iDayOfWeek != org.drip.analytics.date.DateUtil.Day
-				(org.drip.analytics.date.DateUtil.JavaDateFromJulianDate (dtEOM)))
-				dtEOM = dtEOM.subtractDays (1);
+				org.drip.analytics.date.JulianDate dtBase = org.drip.analytics.date.DateUtil.CreateFromYMD
+					(iYear, iMonth, 1);
 
-			return dtEOM.subtractDays (_iWeekInMonth * 7).julian();
+				return null == dtBase ? null : dtBase.addBusDays (_iLag, strCalendar);
+			}
+
+			if (INSTANCE_GENERATOR_RULE_WEEK_DAY == _iInstanceGeneratorRule) {
+				if (_bFromBack) {
+					org.drip.analytics.date.JulianDate dtEOM = org.drip.analytics.date.DateUtil.CreateFromYMD
+						(iYear, iMonth, org.drip.analytics.date.DateUtil.DaysInMonth (iMonth, iYear));
+
+					if (null == dtEOM) return null;
+
+					while (_iDayOfWeek != org.drip.analytics.date.DateUtil.Day
+						(org.drip.analytics.date.DateUtil.JavaDateFromJulianDate (dtEOM)))
+						dtEOM = dtEOM.subtractDays (1);
+
+					org.drip.analytics.date.JulianDate dtUnadjusted = dtEOM.subtractDays (_iWeekInMonth * 7);
+
+					return null == dtUnadjusted ? null : dtUnadjusted.subtractBusDays (0, strCalendar);
+				}
+
+				org.drip.analytics.date.JulianDate dtSOM = org.drip.analytics.date.DateUtil.CreateFromYMD
+					(iYear, iMonth, 1);
+
+				if (null == dtSOM) return null;
+
+				while (_iDayOfWeek != org.drip.analytics.date.DateUtil.Day
+					(org.drip.analytics.date.DateUtil.JavaDateFromJulianDate (dtSOM)))
+					dtSOM = dtSOM.addDays (1);
+
+				org.drip.analytics.date.JulianDate dtUnadjusted = dtSOM.addDays (_iWeekInMonth * 7);
+
+				return null == dtUnadjusted ? null : dtUnadjusted.addBusDays (0, strCalendar);
+			}
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
 		}
 
-		org.drip.analytics.date.JulianDate dtSOM = org.drip.analytics.date.DateUtil.CreateFromYMD (iYear,
-			iMonth, 1);
+		org.drip.analytics.date.JulianDate dtBase = org.drip.analytics.date.DateUtil.CreateFromYMD (iYear,
+			iMonth, _iSpecificDayInMonth);
 
-		while (_iDayOfWeek != org.drip.analytics.date.DateUtil.Day
-			(org.drip.analytics.date.DateUtil.JavaDateFromJulianDate (dtSOM)))
-			dtSOM = dtSOM.addDays (1);
+		if (null == dtBase) return null;
 
-		return dtSOM.addDays (_iWeekInMonth * 7).julian();
+		return _bFromBack ? dtBase.subtractBusDays (0, strCalendar) : dtBase.addBusDays (0, strCalendar);
 	}
 
 	@Override public java.lang.String toString()
 	{
 		return "[DateInMonth => Instance Generator Rule: " + _iInstanceGeneratorRule + " | From Back Flag: "
 			+ _bFromBack + " | Day Of Week: " + _iDayOfWeek + " | Week In Month: " + _iWeekInMonth +
-				" | Lag: " + _iLag + "]";
+				" | Specific Day In Month: " + _iSpecificDayInMonth + " | Lag: " + _iLag + "]";
 	}
 }

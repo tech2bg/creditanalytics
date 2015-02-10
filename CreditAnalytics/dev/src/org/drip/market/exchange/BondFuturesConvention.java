@@ -37,6 +37,7 @@ package org.drip.market.exchange;
 
 public class BondFuturesConvention {
 	private java.lang.String _strName = "";
+	private java.lang.String _strCalendar = "";
 	private java.lang.String _strCurrency = "";
 	private java.lang.String[] _astrCode = null;
 	private java.lang.String[] _astrExchange = null;
@@ -55,6 +56,7 @@ public class BondFuturesConvention {
 	 * @param strName The Futures Name
 	 * @param astrCode The Array of the Futures Codes
 	 * @param strCurrency The Futures Currency
+	 * @param strCalendar The Futures Settle Calendar
 	 * @param strMaturityTenor The Maturity Tenor
 	 * @param dblBasketNotional Basket Notional
 	 * @param dblComponentNotionalMinimum The Minimum Component Notional
@@ -71,6 +73,7 @@ public class BondFuturesConvention {
 		final java.lang.String strName,
 		final java.lang.String[] astrCode,
 		final java.lang.String strCurrency,
+		final java.lang.String strCalendar,
 		final java.lang.String strMaturityTenor,
 		final double dblBasketNotional,
 		final double dblComponentNotionalMinimum,
@@ -94,6 +97,8 @@ public class BondFuturesConvention {
 											(_dimExpiry = dimExpiry) || null == (_bfe = bfe) || null == (_bfs
 												= bfs))
 			throw new java.lang.Exception ("BondFuturesConvention ctr: Invalid Inputs");
+
+		_strCalendar = strCalendar;
 	}
 
 	/**
@@ -105,6 +110,17 @@ public class BondFuturesConvention {
 	public java.lang.String name()
 	{
 		return _strName;
+	}
+
+	/**
+	 * Retrieve the Bond Futures Settle Calendar
+	 * 
+	 * @return The Bond Futures Settle Calendar
+	 */
+
+	public java.lang.String calendar()
+	{
+		return _strCalendar;
 	}
 
 	/**
@@ -228,12 +244,42 @@ public class BondFuturesConvention {
 		return _bfs;
 	}
 
+	/**
+	 * Retrieve the BondFuturesEventDates Instance corresponding to the Futures Expiry Year/Month
+	 * 
+	 * @param iYear Futures Year
+	 * @param iMonth Futures Month
+	 * 
+	 * @return The BondFuturesEventDates Instance
+	 */
+
+	public org.drip.market.exchange.BondFuturesEventDates eventDates (
+		final int iYear,
+		final int iMonth)
+	{
+		org.drip.analytics.date.JulianDate dtExpiry = _dimExpiry.instanceDay (iYear, iMonth, _strCalendar);
+
+		if (null == dtExpiry) return null;
+
+		try {
+			return new org.drip.market.exchange.BondFuturesEventDates (dtExpiry, dtExpiry.addBusDays
+				(_bfs.expiryFirstDeliveryLag(), _strCalendar), dtExpiry.addBusDays
+					(_bfs.expiryFinalDeliveryLag(), _strCalendar), dtExpiry.addBusDays
+						(_bfs.expiryDeliveryNoticeLag(), _strCalendar), dtExpiry.addBusDays
+							(_bfs.expiryFirstDeliveryLag(), _strCalendar));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	@Override public java.lang.String toString()
 	{
-		java.lang.String strDump = "Name: " + _strName + " | Currency: " + _strCurrency +
-			" | Underlier Type: " + _strUnderlierType + " | Underlier Sub-type: " + _strUnderlierSubtype +
-				" | Maturity Tenor: " + _strMaturityTenor + " | Basket Notional: " + _dblBasketNotional +
-					" | Component Notional Minimum: " + _dblComponentNotionalMinimum;
+		java.lang.String strDump = "Name: " + _strName + " | Currency: " + _strCurrency + " | Calendar: " +
+			_strCalendar + " | Underlier Type: " + _strUnderlierType + " | Underlier Sub-type: " +
+				_strUnderlierSubtype + " | Maturity Tenor: " + _strMaturityTenor + " | Basket Notional: " +
+					_dblBasketNotional + " | Component Notional Minimum: " + _dblComponentNotionalMinimum;
 
 		for (int i = 0; i < _astrCode.length; ++i) {
 			if (0 == i)

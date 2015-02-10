@@ -138,12 +138,15 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		double dblAdjusted = _dblJulian;
 
 		try {
-			while (0 != iNumDaysToAdd--) {
+			while (0 < iNumDaysToAdd--) {
 				++dblAdjusted;
 
 				while (org.drip.analytics.daycount.Convention.IsHoliday (dblAdjusted, strCalendarSet))
 					++dblAdjusted;
 			}
+
+			while (org.drip.analytics.daycount.Convention.IsHoliday (dblAdjusted, strCalendarSet))
+				++dblAdjusted;
 
 			return new JulianDate (dblAdjusted);
 		} catch (java.lang.Exception e) {
@@ -171,12 +174,15 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 		double dblAdjusted = _dblJulian;
 
 		try {
-			while (0 != iNumDaysToAdd--) {
+			while (0 < iNumDaysToAdd--) {
 				--dblAdjusted;
 
 				while (org.drip.analytics.daycount.Convention.IsHoliday (dblAdjusted, strCalendarSet))
 					--dblAdjusted;
 			}
+
+			while (org.drip.analytics.daycount.Convention.IsHoliday (dblAdjusted, strCalendarSet))
+				--dblAdjusted;
 
 			return new JulianDate (dblAdjusted);
 		} catch (java.lang.Exception e) {

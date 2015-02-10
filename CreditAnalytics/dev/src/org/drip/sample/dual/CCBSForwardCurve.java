@@ -172,7 +172,8 @@ public class CCBSForwardCurve {
 		final String strReferenceCurrency,
 		final String strDerivedCurrency,
 		final String[] astrTenor,
-		final int iTenorInMonths)
+		final int iTenorInMonths,
+		final double dblRefDerFX)
 		throws Exception
 	{
 		FloatFloatComponent[] aFFCReference = MakexM6MBasisSwap (
@@ -188,7 +189,7 @@ public class CCBSForwardCurve {
 			dtValue,
 			strDerivedCurrency,
 			strDerivedCurrency,
-			1.,
+			1. / dblRefDerFX,
 			astrTenor,
 			3
 		);
@@ -227,7 +228,8 @@ public class CCBSForwardCurve {
 			strReferenceCurrency,
 			strDerivedCurrency,
 			astrTenor,
-			3
+			3,
+			dblRefDerFX
 		);
 
 		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();

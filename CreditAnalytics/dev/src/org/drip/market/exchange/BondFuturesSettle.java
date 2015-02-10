@@ -61,24 +61,35 @@ public class BondFuturesSettle {
 
 	public static final int QUOTE_REFERENCE_INDEX_CONVERSION_FACTOR = 2;
 
+	/**
+	 * Settle Quote Type - Uses a Reference Index Based off of Conversion Factor Computed AUD Bond Futures
+	 *  Style
+	 */
+
+	public static final int QUOTE_REFERENCE_INDEX_AUD_BOND_FUTURES_STYLE = 3;
+
 	private int _iSettleType = -1;
 	private int _iSettleQuoteStyle = -1;
+	private int _iExpiryLastTradingLag = -1;
 	private boolean _bWildCardOption = false;
 	private int _iExpiryFirstDeliveryLag = -1;
 	private int _iExpiryFinalDeliveryLag = -1;
-	private double _dblReferenceYieldFloor = java.lang.Double.NaN;
-	private double _dblReferenceYieldCeiling = java.lang.Double.NaN;
+	private int _iExpiryDeliveryNoticeLag = -1;
+	private double _dblReferenceYieldCurrent = java.lang.Double.NaN;
+	private double _dblReferenceYieldOriginal = java.lang.Double.NaN;
 
 	/**
 	 * BondFuturesSettle Constructor
 	 * 
 	 * @param iExpiryFirstDeliveryLag Lag Between the Expiry and the First Delivery Dates
 	 * @param iExpiryFinalDeliveryLag Lag Between the Expiry and the Final Delivery Dates
+	 * @param iExpiryDeliveryNoticeLag Lag between the Expiry and the Delivery Notice
+	 * @param iExpiryLastTradingLag Lag between the Expiry and the Last Trading Day
 	 * @param iSettleType Settlement Type
 	 * @param iSettleQuoteStyle Settlement Quote Style
 	 * @param bWildCardOption TRUE => Turn ON the Wild Card Option
-	 * @param dblReferenceYieldFloor The Reference Yield Floor
-	 * @param dblReferenceYieldCeiling The Reference Yield Ceiling
+	 * @param dblReferenceYieldCurrent The Current Reference Yield
+	 * @param dblReferenceYieldOriginal The Original Reference Yield
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
@@ -86,11 +97,13 @@ public class BondFuturesSettle {
 	public BondFuturesSettle (
 		final int iExpiryFirstDeliveryLag,
 		final int iExpiryFinalDeliveryLag,
+		final int iExpiryDeliveryNoticeLag,
+		final int iExpiryLastTradingLag,
 		final int iSettleType,
 		final int iSettleQuoteStyle,
 		final boolean bWildCardOption,
-		final double dblReferenceYieldFloor,
-		final double dblReferenceYieldCeiling)
+		final double dblReferenceYieldCurrent,
+		final double dblReferenceYieldOriginal)
 		throws java.lang.Exception
 	{
 		if ((_iExpiryFinalDeliveryLag = iExpiryFinalDeliveryLag) < (_iExpiryFirstDeliveryLag =
@@ -100,10 +113,12 @@ public class BondFuturesSettle {
 		_iSettleType = iSettleType;
 		_bWildCardOption = bWildCardOption;
 		_iSettleQuoteStyle = iSettleQuoteStyle;
-		_dblReferenceYieldFloor = dblReferenceYieldFloor;
+		_iExpiryLastTradingLag = iExpiryLastTradingLag;
 		_iExpiryFirstDeliveryLag = iExpiryFirstDeliveryLag;
 		_iExpiryFinalDeliveryLag = iExpiryFinalDeliveryLag;
-		_dblReferenceYieldCeiling = dblReferenceYieldCeiling;
+		_iExpiryDeliveryNoticeLag = iExpiryDeliveryNoticeLag;
+		_dblReferenceYieldCurrent = dblReferenceYieldCurrent;
+		_dblReferenceYieldOriginal = dblReferenceYieldOriginal;
 	}
 
 	/**
@@ -126,6 +141,28 @@ public class BondFuturesSettle {
 	public int expiryFinalDeliveryLag()
 	{
 		return _iExpiryFinalDeliveryLag;
+	}
+
+	/**
+	 * Retrieve the Lag Between the Expiry and the Delivery Notice Dates
+	 * 
+	 * @return The Lag Between the Expiry and the Delivery Notice Dates
+	 */
+
+	public int expiryDeliveryNoticeLag()
+	{
+		return _iExpiryDeliveryNoticeLag;
+	}
+
+	/**
+	 * Retrieve the Lag Between the Expiry and the Last Trading Dates
+	 * 
+	 * @return The Lag Between the Expiry and the Last Trading Dates
+	 */
+
+	public int expiryLastTradingLag()
+	{
+		return _iExpiryLastTradingLag;
 	}
 
 	/**
@@ -162,33 +199,35 @@ public class BondFuturesSettle {
 	}
 
 	/**
-	 * Retrieve the Reference Yield Floor
+	 * Retrieve the Current Reference Yield
 	 * 
-	 * @return The Reference Yield Floor
+	 * @return The Current Reference Yield
 	 */
 
-	public double referenceYieldFloor()
+	public double currentReferenceYield()
 	{
-		return _dblReferenceYieldFloor;
+		return _dblReferenceYieldCurrent;
 	}
 
 	/**
-	 * Retrieve the Reference Yield Ceiling
+	 * Retrieve the Original Reference Yield
 	 * 
-	 * @return The Reference Yield Ceiling
+	 * @return The Original Reference Yield
 	 */
 
-	public double referenceYieldCeiling()
+	public double originalReferenceYieldCeiling()
 	{
-		return _dblReferenceYieldCeiling;
+		return _dblReferenceYieldOriginal;
 	}
 
 	@Override public java.lang.String toString()
 	{
 		return "[Futures Settle => Expiry To First Delivery Lag: " + _iExpiryFirstDeliveryLag +
-			" | Expiry To Final Delivery Lag: " + _iExpiryFinalDeliveryLag + " | Settlement Type:  " +
-				_iSettleType + " | Settlement Quote Style: " + _iSettleQuoteStyle + " | Wild Card: " +
-					_bWildCardOption + " | Reference Yield Floor: " + _dblReferenceYieldFloor +
-						" | Reference Yield Ceiling: " + _dblReferenceYieldCeiling + "]";
+			" | Expiry To Final Delivery Lag: " + _iExpiryFinalDeliveryLag +
+				" | Expiry To Delivery Notice Lag: " + _iExpiryDeliveryNoticeLag +
+					" | Expiry To Last Trading Lag: " + _iExpiryLastTradingLag + " | Settlement Type:  " +
+						_iSettleType + " | Settlement Quote Style: " + _iSettleQuoteStyle + " | Wild Card: "
+							+ _bWildCardOption + " | Reference Yield Floor: " + _dblReferenceYieldCurrent +
+								" | Reference Yield Ceiling: " + _dblReferenceYieldOriginal + "]";
 	}
 }
