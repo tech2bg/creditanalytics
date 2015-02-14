@@ -169,4 +169,9 @@ public class CurrencyPair {
 	{
 		return _dblPIPFactor;
 	}
+
+	@Override public java.lang.String toString()
+	{
+		return _strNumCcy + " | " + _strDenomCcy + " | " + _strQuoteCcy + " | " + _dblPIPFactor;
+	}
 }

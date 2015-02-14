@@ -38,6 +38,7 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 public class ContractDefinitions {
+
 	private static final void DisplayBondFuturesInfo (
 		String strCurrency,
 		String strUnderlierType,
@@ -47,7 +48,7 @@ public class ContractDefinitions {
 		System.out.println ("--------------------------------------------------------------------------------------------------------\n");
 
 		System.out.println ("\t" +
-			BondFuturesConventionContainer.FromJuristictionTypeMaturity (
+			BondFuturesConventionContainer.FromJurisdictionTypeMaturity (
 				strCurrency,
 				strUnderlierType,
 				strUnderlierSubtype,

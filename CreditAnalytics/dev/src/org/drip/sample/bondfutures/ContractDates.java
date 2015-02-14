@@ -49,7 +49,7 @@ public class ContractDates {
 		JulianDate dtSettle)
 		throws Exception
 	{
-		BondFuturesConvention bfc = BondFuturesConventionContainer.FromJuristictionTypeMaturity (
+		BondFuturesConvention bfc = BondFuturesConventionContainer.FromJurisdictionTypeMaturity (
 			strCurrency,
 			strUnderlierType,
 			strUnderlierSubtype,

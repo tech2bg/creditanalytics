@@ -135,6 +135,19 @@ public class EnvManager {
 			return null;
 		}
 
+		if (!org.drip.market.exchange.BondFuturesOptionContainer.Init()) {
+			System.out.println
+				("EnvManager::InitEnv => Cannot Initialize the Bond Futures Option Conventions!");
+
+			return null;
+		}
+
+		if (!org.drip.market.definition.FXSettingsContainer.Init()) {
+			System.out.println ("EnvManager::InitEnv => Cannot Initialize the FX Conventions!");
+
+			return null;
+		}
+
 		return org.drip.param.config.ConfigLoader.OracleInit (strConfig);
 	}
 

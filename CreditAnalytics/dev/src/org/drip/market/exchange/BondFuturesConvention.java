@@ -274,6 +274,79 @@ public class BondFuturesConvention {
 		return null;
 	}
 
+	/**
+	 * Compute the Reference Bond Price from the Quoted Futures Index Level
+	 * 
+	 * @param dblFuturesQuotedIndex The Quoted Futures Index Level
+	 * 
+	 * @return The Reference Price
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public double referencePrice (
+		final double dblFuturesQuotedIndex)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblFuturesQuotedIndex))
+			throw new java.lang.Exception ("BondFuturesConvention::referencePrice => Invalid Inputs!");
+
+		double dblPeriodReferenceYield = 0.5 * (1. - dblFuturesQuotedIndex);
+
+		double dblCompoundedDF = java.lang.Math.pow (1. / (1. + dblPeriodReferenceYield),
+			org.drip.analytics.support.AnalyticsHelper.TenorToMonths (_strMaturityTenor) / 6);
+
+		return dblCompoundedDF + 0.5 * _bfs.currentReferenceYield() * (1. - dblCompoundedDF) /
+			dblPeriodReferenceYield;
+	}
+
+	/**
+	 * Compute the Reference Bond Price from the Quoted Futures Index Level
+	 * 
+	 * @param dtValue The Valuation Date
+	 * @param bond The Bond Instance
+	 * @param dblFuturesQuotedIndex The Quoted Futures Index Level
+	 * 
+	 * @return The Reference Price
+	 * 
+	 * @throws java.lang.Exception Thrown if the Bond Futures Price Generic cannot be computed
+	 */
+
+	public double referencePrice (
+		final org.drip.analytics.date.JulianDate dtValue,
+		final org.drip.product.definition.Bond bond,
+		final double dblFuturesQuotedIndex)
+		throws java.lang.Exception
+	{
+		if (null == dtValue || null == bond) return referencePrice (dblFuturesQuotedIndex);
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblFuturesQuotedIndex))
+			throw new java.lang.Exception ("AnalyticsHelper::referencePrice => Invalid Inputs");
+
+		return bond.priceFromYield (new org.drip.param.valuation.ValuationParams (dtValue, dtValue, null),
+			null, null, 1. - dblFuturesQuotedIndex);
+	}
+
+	/**
+	 * Indicate whether the given bond is eligible to be delivered
+	 * 
+	 * @param dtValue The Value Date
+	 * @param bond The Bond whose Eligibility is to be evaluated
+	 * @param dblOutstandingNotional The Outstanding Notional
+	 * @param strIssuer The Issuer
+	 * 
+	 * @return TRUE => The given bond is eligible to be delivered
+	 */
+
+	public boolean isEligible (
+		final org.drip.analytics.date.JulianDate dtValue,
+		final org.drip.product.definition.Bond bond,
+		final double dblOutstandingNotional,
+		final java.lang.String strIssuer)
+	{
+		return _bfe.isEligible (dtValue, bond, dblOutstandingNotional, strIssuer);
+	}
+
 	@Override public java.lang.String toString()
 	{
 		java.lang.String strDump = "Name: " + _strName + " | Currency: " + _strCurrency + " | Calendar: " +

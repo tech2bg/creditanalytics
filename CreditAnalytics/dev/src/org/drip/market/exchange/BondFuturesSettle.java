@@ -75,8 +75,8 @@ public class BondFuturesSettle {
 	private int _iExpiryFirstDeliveryLag = -1;
 	private int _iExpiryFinalDeliveryLag = -1;
 	private int _iExpiryDeliveryNoticeLag = -1;
-	private double _dblReferenceYieldCurrent = java.lang.Double.NaN;
-	private double _dblReferenceYieldOriginal = java.lang.Double.NaN;
+	private double _dblReferenceCouponCurrent = java.lang.Double.NaN;
+	private double _dblReferenceCouponOriginal = java.lang.Double.NaN;
 
 	/**
 	 * BondFuturesSettle Constructor
@@ -88,8 +88,8 @@ public class BondFuturesSettle {
 	 * @param iSettleType Settlement Type
 	 * @param iSettleQuoteStyle Settlement Quote Style
 	 * @param bWildCardOption TRUE => Turn ON the Wild Card Option
-	 * @param dblReferenceYieldCurrent The Current Reference Yield
-	 * @param dblReferenceYieldOriginal The Original Reference Yield
+	 * @param dblReferenceCouponCurrent The Current Reference Coupon
+	 * @param dblReferenceCouponOriginal The Original Reference Coupon
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
@@ -102,8 +102,8 @@ public class BondFuturesSettle {
 		final int iSettleType,
 		final int iSettleQuoteStyle,
 		final boolean bWildCardOption,
-		final double dblReferenceYieldCurrent,
-		final double dblReferenceYieldOriginal)
+		final double dblReferenceCouponCurrent,
+		final double dblReferenceCouponOriginal)
 		throws java.lang.Exception
 	{
 		if ((_iExpiryFinalDeliveryLag = iExpiryFinalDeliveryLag) < (_iExpiryFirstDeliveryLag =
@@ -117,8 +117,8 @@ public class BondFuturesSettle {
 		_iExpiryFirstDeliveryLag = iExpiryFirstDeliveryLag;
 		_iExpiryFinalDeliveryLag = iExpiryFinalDeliveryLag;
 		_iExpiryDeliveryNoticeLag = iExpiryDeliveryNoticeLag;
-		_dblReferenceYieldCurrent = dblReferenceYieldCurrent;
-		_dblReferenceYieldOriginal = dblReferenceYieldOriginal;
+		_dblReferenceCouponCurrent = dblReferenceCouponCurrent;
+		_dblReferenceCouponOriginal = dblReferenceCouponOriginal;
 	}
 
 	/**
@@ -199,25 +199,25 @@ public class BondFuturesSettle {
 	}
 
 	/**
-	 * Retrieve the Current Reference Yield
+	 * Retrieve the Current Reference Coupon
 	 * 
-	 * @return The Current Reference Yield
+	 * @return The Current Reference Coupon
 	 */
 
 	public double currentReferenceYield()
 	{
-		return _dblReferenceYieldCurrent;
+		return _dblReferenceCouponCurrent;
 	}
 
 	/**
-	 * Retrieve the Original Reference Yield
+	 * Retrieve the Original Reference Coupon
 	 * 
-	 * @return The Original Reference Yield
+	 * @return The Original Reference Coupon
 	 */
 
-	public double originalReferenceYieldCeiling()
+	public double originalReferenceCoupon()
 	{
-		return _dblReferenceYieldOriginal;
+		return _dblReferenceCouponOriginal;
 	}
 
 	@Override public java.lang.String toString()
@@ -227,7 +227,7 @@ public class BondFuturesSettle {
 				" | Expiry To Delivery Notice Lag: " + _iExpiryDeliveryNoticeLag +
 					" | Expiry To Last Trading Lag: " + _iExpiryLastTradingLag + " | Settlement Type:  " +
 						_iSettleType + " | Settlement Quote Style: " + _iSettleQuoteStyle + " | Wild Card: "
-							+ _bWildCardOption + " | Reference Yield Floor: " + _dblReferenceYieldCurrent +
-								" | Reference Yield Ceiling: " + _dblReferenceYieldOriginal + "]";
+							+ _bWildCardOption + " | Current Reference Coupon: " + _dblReferenceCouponCurrent
+								+ " | Original Reference Coupon: " + _dblReferenceCouponOriginal + "]";
 	}
 }

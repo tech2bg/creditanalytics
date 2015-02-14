@@ -65,7 +65,14 @@ public class BondFuturesEligibility {
 					dblMinimumOutstandingNotional))
 			throw new java.lang.Exception ("BondFuturesEligibility ctr: Invalid Inputs");
 
-		_astrIssuer = astrIssuer;
+		if (null != (_astrIssuer = astrIssuer)) {
+			int iNumIssuer = _astrIssuer.length;
+
+			for (int i = 0; i < iNumIssuer; ++i) {
+				if (null == _astrIssuer[i] || _astrIssuer[i].isEmpty())
+					throw new java.lang.Exception ("BondFuturesEligibility ctr: Invalid Issuer");
+			}
+		}
 	}
 
 	/**
@@ -110,6 +117,53 @@ public class BondFuturesEligibility {
 	public double minimumOutstandingNotional()
 	{
 		return _dblMinimumOutstandingNotional;
+	}
+
+	/**
+	 * Indicate whether the given bond is eligible to be delivered
+	 * 
+	 * @param dtValue The Value Date
+	 * @param bond The Bond whose Eligibility is to be evaluated
+	 * @param dblOutstandingNotional The Outstanding Notional
+	 * @param strIssuer The Issuer
+	 * 
+	 * @return TRUE => The given bond is eligible to be delivered
+	 */
+
+	public boolean isEligible (
+		final org.drip.analytics.date.JulianDate dtValue,
+		final org.drip.product.definition.Bond bond,
+		final double dblOutstandingNotional,
+		final java.lang.String strIssuer)
+	{
+		if (null == bond || null == dtValue) return false;
+
+		org.drip.analytics.date.JulianDate dtFloorMaturity = dtValue.addTenor (_strMaturityFloor);
+
+		org.drip.analytics.date.JulianDate dtCeilingMaturity = dtValue.addTenor (_strMaturityCeiling);
+
+		if (null == dtFloorMaturity || null == dtFloorMaturity) return false;
+
+		double dblValueDate = dtValue.julian();
+
+		if (dblValueDate < dtFloorMaturity.julian() || dblValueDate > dtCeilingMaturity.julian())
+			return false;
+
+		if (0. != _dblMinimumOutstandingNotional && org.drip.quant.common.NumberUtil.IsValid
+			(dblOutstandingNotional) && dblOutstandingNotional < _dblMinimumOutstandingNotional)
+			return false;
+
+		if (null == strIssuer || strIssuer.isEmpty() || null == _astrIssuer) return true;
+
+		int iNumIssuer = _astrIssuer.length;
+
+		if (0 == iNumIssuer) return true;
+
+		for (int i = 0; i < iNumIssuer; ++i) {
+			if (_astrIssuer[i].equalsIgnoreCase (strIssuer)) return true;
+		}
+
+		return false;
 	}
 
 	@Override public java.lang.String toString()

@@ -297,10 +297,10 @@ public class BondFuturesConventionContainer {
 	 * @param strUnderlierSubtype The Underlier Sub-type
 	 * @param strMaturityTenor The Maturity Tenor
 	 * 
-	 * @return The Deliverable Swap Futures Instance
+	 * @return The Bond Futures Instance
 	 */
 
-	public static final org.drip.market.exchange.BondFuturesConvention FromJuristictionTypeMaturity (
+	public static final org.drip.market.exchange.BondFuturesConvention FromJurisdictionTypeMaturity (
 		final java.lang.String strCurrency,
 		final java.lang.String strUnderlierType,
 		final java.lang.String strUnderlierSubtype,

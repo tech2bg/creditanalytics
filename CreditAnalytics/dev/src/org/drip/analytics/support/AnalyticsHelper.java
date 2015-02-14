@@ -1041,4 +1041,31 @@ public class AnalyticsHelper {
 
 		return lslLeft.match (lslRight);
 	}
+
+	/**
+	 * Compute the Bond Futures Price AUD Bill Style from the Reference Index Level
+	 * 
+	 * @param dtValue The Valuation Date
+	 * @param bond The Bond Instance
+	 * @param dblReferenceIndex The Reference Index
+	 * 
+	 * @return The Bond Futures Price AUD Bill Style
+	 * 
+	 * @throws java.lang.Exception Thrown if the Bond Futures Price AUD Bill Style cannot be computed
+	 */
+
+	public static final double BondFuturesPriceAUDBillStyle (
+		final org.drip.analytics.date.JulianDate dtValue,
+		final org.drip.product.definition.Bond bond,
+		final double dblReferenceIndex)
+		throws java.lang.Exception
+	{
+		if (null == dtValue || null == bond || !org.drip.quant.common.NumberUtil.IsValid (dblReferenceIndex))
+			throw new java.lang.Exception
+				("AnalyticsHelper::BondFuturesPriceAUDBillStyle => Invalid Inputs");
+
+		return 1. / (1. + (1. - dblReferenceIndex) * org.drip.analytics.daycount.Convention.YearFraction
+			(dtValue.julian(), bond.maturityDate().julian(), bond.accrualDC(), false, null,
+				bond.currency()));
+	}
 }
