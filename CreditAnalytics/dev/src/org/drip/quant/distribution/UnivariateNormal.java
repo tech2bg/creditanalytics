@@ -99,6 +99,16 @@ public class UnivariateNormal extends org.drip.quant.distribution.Univariate {
 	    return org.drip.quant.distribution.Gaussian.InverseCDF (dblY) * _dblSigma + _dblMean;
 	}
 
+	@Override public double mean()
+	{
+	    return _dblMean;
+	}
+
+	@Override public double variance()
+	{
+	    return _dblSigma * _dblSigma;
+	}
+
 	public static final void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception

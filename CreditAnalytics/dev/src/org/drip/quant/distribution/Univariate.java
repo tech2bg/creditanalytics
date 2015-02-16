@@ -82,4 +82,20 @@ public abstract class Univariate {
 	public abstract double invCumulative (
 		final double dblX)
 		throws java.lang.Exception;
+
+	/**
+	 * Retrieve the Mean of the Distribution
+	 * 
+	 * @return The Mean of the Distribution
+	 */
+
+	public abstract double mean();
+
+	/**
+	 * Retrieve the Variance of the Distribution
+	 * 
+	 * @return The Variance of the Distribution
+	 */
+
+	public abstract double variance();
 }

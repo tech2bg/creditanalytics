@@ -29,62 +29,64 @@ package org.drip.quant.discrete;
  */
 
 /**
- * BoundedUniform implements the Bounded Uniform Distribution, with a Uniform Distribution between a lower
- *  and an upper Bound.
+ * BoxMullerGaussian implements the Univariate Gaussian Random Number Generator.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BoundedUniform extends org.drip.quant.discrete.SequenceGenerator {
-	private double _dblLowerBound = java.lang.Double.NaN;
-	private double _dblUpperBound = java.lang.Double.NaN;
+public class BoxMullerGaussian extends org.drip.quant.discrete.SequenceGenerator {
+	private double _dblMean = java.lang.Double.NaN;
+	private double _dblSigma = java.lang.Double.NaN;
+	private double _dblVariance = java.lang.Double.NaN;
 
 	private java.util.Random _rng = new java.util.Random();
 
 	/**
-	 * BoundedUniform Distribution Constructor
+	 * BoxMullerGaussian Constructor
 	 * 
-	 * @param dblLowerBound The Lower Bound
-	 * @param dblUpperBound The Upper Bound
+	 * @param dblMean The Mean
+	 * @param dblVariance The Variance
 	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public BoundedUniform (
-		final double dblLowerBound,
-		final double dblUpperBound)
+	public BoxMullerGaussian (
+		final double dblMean,
+		final double dblVariance)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblLowerBound = dblLowerBound) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblUpperBound = dblUpperBound) || dblUpperBound <=
-				dblLowerBound)
-			throw new java.lang.Exception ("BoundedUniform ctr: Invalid Inputs!");
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblMean = dblMean) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblVariance = dblVariance) || _dblVariance <= 0.)
+			throw new java.lang.Exception ("BoxMullerGaussian ctr: Invalid Inputs");
+
+		_dblSigma = java.lang.Math.sqrt (_dblVariance);
 	}
 
 	/**
-	 * Retrieve the Lower Bound
+	 * Retrieve the Mean of the Box-Muller Gaussian
 	 * 
-	 * @return The Lower Bound
+	 * @return Mean of the Box-Muller Gaussian
 	 */
 
-	public double lowerBound()
+	public double mean()
 	{
-		return _dblLowerBound;
+		return _dblMean;
 	}
 
 	/**
-	 * Retrieve the Upper Bound
+	 * Retrieve the Variance of the Box-Muller Gaussian
 	 * 
-	 * @return The Upper Bound
+	 * @return Variance of the Box-Muller Gaussian
 	 */
 
-	public double upperBound()
+	public double variance()
 	{
-		return _dblUpperBound;
+		return _dblVariance;
 	}
 
 	@Override public double random()
 	{
-		return _dblLowerBound + _rng.nextDouble() * (_dblUpperBound - _dblLowerBound);
+		return _dblMean + _dblSigma * java.lang.Math.sqrt (-2. * java.lang.Math.log (_rng.nextDouble())) *
+			java.lang.Math.cos (2. * java.lang.Math.PI * _rng.nextDouble());
 	}
 }
