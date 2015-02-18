@@ -2,8 +2,8 @@
 package org.drip.sample.quant;
 
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.discrete.*;
 import org.drip.quant.function1D.*;
+import org.drip.quant.randomsequence.*;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -35,15 +35,16 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * DiscreteBound demonstrates the Computation of the Probabilistic Bounds for a Discrete Sequence.
+ * SingleRandomSequenceBound demonstrates the Computation of the Probabilistic Bounds for a Sample Random
+ * 	Sequence.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class DiscreteBound {
+public class SingleRandomSequenceBound {
 
 	private static final void MarkovBound (
-		final SampleSequenceAgnosticMetrics sm,
+		final SingleSequenceAgnosticMetrics sm,
 		final double dblLevel,
 		final AbstractUnivariate au)
 		throws Exception
@@ -57,7 +58,7 @@ public class DiscreteBound {
 	}
 
 	private static final void ChebyshevBound (
-		final SampleSequenceAgnosticMetrics sm,
+		final SingleSequenceAgnosticMetrics sm,
 		final double dblLevel)
 		throws Exception
 	{
@@ -71,7 +72,7 @@ public class DiscreteBound {
 	}
 
 	private static final void ChebyshevCantelliBound (
-		final SampleSequenceAgnosticMetrics sm,
+		final SingleSequenceAgnosticMetrics sm,
 		final double dblLevel)
 		throws Exception
 	{
@@ -85,7 +86,7 @@ public class DiscreteBound {
 	}
 
 	private static final void CentralMomentBound (
-		final SampleSequenceAgnosticMetrics sm,
+		final SingleSequenceAgnosticMetrics sm,
 		final double dblLevel,
 		final int iMoment)
 		throws Exception
@@ -100,7 +101,7 @@ public class DiscreteBound {
 	}
 
 	private static final void MarkovBound (
-		final SampleSequenceAgnosticMetrics sm,
+		final SingleSequenceAgnosticMetrics sm,
 		final AbstractUnivariate au)
 		throws Exception
 	{
@@ -116,7 +117,7 @@ public class DiscreteBound {
 	}
 
 	private static final void ChebyshevBound (
-		final SampleSequenceAgnosticMetrics sm)
+		final SingleSequenceAgnosticMetrics sm)
 		throws Exception
 	{
 		ChebyshevBound (sm, 0.20);
@@ -131,7 +132,7 @@ public class DiscreteBound {
 	}
 
 	private static final void ChebyshevCantelliBound (
-		final SampleSequenceAgnosticMetrics sm)
+		final SingleSequenceAgnosticMetrics sm)
 		throws Exception
 	{
 		ChebyshevCantelliBound (sm, 0.20);
@@ -146,7 +147,7 @@ public class DiscreteBound {
 	}
 
 	private static final void CentralMomentBound (
-		final SampleSequenceAgnosticMetrics sm,
+		final SingleSequenceAgnosticMetrics sm,
 		final int iMoment)
 		throws Exception
 	{
@@ -162,7 +163,7 @@ public class DiscreteBound {
 	}
 
 	private static final void SequenceGenerationRun (
-		final SampleSequenceAgnosticMetrics sm)
+		final SingleSequenceAgnosticMetrics sm)
 		throws Exception
 	{
 		System.out.println ("\tExpectation                      : " + FormatUtil.FormatDouble (sm.empiricalExpectation(), 1, 4, 1.));
@@ -218,7 +219,7 @@ public class DiscreteBound {
 
 		System.out.println ("\t---------------------------------------------------");
 
-		SequenceGenerationRun (new BoundedGaussian (0.5, 1., 0., 1.).sequence (50000));
+		SequenceGenerationRun (new BoundedGaussian (0.5, 1., 0., 1.).sequence (50000, null));
 
 		System.out.println ("\t---------------------------------------------------");
 
@@ -230,7 +231,7 @@ public class DiscreteBound {
 
 		System.out.println ("\t---------------------------------------------------");
 
-		SequenceGenerationRun (new BoundedUniform (0., 1.).sequence (50000));
+		SequenceGenerationRun (new BoundedUniform (0., 1.).sequence (50000, null));
 
 		System.out.println ("\t---------------------------------------------------");
 	}

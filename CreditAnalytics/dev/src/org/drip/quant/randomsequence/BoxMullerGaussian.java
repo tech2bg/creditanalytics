@@ -1,5 +1,5 @@
 
-package org.drip.quant.discrete;
+package org.drip.quant.randomsequence;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -34,7 +34,7 @@ package org.drip.quant.discrete;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BoxMullerGaussian extends org.drip.quant.discrete.SequenceGenerator {
+public class BoxMullerGaussian extends org.drip.quant.randomsequence.SequenceGenerator {
 	private double _dblMean = java.lang.Double.NaN;
 	private double _dblSigma = java.lang.Double.NaN;
 	private double _dblVariance = java.lang.Double.NaN;

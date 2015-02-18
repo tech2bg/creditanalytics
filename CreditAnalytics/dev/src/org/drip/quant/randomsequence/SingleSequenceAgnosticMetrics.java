@@ -1,5 +1,5 @@
 
-package org.drip.quant.discrete;
+package org.drip.quant.randomsequence;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,13 +29,13 @@ package org.drip.quant.discrete;
  */
 
 /**
- * SampleSequenceAgnosticMetrics contains the Sample Distribution Metrics and Agnostic Bounds related to the
+ * SingleSequenceAgnosticMetrics contains the Sample Distribution Metrics and Agnostic Bounds related to the
  *  specified Sequence.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class SampleSequenceAgnosticMetrics {
+public class SingleSequenceAgnosticMetrics {
 	private boolean _bIsPositive = true;
 	private double[] _adblSequence = null;
 	private double _dblEmpiricalVariance = java.lang.Double.NaN;
@@ -51,24 +51,24 @@ public class SampleSequenceAgnosticMetrics {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public SampleSequenceAgnosticMetrics (
+	public SingleSequenceAgnosticMetrics (
 		final double[] adblSequence,
 		final org.drip.quant.distribution.Univariate distPopulation)
 		throws java.lang.Exception
 	{
 		if (null == (_adblSequence = adblSequence))
-			throw new java.lang.Exception ("SampleSequenceAgnosticMetrics ctr: Invalid Inputs");
+			throw new java.lang.Exception ("SingleSequenceAgnosticMetrics ctr: Invalid Inputs");
 
 		_dblEmpiricalExpectation = 0.;
 		_distPopulation = distPopulation;
 		int iNumEntry = _adblSequence.length;
 
 		if (0 == iNumEntry)
-			throw new java.lang.Exception ("SampleSequenceAgnosticMetrics ctr: Invalid Inputs");
+			throw new java.lang.Exception ("SingleSequenceAgnosticMetrics ctr: Invalid Inputs");
 
 		for (int i = 0; i < iNumEntry; ++i) {
 			if (!org.drip.quant.common.NumberUtil.IsValid (_adblSequence[i]))
-				throw new java.lang.Exception ("SequenceMetrics ctr: Invalid Inputs");
+				throw new java.lang.Exception ("SingleSequenceAgnosticMetrics ctr: Invalid Inputs");
 
 			_dblEmpiricalExpectation += _adblSequence[i];
 
@@ -102,7 +102,8 @@ public class SampleSequenceAgnosticMetrics {
 		throws java.lang.Exception
 	{
 		if (0 >= iMoment)
-			throw new java.lang.Exception ("SequenceMetrics::empiricalCentralMoment => Invalid Moment");
+			throw new java.lang.Exception
+				("SingleSequenceAgnosticMetrics::empiricalCentralMoment => Invalid Moment");
 
 		double dblMoment = 0.;
 		int iNumEntry = _adblSequence.length;
@@ -134,7 +135,8 @@ public class SampleSequenceAgnosticMetrics {
 		throws java.lang.Exception
 	{
 		if (0 >= iMoment)
-			throw new java.lang.Exception ("SequenceMetrics::empiricalRawMoment => Invalid Moment");
+			throw new java.lang.Exception
+				("SingleSequenceAgnosticMetrics::empiricalRawMoment => Invalid Moment");
 
 		double dblMoment = 0.;
 		int iNumEntry = _adblSequence.length;
@@ -147,6 +149,41 @@ public class SampleSequenceAgnosticMetrics {
 	}
 
 	/**
+	 * Compute the Specified Anchor Moment of the Sample Sequence
+	 * 
+	 * @param iMoment The Moment
+	 * @param dblAnchor The Anchor Pivot off of which the Moment is calculated
+	 * @param bAbsolute TRUE => The Moment sought is on the Absolute Value
+	 * 
+	 * @return The Specified Anchor Moment of the Sample Sequence
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public double empiricalAnchorMoment (
+		final int iMoment,
+		final double dblAnchor,
+		final boolean bAbsolute)
+		throws java.lang.Exception
+	{
+		if (0 >= iMoment || !org.drip.quant.common.NumberUtil.IsValid (dblAnchor))
+			throw new java.lang.Exception
+				("SingleSequenceAgnosticMetrics::empiricalAnchorMoment => Invalid Inputs");
+
+		double dblMoment = 0.;
+		int iNumEntry = _adblSequence.length;
+
+		for (int i = 0; i < iNumEntry; ++i) {
+			double dblPivotShift = _adblSequence[i] - dblAnchor;
+
+			dblMoment += java.lang.Math.pow (bAbsolute ? java.lang.Math.abs (dblPivotShift) : dblPivotShift,
+				iMoment);
+		}
+
+		return dblMoment / iNumEntry;
+	}
+
+	/**
 	 * Generate the Metrics for the Univariate Function Sequence
 	 *  
 	 * @param au The Univariate Function
@@ -154,7 +191,7 @@ public class SampleSequenceAgnosticMetrics {
 	 * @return Metrics for the Univariate Function Sequence
 	 */
 
-	public SampleSequenceAgnosticMetrics functionSequenceMetrics (
+	public SingleSequenceAgnosticMetrics functionSequenceMetrics (
 		final org.drip.quant.function1D.AbstractUnivariate au)
 	{
 		if (null == au) return null;
@@ -166,7 +203,7 @@ public class SampleSequenceAgnosticMetrics {
 			for (int i = 0; i < iNumEntry; ++i)
 				adblFunctionMetrics[i] = au.evaluate (_adblSequence[i]);
 
-			return new SampleSequenceAgnosticMetrics (adblFunctionMetrics, null);
+			return new SingleSequenceAgnosticMetrics (adblFunctionMetrics, null);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -193,16 +230,16 @@ public class SampleSequenceAgnosticMetrics {
 		throws java.lang.Exception
 	{
 		if (null == au || 0 >= iMoment)
-			throw new java.lang.Exception ("SequenceMetrics::centralMoment => Invalid Inputs");
+			throw new java.lang.Exception ("SingleSequenceAgnosticMetrics::centralMoment => Invalid Inputs");
 
 		double dblMoment = 0.;
 		int iNumEntry = _adblSequence.length;
 
-		SampleSequenceAgnosticMetrics smFunction = functionSequenceMetrics (au);
+		SingleSequenceAgnosticMetrics smFunction = functionSequenceMetrics (au);
 
 		if (null == smFunction)
 			throw new java.lang.Exception
-				("SequenceMetrics::centralMoment => Cannot generate Function Central Moment");
+				("SingleSequenceAgnosticMetrics::centralMoment => Cannot generate Function Central Moment");
 
 		if (1 == iMoment) return 0.;
 
@@ -304,16 +341,20 @@ public class SampleSequenceAgnosticMetrics {
 		throws java.lang.Exception
 	{
 		if (!isPositive() || !org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0.)
-			throw new java.lang.Exception ("SequenceMetrics::markovUpperProbabilityBound => Invalid Inputs");
+			throw new java.lang.Exception
+				("SingleSequenceAgnosticMetrics::markovUpperProbabilityBound => Invalid Inputs");
 
-		double dblUpperProbabilityBound = _dblEmpiricalExpectation / dblLevel;
+		double dblPopulationMean = populationMean();
+
+		double dblUpperProbabilityBound = (org.drip.quant.common.NumberUtil.IsValid (dblPopulationMean) ?
+			dblPopulationMean : _dblEmpiricalExpectation) / dblLevel;
 
 		if (null != auNonDecreasing) {
-			SampleSequenceAgnosticMetrics smFunction = functionSequenceMetrics (auNonDecreasing);
+			SingleSequenceAgnosticMetrics smFunction = functionSequenceMetrics (auNonDecreasing);
 
 			if (null == smFunction)
 				throw new java.lang.Exception
-					("SequenceMetrics::markovUpperProbabilityBound => Cannot generate Function Sequence Metrics");
+					("SingleSequenceAgnosticMetrics::markovUpperProbabilityBound => Cannot generate Function Sequence Metrics");
 
 			dblUpperProbabilityBound = smFunction.empiricalExpectation() / auNonDecreasing.evaluate
 				(dblLevel);
@@ -330,17 +371,22 @@ public class SampleSequenceAgnosticMetrics {
 	 * @return The Mean Departure Bounds Instance
 	 */
 
-	public org.drip.quant.discrete.MeanDepartureBounds chebyshevBound (
+	public org.drip.quant.randomsequence.PivotedDepartureBounds chebyshevBound (
 		final double dblLevel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0.) return null;
 
-		double dblMeanDepartureBound = _dblEmpiricalVariance / (dblLevel * dblLevel);
+		double dblPopulationVariance = populationVariance();
+
+		double dblMeanDepartureBound = (org.drip.quant.common.NumberUtil.IsValid (dblPopulationVariance) ?
+			dblPopulationVariance : _dblEmpiricalVariance) / (dblLevel * dblLevel);
+
 		dblMeanDepartureBound = dblMeanDepartureBound < 1. ? dblMeanDepartureBound : 1.;
 
 		try {
-			return new org.drip.quant.discrete.MeanDepartureBounds (dblMeanDepartureBound,
-				dblMeanDepartureBound);
+			return new org.drip.quant.randomsequence.PivotedDepartureBounds
+				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN, java.lang.Double.NaN,
+					dblMeanDepartureBound, dblMeanDepartureBound);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -357,7 +403,7 @@ public class SampleSequenceAgnosticMetrics {
 	 * @return The Mean Departure Bounds Instance
 	 */
 
-	public org.drip.quant.discrete.MeanDepartureBounds centralMomentBound (
+	public org.drip.quant.randomsequence.PivotedDepartureBounds centralMomentBound (
 		final double dblLevel,
 		final int iMoment)
 	{
@@ -369,8 +415,9 @@ public class SampleSequenceAgnosticMetrics {
 
 			dblMeanDepartureBound = dblMeanDepartureBound < 1. ? dblMeanDepartureBound : 1.;
 
-			return new org.drip.quant.discrete.MeanDepartureBounds (dblMeanDepartureBound,
-				dblMeanDepartureBound);
+			return new org.drip.quant.randomsequence.PivotedDepartureBounds
+				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN, java.lang.Double.NaN,
+					dblMeanDepartureBound, dblMeanDepartureBound);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -386,15 +433,100 @@ public class SampleSequenceAgnosticMetrics {
 	 * @return The Mean Departure Bounds
 	 */
 
-	public org.drip.quant.discrete.MeanDepartureBounds chebyshevCantelliBound (
+	public org.drip.quant.randomsequence.PivotedDepartureBounds chebyshevCantelliBound (
 		final double dblLevel)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0.) return null;
 
+		double dblPopulationVariance = populationVariance();
+
+		double dblVariance = (org.drip.quant.common.NumberUtil.IsValid (dblPopulationVariance) ?
+			dblPopulationVariance : _dblEmpiricalVariance);
+
 		try {
-			return new org.drip.quant.discrete.MeanDepartureBounds (java.lang.Double.NaN,
-				_dblEmpiricalVariance / (_dblEmpiricalVariance + dblLevel * dblLevel));
+			return new org.drip.quant.randomsequence.PivotedDepartureBounds
+				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN, java.lang.Double.NaN,
+					java.lang.Double.NaN, dblVariance / (dblVariance + dblLevel * dblLevel));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Retrieve the Chebyshev's Association Joint Expectation Bound
+	 * 
+	 * @param au1 Function 1 Operating On Sequence 1
+	 * @param bNonDecreasing1 TRUE => Function 1 is non-decreasing
+	 * @param au2 Function 2 Operating On Sequence 2
+	 * @param bNonDecreasing2 TRUE => Function 2 is non-decreasing
+	 * 
+	 * @return The Chebyshev's Association Joint Expectation Bound
+	 */
+
+	public org.drip.quant.randomsequence.PivotedDepartureBounds chebyshevAssociationBound (
+		final org.drip.quant.function1D.AbstractUnivariate au1,
+		final boolean bNonDecreasing1,
+		final org.drip.quant.function1D.AbstractUnivariate au2,
+		final boolean bNonDecreasing2)
+	{
+		if (null == au1 || null == au2) return null;
+
+		double dblBound = functionSequenceMetrics (au1).empiricalExpectation() * functionSequenceMetrics
+			(au2).empiricalExpectation();
+
+		dblBound = dblBound < 1. ? dblBound : 1.;
+
+		if (bNonDecreasing1 == bNonDecreasing2) {
+			try {
+				return new org.drip.quant.randomsequence.PivotedDepartureBounds
+					(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_CUSTOM, 0.,
+						dblBound, java.lang.Double.NaN);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		try {
+			return new org.drip.quant.randomsequence.PivotedDepartureBounds
+				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_CUSTOM, 0.,
+					java.lang.Double.NaN, dblBound);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Estimate Mean Departure Bounds of the Average using the Weak Law of Large Numbers
+	 * 
+	 * @param dblLevel The Level at which the Departure is sought
+	 * 
+	 * @return The Mean Departure Bounds
+	 */
+
+	public org.drip.quant.randomsequence.PivotedDepartureBounds weakLawAverageBounds (
+		final double dblLevel)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0.) return null;
+
+		double dblPopulationVariance = populationVariance();
+
+		double dblVariance = (org.drip.quant.common.NumberUtil.IsValid (dblPopulationVariance) ?
+			dblPopulationVariance : _dblEmpiricalVariance);
+
+		double dblBound = dblVariance / (_adblSequence.length * dblLevel * dblLevel);
+		dblBound = dblBound < 1. ? dblBound : 1.;
+
+		try {
+			return new org.drip.quant.randomsequence.PivotedDepartureBounds
+				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN,
+					java.lang.Double.NaN, dblBound, dblBound);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

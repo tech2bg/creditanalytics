@@ -1,5 +1,5 @@
 
-package org.drip.quant.discrete;
+package org.drip.quant.function1D;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,57 +29,33 @@ package org.drip.quant.discrete;
  */
 
 /**
- * MeanDepartureBounds holds the Lower/Upper Probability Bounds related to the Specified Mean-Centered
- *  Sequence.
+ * BennettFunction is implementation of the Bennett's Function used in the Estimation of the Bennett's
+ * 	Concentration Inequality.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class MeanDepartureBounds {
-	private double _dblLower = java.lang.Double.NaN;
-	private double _dblUpper = java.lang.Double.NaN;
+public class BennettFunction extends org.drip.quant.function1D.AbstractUnivariate {
 
 	/**
-	 * MeanDepartureBounds Constructor
+	 * BennettFunction constructor
 	 * 
-	 * @param dblLower Lower Bound
-	 * @param dblUpper Upper Bound
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 * @throws java.lang.Exception Thrown if BennettFunction cannot be instantiated
 	 */
 
-	public MeanDepartureBounds (
-		final double dblLower,
-		final double dblUpper)
+	public BennettFunction()
 		throws java.lang.Exception
 	{
-		_dblLower = dblLower;
-		_dblUpper = dblUpper;
-
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblLower) &&
-			!org.drip.quant.common.NumberUtil.IsValid (_dblUpper))
-			throw new java.lang.Exception ("MeanDepartureBounds ctr: Invalid Inputs");
+		super (null);
 	}
 
-	/**
-	 * Retrieve the Lower Probability Bound
-	 * 
-	 * @return The Lower Probability Bound
-	 */
-
-	public double lower()
+	@Override public double evaluate (
+		final double dblVariate)
+		throws java.lang.Exception
 	{
-		return _dblLower;
-	}
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || dblVariate < 0.)
+			throw new java.lang.Exception ("BennettFunction::evaluate => Invalid Inputs");
 
-	/**
-	 * Retrieve the Upper Probability Bound
-	 * 
-	 * @return The Upper Probability Bound
-	 */
-
-	public double upper()
-	{
-		return _dblUpper;
+		return (1. + dblVariate) * java.lang.Math.log (1. + dblVariate) - dblVariate;
 	}
 }

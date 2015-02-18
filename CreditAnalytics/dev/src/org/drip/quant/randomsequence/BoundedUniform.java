@@ -1,5 +1,5 @@
 
-package org.drip.quant.discrete;
+package org.drip.quant.randomsequence;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,49 +29,62 @@ package org.drip.quant.discrete;
  */
 
 /**
- * BoundedGaussian implements the Bounded Gaussian Distribution, with a Gaussian Distribution between a lower
+ * BoundedUniform implements the Bounded Uniform Distribution, with a Uniform Distribution between a lower
  *  and an upper Bound.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BoundedGaussian extends org.drip.quant.discrete.BoxMullerGaussian {
+public class BoundedUniform extends org.drip.quant.randomsequence.SequenceGenerator {
 	private double _dblLowerBound = java.lang.Double.NaN;
 	private double _dblUpperBound = java.lang.Double.NaN;
 
+	private java.util.Random _rng = new java.util.Random();
+
 	/**
-	 * BoundedGaussian Constructor
+	 * BoundedUniform Distribution Constructor
 	 * 
-	 * @param dblMean The Mean
-	 * @param dblVariance The Variance
 	 * @param dblLowerBound The Lower Bound
 	 * @param dblUpperBound The Upper Bound
 	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public BoundedGaussian (
-		final double dblMean,
-		final double dblVariance,
+	public BoundedUniform (
 		final double dblLowerBound,
 		final double dblUpperBound)
 		throws java.lang.Exception
 	{
-		super (dblMean, dblVariance);
-
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblLowerBound = dblLowerBound) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblUpperBound = dblUpperBound) || dblUpperBound <=
 				dblLowerBound)
-			throw new java.lang.Exception ("BoundedGaussian ctr: Invalid Inputs");
+			throw new java.lang.Exception ("BoundedUniform ctr: Invalid Inputs!");
+	}
+
+	/**
+	 * Retrieve the Lower Bound
+	 * 
+	 * @return The Lower Bound
+	 */
+
+	public double lowerBound()
+	{
+		return _dblLowerBound;
+	}
+
+	/**
+	 * Retrieve the Upper Bound
+	 * 
+	 * @return The Upper Bound
+	 */
+
+	public double upperBound()
+	{
+		return _dblUpperBound;
 	}
 
 	@Override public double random()
 	{
-		double dblGaussian = super.random();
-
-		while (dblGaussian < _dblLowerBound || dblGaussian > _dblUpperBound)
-			dblGaussian = super.random();
-
-		return dblGaussian;
+		return _dblLowerBound + _rng.nextDouble() * (_dblUpperBound - _dblLowerBound);
 	}
 }
