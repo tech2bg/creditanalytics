@@ -1292,8 +1292,8 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 
 			final org.drip.analytics.definition.CreditCurve ccOld = csqs.creditCurve (creditLabel());
 
-			org.drip.quant.function1D.AbstractUnivariate ofCDSPriceFromFlatSpread = new
-				org.drip.quant.function1D.AbstractUnivariate (null) {
+			org.drip.quant.function.AbstractUnivariate ofCDSPriceFromFlatSpread = new
+				org.drip.quant.function.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblFlatSpread)
 					throws java.lang.Exception

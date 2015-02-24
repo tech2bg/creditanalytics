@@ -37,7 +37,7 @@ package org.drip.quant.function1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ExponentialTension extends org.drip.quant.function1D.AbstractUnivariate {
+public class ExponentialTension extends org.drip.quant.function.AbstractUnivariate {
 	private boolean _bIsBaseNatural = false;
 	private double _dblBase = java.lang.Double.NaN;
 	private double _dblTension = java.lang.Double.NaN;

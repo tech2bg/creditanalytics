@@ -1,5 +1,5 @@
 
-package org.drip.quant.randomsequence;
+package org.drip.sequence.bounds;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -192,7 +192,7 @@ public class SingleSequenceAgnosticMetrics {
 	 */
 
 	public SingleSequenceAgnosticMetrics functionSequenceMetrics (
-		final org.drip.quant.function1D.AbstractUnivariate au)
+		final org.drip.quant.function.AbstractUnivariate au)
 	{
 		if (null == au) return null;
 
@@ -212,49 +212,14 @@ public class SingleSequenceAgnosticMetrics {
 	}
 
 	/**
-	 * Compute the Specified Central Moment of the Function across the Sample Sequence
+	 * Retrieve the Population Distribution
 	 * 
-	 * @param au The Function whose Moment is to be Computed
-	 * @param iMoment The Moment
-	 * @param bAbsolute TRUE => The Moment sought is on the Absolute Value
-	 * 
-	 * @return The Specified Central Moment of the Function across the Sample Sequence
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 * @return The Population Distribution
 	 */
 
-	public double centralMoment (
-		final org.drip.quant.function1D.AbstractUnivariate au,
-		final int iMoment,
-		final boolean bAbsolute)
-		throws java.lang.Exception
+	public org.drip.quant.distribution.Univariate populationDistribution()
 	{
-		if (null == au || 0 >= iMoment)
-			throw new java.lang.Exception ("SingleSequenceAgnosticMetrics::centralMoment => Invalid Inputs");
-
-		double dblMoment = 0.;
-		int iNumEntry = _adblSequence.length;
-
-		SingleSequenceAgnosticMetrics smFunction = functionSequenceMetrics (au);
-
-		if (null == smFunction)
-			throw new java.lang.Exception
-				("SingleSequenceAgnosticMetrics::centralMoment => Cannot generate Function Central Moment");
-
-		if (1 == iMoment) return 0.;
-
-		if (2 == iMoment) return smFunction.empiricalVariance();
-
-		double dblExpectation = smFunction.empiricalExpectation();
-
-		for (int i = 0; i < iNumEntry; ++i) {
-			double dblDeparture = au.evaluate (_adblSequence[i]) - dblExpectation;
-
-			dblMoment += java.lang.Math.pow (bAbsolute ? java.lang.Math.abs (dblDeparture) : dblDeparture,
-				iMoment);
-		}
-
-		return dblMoment / iNumEntry;
+		return _distPopulation;
 	}
 
 	/**
@@ -337,7 +302,7 @@ public class SingleSequenceAgnosticMetrics {
 
 	public double markovUpperProbabilityBound (
 		final double dblLevel,
-		final org.drip.quant.function1D.AbstractUnivariate auNonDecreasing)
+		final org.drip.quant.function.AbstractUnivariate auNonDecreasing)
 		throws java.lang.Exception
 	{
 		if (!isPositive() || !org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0.)
@@ -371,7 +336,7 @@ public class SingleSequenceAgnosticMetrics {
 	 * @return The Mean Departure Bounds Instance
 	 */
 
-	public org.drip.quant.randomsequence.PivotedDepartureBounds chebyshevBound (
+	public org.drip.sequence.bounds.PivotedDepartureBounds chebyshevBound (
 		final double dblLevel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0.) return null;
@@ -384,8 +349,8 @@ public class SingleSequenceAgnosticMetrics {
 		dblMeanDepartureBound = dblMeanDepartureBound < 1. ? dblMeanDepartureBound : 1.;
 
 		try {
-			return new org.drip.quant.randomsequence.PivotedDepartureBounds
-				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN, java.lang.Double.NaN,
+			return new org.drip.sequence.bounds.PivotedDepartureBounds
+				(org.drip.sequence.bounds.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN, java.lang.Double.NaN,
 					dblMeanDepartureBound, dblMeanDepartureBound);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -403,7 +368,7 @@ public class SingleSequenceAgnosticMetrics {
 	 * @return The Mean Departure Bounds Instance
 	 */
 
-	public org.drip.quant.randomsequence.PivotedDepartureBounds centralMomentBound (
+	public org.drip.sequence.bounds.PivotedDepartureBounds centralMomentBound (
 		final double dblLevel,
 		final int iMoment)
 	{
@@ -415,8 +380,8 @@ public class SingleSequenceAgnosticMetrics {
 
 			dblMeanDepartureBound = dblMeanDepartureBound < 1. ? dblMeanDepartureBound : 1.;
 
-			return new org.drip.quant.randomsequence.PivotedDepartureBounds
-				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN, java.lang.Double.NaN,
+			return new org.drip.sequence.bounds.PivotedDepartureBounds
+				(org.drip.sequence.bounds.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN, java.lang.Double.NaN,
 					dblMeanDepartureBound, dblMeanDepartureBound);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -433,7 +398,7 @@ public class SingleSequenceAgnosticMetrics {
 	 * @return The Mean Departure Bounds
 	 */
 
-	public org.drip.quant.randomsequence.PivotedDepartureBounds chebyshevCantelliBound (
+	public org.drip.sequence.bounds.PivotedDepartureBounds chebyshevCantelliBound (
 		final double dblLevel)
 		throws java.lang.Exception
 	{
@@ -445,8 +410,8 @@ public class SingleSequenceAgnosticMetrics {
 			dblPopulationVariance : _dblEmpiricalVariance);
 
 		try {
-			return new org.drip.quant.randomsequence.PivotedDepartureBounds
-				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN, java.lang.Double.NaN,
+			return new org.drip.sequence.bounds.PivotedDepartureBounds
+				(org.drip.sequence.bounds.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN, java.lang.Double.NaN,
 					java.lang.Double.NaN, dblVariance / (dblVariance + dblLevel * dblLevel));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -466,10 +431,10 @@ public class SingleSequenceAgnosticMetrics {
 	 * @return The Chebyshev's Association Joint Expectation Bound
 	 */
 
-	public org.drip.quant.randomsequence.PivotedDepartureBounds chebyshevAssociationBound (
-		final org.drip.quant.function1D.AbstractUnivariate au1,
+	public org.drip.sequence.bounds.PivotedDepartureBounds chebyshevAssociationBound (
+		final org.drip.quant.function.AbstractUnivariate au1,
 		final boolean bNonDecreasing1,
-		final org.drip.quant.function1D.AbstractUnivariate au2,
+		final org.drip.quant.function.AbstractUnivariate au2,
 		final boolean bNonDecreasing2)
 	{
 		if (null == au1 || null == au2) return null;
@@ -481,8 +446,8 @@ public class SingleSequenceAgnosticMetrics {
 
 		if (bNonDecreasing1 == bNonDecreasing2) {
 			try {
-				return new org.drip.quant.randomsequence.PivotedDepartureBounds
-					(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_CUSTOM, 0.,
+				return new org.drip.sequence.bounds.PivotedDepartureBounds
+					(org.drip.sequence.bounds.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_CUSTOM, 0.,
 						dblBound, java.lang.Double.NaN);
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
@@ -492,8 +457,8 @@ public class SingleSequenceAgnosticMetrics {
 		}
 
 		try {
-			return new org.drip.quant.randomsequence.PivotedDepartureBounds
-				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_CUSTOM, 0.,
+			return new org.drip.sequence.bounds.PivotedDepartureBounds
+				(org.drip.sequence.bounds.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_CUSTOM, 0.,
 					java.lang.Double.NaN, dblBound);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -510,7 +475,7 @@ public class SingleSequenceAgnosticMetrics {
 	 * @return The Mean Departure Bounds
 	 */
 
-	public org.drip.quant.randomsequence.PivotedDepartureBounds weakLawAverageBounds (
+	public org.drip.sequence.bounds.PivotedDepartureBounds weakLawAverageBounds (
 		final double dblLevel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0.) return null;
@@ -524,8 +489,8 @@ public class SingleSequenceAgnosticMetrics {
 		dblBound = dblBound < 1. ? dblBound : 1.;
 
 		try {
-			return new org.drip.quant.randomsequence.PivotedDepartureBounds
-				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN,
+			return new org.drip.sequence.bounds.PivotedDepartureBounds
+				(org.drip.sequence.bounds.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN,
 					java.lang.Double.NaN, dblBound, dblBound);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

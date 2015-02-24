@@ -68,7 +68,7 @@ public class ExecutionInitializer {
 	}
 
 	private boolean _bTrendBracketRight = false;
-	private org.drip.quant.function1D.AbstractUnivariate _of = null;
+	private org.drip.quant.function.AbstractUnivariate _of = null;
 	private org.drip.quant.solver1D.ConvergenceControlParams _ccp = null;
 
 	private java.util.SortedMap<java.lang.Double, java.lang.Double> _mapOFMap = new
@@ -304,7 +304,7 @@ public class ExecutionInitializer {
 	 */
 
 	public ExecutionInitializer (
-		final org.drip.quant.function1D.AbstractUnivariate of,
+		final org.drip.quant.function.AbstractUnivariate of,
 		final org.drip.quant.solver1D.ConvergenceControlParams ccp,
 		final boolean bTrendBracketRight)
 		throws java.lang.Exception

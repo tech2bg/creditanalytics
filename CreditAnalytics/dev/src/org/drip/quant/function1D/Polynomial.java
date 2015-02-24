@@ -37,7 +37,7 @@ package org.drip.quant.function1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class Polynomial extends org.drip.quant.function1D.AbstractUnivariate {
+public class Polynomial extends org.drip.quant.function.AbstractUnivariate {
 	private int _iDegree = -1;
 
 	/**

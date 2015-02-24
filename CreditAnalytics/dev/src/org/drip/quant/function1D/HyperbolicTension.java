@@ -37,7 +37,7 @@ package org.drip.quant.function1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class HyperbolicTension extends org.drip.quant.function1D.AbstractUnivariate {
+public class HyperbolicTension extends org.drip.quant.function.AbstractUnivariate {
 
 	/**
 	 * Hyperbolic Tension Function Type - sinh

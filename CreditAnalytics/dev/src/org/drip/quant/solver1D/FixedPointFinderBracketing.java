@@ -189,7 +189,7 @@ public class FixedPointFinderBracketing extends org.drip.quant.solver1D.FixedPoi
 
 	public FixedPointFinderBracketing (
 		final double dblOFGoal,
-		final org.drip.quant.function1D.AbstractUnivariate of,
+		final org.drip.quant.function.AbstractUnivariate of,
 		final org.drip.quant.solver1D.ExecutionControl ec,
 		final int iIteratorPrimitive,
 		final boolean bWhine)

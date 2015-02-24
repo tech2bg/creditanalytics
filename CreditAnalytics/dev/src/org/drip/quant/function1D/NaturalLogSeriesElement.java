@@ -36,7 +36,7 @@ package org.drip.quant.function1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class NaturalLogSeriesElement extends org.drip.quant.function1D.AbstractUnivariate {
+public class NaturalLogSeriesElement extends org.drip.quant.function.AbstractUnivariate {
 	private int _iExponent = -1;
 
 	/**

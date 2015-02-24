@@ -42,16 +42,16 @@ package org.drip.spline.pchip;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MonotoneConvexHaganWest extends org.drip.quant.function1D.AbstractUnivariate {
+public class MonotoneConvexHaganWest extends org.drip.quant.function.AbstractUnivariate {
 	private double[] _adblObservation = null;
 	private double[] _adblResponseValue = null;
 	private boolean _bLinearNodeInference = true;
 	private double[] _adblPredictorOrdinate = null;
 	private double[] _adblResponseZScoreLeft = null;
 	private double[] _adblResponseZScoreRight = null;
-	private org.drip.quant.function1D.AbstractUnivariate[] _aAU = null;
+	private org.drip.quant.function.AbstractUnivariate[] _aAU = null;
 
-	class Case1Univariate extends org.drip.quant.function1D.AbstractUnivariate {
+	class Case1Univariate extends org.drip.quant.function.AbstractUnivariate {
 		private double _dblResponseZScoreLeft = java.lang.Double.NaN;
 		private double _dblResponseZScoreRight = java.lang.Double.NaN;
 		private double _dblPredictorOrdinateLeft = java.lang.Double.NaN;
@@ -94,7 +94,7 @@ public class MonotoneConvexHaganWest extends org.drip.quant.function1D.AbstractU
 		}
 	}
 
-	class Case2Univariate extends org.drip.quant.function1D.AbstractUnivariate {
+	class Case2Univariate extends org.drip.quant.function.AbstractUnivariate {
 		private double _dblEta = java.lang.Double.NaN;
 		private double _dblResponseZScoreLeft = java.lang.Double.NaN;
 		private double _dblResponseZScoreRight = java.lang.Double.NaN;
@@ -143,7 +143,7 @@ public class MonotoneConvexHaganWest extends org.drip.quant.function1D.AbstractU
 		}
 	}
 
-	class Case3Univariate extends org.drip.quant.function1D.AbstractUnivariate {
+	class Case3Univariate extends org.drip.quant.function.AbstractUnivariate {
 		private double _dblEta = java.lang.Double.NaN;
 		private double _dblResponseZScoreLeft = java.lang.Double.NaN;
 		private double _dblResponseZScoreRight = java.lang.Double.NaN;
@@ -192,7 +192,7 @@ public class MonotoneConvexHaganWest extends org.drip.quant.function1D.AbstractU
 		}
 	}
 
-	class Case4Univariate extends org.drip.quant.function1D.AbstractUnivariate {
+	class Case4Univariate extends org.drip.quant.function.AbstractUnivariate {
 		private double _dblA = java.lang.Double.NaN;
 		private double _dblEta = java.lang.Double.NaN;
 		private double _dblResponseZScoreLeft = java.lang.Double.NaN;
@@ -350,7 +350,7 @@ public class MonotoneConvexHaganWest extends org.drip.quant.function1D.AbstractU
 	private boolean generateUnivariate()
 	{
 		int iNumSegment = _adblPredictorOrdinate.length - 1;
-		_aAU = new org.drip.quant.function1D.AbstractUnivariate[iNumSegment];
+		_aAU = new org.drip.quant.function.AbstractUnivariate[iNumSegment];
 
 		for (int i = 0; i < iNumSegment; ++i) {
 			if ((_adblResponseZScoreLeft[i] > 0. && -0.5 * _adblResponseZScoreLeft[i] >=

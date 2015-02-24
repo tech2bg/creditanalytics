@@ -1,9 +1,11 @@
 
-package org.drip.sample.quant;
+package org.drip.sample.sequence;
 
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.distribution.*;
-import org.drip.quant.randomsequence.*;
+import org.drip.quant.random.Poisson;
+import org.drip.quant.random.RandomSequenceGenerator;
+import org.drip.sequence.bounds.*;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -35,13 +37,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * SingleRandomSequenceBound demonstrates the Computation of the Probabilistic Bounds for a Sample Random
- * 	Sequence.
+ * PoissonRandomSequenceBound demonstrates the Computation of the Probabilistic Bounds for a Sample Random
+ * 	Poisson Sequence.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class UnitRandomSequenceBound {
+public class PoissonRandomSequenceBound {
 
 	private static final void Head (
 		final String strHeader)
@@ -59,45 +61,23 @@ public class UnitRandomSequenceBound {
 		System.out.println ("\t|----------------------------------------------------------------------------------|");
 	}
 
-	private static final void ChernoffBinomialBounds (
-		final SequenceGenerator iidsg,
+	private static final void ChernoffStirlingBounds (
+		final RandomSequenceGenerator iidsg,
 		final Univariate dist,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
 		throws Exception
 	{
 		for (int iSampleSize : aiSampleSize) {
-			UnitSequenceAgnosticMetrics ssamDist = iidsg.unitSequence (
+			PoissonSequenceAgnosticMetrics ssamDist = (PoissonSequenceAgnosticMetrics) iidsg.sequence (
 				iSampleSize,
-				null == dist ? Double.NaN : dist.mean()
+				dist
 			);
 
 			String strDump = "\t| " + FormatUtil.FormatDouble (iSampleSize, 3, 0, 1) + " => ";
 
 			for (double dblTolerance : adblTolerance)
-				strDump += FormatUtil.FormatDouble (ssamDist.chernoffBinomialUpperBound (dblTolerance), 1, 9, 1.) + " | ";
-
-			System.out.println (strDump);
-		}
-	}
-
-	private static final void PoissonChernoffBinomialBounds (
-		final SequenceGenerator iidsg,
-		final Univariate dist,
-		final int[] aiSampleSize,
-		final double[] adblTolerance)
-		throws Exception
-	{
-		for (int iSampleSize : aiSampleSize) {
-			UnitSequenceAgnosticMetrics ssamDist = iidsg.unitSequence (
-				iSampleSize,
-				null == dist ? Double.NaN : dist.mean()
-			);
-
-			String strDump = "\t| " + FormatUtil.FormatDouble (iSampleSize, 3, 0, 1) + " => ";
-
-			for (double dblTolerance : adblTolerance)
-				strDump += FormatUtil.FormatDouble (ssamDist.chernoffPoissonUpperBound (dblTolerance), 1, 9, 1.) + " | ";
+				strDump += FormatUtil.FormatDouble (ssamDist.chernoffStirlingUpperBound (dblTolerance), 1, 9, 1.) + " | ";
 
 			System.out.println (strDump);
 		}
@@ -109,55 +89,33 @@ public class UnitRandomSequenceBound {
 	{
 		CreditAnalytics.Init ("");
 
-		BoundedUniform uniformRandom = new BoundedUniform (0., 1.);
+		Poisson poissonRandom = new Poisson (10.);
 
-		UnivariateBoundedUniform uniformDistribution = new UnivariateBoundedUniform (0., 1.);
+		UnivariatePoisson poissonDistribution = new UnivariatePoisson (10.);
 
 		int[] aiSampleSize = new int[] {
 			10, 20, 50, 100, 250
 		};
 
 		double[] adblTolerance = new double[] {
-			0.01, 0.03, 0.05, 0.07, 0.10
+			5., 10., 15., 20., 25.
 		};
 
-		Head ("\t|        CHERNOFF-BINOMIAL BOUNDS    -     METRICS FROM UNDERLYING GENERATOR       |");
+		Head ("\t|        CHERNOFF-STIRLING BOUNDS    -     METRICS FROM UNDERLYING GENERATOR       |");
 
-		ChernoffBinomialBounds (
-			uniformRandom,
-			uniformDistribution,
+		ChernoffStirlingBounds (
+			poissonRandom,
+			poissonDistribution,
 			aiSampleSize,
 			adblTolerance
 		);
 
 		System.out.println ("\t|----------------------------------------------------------------------------------|");
 
-		Head ("\t|      CHERNOFF-BINOMIAL BOUNDS    -     METRICS FROM EMPIRICAL DISTRIBUTION       |");
+		Head ("\t|      CHERNOFF-STIRLING BOUNDS    -     METRICS FROM EMPIRICAL DISTRIBUTION       |");
 
-		ChernoffBinomialBounds (
-			uniformRandom,
-			null,
-			aiSampleSize,
-			adblTolerance
-		);
-
-		System.out.println ("\t|----------------------------------------------------------------------------------|");
-
-		Head ("\t|       POISSON CHERNOFF-BINOMIAL BOUNDS  -   METRICS FROM UNDERLYING GENERATOR    |");
-
-		PoissonChernoffBinomialBounds (
-			uniformRandom,
-			uniformDistribution,
-			aiSampleSize,
-			adblTolerance
-		);
-
-		System.out.println ("\t|----------------------------------------------------------------------------------|");
-
-		Head ("\t|       POISSON CHERNOFF-BINOMIAL BOUNDS  -  METRICS FROM EMPIRICAL DISTRIBUTION   |");
-
-		PoissonChernoffBinomialBounds (
-			uniformRandom,
+		ChernoffStirlingBounds (
+			poissonRandom,
 			null,
 			aiSampleSize,
 			adblTolerance

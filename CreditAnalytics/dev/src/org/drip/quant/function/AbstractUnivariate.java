@@ -1,5 +1,5 @@
 
-package org.drip.quant.function1D;
+package org.drip.quant.function;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

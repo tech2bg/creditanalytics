@@ -1,5 +1,5 @@
 
-package org.drip.quant.randomsequence;
+package org.drip.quant.random;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,20 +29,20 @@ package org.drip.quant.randomsequence;
  */
 
 /**
- * BoundedUniform implements the Bounded Uniform Distribution, with a Uniform Distribution between a lower
- *  and an upper Bound.
+ * BoundedUniformInteger implements the Bounded Uniform Distribution, with a Uniform Integer being generated
+ *  between a lower and an upper Bound.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BoundedUniform extends org.drip.quant.randomsequence.SequenceGenerator {
-	private double _dblLowerBound = java.lang.Double.NaN;
-	private double _dblUpperBound = java.lang.Double.NaN;
+public class BoundedUniformInteger extends org.drip.quant.random.RandomSequenceGenerator {
+	private int _iStart = -1;
+	private int _iFinish = -1;
 
 	private java.util.Random _rng = new java.util.Random();
 
 	/**
-	 * BoundedUniform Distribution Constructor
+	 * BoundedUniformInteger Distribution Constructor
 	 * 
 	 * @param dblLowerBound The Lower Bound
 	 * @param dblUpperBound The Upper Bound
@@ -50,41 +50,57 @@ public class BoundedUniform extends org.drip.quant.randomsequence.SequenceGenera
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public BoundedUniform (
-		final double dblLowerBound,
-		final double dblUpperBound)
+	public BoundedUniformInteger (
+		final int iStart,
+		final int iFinish)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblLowerBound = dblLowerBound) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblUpperBound = dblUpperBound) || dblUpperBound <=
-				dblLowerBound)
-			throw new java.lang.Exception ("BoundedUniform ctr: Invalid Inputs!");
+		if ((_iFinish = iFinish) <= (_iStart = iStart))
+			throw new java.lang.Exception ("BoundedUniformInteger constructor: Invalid inputs");
 	}
 
 	/**
-	 * Retrieve the Lower Bound
+	 * Retrieve the Start
 	 * 
-	 * @return The Lower Bound
+	 * @return The Start
 	 */
 
-	public double lowerBound()
+	public int start()
 	{
-		return _dblLowerBound;
+		return _iStart;
 	}
 
 	/**
-	 * Retrieve the Upper Bound
+	 * Retrieve the Finish
 	 * 
-	 * @return The Upper Bound
+	 * @return The Finish
 	 */
 
-	public double upperBound()
+	public int finish()
 	{
-		return _dblUpperBound;
+		return _iFinish;
 	}
 
 	@Override public double random()
 	{
-		return _dblLowerBound + _rng.nextDouble() * (_dblUpperBound - _dblLowerBound);
+		return (int) (_iStart + _rng.nextDouble() * (_iFinish - _iStart) + 0.5);
+	}
+
+	@Override public org.drip.sequence.bounds.SingleSequenceAgnosticMetrics sequence (
+		final int iNumEntry,
+		final org.drip.quant.distribution.Univariate distPopulation)
+	{
+		double[] adblSequence = new double[iNumEntry];
+
+		for (int i = 0; i < iNumEntry; ++i)
+			adblSequence[i] = random();
+
+		try {
+			return new org.drip.sequence.bounds.IntegerSequenceAgnosticMetrics (adblSequence, distPopulation);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

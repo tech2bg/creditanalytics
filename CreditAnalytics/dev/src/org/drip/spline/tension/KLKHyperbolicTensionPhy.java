@@ -40,7 +40,7 @@ package org.drip.spline.tension;
  * @author Lakshmi Krishnamurthy
  */
 
-public class KLKHyperbolicTensionPhy extends org.drip.quant.function1D.AbstractUnivariate {
+public class KLKHyperbolicTensionPhy extends org.drip.quant.function.AbstractUnivariate {
 	private double _dblTension = java.lang.Double.NaN;
 
 	/**

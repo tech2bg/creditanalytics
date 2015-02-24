@@ -40,7 +40,7 @@ package org.drip.spline.params;
 
 public class ResponseScalingShapeControl {
 	private boolean _bIsLocal = false;
-	private org.drip.quant.function1D.AbstractUnivariate _auShapeControl = null;
+	private org.drip.quant.function.AbstractUnivariate _auShapeControl = null;
 
 	/**
 	 * ResponseScalingShapeControl constructor
@@ -53,7 +53,7 @@ public class ResponseScalingShapeControl {
 
 	public ResponseScalingShapeControl (
 		final boolean bIsLocal,
-		final org.drip.quant.function1D.AbstractUnivariate auShapeControl)
+		final org.drip.quant.function.AbstractUnivariate auShapeControl)
 		throws java.lang.Exception
 	{
 		if (null == (_auShapeControl = auShapeControl))
@@ -79,7 +79,7 @@ public class ResponseScalingShapeControl {
 	 * @return The Shape Control Univariate Function
 	 */
 
-	public org.drip.quant.function1D.AbstractUnivariate shapeController()
+	public org.drip.quant.function.AbstractUnivariate shapeController()
 	{
 		return _auShapeControl;
 	}

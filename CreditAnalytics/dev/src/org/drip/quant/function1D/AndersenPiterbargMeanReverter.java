@@ -37,9 +37,9 @@ package org.drip.quant.function1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class AndersenPiterbargMeanReverter extends org.drip.quant.function1D.AbstractUnivariate {
+public class AndersenPiterbargMeanReverter extends org.drip.quant.function.AbstractUnivariate {
 	private org.drip.quant.function1D.ExponentialDecay _auExpDecay = null;
-	private org.drip.quant.function1D.AbstractUnivariate _auSteadyState = null;
+	private org.drip.quant.function.AbstractUnivariate _auSteadyState = null;
 
 	/**
 	 * AndersenPiterbargMeanReverter constructor
@@ -52,7 +52,7 @@ public class AndersenPiterbargMeanReverter extends org.drip.quant.function1D.Abs
 
 	public AndersenPiterbargMeanReverter (
 		final org.drip.quant.function1D.ExponentialDecay auExpDecay,
-		final org.drip.quant.function1D.AbstractUnivariate auSteadyState)
+		final org.drip.quant.function.AbstractUnivariate auSteadyState)
 		throws java.lang.Exception
 	{
 		super (null);

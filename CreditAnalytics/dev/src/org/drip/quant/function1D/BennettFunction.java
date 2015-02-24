@@ -35,7 +35,7 @@ package org.drip.quant.function1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BennettFunction extends org.drip.quant.function1D.AbstractUnivariate {
+public class BennettFunction extends org.drip.quant.function.AbstractUnivariate {
 
 	/**
 	 * BennettFunction constructor

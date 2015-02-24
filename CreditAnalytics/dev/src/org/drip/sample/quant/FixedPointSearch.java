@@ -3,7 +3,7 @@ package org.drip.sample.quant;
 
 import org.drip.quant.calculus.*;
 import org.drip.quant.common.*;
-import org.drip.quant.function1D.AbstractUnivariate;
+import org.drip.quant.function.AbstractUnivariate;
 import org.drip.quant.solver1D.*;
 
 /*

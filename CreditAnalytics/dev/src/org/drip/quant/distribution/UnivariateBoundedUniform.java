@@ -85,8 +85,10 @@ public class UnivariateBoundedUniform extends org.drip.quant.distribution.Univar
 		final double dblY)
 		throws java.lang.Exception
 	{
-	    return org.drip.quant.distribution.Gaussian.InverseCDF (dblY) * (_dblUpperBound - _dblLowerBound) +
-	    	_dblLowerBound;
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblY) || dblY < 0. || dblY > 1.)
+			throw new java.lang.Exception ("UnivariateBoundedUniform::invCumulative => Invalid inputs");
+
+	    return dblY * (_dblUpperBound - _dblLowerBound) + _dblLowerBound;
 	}
 
 	@Override public double mean()

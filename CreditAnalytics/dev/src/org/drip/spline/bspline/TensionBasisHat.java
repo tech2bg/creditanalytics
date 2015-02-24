@@ -37,7 +37,7 @@ package org.drip.spline.bspline;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class TensionBasisHat extends org.drip.quant.function1D.AbstractUnivariate {
+public abstract class TensionBasisHat extends org.drip.quant.function.AbstractUnivariate {
 	private double _dblTension = java.lang.Double.NaN;
 	private double _dblLeftPredictorOrdinate = java.lang.Double.NaN;
 	private double _dblRightPredictorOrdinate = java.lang.Double.NaN;

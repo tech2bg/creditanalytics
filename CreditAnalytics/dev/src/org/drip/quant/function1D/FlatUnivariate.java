@@ -35,7 +35,7 @@ package org.drip.quant.function1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FlatUnivariate extends org.drip.quant.function1D.AbstractUnivariate {
+public class FlatUnivariate extends org.drip.quant.function.AbstractUnivariate {
 	private double _dblLevel = java.lang.Double.NaN;
 
 	/**

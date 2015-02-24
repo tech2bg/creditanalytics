@@ -1,5 +1,5 @@
 
-package org.drip.quant.randomsequence;
+package org.drip.sequence.bounds;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -36,7 +36,7 @@ package org.drip.quant.randomsequence;
  */
 
 public class BoundedSequenceAgnosticMetrics extends
-	org.drip.quant.randomsequence.SingleSequenceAgnosticMetrics {
+	org.drip.sequence.bounds.SingleSequenceAgnosticMetrics {
 	private double _dblSupport = java.lang.Double.NaN;
 
 	/**
@@ -80,7 +80,7 @@ public class BoundedSequenceAgnosticMetrics extends
 	 * @return The Mean Departure Bounds
 	 */
 
-	public org.drip.quant.randomsequence.PivotedDepartureBounds chernoffHoeffdingAverageBounds (
+	public org.drip.sequence.bounds.PivotedDepartureBounds chernoffHoeffdingAverageBounds (
 		final double dblLevel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0) return null;
@@ -91,8 +91,8 @@ public class BoundedSequenceAgnosticMetrics extends
 		dblBound = dblBound < 1. ? dblBound : 1.;
 
 		try {
-			return new org.drip.quant.randomsequence.PivotedDepartureBounds
-				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN,
+			return new org.drip.sequence.bounds.PivotedDepartureBounds
+				(org.drip.sequence.bounds.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN,
 					java.lang.Double.NaN, dblBound, dblBound);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -109,7 +109,7 @@ public class BoundedSequenceAgnosticMetrics extends
 	 * @return The Mean Departure Bounds
 	 */
 
-	public org.drip.quant.randomsequence.PivotedDepartureBounds bennettAverageBounds (
+	public org.drip.sequence.bounds.PivotedDepartureBounds bennettAverageBounds (
 		final double dblLevel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0.) return null;
@@ -130,8 +130,8 @@ public class BoundedSequenceAgnosticMetrics extends
 		dblBound = dblBound < 1. ? dblBound : 1.;
 
 		try {
-			return new org.drip.quant.randomsequence.PivotedDepartureBounds
-				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN,
+			return new org.drip.sequence.bounds.PivotedDepartureBounds
+				(org.drip.sequence.bounds.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN,
 					java.lang.Double.NaN, dblBound, dblBound);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -148,7 +148,7 @@ public class BoundedSequenceAgnosticMetrics extends
 	 * @return The Mean Departure Bounds
 	 */
 
-	public org.drip.quant.randomsequence.PivotedDepartureBounds bernsteinAverageBounds (
+	public org.drip.sequence.bounds.PivotedDepartureBounds bernsteinAverageBounds (
 		final double dblLevel)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0.) return null;
@@ -164,8 +164,8 @@ public class BoundedSequenceAgnosticMetrics extends
 		dblBound = dblBound < 1. ? dblBound : 1.;
 
 		try {
-			return new org.drip.quant.randomsequence.PivotedDepartureBounds
-				(org.drip.quant.randomsequence.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN,
+			return new org.drip.sequence.bounds.PivotedDepartureBounds
+				(org.drip.sequence.bounds.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN,
 					java.lang.Double.NaN, dblBound, dblBound);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

@@ -1,5 +1,5 @@
 
-package org.drip.quant.randomsequence;
+package org.drip.sequence.bounds;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -35,7 +35,7 @@ package org.drip.quant.randomsequence;
  * @author Lakshmi Krishnamurthy
  */
 
-public class UnitSequenceAgnosticMetrics extends org.drip.quant.randomsequence.BoundedSequenceAgnosticMetrics
+public class UnitSequenceAgnosticMetrics extends org.drip.sequence.bounds.BoundedSequenceAgnosticMetrics
 {
 	private double _dblPopulationMean = java.lang.Double.NaN;
 
@@ -116,7 +116,7 @@ public class UnitSequenceAgnosticMetrics extends org.drip.quant.randomsequence.B
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblLevel) || 1. < dblLevel)
 			throw new java.lang.Exception
-				("UnitSequenceAgnosticMetrics::exponentialChernoffBinomialUpperBound => Invalid Inputs");
+				("UnitSequenceAgnosticMetrics::ChernoffBinomialUpperBound => Invalid Inputs");
 
 		int iNumEntry = sequence().length;
 
@@ -129,5 +129,51 @@ public class UnitSequenceAgnosticMetrics extends org.drip.quant.randomsequence.B
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblBound)) return 0.;
 
 		return dblBound > 1. ? 1. : dblBound;
+	}
+
+	/**
+	 * Compute the Karp/Hagerup/Rub Pivot Departure Bounds outlined below:
+	 * 
+	 * 	- Karp, R. M. (1988): Probabilistic Analysis of Algorithms, University of California, Berkeley.
+	 * 	- Hagerup, T., and C. Rub (1990): A Guided Tour of Chernoff Bounds, Information Processing Letters,
+	 * 		33:305-308.
+	 * 
+	 * @param dblLevel The Level at which the Bound is sought
+	 * 
+	 * @return The Karp/Hagerup/Rub Pivot Departure Bounds
+	 */
+
+	public org.drip.sequence.bounds.PivotedDepartureBounds karpHagerupRubBounds (
+		final double dblLevel)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblLevel) || 1. < dblLevel) return null;
+
+		int iNumEntry = sequence().length;
+
+		double dblPopulationMean = org.drip.quant.common.NumberUtil.IsValid (_dblPopulationMean) ?
+			_dblPopulationMean : empiricalExpectation();
+
+		double dblScaledLevel = dblLevel / dblPopulationMean;
+
+		double dblLowerBound = java.lang.Math.exp (-0.5 * dblPopulationMean * iNumEntry * dblScaledLevel *
+			dblScaledLevel);
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblLowerBound)) dblLowerBound = 0.;
+
+		double dblUpperBound = java.lang.Math.exp (-1. * dblPopulationMean * iNumEntry * (1. +
+			dblScaledLevel) * java.lang.Math.log (1. + dblScaledLevel) - dblScaledLevel);
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblUpperBound)) dblUpperBound = 0.;
+
+		try {
+			return new org.drip.sequence.bounds.PivotedDepartureBounds
+				(org.drip.sequence.bounds.PivotedDepartureBounds.PIVOT_ANCHOR_TYPE_MEAN,
+					java.lang.Double.NaN, dblLowerBound > 1. ? 1. : dblLowerBound, dblUpperBound > 1. ? 1. :
+						dblUpperBound);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

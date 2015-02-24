@@ -289,7 +289,7 @@ public class VariateIteratorPrimitive {
 		final double dblY1,
 		final double dblY2,
 		final double dblY3,
-		final org.drip.quant.function1D.AbstractUnivariate of,
+		final org.drip.quant.function.AbstractUnivariate of,
 		final double dblOFTarget,
 		final org.drip.quant.solver1D.FixedPointFinderOutput rfop)
 		throws java.lang.Exception

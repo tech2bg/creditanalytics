@@ -1,5 +1,5 @@
 
-package org.drip.quant.randomsequence;
+package org.drip.sequence.bounds;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -36,8 +36,8 @@ package org.drip.quant.randomsequence;
  */
 
 public class DualSequenceAgnosticMetrics {
-	private org.drip.quant.randomsequence.SingleSequenceAgnosticMetrics _ssam1 = null;
-	private org.drip.quant.randomsequence.SingleSequenceAgnosticMetrics _ssam2 = null;
+	private org.drip.sequence.bounds.SingleSequenceAgnosticMetrics _ssam1 = null;
+	private org.drip.sequence.bounds.SingleSequenceAgnosticMetrics _ssam2 = null;
 
 	/**
 	 * DualSequenceAgnosticMetrics Constructor
@@ -49,8 +49,8 @@ public class DualSequenceAgnosticMetrics {
 	 */
 
 	public DualSequenceAgnosticMetrics (
-		final org.drip.quant.randomsequence.SingleSequenceAgnosticMetrics ssam1,
-		final org.drip.quant.randomsequence.SingleSequenceAgnosticMetrics ssam2)
+		final org.drip.sequence.bounds.SingleSequenceAgnosticMetrics ssam1,
+		final org.drip.sequence.bounds.SingleSequenceAgnosticMetrics ssam2)
 		throws java.lang.Exception
 	{
 		if (null == (_ssam1 = ssam1) || null == (_ssam2 = ssam2) || _ssam1.sequence().length !=
@@ -64,9 +64,9 @@ public class DualSequenceAgnosticMetrics {
 	 * @return The Array of the Component Single Sequences
 	 */
 
-	public org.drip.quant.randomsequence.SingleSequenceAgnosticMetrics[] components()
+	public org.drip.sequence.bounds.SingleSequenceAgnosticMetrics[] components()
 	{
-		return new org.drip.quant.randomsequence.SingleSequenceAgnosticMetrics[] {_ssam1, _ssam2};
+		return new org.drip.sequence.bounds.SingleSequenceAgnosticMetrics[] {_ssam1, _ssam2};
 	}
 
 	/**

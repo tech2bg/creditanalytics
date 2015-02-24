@@ -37,9 +37,9 @@ package org.drip.quant.function1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class UnivariateConvolution extends org.drip.quant.function1D.AbstractUnivariate {
-	private org.drip.quant.function1D.AbstractUnivariate _au1 = null;
-	private org.drip.quant.function1D.AbstractUnivariate _au2 = null;
+public class UnivariateConvolution extends org.drip.quant.function.AbstractUnivariate {
+	private org.drip.quant.function.AbstractUnivariate _au1 = null;
+	private org.drip.quant.function.AbstractUnivariate _au2 = null;
 
 	/**
 	 * Construct a PolynomialMirrorCross instance
@@ -51,8 +51,8 @@ public class UnivariateConvolution extends org.drip.quant.function1D.AbstractUni
 	 */
 
 	public UnivariateConvolution (
-		final org.drip.quant.function1D.AbstractUnivariate au1,
-		final org.drip.quant.function1D.AbstractUnivariate au2)
+		final org.drip.quant.function.AbstractUnivariate au1,
+		final org.drip.quant.function.AbstractUnivariate au2)
 		throws java.lang.Exception
 	{
 		super (null);

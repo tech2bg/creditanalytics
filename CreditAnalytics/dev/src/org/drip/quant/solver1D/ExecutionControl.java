@@ -45,7 +45,7 @@ package org.drip.quant.solver1D;
 public class ExecutionControl {
 	private org.drip.quant.solver1D.ExecutionControlParams _ecp = null;
 
-	protected org.drip.quant.function1D.AbstractUnivariate _of = null;
+	protected org.drip.quant.function.AbstractUnivariate _of = null;
 
 	/**
 	 * ExecutionControl constructor
@@ -57,7 +57,7 @@ public class ExecutionControl {
 	 */
 
 	public ExecutionControl (
-		final org.drip.quant.function1D.AbstractUnivariate of,
+		final org.drip.quant.function.AbstractUnivariate of,
 		final org.drip.quant.solver1D.ExecutionControlParams ecp)
 		throws java.lang.Exception
 	{

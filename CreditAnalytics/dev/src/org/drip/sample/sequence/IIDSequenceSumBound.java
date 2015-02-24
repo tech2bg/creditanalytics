@@ -1,9 +1,10 @@
 
-package org.drip.sample.quant;
+package org.drip.sample.sequence;
 
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.distribution.*;
-import org.drip.quant.randomsequence.*;
+import org.drip.quant.random.*;
+import org.drip.sequence.bounds.*;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -35,13 +36,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * IndependentRandomSums demonstrates the Computation of the Different Probabilistic Bounds for Sums of
- * 	Independent Random Sequences.
+ * IIDSequenceSumBound demonstrates the Computation of the Different Probabilistic Bounds for Sums of i.i.d.
+ * 	Random Sequences.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class IndependentRandomSums {
+public class IIDSequenceSumBound {
 
 	private static final void Head (
 		final String strHeader)
@@ -60,7 +61,7 @@ public class IndependentRandomSums {
 	}
 
 	private static final void WeakLawBounds (
-		final SequenceGenerator iidsg,
+		final RandomSequenceGenerator iidsg,
 		final Univariate dist,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
@@ -82,7 +83,7 @@ public class IndependentRandomSums {
 	}
 
 	private static final void ChernoffHoeffdingBounds (
-		final SequenceGenerator iidsg,
+		final RandomSequenceGenerator iidsg,
 		final Univariate dist,
 		final double dblSupport,
 		final int[] aiSampleSize,
@@ -90,10 +91,9 @@ public class IndependentRandomSums {
 		throws Exception
 	{
 		for (int iSampleSize : aiSampleSize) {
-			BoundedSequenceAgnosticMetrics ssamDist = iidsg.sequence (
+			BoundedSequenceAgnosticMetrics ssamDist = (BoundedSequenceAgnosticMetrics) iidsg.sequence (
 				iSampleSize,
-				dist,
-				dblSupport
+				dist
 			);
 
 			String strDump = "\t| " + FormatUtil.FormatDouble (iSampleSize, 8, 0, 1) + " => ";
@@ -106,7 +106,7 @@ public class IndependentRandomSums {
 	}
 
 	private static final void BennettBounds (
-		final SequenceGenerator iidsg,
+		final RandomSequenceGenerator iidsg,
 		final Univariate dist,
 		final double dblSupport,
 		final int[] aiSampleSize,
@@ -114,10 +114,9 @@ public class IndependentRandomSums {
 		throws Exception
 	{
 		for (int iSampleSize : aiSampleSize) {
-			BoundedSequenceAgnosticMetrics ssamDist = iidsg.sequence (
+			BoundedSequenceAgnosticMetrics ssamDist = (BoundedSequenceAgnosticMetrics) iidsg.sequence (
 				iSampleSize,
-				dist,
-				dblSupport
+				dist
 			);
 
 			String strDump = "\t| " + FormatUtil.FormatDouble (iSampleSize, 8, 0, 1) + " => ";
@@ -130,7 +129,7 @@ public class IndependentRandomSums {
 	}
 
 	private static final void BernsteinBounds (
-		final SequenceGenerator iidsg,
+		final RandomSequenceGenerator iidsg,
 		final Univariate dist,
 		final double dblSupport,
 		final int[] aiSampleSize,
@@ -138,10 +137,9 @@ public class IndependentRandomSums {
 		throws Exception
 	{
 		for (int iSampleSize : aiSampleSize) {
-			BoundedSequenceAgnosticMetrics ssamDist = iidsg.sequence (
+			BoundedSequenceAgnosticMetrics ssamDist = (BoundedSequenceAgnosticMetrics) iidsg.sequence (
 				iSampleSize,
-				dist,
-				dblSupport
+				dist
 			);
 
 			String strDump = "\t| " + FormatUtil.FormatDouble (iSampleSize, 8, 0, 1) + " => ";

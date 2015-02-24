@@ -1,8 +1,9 @@
 
-package org.drip.sample.quant;
+package org.drip.sample.sequence;
 
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.randomsequence.*;
+import org.drip.quant.random.BoundedUniform;
+import org.drip.sequence.bounds.*;
 import org.drip.service.api.CreditAnalytics;
 
 /*

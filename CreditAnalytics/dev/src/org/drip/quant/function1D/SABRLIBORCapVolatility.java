@@ -38,7 +38,7 @@ package org.drip.quant.function1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class SABRLIBORCapVolatility extends org.drip.quant.function1D.AbstractUnivariate {
+public class SABRLIBORCapVolatility extends org.drip.quant.function.AbstractUnivariate {
 	private double _dblA = java.lang.Double.NaN;
 	private double _dblB = java.lang.Double.NaN;
 	private double _dblC = java.lang.Double.NaN;

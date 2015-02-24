@@ -39,7 +39,7 @@ package org.drip.spline.stretch;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.AbstractUnivariate implements
+public class CalibratableMultiSegmentSequence extends org.drip.quant.function.AbstractUnivariate implements
 	org.drip.spline.stretch.MultiSegmentSequence {
 	private static final int MAXIMA_PREDICTOR_ORDINATE_NODE = 1;
 	private static final int MINIMA_PREDICTOR_ORDINATE_NODE = 2;
@@ -646,10 +646,10 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function1D.
 			null);
 	}
 
-	@Override public org.drip.quant.function1D.AbstractUnivariate toAU()
+	@Override public org.drip.quant.function.AbstractUnivariate toAU()
 	{
-		org.drip.quant.function1D.AbstractUnivariate au = new
-			org.drip.quant.function1D.AbstractUnivariate (null)
+		org.drip.quant.function.AbstractUnivariate au = new
+			org.drip.quant.function.AbstractUnivariate (null)
 		{
 			@Override public double evaluate (
 				final double dblVariate)

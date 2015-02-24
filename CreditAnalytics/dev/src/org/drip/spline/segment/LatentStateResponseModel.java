@@ -1482,8 +1482,8 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 			}
 		}
 
-		org.drip.quant.function1D.AbstractUnivariate ofDeriv = new
-			org.drip.quant.function1D.AbstractUnivariate (null) {
+		org.drip.quant.function.AbstractUnivariate ofDeriv = new
+			org.drip.quant.function.AbstractUnivariate (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws java.lang.Exception

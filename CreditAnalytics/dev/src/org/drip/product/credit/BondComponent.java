@@ -11723,8 +11723,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			final double dblPrice)
 			throws java.lang.Exception
 		{
-			org.drip.quant.function1D.AbstractUnivariate ofYieldToPrice = new
-				org.drip.quant.function1D.AbstractUnivariate (null) {
+			org.drip.quant.function.AbstractUnivariate ofYieldToPrice = new
+				org.drip.quant.function.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblYield)
 					throws java.lang.Exception
@@ -11777,8 +11777,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				throw new java.lang.Exception
 					("BondComponent::BondCalibrator::calibZSpreadFromPrice => Z Spread Calculation turned off for floaters!");
 
-			org.drip.quant.function1D.AbstractUnivariate ofZSpreadToPrice = new
-				org.drip.quant.function1D.AbstractUnivariate (null) {
+			org.drip.quant.function.AbstractUnivariate ofZSpreadToPrice = new
+				org.drip.quant.function.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblZSpread)
 					throws java.lang.Exception
@@ -11821,8 +11821,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			final double dblPriceCalib)
 			throws java.lang.Exception
 		{
-			org.drip.quant.function1D.AbstractUnivariate ofZSpreadToPrice = new
-				org.drip.quant.function1D.AbstractUnivariate (null) {
+			org.drip.quant.function.AbstractUnivariate ofZSpreadToPrice = new
+				org.drip.quant.function.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblZSpread)
 					throws java.lang.Exception
@@ -11870,8 +11870,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				throw new java.lang.Exception
 					("BondComponent::BondCalibrator::calibZeroCurveSpreadFromPrice => Z Spread Calculation turned off for floaters!");
 
-			org.drip.quant.function1D.AbstractUnivariate ofZSpreadToPrice = new
-				org.drip.quant.function1D.AbstractUnivariate (null) {
+			org.drip.quant.function.AbstractUnivariate ofZSpreadToPrice = new
+				org.drip.quant.function.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblZSpread)
 					throws java.lang.Exception
@@ -11914,8 +11914,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			final boolean bFlatCalib)
 			throws java.lang.Exception
 		{
-			org.drip.quant.function1D.AbstractUnivariate ofCreditBasisToPrice = new
-				org.drip.quant.function1D.AbstractUnivariate (null) {
+			org.drip.quant.function.AbstractUnivariate ofCreditBasisToPrice = new
+				org.drip.quant.function.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblCreditBasis)
 					throws java.lang.Exception

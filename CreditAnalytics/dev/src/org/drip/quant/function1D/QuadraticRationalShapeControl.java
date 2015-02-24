@@ -43,7 +43,7 @@ package org.drip.quant.function1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class QuadraticRationalShapeControl extends org.drip.quant.function1D.AbstractUnivariate {
+public class QuadraticRationalShapeControl extends org.drip.quant.function.AbstractUnivariate {
 	private double _dblLambda = java.lang.Double.NaN;
 
 	/**
