@@ -3,6 +3,7 @@ package org.drip.sample.sensitivity;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
+import org.drip.function.deterministic1D.QuadraticRationalShapeControl;
 import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.*;
@@ -11,7 +12,6 @@ import org.drip.product.definition.*;
 import org.drip.product.rates.*;
 import org.drip.quant.calculus.WengertJacobian;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.*;
 import org.drip.spline.params.*;

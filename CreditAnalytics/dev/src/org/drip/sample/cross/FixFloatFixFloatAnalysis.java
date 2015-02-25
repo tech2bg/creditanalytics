@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.support.*;
+import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.param.creator.ScenarioForwardCurveBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
@@ -13,7 +14,6 @@ import org.drip.product.fx.ComponentPair;
 import org.drip.product.params.*;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.DiscountCurveBuilder;
 import org.drip.state.identifier.*;

@@ -1,8 +1,8 @@
 
 package org.drip.sample.funding;
 
+import org.drip.function.deterministic1D.LinearRationalShapeControl;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.function1D.LinearRationalShapeControl;
 import org.drip.spline.basis.ExponentialTensionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.pchip.*;

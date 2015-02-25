@@ -222,7 +222,7 @@ public abstract class CompositePeriod {
 
 		if (!isFXMTM()) return csqs.fixing (fxFixingDate(), fxLabel);
 
-		org.drip.quant.function.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
+		org.drip.function.deterministic.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
 
 		if (null == auFX)
 			throw new java.lang.Exception ("CompositePeriod::fx => No Curve for " +
@@ -562,23 +562,23 @@ public abstract class CompositePeriod {
 
 		org.drip.state.identifier.FXLabel fxLabel = fxLabel();
 
-		org.drip.quant.function.AbstractUnivariate auCreditVol = csqs.creditCurveVolSurface (creditLabel);
+		org.drip.function.deterministic.AbstractUnivariate auCreditVol = csqs.creditCurveVolSurface (creditLabel);
 
-		org.drip.quant.function.AbstractUnivariate auForwardVol = csqs.forwardCurveVolSurface
+		org.drip.function.deterministic.AbstractUnivariate auForwardVol = csqs.forwardCurveVolSurface
 			(forwardLabel);
 
-		org.drip.quant.function.AbstractUnivariate auFundingVol = csqs.fundingCurveVolSurface
+		org.drip.function.deterministic.AbstractUnivariate auFundingVol = csqs.fundingCurveVolSurface
 			(fundingLabel);
 
-		org.drip.quant.function.AbstractUnivariate auFXVol = csqs.fxCurveVolSurface (fxLabel);
+		org.drip.function.deterministic.AbstractUnivariate auFXVol = csqs.fxCurveVolSurface (fxLabel);
 
-		org.drip.quant.function.AbstractUnivariate auCreditForwardCorr = csqs.creditForwardCorrSurface
+		org.drip.function.deterministic.AbstractUnivariate auCreditForwardCorr = csqs.creditForwardCorrSurface
 			(creditLabel, forwardLabel);
 
-		org.drip.quant.function.AbstractUnivariate auForwardFundingCorr = csqs.forwardFundingCorrSurface
+		org.drip.function.deterministic.AbstractUnivariate auForwardFundingCorr = csqs.forwardFundingCorrSurface
 			(forwardLabel, fundingLabel);
 
-		org.drip.quant.function.AbstractUnivariate auForwardFXCorr = csqs.forwardFXCorrSurface
+		org.drip.function.deterministic.AbstractUnivariate auForwardFXCorr = csqs.forwardFXCorrSurface
 			(forwardLabel, fxLabel);
 
 		try {
@@ -662,15 +662,15 @@ public abstract class CompositePeriod {
 
 		org.drip.state.identifier.FXLabel fxLabel = fxLabel();
 
-		org.drip.quant.function.AbstractUnivariate auCreditVol = csqs.creditCurveVolSurface (creditLabel);
+		org.drip.function.deterministic.AbstractUnivariate auCreditVol = csqs.creditCurveVolSurface (creditLabel);
 
-		org.drip.quant.function.AbstractUnivariate auForwardVol = csqs.forwardCurveVolSurface
+		org.drip.function.deterministic.AbstractUnivariate auForwardVol = csqs.forwardCurveVolSurface
 			(forwardLabel);
 
-		org.drip.quant.function.AbstractUnivariate auFundingVol = csqs.fundingCurveVolSurface
+		org.drip.function.deterministic.AbstractUnivariate auFundingVol = csqs.fundingCurveVolSurface
 			(fundingLabel);
 
-		org.drip.quant.function.AbstractUnivariate auFXVol = csqs.fxCurveVolSurface (fxLabel);
+		org.drip.function.deterministic.AbstractUnivariate auFXVol = csqs.fxCurveVolSurface (fxLabel);
 
 		org.drip.analytics.output.ConvexityAdjustment convAdj = new
 			org.drip.analytics.output.ConvexityAdjustment();

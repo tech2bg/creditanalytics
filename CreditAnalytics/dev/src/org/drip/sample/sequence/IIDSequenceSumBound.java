@@ -3,8 +3,8 @@ package org.drip.sample.sequence;
 
 import org.drip.quant.common.FormatUtil;
 import org.drip.quant.distribution.*;
-import org.drip.quant.random.*;
-import org.drip.sequence.bounds.*;
+import org.drip.sequence.metrics.*;
+import org.drip.sequence.random.*;
 import org.drip.service.api.CreditAnalytics;
 
 /*

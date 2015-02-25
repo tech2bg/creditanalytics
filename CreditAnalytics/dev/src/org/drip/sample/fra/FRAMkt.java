@@ -5,12 +5,12 @@ import java.util.*;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
+import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.SingleStreamComponentBuilder;
 import org.drip.product.fra.FRAMarketComponent;
-import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.sample.forward.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.identifier.*;

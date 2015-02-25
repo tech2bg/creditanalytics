@@ -1059,7 +1059,7 @@ public class RatesClosesLoader {
 
 			org.drip.spline.params.ResponseScalingShapeControl rssc = new
 				org.drip.spline.params.ResponseScalingShapeControl (true, new
-					org.drip.quant.function1D.QuadraticRationalShapeControl (0.));
+					org.drip.function.deterministic1D.QuadraticRationalShapeControl (0.));
 
 			org.drip.spline.params.SegmentInelasticDesignControl sdic =
 				org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2);
@@ -1164,7 +1164,7 @@ public class RatesClosesLoader {
 
 			org.drip.spline.params.ResponseScalingShapeControl rssc = new
 				org.drip.spline.params.ResponseScalingShapeControl (true, new
-					org.drip.quant.function1D.QuadraticRationalShapeControl (0.));
+					org.drip.function.deterministic1D.QuadraticRationalShapeControl (0.));
 
 			org.drip.spline.params.SegmentInelasticDesignControl sdic =
 				org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2);

@@ -1,8 +1,8 @@
 
 package org.drip.sample.stretch;
 
+import org.drip.function.deterministic1D.*;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.function1D.*;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;

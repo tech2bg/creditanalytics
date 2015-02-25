@@ -6,6 +6,7 @@ import java.util.*;
 import org.drip.analytics.date.*;
 import org.drip.analytics.definition.TermStructure;
 import org.drip.analytics.rates.DiscountCurve;
+import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.*;
@@ -15,7 +16,6 @@ import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.option.EuropeanCallPut;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.identifier.ForwardLabel;
 

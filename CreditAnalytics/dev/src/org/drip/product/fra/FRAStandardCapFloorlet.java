@@ -137,7 +137,7 @@ public class FRAStandardCapFloorlet extends org.drip.product.option.FixedIncomeO
 			!org.drip.quant.common.NumberUtil.IsValid (dblFRADV01))
 			return null;
 
-		org.drip.quant.function.AbstractUnivariate auForwardVolSurface = csqs.forwardCurveVolSurface
+		org.drip.function.deterministic.AbstractUnivariate auForwardVolSurface = csqs.forwardCurveVolSurface
 			(_fra.forwardLabel().get ("DERIVED"));
 
 		if (null == auForwardVolSurface) return null;

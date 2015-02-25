@@ -4,7 +4,7 @@ package org.drip.sample.dual;
 import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.*;
-import org.drip.quant.function1D.QuadraticRationalShapeControl;
+import org.drip.function.deterministic1D.QuadraticRationalShapeControl;
 import org.drip.sample.forward.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;

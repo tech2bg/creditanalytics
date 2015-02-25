@@ -192,7 +192,7 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 			throw new java.lang.Exception
 				("SingleSegmentLagrangePolynomial::responseValueDerivative => Invalid inputs!");
 
-		org.drip.quant.function.AbstractUnivariate au = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate au = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				double dblX)
@@ -293,8 +293,8 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 			}
 		}
 
-		org.drip.quant.function.AbstractUnivariate auDeriv = new
-			org.drip.quant.function.AbstractUnivariate (null) {
+		org.drip.function.deterministic.AbstractUnivariate auDeriv = new
+			org.drip.function.deterministic.AbstractUnivariate (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws java.lang.Exception
@@ -314,9 +314,9 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 		};
 
 		try {
-			org.drip.quant.solver1D.FixedPointFinderOutput fpop = new
-				org.drip.quant.solver1D.FixedPointFinderBrent (0., auDeriv, true).findRoot
-					(org.drip.quant.solver1D.InitializationHeuristics.FromHardSearchEdges (0., 1.));
+			org.drip.function.solver1D.FixedPointFinderOutput fpop = new
+				org.drip.function.solver1D.FixedPointFinderBrent (0., auDeriv, true).findRoot
+					(org.drip.function.solver1D.InitializationHeuristics.FromHardSearchEdges (0., 1.));
 
 			if (null == fpop || !fpop.containsRoot())
 				return new org.drip.spline.segment.Monotonocity
@@ -456,10 +456,10 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 		return false;
 	}
 
-	@Override public org.drip.quant.function.AbstractUnivariate toAU()
+	@Override public org.drip.function.deterministic.AbstractUnivariate toAU()
 	{
-		org.drip.quant.function.AbstractUnivariate au = new
-			org.drip.quant.function.AbstractUnivariate (null)
+		org.drip.function.deterministic.AbstractUnivariate au = new
+			org.drip.function.deterministic.AbstractUnivariate (null)
 		{
 			@Override public double evaluate (
 				final double dblVariate)

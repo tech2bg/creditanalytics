@@ -3,6 +3,7 @@ package org.drip.sample.overnight;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
+import org.drip.function.deterministic1D.QuadraticRationalShapeControl;
 import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.valuation.*;
@@ -10,7 +11,6 @@ import org.drip.product.creator.*;
 import org.drip.product.definition.CalibratableFixedIncomeComponent;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;

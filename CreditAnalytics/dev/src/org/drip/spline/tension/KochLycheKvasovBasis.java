@@ -49,11 +49,11 @@ public class KochLycheKvasovBasis {
 	 * @return The Monic BSpline Basis Function Set
 	 */
 
-	public static final org.drip.quant.function.AbstractUnivariate[] GenerateMonicBSplineSet (
+	public static final org.drip.function.deterministic.AbstractUnivariate[] GenerateMonicBSplineSet (
 		final double dblTension)
 	{
 		try {
-			return new org.drip.quant.function.AbstractUnivariate[] {new
+			return new org.drip.function.deterministic.AbstractUnivariate[] {new
 				org.drip.spline.tension.KLKHyperbolicTensionPhy (dblTension), new
 					org.drip.spline.tension.KLKHyperbolicTensionPsy (dblTension)};
 		} catch (java.lang.Exception e) {
@@ -71,11 +71,11 @@ public class KochLycheKvasovBasis {
 	 * @return The Quadratic BSpline Basis Function Set
 	 */
 
-	public static final org.drip.quant.function.AbstractUnivariate[] GenerateQuadraticBSplineSet (
+	public static final org.drip.function.deterministic.AbstractUnivariate[] GenerateQuadraticBSplineSet (
 		final double dblTension)
 	{
 		try {
-			return new org.drip.quant.function.AbstractUnivariate[] {new
+			return new org.drip.function.deterministic.AbstractUnivariate[] {new
 				org.drip.spline.tension.KLKHyperbolicTensionPhy (dblTension), new
 					org.drip.spline.tension.KLKHyperbolicTensionPsy (dblTension)};
 		} catch (java.lang.Exception e) {

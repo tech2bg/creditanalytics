@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
+import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.market.otc.*;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
@@ -13,7 +14,6 @@ import org.drip.product.creator.SingleStreamOptionBuilder;
 import org.drip.product.fra.FRAStandardCapFloorlet;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.function1D.FlatUnivariate;
 import org.drip.sample.forward.OvernightIndexCurve;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;

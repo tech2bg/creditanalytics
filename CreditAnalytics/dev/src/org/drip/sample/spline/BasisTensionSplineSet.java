@@ -1,8 +1,8 @@
 
 package org.drip.sample.spline;
 
+import org.drip.function.deterministic1D.*;
 import org.drip.quant.calculus.WengertJacobian;
-import org.drip.quant.function1D.*;
 import org.drip.spline.basis.*;
 import org.drip.spline.params.*;
 import org.drip.spline.segment.*;

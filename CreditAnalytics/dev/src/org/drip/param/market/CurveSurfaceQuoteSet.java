@@ -46,9 +46,9 @@ public class CurveSurfaceQuoteSet {
 			_mapPayCurrencyForeignCollateralDC = new
 				org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapEquityCurve = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.definition.CreditCurve>
 		_mapCreditCurve = new
@@ -62,281 +62,281 @@ public class CurveSurfaceQuoteSet {
 		_mapFundingCurve = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFXCurve = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>
 		_mapGovvieCurve = new
 			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.analytics.rates.DiscountCurve>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapPaydownCurve = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapRecoveryCurve = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralVolatilitySurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCreditVolatilitySurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCustomMetricVolatilitySurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapEquityVolatilitySurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapForwardVolatilitySurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFundingVolatilitySurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFXVolatilitySurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapGovvieVolatilitySurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapPaydownVolatilitySurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapRecoveryVolatilitySurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralCollateralCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralCreditCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralCustomMetricCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralEquityCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralForwardCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralFundingCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralFXCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralGovvieCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralPaydownCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCollateralRecoveryCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCreditCreditCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCreditCustomMetricCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCreditEquityCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCreditForwardCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCreditFundingCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCreditFXCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCreditGovvieCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCreditPaydownCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCreditRecoveryCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCustomMetricCustomMetricCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCustomMetricEquityCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCustomMetricForwardCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCustomMetricFundingCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCustomMetricFXCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCustomMetricGovvieCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCustomMetricPaydownCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapCustomMetricRecoveryCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapEquityEquityCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapEquityForwardCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapEquityFundingCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapEquityFXCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapEquityGovvieCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapEquityPaydownCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapEquityRecoveryCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapForwardForwardCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapForwardFundingCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapForwardFXCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapForwardGovvieCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapForwardPaydownCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapForwardRecoveryCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFundingFundingCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFundingFXCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFundingGovvieCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFundingPaydownCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFundingRecoveryCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFXFXCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFXGovvieCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFXPaydownCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapFXRecoveryCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapGovvieGovvieCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapGovviePaydownCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapGovvieRecoveryCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapPaydownPaydownCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapPaydownRecoveryCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
-	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>
+	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>
 		_mapRecoveryRecoveryCorrelationSurface = new
-			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.quant.function.AbstractUnivariate>();
+			org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.function.deterministic.AbstractUnivariate>();
 
 	private org.drip.analytics.support.CaseInsensitiveTreeMap<org.drip.param.definition.ProductQuote>
 		_mapProductQuote = new
@@ -494,7 +494,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return Equity Curve
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate equityCurve (
+	public org.drip.function.deterministic.AbstractUnivariate equityCurve (
 		final org.drip.state.identifier.EquityLabel equityLabel)
 	{
 		if (null == equityLabel) return null;
@@ -515,7 +515,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setEquityCurve (
 		final org.drip.state.identifier.EquityLabel equityLabel,
-		final org.drip.quant.function.AbstractUnivariate auEquity)
+		final org.drip.function.deterministic.AbstractUnivariate auEquity)
 	{
 		if (null == equityLabel || null == auEquity) return false;
 
@@ -606,7 +606,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return FX Curve
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fxCurve (
+	public org.drip.function.deterministic.AbstractUnivariate fxCurve (
 		final org.drip.state.identifier.FXLabel fxLabel)
 	{
 		if (null == fxLabel) return null;
@@ -627,7 +627,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setFXCurve (
 		final org.drip.state.identifier.FXLabel fxLabel,
-		final org.drip.quant.function.AbstractUnivariate auFX)
+		final org.drip.function.deterministic.AbstractUnivariate auFX)
 	{
 		if (null == fxLabel || null == auFX) return false;
 
@@ -635,7 +635,7 @@ public class CurveSurfaceQuoteSet {
 
 		try {
 			_mapFXCurve.put (fxLabel.inverse().fullyQualifiedName(), new
-				org.drip.quant.function1D.UnivariateReciprocal (auFX));
+				org.drip.function.deterministic1D.UnivariateReciprocal (auFX));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
@@ -689,7 +689,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return Pay-down Curve
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate paydownCurve (
+	public org.drip.function.deterministic.AbstractUnivariate paydownCurve (
 		final org.drip.state.identifier.PaydownLabel paydownLabel)
 	{
 		if (null == paydownLabel) return null;
@@ -710,7 +710,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setPaydownCurve (
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
-		final org.drip.quant.function.AbstractUnivariate auPaydown)
+		final org.drip.function.deterministic.AbstractUnivariate auPaydown)
 	{
 		if (null == paydownLabel || null == auPaydown) return false;
 
@@ -727,7 +727,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Recovery Latent State from the Label
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate recoveryCurve (
+	public org.drip.function.deterministic.AbstractUnivariate recoveryCurve (
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
 		if (null == recoveryLabel) return null;
@@ -749,7 +749,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setRecoveryCurve (
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auRC)
+		final org.drip.function.deterministic.AbstractUnivariate auRC)
 	{
 		if (null == recoveryLabel || null == auRC) return false;
 
@@ -766,7 +766,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Volatility Surface for the Collateral Currency
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralCurveVolSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralCurveVolSurface (
 		final java.lang.String strCurrency)
 	{
 		if (null == strCurrency || strCurrency.isEmpty() || !_mapCollateralVolatilitySurface.containsKey
@@ -787,7 +787,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setCollateralCurveVolSurface (
 		final java.lang.String strCurrency,
-		final org.drip.quant.function.AbstractUnivariate auVolatility)
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 	{
 		if (null == strCurrency || strCurrency.isEmpty() || null == auVolatility) return false;
 
@@ -804,7 +804,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Volatility Surface for the Credit Latent State
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate creditCurveVolSurface (
+	public org.drip.function.deterministic.AbstractUnivariate creditCurveVolSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
 		if (null == creditLabel) return null;
@@ -826,7 +826,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setCreditCurveVolSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
-		final org.drip.quant.function.AbstractUnivariate auVolatility)
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 	{
 		if (null == creditLabel || null == auVolatility) return false;
 
@@ -843,7 +843,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Volatility Surface for the Custom Metric Latent State
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate customMetricVolSurface (
+	public org.drip.function.deterministic.AbstractUnivariate customMetricVolSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel)
 	{
 		if (null == customMetricLabel) return null;
@@ -865,7 +865,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setCustomMetricVolSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
-		final org.drip.quant.function.AbstractUnivariate auVolatility)
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 	{
 		if (null == customMetricLabel || null == auVolatility) return false;
 
@@ -882,7 +882,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Volatility Surface for the Equity Latent State
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate equityCurveVolSurface (
+	public org.drip.function.deterministic.AbstractUnivariate equityCurveVolSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel)
 	{
 		if (null == equityLabel) return null;
@@ -904,7 +904,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setEquityCurveVolSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
-		final org.drip.quant.function.AbstractUnivariate auVolatility)
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 	{
 		if (null == equityLabel || null == auVolatility) return false;
 
@@ -921,7 +921,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Volatility Surface for the Forward Curve
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate forwardCurveVolSurface (
+	public org.drip.function.deterministic.AbstractUnivariate forwardCurveVolSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel)
 	{
 		if (null == forwardLabel) return null;
@@ -943,7 +943,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setForwardCurveVolSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
-		final org.drip.quant.function.AbstractUnivariate auVolatility)
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 	{
 		if (null == forwardLabel || null == auVolatility) return false;
 
@@ -960,7 +960,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Volatility Surface for the Funding Currency
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fundingCurveVolSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fundingCurveVolSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
 		if (null == fundingLabel) return null;
@@ -982,7 +982,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setFundingCurveVolSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel,
-		final org.drip.quant.function.AbstractUnivariate auVolatility)
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 	{
 		if (null == fundingLabel || null == auVolatility) return false;
 
@@ -999,7 +999,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Volatility Surface for the FX Latent State Label
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fxCurveVolSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fxCurveVolSurface (
 		final org.drip.state.identifier.FXLabel fxLabel)
 	{
 		if (null == fxLabel) return null;
@@ -1021,7 +1021,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setFXCurveVolSurface (
 		final org.drip.state.identifier.FXLabel fxLabel,
-		final org.drip.quant.function.AbstractUnivariate auVolatility)
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 	{
 		if (null == fxLabel || null == auVolatility) return false;
 
@@ -1038,7 +1038,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Volatility Surface for the Govvie Latent State
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate govvieCurveVolSurface (
+	public org.drip.function.deterministic.AbstractUnivariate govvieCurveVolSurface (
 		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
 		if (null == govvieLabel) return null;
@@ -1060,7 +1060,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setGovvieCurveVolSurface (
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
-		final org.drip.quant.function.AbstractUnivariate auVolatility)
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 	{
 		if (null == govvieLabel || null == auVolatility) return false;
 
@@ -1077,7 +1077,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Volatility Surface for the Pay-down Latent State
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate paydownCurveVolSurface (
+	public org.drip.function.deterministic.AbstractUnivariate paydownCurveVolSurface (
 		final org.drip.state.identifier.PaydownLabel paydownLabel)
 	{
 		if (null == paydownLabel) return null;
@@ -1099,7 +1099,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setPaydownCurveVolSurface (
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
-		final org.drip.quant.function.AbstractUnivariate auVolatility)
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 	{
 		if (null == paydownLabel || null == auVolatility) return false;
 
@@ -1116,7 +1116,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Volatility Surface for the Recovery Latent State
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate recoveryCurveVolSurface (
+	public org.drip.function.deterministic.AbstractUnivariate recoveryCurveVolSurface (
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
 		if (null == recoveryLabel) return null;
@@ -1138,7 +1138,7 @@ public class CurveSurfaceQuoteSet {
 
 	public boolean setRecoveryCurveVolSurface (
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auVolatility)
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 	{
 		if (null == recoveryLabel || null == auVolatility) return false;
 
@@ -1156,7 +1156,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Collateral Currency Pair
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralCollateralCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralCollateralCorrSurface (
 		final java.lang.String strCurrency1,
 		final java.lang.String strCurrency2)
 	{
@@ -1183,7 +1183,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCollateralCollateralCorrSurface (
 		final java.lang.String strCurrency1,
 		final java.lang.String strCurrency2,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == strCurrency1 || strCurrency1.isEmpty() || null == strCurrency2 || strCurrency2.isEmpty()
 			|| null == auCorrelation)
@@ -1205,7 +1205,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Pair of Credit Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate creditCreditCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate creditCreditCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel1,
 		final org.drip.state.identifier.CreditLabel creditLabel2)
 	{
@@ -1237,7 +1237,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCreditCreditCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel1,
 		final org.drip.state.identifier.CreditLabel creditLabel2,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == creditLabel1 || null == creditLabel2 || null == auCorrelation) return false;
 
@@ -1261,7 +1261,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Custom Metric Latent State Pair
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate customMetricCustomMetricCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate customMetricCustomMetricCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel1,
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel2)
 	{
@@ -1293,7 +1293,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCustomMetricCustomMetricCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel1,
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel2,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == customMetricLabel1 || null == customMetricLabel2 || customMetricLabel1.match
 			(customMetricLabel2) || null == auCorrelation)
@@ -1317,7 +1317,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Pair of Equity Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate equityEquityCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate equityEquityCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel1,
 		final org.drip.state.identifier.EquityLabel equityLabel2)
 	{
@@ -1343,7 +1343,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setEquityEquityCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel1,
 		final org.drip.state.identifier.EquityLabel equityLabel2,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == equityLabel1 || null == equityLabel2 || equityLabel1.match (equityLabel2) || null ==
 			auCorrelation)
@@ -1369,7 +1369,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Pair of Forward Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate forwardForwardCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate forwardForwardCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel1,
 		final org.drip.state.identifier.ForwardLabel forwardLabel2)
 	{
@@ -1395,7 +1395,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setForwardForwardCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel1,
 		final org.drip.state.identifier.ForwardLabel forwardLabel2,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == forwardLabel1 || null == forwardLabel2 || forwardLabel1.match (forwardLabel2) || null ==
 			auCorrelation)
@@ -1421,7 +1421,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Pair of Funding Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fundingFundingCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fundingFundingCorrSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel1,
 		final org.drip.state.identifier.FundingLabel fundingLabel2)
 	{
@@ -1448,7 +1448,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setFundingFundingCorrSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel1,
 		final org.drip.state.identifier.FundingLabel fundingLabel2,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == fundingLabel1 || null == fundingLabel2 || fundingLabel1.match (fundingLabel2) || null ==
 			auCorrelation)
@@ -1474,7 +1474,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified FX Latent State Label Set
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fxFXCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fxFXCorrSurface (
 		final org.drip.state.identifier.FXLabel fxLabel1,
 		final org.drip.state.identifier.FXLabel fxLabel2)
 	{
@@ -1499,7 +1499,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setFXFXCorrSurface (
 		final org.drip.state.identifier.FXLabel fxLabel1,
 		final org.drip.state.identifier.FXLabel fxLabel2,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == fxLabel1 || null == fxLabel2 || fxLabel1.match (fxLabel2) || null == auCorrelation)
 			return false;
@@ -1524,7 +1524,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Govvie Latent State Pair
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate govvieGovvieCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate govvieGovvieCorrSurface (
 		final org.drip.state.identifier.GovvieLabel govvieLabel1,
 		final org.drip.state.identifier.GovvieLabel govvieLabel2)
 	{
@@ -1556,7 +1556,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setGovvieGovvieCorrSurface (
 		final org.drip.state.identifier.GovvieLabel govvieLabel1,
 		final org.drip.state.identifier.GovvieLabel govvieLabel2,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == govvieLabel1 || null == govvieLabel2 || govvieLabel1.match (govvieLabel2) || null ==
 			auCorrelation)
@@ -1582,7 +1582,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Pay-down Latent State Pair
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate paydownPaydownCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate paydownPaydownCorrSurface (
 		final org.drip.state.identifier.PaydownLabel paydownLabel1,
 		final org.drip.state.identifier.PaydownLabel paydownLabel2)
 	{
@@ -1615,7 +1615,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setPaydownPaydownCorrSurface (
 		final org.drip.state.identifier.PaydownLabel paydownLabel1,
 		final org.drip.state.identifier.PaydownLabel paydownLabel2,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == paydownLabel1 || null == paydownLabel2 || paydownLabel1.match (paydownLabel2) || null ==
 			auCorrelation)
@@ -1641,7 +1641,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Recovery Latent State Pair
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate recoveryRecoveryCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate recoveryRecoveryCorrSurface (
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel1,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel2)
 	{
@@ -1674,7 +1674,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setRecoveryRecoveryCorrSurface (
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel1,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel2,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == recoveryLabel1 || null == recoveryLabel2 || recoveryLabel1.match (recoveryLabel2) || null
 			== auCorrelation)
@@ -1702,7 +1702,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Collateral and the Credit Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralCreditCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralCreditCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.CreditLabel creditLabel)
 	{
@@ -1728,7 +1728,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCollateralCreditCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.CreditLabel creditLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == creditLabel)
 			return false;
@@ -1748,7 +1748,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Collateral and the Custom Metric Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralCustomMetricCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralCustomMetricCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel)
 	{
@@ -1774,7 +1774,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCollateralCustomMetricCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == customMetricLabel)
 			return false;
@@ -1794,7 +1794,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Collateral and the Forward Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralForwardCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralForwardCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel)
 	{
@@ -1820,7 +1820,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCollateralEquityCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.EquityLabel equityLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == equityLabel || null
 			== auCorrelation)
@@ -1841,7 +1841,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Collateral and the Equity Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralEquityCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralEquityCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.EquityLabel equityLabel)
 	{
@@ -1867,7 +1867,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCollateralForwardCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == forwardLabel || null
 			== auCorrelation)
@@ -1888,7 +1888,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Collateral and the Funding Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralFundingCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralFundingCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
@@ -1914,7 +1914,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCollateralFundingCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.FundingLabel fundingLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == fundingLabel || null
 			== auCorrelation)
@@ -1935,7 +1935,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Collateral and the FX Latent State Label
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralFXCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralFXCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.FXLabel fxLabel)
 	{
@@ -1960,7 +1960,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCollateralFXCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.FXLabel fxLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == fxLabel || null ==
 			auCorrelation)
@@ -1981,7 +1981,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Collateral and Govvie Latent State Labels
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralGovvieCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralGovvieCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
@@ -2007,7 +2007,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCollateralGovvieCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == govvieLabel || null
 			== auCorrelation)
@@ -2028,7 +2028,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Collateral and Pay-down Latent State Labels
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralPaydownCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralPaydownCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.PaydownLabel paydownLabel)
 	{
@@ -2054,7 +2054,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCollateralPaydownCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == paydownLabel || null
 			== auCorrelation)
@@ -2075,7 +2075,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Collateral and Recovery Latent State Labels
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate collateralRecoveryCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate collateralRecoveryCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
@@ -2101,7 +2101,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCollateralRecoveryCorrSurface (
 		final java.lang.String strCollateralCurrency,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == strCollateralCurrency || strCollateralCurrency.isEmpty() || null == recoveryLabel || null
 			== auCorrelation)
@@ -2122,7 +2122,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Credit and the Custom Metric Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate creditCustomMetricCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate creditCustomMetricCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel)
 	{
@@ -2148,7 +2148,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCreditCustomMetricCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == creditLabel || null == customMetricLabel || null == auCorrelation) return false;
 
@@ -2167,7 +2167,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Credit and the Equity Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate creditEquityCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate creditEquityCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.EquityLabel equityLabel)
 	{
@@ -2193,7 +2193,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCreditEquityCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.EquityLabel equityLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == creditLabel || null == equityLabel || null == auCorrelation) return false;
 
@@ -2212,7 +2212,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Credit and the Forward Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate creditForwardCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate creditForwardCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.ForwardLabel forwardLabel)
 	{
@@ -2238,7 +2238,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCreditForwardCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == creditLabel || null == forwardLabel || null == auCorrelation) return false;
 
@@ -2257,7 +2257,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Credit and the Funding Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate creditFundingCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate creditFundingCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
@@ -2283,7 +2283,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCreditFundingCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.FundingLabel fundingLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == creditLabel || null == fundingLabel || null == auCorrelation) return false;
 
@@ -2302,7 +2302,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Credit and the FX Latent State Labels
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate creditFXCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate creditFXCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.FXLabel fxLabel)
 	{
@@ -2327,7 +2327,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCreditFXCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.FXLabel fxLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == creditLabel || null == fxLabel || null == auCorrelation) return false;
 
@@ -2346,7 +2346,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Credit and the Govvie Latent State Labels
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate creditGovvieCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate creditGovvieCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
@@ -2372,7 +2372,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCreditGovvieCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == creditLabel || null == govvieLabel || null == auCorrelation) return false;
 
@@ -2391,7 +2391,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Credit and the Pay-down Latent State Labels
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate creditPaydownCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate creditPaydownCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel)
 	{
@@ -2417,7 +2417,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCreditPaydownCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == creditLabel || null == paydownLabel || null == auCorrelation) return false;
 
@@ -2436,7 +2436,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Credit and the Recovery Latent State Labels
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate creditRecoveryCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate creditRecoveryCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
@@ -2462,7 +2462,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCreditRecoveryCorrSurface (
 		final org.drip.state.identifier.CreditLabel creditLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == creditLabel || null == recoveryLabel || null == auCorrelation) return false;
 
@@ -2481,7 +2481,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Custom Metric and the Equity Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate customMetricEquityCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate customMetricEquityCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.EquityLabel equityLabel)
 	{
@@ -2507,7 +2507,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCustomMetricEquityCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.EquityLabel equityLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == customMetricLabel || null == equityLabel || null == auCorrelation) return false;
 
@@ -2526,7 +2526,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Custom Metric and the Forward Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate customMetricForwardCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate customMetricForwardCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.ForwardLabel forwardLabel)
 	{
@@ -2552,7 +2552,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCustomMetricForwardCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == customMetricLabel || null == forwardLabel || null == auCorrelation) return false;
 
@@ -2571,7 +2571,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Custom Metric and the Funding Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate customMetricFundingCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate customMetricFundingCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
@@ -2597,7 +2597,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCustomMetricFundingCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.FundingLabel fundingLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == customMetricLabel || null == fundingLabel) return false;
 
@@ -2616,7 +2616,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Custom Metric and the FX Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate customMetricFXCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate customMetricFXCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.FXLabel fxLabel)
 	{
@@ -2642,7 +2642,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCustomMetricFXCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.FXLabel fxLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == customMetricLabel || null == fxLabel || null == auCorrelation) return false;
 
@@ -2661,7 +2661,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Custom Metric and the Govvie Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate customMetricGovvieCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate customMetricGovvieCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
@@ -2687,7 +2687,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCustomMetricGovvieCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == customMetricLabel || null == govvieLabel) return false;
 
@@ -2706,7 +2706,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Custom Metric and the Pay-down Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate customMetricPaydownCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate customMetricPaydownCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel)
 	{
@@ -2732,7 +2732,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCustomMetricPaydownCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == customMetricLabel || null == paydownLabel) return false;
 
@@ -2751,7 +2751,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Custom Metric and the Recovery Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate customMetricRecoveryCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate customMetricRecoveryCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
@@ -2777,7 +2777,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setCustomMetricRecoveryCorrSurface (
 		final org.drip.state.identifier.CustomMetricLabel customMetricLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == customMetricLabel || null == recoveryLabel) return false;
 
@@ -2796,7 +2796,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Equity and the Forward Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate equityForwardCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate equityForwardCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.ForwardLabel forwardLabel)
 	{
@@ -2822,7 +2822,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setEquityForwardCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == equityLabel || null == forwardLabel || null == auCorrelation) return false;
 
@@ -2841,7 +2841,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Equity and the Funding Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate equityFundingCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate equityFundingCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
@@ -2867,7 +2867,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setEquityFundingCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.FundingLabel fundingLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == equityLabel || null == fundingLabel) return false;
 
@@ -2886,7 +2886,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Equity and the FX Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate equityFXCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate equityFXCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.FXLabel fxLabel)
 	{
@@ -2911,7 +2911,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setEquityFXCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.FXLabel fxLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == equityLabel || null == fxLabel || null == auCorrelation) return false;
 
@@ -2930,7 +2930,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Equity and the Govvie Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate equityGovvieCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate equityGovvieCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
@@ -2956,7 +2956,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setEquityGovvieCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == equityLabel || null == govvieLabel) return false;
 
@@ -2975,7 +2975,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Equity and the Pay-down Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate equityPaydownCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate equityPaydownCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel)
 	{
@@ -3001,7 +3001,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setEquityPaydownCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == equityLabel || null == paydownLabel) return false;
 
@@ -3020,7 +3020,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Equity and the Recovery Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate equityRecoveryCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate equityRecoveryCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
@@ -3046,7 +3046,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setEquityRecoveryCorrSurface (
 		final org.drip.state.identifier.EquityLabel equityLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == equityLabel || null == recoveryLabel) return false;
 
@@ -3065,7 +3065,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Forward and the Funding Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate forwardFundingCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate forwardFundingCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.FundingLabel fundingLabel)
 	{
@@ -3091,7 +3091,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setForwardFundingCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.FundingLabel fundingLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == forwardLabel || null == fundingLabel || null == auCorrelation) return false;
 
@@ -3110,7 +3110,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Forward and the FX Latent State Labels
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate forwardFXCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate forwardFXCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.FXLabel fxLabel)
 	{
@@ -3135,7 +3135,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setForwardFXCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.FXLabel fxLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == forwardLabel || null == fxLabel || null == auCorrelation) return false;
 
@@ -3154,7 +3154,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Forward and the Govvie Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate forwardGovvieCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate forwardGovvieCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
@@ -3180,7 +3180,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setForwardGovvieCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == forwardLabel || null == govvieLabel || null == auCorrelation) return false;
 
@@ -3199,7 +3199,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Forward and the Pay-down Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate forwardPaydownCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate forwardPaydownCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel)
 	{
@@ -3225,7 +3225,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setForwardPaydownCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == forwardLabel || null == paydownLabel || null == auCorrelation) return false;
 
@@ -3244,7 +3244,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Forward and the Recovery Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate forwardRecoveryCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate forwardRecoveryCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
@@ -3270,7 +3270,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setForwardRecoveryCorrSurface (
 		final org.drip.state.identifier.ForwardLabel forwardLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == forwardLabel || null == recoveryLabel || null == auCorrelation) return false;
 
@@ -3289,7 +3289,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Funding and the FX Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fundingFXCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fundingFXCorrSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.state.identifier.FXLabel fxLabel)
 	{
@@ -3314,7 +3314,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setFundingFXCorrSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.state.identifier.FXLabel fxLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == fundingLabel || null == fxLabel || null == auCorrelation) return false;
 
@@ -3333,7 +3333,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Funding and the Govvie Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fundingGovvieCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fundingGovvieCorrSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
@@ -3359,7 +3359,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setFundingGovvieCorrSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == fundingLabel || null == govvieLabel || null == auCorrelation) return false;
 
@@ -3378,7 +3378,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Funding and the Pay-down Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fundingPaydownCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fundingPaydownCorrSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel)
 	{
@@ -3404,7 +3404,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setFundingPaydownCorrSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == fundingLabel || null == paydownLabel || null == auCorrelation) return false;
 
@@ -3423,7 +3423,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface between the Funding and the Recovery Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fundingRecoveryCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fundingRecoveryCorrSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
@@ -3449,7 +3449,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setFundingRecoveryCorrSurface (
 		final org.drip.state.identifier.FundingLabel fundingLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == fundingLabel || null == recoveryLabel || null == auCorrelation) return false;
 
@@ -3468,7 +3468,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified FX and the Govvie Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fxGovvieCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fxGovvieCorrSurface (
 		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel)
 	{
@@ -3493,7 +3493,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setFXGovvieCorrSurface (
 		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == fxLabel || null == govvieLabel || null == auCorrelation) return false;
 
@@ -3512,7 +3512,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified FX and the Pay-down Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fxPaydownCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fxPaydownCorrSurface (
 		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel)
 	{
@@ -3537,7 +3537,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setFXPaydownCorrSurface (
 		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == fxLabel || null == paydownLabel || null == auCorrelation) return false;
 
@@ -3556,7 +3556,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified FX and the Recovery Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate fxRecoveryCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate fxRecoveryCorrSurface (
 		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
@@ -3581,7 +3581,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setFXRecoveryCorrSurface (
 		final org.drip.state.identifier.FXLabel fxLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == fxLabel || null == recoveryLabel || null == auCorrelation) return false;
 
@@ -3600,7 +3600,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Govvie and the Pay-down Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate govviePaydownCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate govviePaydownCorrSurface (
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel)
 	{
@@ -3626,7 +3626,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setGovviePaydownCorrSurface (
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == govvieLabel || null == paydownLabel || null == auCorrelation) return false;
 
@@ -3645,7 +3645,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Govvie and the Recovery Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate govvieRecoveryCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate govvieRecoveryCorrSurface (
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
@@ -3671,7 +3671,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setGovvieRecoveryCorrSurface (
 		final org.drip.state.identifier.GovvieLabel govvieLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == govvieLabel || null == recoveryLabel || null == auCorrelation) return false;
 
@@ -3690,7 +3690,7 @@ public class CurveSurfaceQuoteSet {
 	 * @return The Correlation Surface for the specified Pay-down and the Recovery Latent States
 	 */
 
-	public org.drip.quant.function.AbstractUnivariate paydownRecoveryCorrSurface (
+	public org.drip.function.deterministic.AbstractUnivariate paydownRecoveryCorrSurface (
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel)
 	{
@@ -3716,7 +3716,7 @@ public class CurveSurfaceQuoteSet {
 	public boolean setPaydownRecoveryCorrSurface (
 		final org.drip.state.identifier.PaydownLabel paydownLabel,
 		final org.drip.state.identifier.RecoveryLabel recoveryLabel,
-		final org.drip.quant.function.AbstractUnivariate auCorrelation)
+		final org.drip.function.deterministic.AbstractUnivariate auCorrelation)
 	{
 		if (null == paydownLabel || null == recoveryLabel || null == auCorrelation) return false;
 

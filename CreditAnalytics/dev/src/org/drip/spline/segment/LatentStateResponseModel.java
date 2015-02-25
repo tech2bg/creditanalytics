@@ -1482,8 +1482,8 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 			}
 		}
 
-		org.drip.quant.function.AbstractUnivariate ofDeriv = new
-			org.drip.quant.function.AbstractUnivariate (null) {
+		org.drip.function.deterministic.AbstractUnivariate ofDeriv = new
+			org.drip.function.deterministic.AbstractUnivariate (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws java.lang.Exception
@@ -1519,9 +1519,9 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 		};
 
 		try {
-			org.drip.quant.solver1D.FixedPointFinderOutput fpop = new
-				org.drip.quant.solver1D.FixedPointFinderBrent (0., ofDeriv, false).findRoot
-					(org.drip.quant.solver1D.InitializationHeuristics.FromHardSearchEdges (0., 1.));
+			org.drip.function.solver1D.FixedPointFinderOutput fpop = new
+				org.drip.function.solver1D.FixedPointFinderBrent (0., ofDeriv, false).findRoot
+					(org.drip.function.solver1D.InitializationHeuristics.FromHardSearchEdges (0., 1.));
 
 			if (null == fpop || !fpop.containsRoot())
 				return new org.drip.spline.segment.Monotonocity

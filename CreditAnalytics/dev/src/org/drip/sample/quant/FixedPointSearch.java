@@ -1,10 +1,10 @@
 
 package org.drip.sample.quant;
 
+import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.solver1D.*;
 import org.drip.quant.calculus.*;
 import org.drip.quant.common.*;
-import org.drip.quant.function.AbstractUnivariate;
-import org.drip.quant.solver1D.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

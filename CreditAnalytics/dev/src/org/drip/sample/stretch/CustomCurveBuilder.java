@@ -7,12 +7,8 @@ package org.drip.sample.stretch;
 
 import java.util.*;
 
-/*
- * DRIP Math Imports
- */
-
+import org.drip.function.deterministic1D.QuadraticRationalShapeControl;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.function1D.QuadraticRationalShapeControl;
 import org.drip.spline.basis.*;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;

@@ -1,11 +1,11 @@
 
 package org.drip.sample.sequence;
 
+import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic1D.*;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.function.AbstractUnivariate;
-import org.drip.quant.function1D.*;
-import org.drip.quant.random.BoundedUniform;
-import org.drip.sequence.bounds.*;
+import org.drip.sequence.metrics.*;
+import org.drip.sequence.random.BoundedUniform;
 import org.drip.service.api.CreditAnalytics;
 
 /*

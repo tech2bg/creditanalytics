@@ -43,7 +43,7 @@ package org.drip.spline.bspline;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class SegmentBasisFunction extends org.drip.quant.function.AbstractUnivariate {
+public abstract class SegmentBasisFunction extends org.drip.function.deterministic.AbstractUnivariate {
 	private int _iBSplineOrder = -1;
 	private double _dblLeadingPredictorOrdinate = java.lang.Double.NaN;
 	private double _dblTrailingPredictorOrdinate = java.lang.Double.NaN;

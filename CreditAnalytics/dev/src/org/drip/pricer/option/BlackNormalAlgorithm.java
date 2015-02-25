@@ -284,7 +284,7 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 		final double dblCallPrice)
 		throws java.lang.Exception
 	{
-		org.drip.quant.function.AbstractUnivariate au = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate au = new org.drip.function.deterministic.AbstractUnivariate
 			(null)
 		{
 			@Override public double evaluate (
@@ -300,8 +300,8 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 			}
 		};
 
-		org.drip.quant.solver1D.FixedPointFinderOutput fpop = new
-			org.drip.quant.solver1D.FixedPointFinderBrent (0., au, true).findRoot();
+		org.drip.function.solver1D.FixedPointFinderOutput fpop = new
+			org.drip.function.solver1D.FixedPointFinderBrent (0., au, true).findRoot();
 
 		if (null == fpop || !fpop.containsRoot())
 			throw new java.lang.Exception

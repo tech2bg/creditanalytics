@@ -57,7 +57,7 @@ public class Integrator {
 	 */
 
 	public static final double LinearQuadrature (
-		final org.drip.quant.function.AbstractUnivariate au,
+		final org.drip.function.deterministic.AbstractUnivariate au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -99,7 +99,7 @@ public class Integrator {
 	 */
 
 	public static final double MidPoint (
-		final org.drip.quant.function.AbstractUnivariate au,
+		final org.drip.function.deterministic.AbstractUnivariate au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -132,7 +132,7 @@ public class Integrator {
 	 */
 
 	public static final double Trapezoidal (
-		final org.drip.quant.function.AbstractUnivariate au,
+		final org.drip.function.deterministic.AbstractUnivariate au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -169,7 +169,7 @@ public class Integrator {
 	 */
 
 	public static final double Simpson (
-		final org.drip.quant.function.AbstractUnivariate au,
+		final org.drip.function.deterministic.AbstractUnivariate au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -213,7 +213,7 @@ public class Integrator {
 	 */
 
 	public static final double Simpson38 (
-		final org.drip.quant.function.AbstractUnivariate au,
+		final org.drip.function.deterministic.AbstractUnivariate au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -264,7 +264,7 @@ public class Integrator {
 	 */
 
 	public static final double Boole (
-		final org.drip.quant.function.AbstractUnivariate au,
+		final org.drip.function.deterministic.AbstractUnivariate au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception

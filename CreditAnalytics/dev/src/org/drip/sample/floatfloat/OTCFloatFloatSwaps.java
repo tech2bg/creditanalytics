@@ -560,7 +560,7 @@ public class OTCFloatFloatSwaps {
 				org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2),
 				new org.drip.spline.params.ResponseScalingShapeControl (
 					true,
-					new org.drip.quant.function1D.QuadraticRationalShapeControl (0.)
+					new org.drip.function.deterministic1D.QuadraticRationalShapeControl (0.)
 				),
 				null
 			),

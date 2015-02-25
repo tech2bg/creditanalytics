@@ -95,7 +95,7 @@ public class BestFitFlexurePenalizer {
 	{
 		if (null == _sfpcCurvature) return 0.;
 
-		org.drip.quant.function.AbstractUnivariate au = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate au = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblVariate)
@@ -137,7 +137,7 @@ public class BestFitFlexurePenalizer {
 	{
 		if (null == _sfpcLength) return 0.;
 
-		org.drip.quant.function.AbstractUnivariate au = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate au = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblVariate)

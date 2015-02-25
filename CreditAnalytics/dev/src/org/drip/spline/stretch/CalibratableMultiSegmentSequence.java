@@ -39,7 +39,7 @@ package org.drip.spline.stretch;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CalibratableMultiSegmentSequence extends org.drip.quant.function.AbstractUnivariate implements
+public class CalibratableMultiSegmentSequence extends org.drip.function.deterministic.AbstractUnivariate implements
 	org.drip.spline.stretch.MultiSegmentSequence {
 	private static final int MAXIMA_PREDICTOR_ORDINATE_NODE = 1;
 	private static final int MINIMA_PREDICTOR_ORDINATE_NODE = 2;
@@ -168,11 +168,11 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function.Ab
 				!_ssb.manifestMeasureSensitivity (0.))
 				return false;
 		} else if (0 != (org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE & iCalibrationDetail)) {
-			org.drip.quant.solver1D.FixedPointFinderOutput fpop = null;
+			org.drip.function.solver1D.FixedPointFinderOutput fpop = null;
 
 			if (null == fpop || !fpop.containsRoot()) {
 				try {
-					fpop = new org.drip.quant.solver1D.FixedPointFinderZheng (0., this, true).findRoot();
+					fpop = new org.drip.function.solver1D.FixedPointFinderZheng (0., this, true).findRoot();
 				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 
@@ -646,10 +646,10 @@ public class CalibratableMultiSegmentSequence extends org.drip.quant.function.Ab
 			null);
 	}
 
-	@Override public org.drip.quant.function.AbstractUnivariate toAU()
+	@Override public org.drip.function.deterministic.AbstractUnivariate toAU()
 	{
-		org.drip.quant.function.AbstractUnivariate au = new
-			org.drip.quant.function.AbstractUnivariate (null)
+		org.drip.function.deterministic.AbstractUnivariate au = new
+			org.drip.function.deterministic.AbstractUnivariate (null)
 		{
 			@Override public double evaluate (
 				final double dblVariate)

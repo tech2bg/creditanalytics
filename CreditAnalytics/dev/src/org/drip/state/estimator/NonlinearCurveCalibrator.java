@@ -50,7 +50,7 @@ package org.drip.state.estimator;
  */
 
 public class NonlinearCurveCalibrator {
-	class CreditCurveCalibrator extends org.drip.quant.function.AbstractUnivariate {
+	class CreditCurveCalibrator extends org.drip.function.deterministic.AbstractUnivariate {
 		private int _iInstr = -1;
 		private boolean _bFlat = false;
 		private java.lang.String _strMeasure = "";
@@ -176,8 +176,8 @@ public class NonlinearCurveCalibrator {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
-		org.drip.quant.function.AbstractUnivariate ofIROuter = new
-			org.drip.quant.function.AbstractUnivariate (null) {
+		org.drip.function.deterministic.AbstractUnivariate ofIROuter = new
+			org.drip.function.deterministic.AbstractUnivariate (null) {
 			public double evaluate (
 				final double dblShiftedLeftSlope)
 				throws java.lang.Exception
@@ -195,7 +195,7 @@ public class NonlinearCurveCalibrator {
 			}
 		};
 
-		org.drip.quant.solver1D.FixedPointFinderOutput rfop = new org.drip.quant.solver1D.FixedPointFinderBrent
+		org.drip.function.solver1D.FixedPointFinderOutput rfop = new org.drip.function.solver1D.FixedPointFinderBrent
 			(0., ofIROuter, true).findRoot();
 
 		if (null == rfop || !rfop.containsRoot())
@@ -257,8 +257,8 @@ public class NonlinearCurveCalibrator {
 		}
 
 		try {
-			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
-				org.drip.quant.solver1D.FixedPointFinderZheng (0., new CreditCurveCalibrator (cc, comp,
+			org.drip.function.solver1D.FixedPointFinderOutput rfop = new
+				org.drip.function.solver1D.FixedPointFinderZheng (0., new CreditCurveCalibrator (cc, comp,
 					iInstr, valParams, dc, dcTSY, pricerParamsIn, strMeasure, dblCalibValue, lsfc,
 						quotingParams, bFlat), true).findRoot();
 
@@ -308,8 +308,8 @@ public class NonlinearCurveCalibrator {
 			!org.drip.quant.common.NumberUtil.IsValid (dblCalibValue))
 			throw new java.lang.Exception ("NonlinearCurveCalibrator::calibrateIRNode => Invalid inputs!");
 
-		org.drip.quant.function.AbstractUnivariate ofIRNode = new
-			org.drip.quant.function.AbstractUnivariate (null) {
+		org.drip.function.deterministic.AbstractUnivariate ofIRNode = new
+			org.drip.function.deterministic.AbstractUnivariate (null) {
 			public double evaluate (
 				final double dblValue)
 				throws java.lang.Exception
@@ -334,8 +334,8 @@ public class NonlinearCurveCalibrator {
 			}
 		};
 
-		org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
-			org.drip.quant.solver1D.FixedPointFinderBrent (0., ofIRNode, true).findRoot();
+		org.drip.function.solver1D.FixedPointFinderOutput rfop = new
+			org.drip.function.solver1D.FixedPointFinderBrent (0., ofIRNode, true).findRoot();
 
 		if (null == rfop || !rfop.containsRoot()) {
 			System.out.println ("\tName: " + comp.name());

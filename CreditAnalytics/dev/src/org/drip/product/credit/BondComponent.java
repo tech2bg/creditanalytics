@@ -1719,7 +1719,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 									new org.drip.spline.basis.PolynomialFunctionSetParams (4),
 										org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2),
 											new org.drip.spline.params.ResponseScalingShapeControl (true, new
-												org.drip.quant.function1D.QuadraticRationalShapeControl
+												org.drip.function.deterministic1D.QuadraticRationalShapeControl
 													(0.)), null));
 		} catch (java.lang.Exception e) {
 			if (!s_bSuppressErrors) e.printStackTrace();
@@ -11723,8 +11723,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			final double dblPrice)
 			throws java.lang.Exception
 		{
-			org.drip.quant.function.AbstractUnivariate ofYieldToPrice = new
-				org.drip.quant.function.AbstractUnivariate (null) {
+			org.drip.function.deterministic.AbstractUnivariate ofYieldToPrice = new
+				org.drip.function.deterministic.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblYield)
 					throws java.lang.Exception
@@ -11734,11 +11734,11 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				}
 			};
 
-			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
-				org.drip.quant.solver1D.FixedPointFinderNewton (0., ofYieldToPrice, true).findRoot();
+			org.drip.function.solver1D.FixedPointFinderOutput rfop = new
+				org.drip.function.solver1D.FixedPointFinderNewton (0., ofYieldToPrice, true).findRoot();
 
 			if (null == rfop || !rfop.containsRoot()) {
-				rfop = new org.drip.quant.solver1D.FixedPointFinderZheng (0., ofYieldToPrice,
+				rfop = new org.drip.function.solver1D.FixedPointFinderZheng (0., ofYieldToPrice,
 					true).findRoot();
 
 				if (null == rfop || !rfop.containsRoot())
@@ -11777,8 +11777,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				throw new java.lang.Exception
 					("BondComponent::BondCalibrator::calibZSpreadFromPrice => Z Spread Calculation turned off for floaters!");
 
-			org.drip.quant.function.AbstractUnivariate ofZSpreadToPrice = new
-				org.drip.quant.function.AbstractUnivariate (null) {
+			org.drip.function.deterministic.AbstractUnivariate ofZSpreadToPrice = new
+				org.drip.function.deterministic.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblZSpread)
 					throws java.lang.Exception
@@ -11788,8 +11788,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				}
 			};
 
-			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
-				org.drip.quant.solver1D.FixedPointFinderBrent (0., ofZSpreadToPrice, true).findRoot();
+			org.drip.function.solver1D.FixedPointFinderOutput rfop = new
+				org.drip.function.solver1D.FixedPointFinderBrent (0., ofZSpreadToPrice, true).findRoot();
 
 			if (null == rfop || !rfop.containsRoot())
 				throw new java.lang.Exception
@@ -11821,8 +11821,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			final double dblPriceCalib)
 			throws java.lang.Exception
 		{
-			org.drip.quant.function.AbstractUnivariate ofZSpreadToPrice = new
-				org.drip.quant.function.AbstractUnivariate (null) {
+			org.drip.function.deterministic.AbstractUnivariate ofZSpreadToPrice = new
+				org.drip.function.deterministic.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblZSpread)
 					throws java.lang.Exception
@@ -11832,8 +11832,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				}
 			};
 
-			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
-				org.drip.quant.solver1D.FixedPointFinderBrent (0., ofZSpreadToPrice, true).findRoot();
+			org.drip.function.solver1D.FixedPointFinderOutput rfop = new
+				org.drip.function.solver1D.FixedPointFinderBrent (0., ofZSpreadToPrice, true).findRoot();
 
 			if (null == rfop || !rfop.containsRoot())
 				throw new java.lang.Exception
@@ -11870,8 +11870,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				throw new java.lang.Exception
 					("BondComponent::BondCalibrator::calibZeroCurveSpreadFromPrice => Z Spread Calculation turned off for floaters!");
 
-			org.drip.quant.function.AbstractUnivariate ofZSpreadToPrice = new
-				org.drip.quant.function.AbstractUnivariate (null) {
+			org.drip.function.deterministic.AbstractUnivariate ofZSpreadToPrice = new
+				org.drip.function.deterministic.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblZSpread)
 					throws java.lang.Exception
@@ -11881,8 +11881,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				}
 			};
 
-			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
-				org.drip.quant.solver1D.FixedPointFinderBrent (0., ofZSpreadToPrice, true).findRoot();
+			org.drip.function.solver1D.FixedPointFinderOutput rfop = new
+				org.drip.function.solver1D.FixedPointFinderBrent (0., ofZSpreadToPrice, true).findRoot();
 
 			if (null == rfop || !rfop.containsRoot())
 				throw new java.lang.Exception
@@ -11914,8 +11914,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			final boolean bFlatCalib)
 			throws java.lang.Exception
 		{
-			org.drip.quant.function.AbstractUnivariate ofCreditBasisToPrice = new
-				org.drip.quant.function.AbstractUnivariate (null) {
+			org.drip.function.deterministic.AbstractUnivariate ofCreditBasisToPrice = new
+				org.drip.function.deterministic.AbstractUnivariate (null) {
 				@Override public double evaluate (
 					final double dblCreditBasis)
 					throws java.lang.Exception
@@ -11925,8 +11925,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				}
 			};
 
-			org.drip.quant.solver1D.FixedPointFinderOutput rfop = new
-				org.drip.quant.solver1D.FixedPointFinderBrent (0., ofCreditBasisToPrice, true).findRoot();
+			org.drip.function.solver1D.FixedPointFinderOutput rfop = new
+				org.drip.function.solver1D.FixedPointFinderBrent (0., ofCreditBasisToPrice, true).findRoot();
 
 			if (null == rfop || !rfop.containsRoot())
 				throw new java.lang.Exception

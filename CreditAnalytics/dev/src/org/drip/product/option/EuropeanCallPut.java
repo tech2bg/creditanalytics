@@ -98,7 +98,7 @@ public class EuropeanCallPut {
 		final double dblUnderlier,
 		final boolean bIsForward,
 		final org.drip.analytics.rates.DiscountCurve dc,
-		final org.drip.quant.function.AbstractUnivariate auVolatility,
+		final org.drip.function.deterministic.AbstractUnivariate auVolatility,
 		final org.drip.pricer.option.FokkerPlanckGenerator fpg)
 	{
 		if (null == valParams || null == dc || null == auVolatility || null == fpg) return null;

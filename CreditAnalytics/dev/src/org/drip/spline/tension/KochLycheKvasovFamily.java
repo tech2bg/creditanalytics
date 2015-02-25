@@ -58,7 +58,7 @@ public class KochLycheKvasovFamily {
 	{
 		if (null == etsp) return null;
 
-		org.drip.quant.function.AbstractUnivariate auPhy = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate auPhy = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblX)
@@ -113,7 +113,7 @@ public class KochLycheKvasovFamily {
 			}
 		};
 
-		org.drip.quant.function.AbstractUnivariate auPsy = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate auPsy = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblX)
@@ -171,7 +171,7 @@ public class KochLycheKvasovFamily {
 
 		try {
 			return new org.drip.spline.bspline.SegmentBasisFunctionSet (2, etsp.tension(), new
-				org.drip.quant.function.AbstractUnivariate[] {auPhy, auPsy});
+				org.drip.function.deterministic.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -192,7 +192,7 @@ public class KochLycheKvasovFamily {
 	{
 		if (null == etsp) return null;
 
-		org.drip.quant.function.AbstractUnivariate auPhy = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate auPhy = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblX)
@@ -248,7 +248,7 @@ public class KochLycheKvasovFamily {
 			}
 		};
 
-		org.drip.quant.function.AbstractUnivariate auPsy = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate auPsy = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblX)
@@ -308,7 +308,7 @@ public class KochLycheKvasovFamily {
 
 		try {
 			return new org.drip.spline.bspline.SegmentBasisFunctionSet (2, etsp.tension(), new
-				org.drip.quant.function.AbstractUnivariate[] {auPhy, auPsy});
+				org.drip.function.deterministic.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -330,7 +330,7 @@ public class KochLycheKvasovFamily {
 	{
 		if (null == etsp) return null;
 
-		org.drip.quant.function.AbstractUnivariate auPhy = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate auPhy = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblX)
@@ -386,7 +386,7 @@ public class KochLycheKvasovFamily {
 			}
 		};
 
-		org.drip.quant.function.AbstractUnivariate auPsy = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate auPsy = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblX)
@@ -446,7 +446,7 @@ public class KochLycheKvasovFamily {
 
 		try {
 			return new org.drip.spline.bspline.SegmentBasisFunctionSet (2, etsp.tension(), new
-				org.drip.quant.function.AbstractUnivariate[] {auPhy, auPsy});
+				org.drip.function.deterministic.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -467,7 +467,7 @@ public class KochLycheKvasovFamily {
 	{
 		if (null == etsp) return null;
 
-		org.drip.quant.function.AbstractUnivariate auPhy = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate auPhy = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblX)
@@ -514,7 +514,7 @@ public class KochLycheKvasovFamily {
 			}
 		};
 
-		org.drip.quant.function.AbstractUnivariate auPsy = new org.drip.quant.function.AbstractUnivariate
+		org.drip.function.deterministic.AbstractUnivariate auPsy = new org.drip.function.deterministic.AbstractUnivariate
 			(null) {
 			@Override public double evaluate (
 				final double dblX)
@@ -564,7 +564,7 @@ public class KochLycheKvasovFamily {
 
 		try {
 			return new org.drip.spline.bspline.SegmentBasisFunctionSet (2, etsp.tension(), new
-				org.drip.quant.function.AbstractUnivariate[] {auPhy, auPsy});
+				org.drip.function.deterministic.AbstractUnivariate[] {auPhy, auPsy});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

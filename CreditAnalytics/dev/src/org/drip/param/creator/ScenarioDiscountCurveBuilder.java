@@ -602,7 +602,7 @@ public class ScenarioDiscountCurveBuilder {
 				org.drip.spline.params.SegmentCustomBuilderControl (strBasisType, fsbp,
 					org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
 						org.drip.spline.params.ResponseScalingShapeControl (true, new
-							org.drip.quant.function1D.QuadraticRationalShapeControl (0.)), null),
+							org.drip.function.deterministic1D.QuadraticRationalShapeControl (0.)), null),
 								org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
 									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE, null, null);
 
@@ -625,7 +625,7 @@ public class ScenarioDiscountCurveBuilder {
 								org.drip.spline.basis.PolynomialFunctionSetParams (4),
 									org.drip.spline.params.SegmentInelasticDesignControl.Create (2, 2), new
 										org.drip.spline.params.ResponseScalingShapeControl (true, new
-											org.drip.quant.function1D.QuadraticRationalShapeControl (0.)),
+											org.drip.function.deterministic1D.QuadraticRationalShapeControl (0.)),
 												null),
 													org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE,
 														null, null, true, true);

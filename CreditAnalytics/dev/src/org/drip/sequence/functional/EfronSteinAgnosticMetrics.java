@@ -36,29 +36,29 @@ package org.drip.sequence.functional;
  */
 
 public class EfronSteinAgnosticMetrics {
-	private org.drip.quant.function.AbstractMultivariate _am = null;
-	private org.drip.sequence.bounds.SingleSequenceAgnosticMetrics[] _aSSAM = null;
+	private org.drip.sequence.random.MultivariateFunction _func = null;
+	private org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] _aSSAM = null;
 
 	/**
 	 * EfronSteinAgnosticMetrics Constructor
 	 * 
-	 * @param am Multivariate Objective Function
+	 * @param func Multivariate Objective Function
 	 * @param aSSAM Array of the individual Single Sequence Metrics
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
 	public EfronSteinAgnosticMetrics (
-		final org.drip.quant.function.AbstractMultivariate am,
-		final org.drip.sequence.bounds.SingleSequenceAgnosticMetrics[] aSSAM)
+		final org.drip.sequence.random.MultivariateFunction func,
+		final org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM)
 		throws java.lang.Exception
 	{
-		if (null == (_am = am) || null != (_aSSAM = aSSAM))
+		if (null == (_func = func) || null == (_aSSAM = aSSAM))
 			throw new java.lang.Exception ("EfronSteinAgnosticMetrics ctr: Invalid Inputs");
 
-		int iNumVariable = _am.numVariables();
+		int iNumVariable = _aSSAM.length;
 
-		if (iNumVariable != _aSSAM.length)
+		if (0 == iNumVariable)
 			throw new java.lang.Exception ("EfronSteinAgnosticMetrics ctr: Invalid Inputs");
 
 		int iSequenceLength = _aSSAM[0].sequence().length;
@@ -75,9 +75,9 @@ public class EfronSteinAgnosticMetrics {
 	 * @return The Multivariate Objective Function Instance
 	 */
 
-	public org.drip.quant.function.AbstractMultivariate function()
+	public org.drip.function.deterministic.AbstractMultivariate function()
 	{
-		return _am;
+		return _func;
 	}
 
 	/**
@@ -86,43 +86,108 @@ public class EfronSteinAgnosticMetrics {
 	 * @return The Array of the Single Sequence Agnostic Metrics
 	 */
 
-	public org.drip.sequence.bounds.SingleSequenceAgnosticMetrics[] randomSequenceGenerator()
+	public org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] sequenceMetrics()
 	{
 		return _aSSAM;
 	}
 
 	/**
-	 * Compute the Function Sequence Agnostic Metrics associated with each Variate
+	 * Extract the Full Variate Array Sequence
+	 * 
+	 * @param aSSAM Array of the individual Single Sequence Metrics
+	 * 
+	 * @return The Full Variate Array Sequence
+	 */
+
+	public double[][] variateSequence (
+		final org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM)
+	{
+		int iNumVariate = _aSSAM.length;
+
+		if (null == aSSAM || aSSAM.length != iNumVariate) return null;
+
+		int iSequenceSize = aSSAM[0].sequence().length;
+
+		double[][] aadblVariateSequence = new double[iSequenceSize][iNumVariate];
+
+		for (int iVariateIndex = 0; iVariateIndex < iNumVariate; ++iVariateIndex) {
+			double[] adblVariate = aSSAM[iVariateIndex].sequence();
+
+			for (int iSequenceIndex = 0; iSequenceIndex < iSequenceSize; ++iSequenceIndex)
+				aadblVariateSequence[iSequenceIndex][iVariateIndex] = adblVariate[iSequenceIndex];
+		}
+
+		return aadblVariateSequence;
+	}
+
+	/**
+	 * Compute the Function Sequence Agnostic Metrics associated with the Variance of each Variate
 	 * 
 	 * @return The Array of the Associated Sequence Metrics
 	 */
 
-	public org.drip.sequence.bounds.SingleSequenceAgnosticMetrics[] univariateSequenceMetrics() {
-		int iNumVariate = _am.numVariables();
+	public org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] variateVarianceMetrics()
+	{
+		int iNumVariate = _aSSAM.length;
+		org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM = new
+			org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[iNumVariate];
+
+		for (int i = 0; i < iNumVariate; ++i) {
+			if (null == (aSSAM[i] = _func.unconditionalTargetVariateMetrics (_aSSAM, i))) return null;
+		}
+
+		return aSSAM;
+	}
+
+	/**
+	 * Compute the Function Sequence Agnostic Metrics associated with each Variate using the specified Ghost
+	 * 	Symmetric Variable Copy
+	 * 
+	 * @param aSSAMGhost Array of the Ghost Single Sequence Metrics
+	 * 
+	 * @return The Array of the Associated Sequence Metrics
+	 */
+
+	public org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] symmetrizedDifferenceSequenceMetrics (
+		final org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAMGhost)
+	{
+		double[][] aadblSequenceVariate = variateSequence (_aSSAM);
+
+		double[][] aadblGhostSequenceVariate = variateSequence (aSSAMGhost);
+
+		if (null == aadblGhostSequenceVariate || aadblSequenceVariate.length !=
+			aadblGhostSequenceVariate.length || aadblSequenceVariate[0].length !=
+				aadblGhostSequenceVariate[0].length)
+			return null;
 
 		int iSequenceSize = _aSSAM[0].sequence().length;
 
-		double[] adblFunctionArgs = new double[iNumVariate];
-		double[] adblFunctionSequence = new double[iSequenceSize];
-		org.drip.sequence.bounds.SingleSequenceAgnosticMetrics[] aSSAM = new
-			org.drip.sequence.bounds.SingleSequenceAgnosticMetrics[iNumVariate];
+		int iNumVariate = _aSSAM.length;
+		org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAMFunction = new
+			org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[iNumVariate];
 
 		try {
 			for (int iVariateIndex = 0; iVariateIndex < iNumVariate; ++iVariateIndex) {
-				double[] adblIndexVariateSequence = _aSSAM[iVariateIndex].sequence();
+				double[] adblSymmetrizedFunctionDifference = new double[iSequenceSize];
 
 				for (int iSequenceIndex = 0; iSequenceIndex < iSequenceSize; ++iSequenceIndex) {
-					double dblVariate = adblFunctionArgs[iVariateIndex];
-					adblFunctionArgs[iVariateIndex] = adblIndexVariateSequence[iSequenceIndex];
+					double[] adblVariate = aadblSequenceVariate[iSequenceIndex];
 
-					adblFunctionSequence[iSequenceIndex] = _am.evaluate (adblFunctionArgs);
+					adblSymmetrizedFunctionDifference[iSequenceIndex] = _func.evaluate (adblVariate);
 
-					adblFunctionArgs[iVariateIndex] = dblVariate;
+					double dblVariateOrig = adblVariate[iVariateIndex];
+					adblVariate[iVariateIndex] = aadblGhostSequenceVariate[iSequenceIndex][iVariateIndex];
+
+					adblSymmetrizedFunctionDifference[iSequenceIndex] -= _func.evaluate (adblVariate);
+
+					adblVariate[iVariateIndex] = dblVariateOrig;
 				}
 
-				aSSAM[iVariateIndex] = new org.drip.sequence.bounds.SingleSequenceAgnosticMetrics
-					(adblFunctionSequence, null);
+				aSSAMFunction[iVariateIndex] = new org.drip.sequence.metrics.SingleSequenceAgnosticMetrics
+					(adblSymmetrizedFunctionDifference, null);
 			}
+
+			return aSSAMFunction;
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -141,19 +206,74 @@ public class EfronSteinAgnosticMetrics {
 	public double martingaleVarianceUpperBound()
 		throws java.lang.Exception
 	{
+		int iNumVariate = _aSSAM.length;
 		double dblVarianceUpperBound = 0.;
 
-		int iNumVariate = _am.numVariables();
-
-		org.drip.sequence.bounds.SingleSequenceAgnosticMetrics[] aSSAM = univariateSequenceMetrics();
+		org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM = variateVarianceMetrics();
 
 		if (null == aSSAM || iNumVariate != aSSAM.length)
 			throw new java.lang.Exception
-				("EfronSteinAgnosticMetrics::martingaleVarianceUpperBound => Cannot compute Univariate Sequence Metrics");
+				("EfronSteinAgnosticMetrics::martingaleVarianceUpperBound => Cannot compute Univariate Variance Metrics");
 
 		for (int i = 0; i < iNumVariate; ++i)
-			dblVarianceUpperBound += aSSAM[i].populationVariance();
+			dblVarianceUpperBound += aSSAM[i].empiricalExpectation();
 
 		return dblVarianceUpperBound;
+	}
+
+	/**
+	 * Compute the Efron-Stein-Steele Variance Upper Bound using the Ghost Variables
+	 * 
+	 * @param aSSAMGhost Array of the Ghost Single Sequence Metrics
+	 * 
+	 * @return The Efron-Stein-Steele Variance Upper Bound using the Ghost Variables
+	 * 
+	 * @throws java.lang.Exception Thrown if the Upper Bound cannot be calculated
+	 */
+
+	public double efronSteinSteeleBound (
+		final org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAMGhost)
+		throws java.lang.Exception
+	{
+		int iNumVariate = _aSSAM.length;
+		double dblVarianceUpperBound = 0.;
+
+		org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM = symmetrizedDifferenceSequenceMetrics
+			(aSSAMGhost);
+
+		if (null == aSSAM || iNumVariate != aSSAM.length)
+			throw new java.lang.Exception
+				("EfronSteinAgnosticMetrics::efronSteinSteeleBound => Cannot compute Symmetrized Difference Metrics");
+
+		for (int i = 0; i < iNumVariate; ++i)
+			dblVarianceUpperBound += aSSAM[i].empiricalRawMoment (2, false);
+
+		return 0.5 * dblVarianceUpperBound;
+	}
+
+	/**
+	 * Compute the Multivariate Variance Upper Bound using the Bounded Differences Support
+	 * 
+	 * @return The Multivariate Variance Upper Bound using the Bounded Differences Support
+	 * 
+	 * @throws java.lang.Exception Thrown if the Upper Bound cannot be calculated
+	 */
+
+	public double boundedVarianceUpperBound()
+		throws java.lang.Exception
+	{
+		int iNumVariate = _aSSAM.length;
+		double dblVarianceUpperBound = 0.;
+
+		for (int i = 0; i < iNumVariate; ++i) {
+			if (!(_aSSAM[i] instanceof org.drip.sequence.metrics.BoundedSequenceAgnosticMetrics))
+				throw new java.lang.Exception
+					("EfronSteinAgnosticMetrics::boundedVarianceUpperBound => Invalid Bounded Metrics");
+
+			dblVarianceUpperBound += ((org.drip.sequence.metrics.BoundedSequenceAgnosticMetrics)
+				_aSSAM[i]).support();
+		}
+
+		return 0.5 * dblVarianceUpperBound;
 	}
 }

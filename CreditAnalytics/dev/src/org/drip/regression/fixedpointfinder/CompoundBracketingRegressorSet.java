@@ -39,7 +39,7 @@ package org.drip.regression.fixedpointfinder;
  */
 
 public class CompoundBracketingRegressorSet implements org.drip.regression.core.RegressorSet {
-	private org.drip.quant.function.AbstractUnivariate _of = null;
+	private org.drip.function.deterministic.AbstractUnivariate _of = null;
 	private java.lang.String _strRegressionScenario = "org.drip.math.solver1D.FixedPointFinderCompound";
 
 	private java.util.List<org.drip.regression.core.UnitRegressor> _setRegressors = new
@@ -47,7 +47,7 @@ public class CompoundBracketingRegressorSet implements org.drip.regression.core.
 
 	public CompoundBracketingRegressorSet()
 	{
-		_of = new org.drip.quant.function.AbstractUnivariate (null)
+		_of = new org.drip.function.deterministic.AbstractUnivariate (null)
 		{
 			public double evaluate (
 				final double dblVariate)
@@ -87,13 +87,13 @@ public class CompoundBracketingRegressorSet implements org.drip.regression.core.
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("BrentFixedPointFinder",
 				_strRegressionScenario)
 			{
-				org.drip.quant.solver1D.FixedPointFinderBrent fpfbBrent = null;
-				org.drip.quant.solver1D.FixedPointFinderOutput fpfopBrent = null;
+				org.drip.function.solver1D.FixedPointFinderBrent fpfbBrent = null;
+				org.drip.function.solver1D.FixedPointFinderOutput fpfopBrent = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbBrent = new org.drip.quant.solver1D.FixedPointFinderBrent (0., _of, true);
+						fpfbBrent = new org.drip.function.solver1D.FixedPointFinderBrent (0., _of, true);
 
 						return true;
 					} catch (java.lang.Exception e) {
@@ -122,13 +122,13 @@ public class CompoundBracketingRegressorSet implements org.drip.regression.core.
 			_setRegressors.add (new org.drip.regression.core.UnitRegressionExecutor ("ZhengFixedPointFinder",
 				_strRegressionScenario)
 			{
-				org.drip.quant.solver1D.FixedPointFinderZheng fpfbZheng = null;
-				org.drip.quant.solver1D.FixedPointFinderOutput fpfopZheng = null;
+				org.drip.function.solver1D.FixedPointFinderZheng fpfbZheng = null;
+				org.drip.function.solver1D.FixedPointFinderOutput fpfopZheng = null;
 
 				@Override public boolean preRegression()
 				{
 					try {
-						fpfbZheng = new org.drip.quant.solver1D.FixedPointFinderZheng (0., _of, true);
+						fpfbZheng = new org.drip.function.solver1D.FixedPointFinderZheng (0., _of, true);
 
 						return true;
 					} catch (java.lang.Exception e) {

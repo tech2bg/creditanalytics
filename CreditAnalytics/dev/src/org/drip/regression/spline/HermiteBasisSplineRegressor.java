@@ -93,7 +93,7 @@ public class HermiteBasisSplineRegressor extends org.drip.regression.spline.Basi
 
 		org.drip.spline.params.ResponseScalingShapeControl rssc = new
 			org.drip.spline.params.ResponseScalingShapeControl (true, new
-				org.drip.quant.function1D.QuadraticRationalShapeControl (1.));
+				org.drip.function.deterministic1D.QuadraticRationalShapeControl (1.));
 
 		if (null == (_seg1 = org.drip.spline.segment.LatentStateResponseModel.Create (0.0, 1.0, fs, rssc,
 			segParams)) || null == (_seg2 = org.drip.spline.segment.LatentStateResponseModel.Create (1.0,

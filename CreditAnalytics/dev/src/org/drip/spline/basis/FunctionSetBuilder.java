@@ -78,10 +78,10 @@ public class FunctionSetBuilder {
 		double dblTension = etsp.tension();
 
 		try {
-			return new org.drip.spline.basis.FunctionSet (new org.drip.quant.function.AbstractUnivariate[]
-				{new org.drip.quant.function1D.Polynomial (0), new org.drip.quant.function1D.Polynomial (1),
-					new org.drip.quant.function1D.ExponentialTension (java.lang.Math.E, dblTension), new
-						org.drip.quant.function1D.ExponentialTension (java.lang.Math.E, -dblTension)});
+			return new org.drip.spline.basis.FunctionSet (new org.drip.function.deterministic.AbstractUnivariate[]
+				{new org.drip.function.deterministic1D.Polynomial (0), new org.drip.function.deterministic1D.Polynomial (1),
+					new org.drip.function.deterministic1D.ExponentialTension (java.lang.Math.E, dblTension), new
+						org.drip.function.deterministic1D.ExponentialTension (java.lang.Math.E, -dblTension)});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -112,12 +112,12 @@ public class FunctionSetBuilder {
 		double dblTension = etsp.tension();
 
 		try {
-			return new org.drip.spline.basis.FunctionSet (new org.drip.quant.function.AbstractUnivariate[]
-				{new org.drip.quant.function1D.Polynomial (0), new org.drip.quant.function1D.Polynomial (1),
-					new org.drip.quant.function1D.HyperbolicTension
-						(org.drip.quant.function1D.HyperbolicTension.COSH, dblTension), new
-							org.drip.quant.function1D.HyperbolicTension
-								(org.drip.quant.function1D.HyperbolicTension.SINH, dblTension)});
+			return new org.drip.spline.basis.FunctionSet (new org.drip.function.deterministic.AbstractUnivariate[]
+				{new org.drip.function.deterministic1D.Polynomial (0), new org.drip.function.deterministic1D.Polynomial (1),
+					new org.drip.function.deterministic1D.HyperbolicTension
+						(org.drip.function.deterministic1D.HyperbolicTension.COSH, dblTension), new
+							org.drip.function.deterministic1D.HyperbolicTension
+								(org.drip.function.deterministic1D.HyperbolicTension.SINH, dblTension)});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -147,12 +147,12 @@ public class FunctionSetBuilder {
 
 		int iNumBasis = pfsp.numBasis();
 
-		org.drip.quant.function.AbstractUnivariate[] aAU = new
-			org.drip.quant.function.AbstractUnivariate[iNumBasis];
+		org.drip.function.deterministic.AbstractUnivariate[] aAU = new
+			org.drip.function.deterministic.AbstractUnivariate[iNumBasis];
 
 		try {
 			for (int i = 0; i < iNumBasis; ++i)
-				aAU[i] = new org.drip.quant.function1D.Polynomial (i);
+				aAU[i] = new org.drip.function.deterministic1D.Polynomial (i);
 
 			return new org.drip.spline.basis.FunctionSet (aAU);
 		} catch (java.lang.Exception e) {
@@ -186,12 +186,12 @@ public class FunctionSetBuilder {
 
 		int iNumBasis = pfsp.numBasis();
 
-		org.drip.quant.function.AbstractUnivariate[] aAU = new
-			org.drip.quant.function.AbstractUnivariate[iNumBasis];
+		org.drip.function.deterministic.AbstractUnivariate[] aAU = new
+			org.drip.function.deterministic.AbstractUnivariate[iNumBasis];
 
 		try {
 			for (int i = 0; i < iNumBasis; ++i)
-				aAU[i] = new org.drip.quant.function1D.BernsteinPolynomial (i, iNumBasis - 1 - i);
+				aAU[i] = new org.drip.function.deterministic1D.BernsteinPolynomial (i, iNumBasis - 1 - i);
 
 			return new org.drip.spline.basis.FunctionSet (aAU);
 		} catch (java.lang.Exception e) {
@@ -217,19 +217,19 @@ public class FunctionSetBuilder {
 		if (null == kpsp) return null;
 
 		try {
-			org.drip.quant.function.AbstractUnivariate auLinearPoly = new org.drip.quant.function1D.Polynomial
+			org.drip.function.deterministic.AbstractUnivariate auLinearPoly = new org.drip.function.deterministic1D.Polynomial
 				(1);
 
-			org.drip.quant.function.AbstractUnivariate auReflectedLinearPoly = new
-				org.drip.quant.function1D.UnivariateReflection (auLinearPoly);
+			org.drip.function.deterministic.AbstractUnivariate auReflectedLinearPoly = new
+				org.drip.function.deterministic1D.UnivariateReflection (auLinearPoly);
 
-			org.drip.quant.function.AbstractUnivariate auKaklisPandelisPolynomial = new
-				org.drip.quant.function1D.Polynomial (kpsp.polynomialTensionDegree());
+			org.drip.function.deterministic.AbstractUnivariate auKaklisPandelisPolynomial = new
+				org.drip.function.deterministic1D.Polynomial (kpsp.polynomialTensionDegree());
 
-			return new org.drip.spline.basis.FunctionSet (new org.drip.quant.function.AbstractUnivariate[]
-				{auReflectedLinearPoly, auLinearPoly, new org.drip.quant.function1D.UnivariateConvolution
-					(auLinearPoly, new org.drip.quant.function1D.UnivariateReflection
-						(auKaklisPandelisPolynomial)), new org.drip.quant.function1D.UnivariateConvolution
+			return new org.drip.spline.basis.FunctionSet (new org.drip.function.deterministic.AbstractUnivariate[]
+				{auReflectedLinearPoly, auLinearPoly, new org.drip.function.deterministic1D.UnivariateConvolution
+					(auLinearPoly, new org.drip.function.deterministic1D.UnivariateReflection
+						(auKaklisPandelisPolynomial)), new org.drip.function.deterministic1D.UnivariateConvolution
 							(auKaklisPandelisPolynomial, auReflectedLinearPoly)});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -254,20 +254,20 @@ public class FunctionSetBuilder {
 		if (null == ersp) return null;
 
 		try {
-			org.drip.quant.function.AbstractUnivariate auLinearPoly = new org.drip.quant.function1D.Polynomial
+			org.drip.function.deterministic.AbstractUnivariate auLinearPoly = new org.drip.function.deterministic1D.Polynomial
 				(0);
 
-			org.drip.quant.function.AbstractUnivariate auLRSC = new
-				org.drip.quant.function1D.LinearRationalShapeControl (ersp.rationalTension());
+			org.drip.function.deterministic.AbstractUnivariate auLRSC = new
+				org.drip.function.deterministic1D.LinearRationalShapeControl (ersp.rationalTension());
 
-			org.drip.quant.function.AbstractUnivariate auET = new
-				org.drip.quant.function1D.ExponentialTension (java.lang.Math.E, -ersp.exponentialTension());
+			org.drip.function.deterministic.AbstractUnivariate auET = new
+				org.drip.function.deterministic1D.ExponentialTension (java.lang.Math.E, -ersp.exponentialTension());
 
-			org.drip.quant.function.AbstractUnivariate auLRET = new
-				org.drip.quant.function1D.LinearRationalTensionExponential (-ersp.exponentialTension(),
+			org.drip.function.deterministic.AbstractUnivariate auLRET = new
+				org.drip.function.deterministic1D.LinearRationalTensionExponential (-ersp.exponentialTension(),
 					ersp.rationalTension());
 
-			return new org.drip.spline.basis.FunctionSet (new org.drip.quant.function.AbstractUnivariate[]
+			return new org.drip.spline.basis.FunctionSet (new org.drip.function.deterministic.AbstractUnivariate[]
 				{auLinearPoly, auLRSC, auET, auLRET});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -292,19 +292,19 @@ public class FunctionSetBuilder {
 		if (null == emsp) return null;
 
 		try {
-			org.drip.quant.function.AbstractUnivariate auLinearPoly = new
-				org.drip.quant.function1D.Polynomial (0);
+			org.drip.function.deterministic.AbstractUnivariate auLinearPoly = new
+				org.drip.function.deterministic1D.Polynomial (0);
 
-			org.drip.quant.function.AbstractUnivariate auExp1 = new
-				org.drip.quant.function1D.ExponentialTension (java.lang.Math.E, -emsp.tension (0));
+			org.drip.function.deterministic.AbstractUnivariate auExp1 = new
+				org.drip.function.deterministic1D.ExponentialTension (java.lang.Math.E, -emsp.tension (0));
 
-			org.drip.quant.function.AbstractUnivariate auExp2 = new
-				org.drip.quant.function1D.ExponentialTension (java.lang.Math.E, -emsp.tension (1));
+			org.drip.function.deterministic.AbstractUnivariate auExp2 = new
+				org.drip.function.deterministic1D.ExponentialTension (java.lang.Math.E, -emsp.tension (1));
 
-			org.drip.quant.function.AbstractUnivariate auExp3 = new
-				org.drip.quant.function1D.ExponentialTension (java.lang.Math.E, -emsp.tension (2));
+			org.drip.function.deterministic.AbstractUnivariate auExp3 = new
+				org.drip.function.deterministic1D.ExponentialTension (java.lang.Math.E, -emsp.tension (2));
 
-			return new org.drip.spline.basis.FunctionSet (new org.drip.quant.function.AbstractUnivariate[]
+			return new org.drip.spline.basis.FunctionSet (new org.drip.function.deterministic.AbstractUnivariate[]
 				{auLinearPoly, auExp1, auExp2, auExp3});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();

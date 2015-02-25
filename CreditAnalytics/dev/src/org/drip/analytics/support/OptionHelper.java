@@ -37,15 +37,15 @@ package org.drip.analytics.support;
 
 public class OptionHelper {
 
-	static class CrossVolatilityQuantoProduct extends org.drip.quant.function.AbstractUnivariate {
-		org.drip.quant.function.AbstractUnivariate _auFRIVolatility = null;
-		org.drip.quant.function.AbstractUnivariate _auForwardToDomesticExchangeVolatility = null;
-		org.drip.quant.function.AbstractUnivariate _auFRIForwardToDomesticExchangeCorrelation = null;
+	static class CrossVolatilityQuantoProduct extends org.drip.function.deterministic.AbstractUnivariate {
+		org.drip.function.deterministic.AbstractUnivariate _auFRIVolatility = null;
+		org.drip.function.deterministic.AbstractUnivariate _auForwardToDomesticExchangeVolatility = null;
+		org.drip.function.deterministic.AbstractUnivariate _auFRIForwardToDomesticExchangeCorrelation = null;
 
 		CrossVolatilityQuantoProduct (
-			final org.drip.quant.function.AbstractUnivariate auFRIVolatility,
-			final org.drip.quant.function.AbstractUnivariate auForwardToDomesticExchangeVolatility,
-			final org.drip.quant.function.AbstractUnivariate auFRIForwardToDomesticExchangeCorrelation)
+			final org.drip.function.deterministic.AbstractUnivariate auFRIVolatility,
+			final org.drip.function.deterministic.AbstractUnivariate auForwardToDomesticExchangeVolatility,
+			final org.drip.function.deterministic.AbstractUnivariate auFRIForwardToDomesticExchangeCorrelation)
 		{
 			super (null);
 
@@ -63,19 +63,19 @@ public class OptionHelper {
 		}
 	}
 
-	static class CrossVolatilityConvexityExponent extends org.drip.quant.function.AbstractUnivariate {
+	static class CrossVolatilityConvexityExponent extends org.drip.function.deterministic.AbstractUnivariate {
 		double _dblForwardShiftedLogNormalScaler = java.lang.Double.NaN;
 		double _dblDiscountShiftedLogNormalScaler = java.lang.Double.NaN;
-		org.drip.quant.function.AbstractUnivariate _auForwardVolTS = null;
-		org.drip.quant.function.AbstractUnivariate _auDiscountVolTS = null;
-		org.drip.quant.function.AbstractUnivariate _auDiscountForwardCorrTS = null;
+		org.drip.function.deterministic.AbstractUnivariate _auForwardVolTS = null;
+		org.drip.function.deterministic.AbstractUnivariate _auDiscountVolTS = null;
+		org.drip.function.deterministic.AbstractUnivariate _auDiscountForwardCorrTS = null;
 
 		CrossVolatilityConvexityExponent (
 			final double dblDiscountShiftedLogNormalScaler,
 			final double dblForwardShiftedLogNormalScaler,
-			final org.drip.quant.function.AbstractUnivariate auDiscountVolTS,
-			final org.drip.quant.function.AbstractUnivariate auForwardVolTS,
-			final org.drip.quant.function.AbstractUnivariate auDiscountForwardCorrTS)
+			final org.drip.function.deterministic.AbstractUnivariate auDiscountVolTS,
+			final org.drip.function.deterministic.AbstractUnivariate auForwardVolTS,
+			final org.drip.function.deterministic.AbstractUnivariate auDiscountForwardCorrTS)
 		{
 			super (null);
 
@@ -104,11 +104,11 @@ public class OptionHelper {
 		}
 	}
 
-	static class PeriodVariance extends org.drip.quant.function.AbstractUnivariate {
-		org.drip.quant.function.AbstractUnivariate _auVolatility = null;
+	static class PeriodVariance extends org.drip.function.deterministic.AbstractUnivariate {
+		org.drip.function.deterministic.AbstractUnivariate _auVolatility = null;
 
 		PeriodVariance (
-			final org.drip.quant.function.AbstractUnivariate auVolatility)
+			final org.drip.function.deterministic.AbstractUnivariate auVolatility)
 		{
 			super (null);
 
@@ -150,7 +150,7 @@ public class OptionHelper {
 		if (null == csqs || null == strVolSurface || strVolSurface.isEmpty() || dblEndDate == dblStartDate)
 			return 0.;
 
-		org.drip.quant.function.AbstractUnivariate auVolSurface = csqs.customMetricVolSurface
+		org.drip.function.deterministic.AbstractUnivariate auVolSurface = csqs.customMetricVolSurface
 			(org.drip.state.identifier.CustomMetricLabel.Standard (strVolSurface));
 
 		return null != auVolSurface ? new PeriodVariance (auVolSurface).integrate (dblStartDate, dblEndDate)
@@ -170,7 +170,7 @@ public class OptionHelper {
 	 */
 
 	public static final double IntegratedSurfaceVariance (
-		final org.drip.quant.function.AbstractUnivariate auVolSurface,
+		final org.drip.function.deterministic.AbstractUnivariate auVolSurface,
 		final double dblStartDate,
 		final double dblEndDate)
 		throws java.lang.Exception
@@ -199,9 +199,9 @@ public class OptionHelper {
 	 */
 
 	public static final double IntegratedCrossVolQuanto (
-		final org.drip.quant.function.AbstractUnivariate auVolSurface1,
-		final org.drip.quant.function.AbstractUnivariate auVolSurface2,
-		final org.drip.quant.function.AbstractUnivariate auCorrSurface,
+		final org.drip.function.deterministic.AbstractUnivariate auVolSurface1,
+		final org.drip.function.deterministic.AbstractUnivariate auVolSurface2,
+		final org.drip.function.deterministic.AbstractUnivariate auCorrSurface,
 		final double dblStartDate,
 		final double dblEndDate)
 		throws java.lang.Exception
@@ -233,9 +233,9 @@ public class OptionHelper {
 	 */
 
 	public static final double IntegratedFRACrossVolConvexityExponent (
-		final org.drip.quant.function.AbstractUnivariate auForwardVolTS,
-		final org.drip.quant.function.AbstractUnivariate auFundingVolTS,
-		final org.drip.quant.function.AbstractUnivariate auForwardFundingCorrTS,
+		final org.drip.function.deterministic.AbstractUnivariate auForwardVolTS,
+		final org.drip.function.deterministic.AbstractUnivariate auFundingVolTS,
+		final org.drip.function.deterministic.AbstractUnivariate auForwardFundingCorrTS,
 		final double dblForwardShiftedLogNormalScaler,
 		final double dblFundingShiftedLogNormalScaler,
 		final double dblStartDate,
