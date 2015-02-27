@@ -31,40 +31,52 @@ package org.drip.function.deterministic1D;
  */
 
 /**
- * LinearRationalTensionExponential provides the evaluation of the Convolution of the Linear Rational and the
- * 	Tension Exponential Functons and its derivatives for a specified variate.
+ * Idempotent provides the Implementation of the Idempotent Operator - f(x) = x.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class LinearRationalTensionExponential extends org.drip.function.deterministic1D.UnivariateConvolution {
+public class Idempotent extends org.drip.function.deterministic.AbstractUnivariate {
 
 	/**
-	 * Construct a LinearRationalTensionExponential instance
-	 * 
-	 * @param dblExponentialTension Exponential Tension Parameter
-	 * @param dblRationalTension Rational Tension Parameter
-	 * 
-	 * @throws java.lang.Exception Thrown if the inputs are invalid
+	 * Idempotent constructor - DO NOTHING
 	 */
 
-	public LinearRationalTensionExponential (
-		final double dblExponentialTension,
-		final double dblRationalTension)
-		throws java.lang.Exception
+	public Idempotent()
 	{
-		super (new org.drip.function.deterministic1D.ExponentialTension (java.lang.Math.E, dblExponentialTension), new
-			org.drip.function.deterministic1D.LinearRationalShapeControl (dblRationalTension));
+		super (null);
 	}
 
-	public static final void main (
-		final java.lang.String[] astrArgs)
+	@Override public double evaluate (
+		final double dblVariate)
 		throws java.lang.Exception
 	{
-		LinearRationalTensionExponential lret = new LinearRationalTensionExponential (-1., 1.);
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate))
+			throw new java.lang.Exception ("Idempotent::evaluate => Invalid Inputs");
 
-		System.out.println ("LRET[0.00] = " + lret.evaluate (0.00));
+		return dblVariate;
+	}
 
-		System.out.println ("LRETDeriv[0.00] = " + lret.derivative (0.00, 1));
+	@Override public double derivative (
+		final double dblVariate,
+		final int iOrder)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || 0 > iOrder)
+			throw new java.lang.Exception ("Idempotent::derivative => Invalid Inputs");
+
+		return iOrder > 1 ? 0. : 1;
+	}
+
+	@Override public double integrate (
+		final double dblBegin,
+		final double dblEnd)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
+			(dblEnd))
+			throw new java.lang.Exception ("Idempotent::integrate => Invalid Inputs");
+
+		return 0.5 * (dblEnd * dblEnd - dblBegin - dblBegin);
 	}
 }

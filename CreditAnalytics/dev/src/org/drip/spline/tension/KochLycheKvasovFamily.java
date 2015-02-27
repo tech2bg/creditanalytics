@@ -74,14 +74,14 @@ public class KochLycheKvasovFamily {
 					dblTension * java.lang.Math.sinh (dblTension));
 			}
 
-			@Override public double calcDerivative (
+			@Override public double derivative (
 				final double dblX,
 				final int iOrder)
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
 					throw new java.lang.Exception
-						("KLKF::FromHyperbolicPrimitive.Phy::calcDerivative => Invalid Inputs!");
+						("KLKF::FromHyperbolicPrimitive.Phy::derivative => Invalid Inputs!");
 
 				double dblTension = etsp.tension();
 
@@ -92,7 +92,7 @@ public class KochLycheKvasovFamily {
 				if (2 == iOrder)
 					return java.lang.Math.sinh (dblTension * dblX) / java.lang.Math.sinh (dblTension);
 
-				return calcDerivative (dblX, iOrder);
+				return derivative (dblX, iOrder);
 			}
 
 			@Override public double integrate (
@@ -129,14 +129,14 @@ public class KochLycheKvasovFamily {
 					(dblTension * dblTension * java.lang.Math.sinh (dblTension));
 			}
 
-			@Override public double calcDerivative (
+			@Override public double derivative (
 				final double dblX,
 				final int iOrder)
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
 					throw new java.lang.Exception
-						("KLKF::FromHyperbolicPrimitive.Psy::calcDerivative => Invalid Inputs!");
+						("KLKF::FromHyperbolicPrimitive.Psy::derivative => Invalid Inputs!");
 
 				double dblTension = etsp.tension();
 
@@ -147,7 +147,7 @@ public class KochLycheKvasovFamily {
 				if (2 == iOrder)
 					return java.lang.Math.sinh (dblTension * (1. - dblX)) / java.lang.Math.sinh (dblTension);
 
-				return calcDerivative (dblX, iOrder);
+				return derivative (dblX, iOrder);
 			}
 
 			@Override public double integrate (
@@ -207,14 +207,14 @@ public class KochLycheKvasovFamily {
 				return dblX * dblX * dblX / (1. + dblTension * (1. - dblX)) / (6. + 8. * dblTension);
 			}
 
-			@Override public double calcDerivative (
+			@Override public double derivative (
 				final double dblX,
 				final int iOrder)
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
 					throw new java.lang.Exception
-						("KLKF::FromRationalLinearPrimitive.Phy::calcDerivative => Invalid Inputs!");
+						("KLKF::FromRationalLinearPrimitive.Phy::derivative => Invalid Inputs!");
 
 				double dblTension = etsp.tension();
 
@@ -236,7 +236,7 @@ public class KochLycheKvasovFamily {
 							(3. * dblL * dblX * dblX - dblDLDX * dblX * dblX * dblX);
 				}
 
-				return calcDerivative (dblX, iOrder);
+				return derivative (dblX, iOrder);
 			}
 
 			@Override public double integrate (
@@ -264,14 +264,14 @@ public class KochLycheKvasovFamily {
 					dblTension);
 			}
 
-			@Override public double calcDerivative (
+			@Override public double derivative (
 				final double dblX,
 				final int iOrder)
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
 					throw new java.lang.Exception
-						("KLKF::FromRationalLinearPrimitive.Psy::calcDerivative => Invalid Inputs!");
+						("KLKF::FromRationalLinearPrimitive.Psy::derivative => Invalid Inputs!");
 
 				double dblTension = etsp.tension();
 
@@ -294,7 +294,7 @@ public class KochLycheKvasovFamily {
 								(1. - dblX) * (1. - dblX) * (1. - dblX));
 				}
 
-				return calcDerivative (dblX, iOrder);
+				return derivative (dblX, iOrder);
 			}
 
 			@Override public double integrate (
@@ -345,14 +345,14 @@ public class KochLycheKvasovFamily {
 				return dblX * dblX * dblX / (1. + dblTension * dblX * (1. - dblX)) / (6. + 8. * dblTension);
 			}
 
-			@Override public double calcDerivative (
+			@Override public double derivative (
 				final double dblX,
 				final int iOrder)
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
 					throw new java.lang.Exception
-						("KLKF::FromRationalQuadraticPrimitive.Phy::calcDerivative => Invalid Inputs!");
+						("KLKF::FromRationalQuadraticPrimitive.Phy::derivative => Invalid Inputs!");
 
 				double dblTension = etsp.tension();
 
@@ -374,7 +374,7 @@ public class KochLycheKvasovFamily {
 							(3. * dblL * dblX * dblX - dblDLDX * dblX * dblX * dblX);
 				}
 
-				return calcDerivative (dblX, iOrder);
+				return derivative (dblX, iOrder);
 			}
 
 			@Override public double integrate (
@@ -402,14 +402,14 @@ public class KochLycheKvasovFamily {
 					+ 8. * dblTension);
 			}
 
-			@Override public double calcDerivative (
+			@Override public double derivative (
 				final double dblX,
 				final int iOrder)
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
 					throw new java.lang.Exception
-						("KLKF::FromRationalQuadraticPrimitive.Psy::calcDerivative => Invalid Inputs!");
+						("KLKF::FromRationalQuadraticPrimitive.Psy::derivative => Invalid Inputs!");
 
 				double dblTension = etsp.tension();
 
@@ -432,7 +432,7 @@ public class KochLycheKvasovFamily {
 								(1. - dblX) * (1. - dblX) * (1. - dblX));
 				}
 
-				return calcDerivative (dblX, iOrder);
+				return derivative (dblX, iOrder);
 			}
 
 			@Override public double integrate (
@@ -483,14 +483,14 @@ public class KochLycheKvasovFamily {
 					dblTension);
 			}
 
-			@Override public double calcDerivative (
+			@Override public double derivative (
 				final double dblX,
 				final int iOrder)
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
 					throw new java.lang.Exception
-						("KLKF::FromExponentialPrimitive.Phy::calcDerivative => Invalid Inputs!");
+						("KLKF::FromExponentialPrimitive.Phy::derivative => Invalid Inputs!");
 
 				double dblTension = etsp.tension();
 
@@ -502,7 +502,7 @@ public class KochLycheKvasovFamily {
 					return (dblTension * dblTension * dblX * dblX + 6. * dblTension * dblX + 6.) / (6. + 7. *
 						dblTension) * dblX * java.lang.Math.exp (-1. * dblTension * (1. - dblX));
 
-				return calcDerivative (dblX, iOrder);
+				return derivative (dblX, iOrder);
 			}
 
 			@Override public double integrate (
@@ -530,14 +530,14 @@ public class KochLycheKvasovFamily {
 					/ (6. + 7. * dblTension);
 			}
 
-			@Override public double calcDerivative (
+			@Override public double derivative (
 				final double dblX,
 				final int iOrder)
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
 					throw new java.lang.Exception
-						("KLKF::FromExponentialPrimitive.Psy::calcDerivative => Invalid Inputs!");
+						("KLKF::FromExponentialPrimitive.Psy::derivative => Invalid Inputs!");
 
 				double dblTension = etsp.tension();
 
@@ -550,7 +550,7 @@ public class KochLycheKvasovFamily {
 						(1. - dblX) + 6.) / (6. + 7. * dblTension) * (1. - dblX) * java.lang.Math.exp (-1. *
 							dblTension * dblX);
 
-				return calcDerivative (dblX, iOrder);
+				return derivative (dblX, iOrder);
 			}
 
 			@Override public double integrate (

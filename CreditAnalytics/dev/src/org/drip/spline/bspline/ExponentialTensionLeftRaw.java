@@ -71,13 +71,13 @@ public class ExponentialTensionLeftRaw extends org.drip.spline.bspline.TensionBa
 			tension() * java.lang.Math.sinh (tension() * (right() - left())));
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (0 > iOrder)
-			throw new java.lang.Exception ("ExponentialTensionLeftRaw::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("ExponentialTensionLeftRaw::derivative => Invalid Inputs");
 
 		if (!in (dblPredictorOrdinate)) return 0.;
 

@@ -86,13 +86,13 @@ public class HyperbolicTension extends org.drip.function.deterministic.AbstractU
 			(_dblTension * dblVariate);
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblVariate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || 0 > iOrder)
-			throw new java.lang.Exception ("HyperbolicTension::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("HyperbolicTension::derivative => Invalid Inputs");
 
 		double dblDerivFactor = 1.;
 
@@ -153,10 +153,10 @@ public class HyperbolicTension extends org.drip.function.deterministic.AbstractU
 
 		System.out.println ("E[1.0] = " + e.evaluate (1.0));
 
-		System.out.println ("EDeriv[0.0] = " + e.calcDerivative (0.0, 2));
+		System.out.println ("EDeriv[0.0] = " + e.derivative (0.0, 2));
 
-		System.out.println ("EDeriv[0.5] = " + e.calcDerivative (0.5, 2));
+		System.out.println ("EDeriv[0.5] = " + e.derivative (0.5, 2));
 
-		System.out.println ("EDeriv[1.0] = " + e.calcDerivative (1.0, 2));
+		System.out.println ("EDeriv[1.0] = " + e.derivative (1.0, 2));
 	}
 }

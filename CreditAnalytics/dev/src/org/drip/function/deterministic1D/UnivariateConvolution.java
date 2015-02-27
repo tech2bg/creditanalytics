@@ -71,18 +71,18 @@ public class UnivariateConvolution extends org.drip.function.deterministic.Abstr
 		return _au1.evaluate (dblVariate) * _au2.evaluate (dblVariate);
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblVariate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		double dblDerivative = _au1.evaluate (dblVariate) * _au2.calcDerivative (dblVariate, iOrder);
+		double dblDerivative = _au1.evaluate (dblVariate) * _au2.derivative (dblVariate, iOrder);
 
 		for (int i = 1; i < iOrder; ++i)
-			dblDerivative += org.drip.quant.common.NumberUtil.NCK (iOrder, i) * _au1.calcDerivative
-				(dblVariate, i) * _au2.calcDerivative (dblVariate, iOrder - i);
+			dblDerivative += org.drip.quant.common.NumberUtil.NCK (iOrder, i) * _au1.derivative (dblVariate,
+				i) * _au2.derivative (dblVariate, iOrder - i);
 
-		return dblDerivative + _au1.calcDerivative (dblVariate, iOrder) * _au2.evaluate (dblVariate);
+		return dblDerivative + _au1.derivative (dblVariate, iOrder) * _au2.evaluate (dblVariate);
 	}
 
 	@Override public double integrate (

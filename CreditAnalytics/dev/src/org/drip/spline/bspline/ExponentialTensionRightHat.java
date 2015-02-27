@@ -68,13 +68,13 @@ public class ExponentialTensionRightHat extends org.drip.spline.bspline.TensionB
 		return java.lang.Math.sinh (tension() * (right() - dblPredictorOrdinate)) * normalizer();
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (0 > iOrder)
-			throw new java.lang.Exception ("ExponentialTensionRightHat::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("ExponentialTensionRightHat::derivative => Invalid Inputs");
 
 		if (!in (dblPredictorOrdinate)) return 0.;
 

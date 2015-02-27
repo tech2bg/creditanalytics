@@ -66,7 +66,7 @@ public class FlatUnivariate extends org.drip.function.deterministic.AbstractUniv
 		return _dblLevel;
 	}
 
-	@Override public org.drip.quant.calculus.Differential calcDifferential (
+	@Override public org.drip.quant.calculus.Differential differential (
 		final double dblVariate,
 		final double dblOFBase,
 		final int iOrder)

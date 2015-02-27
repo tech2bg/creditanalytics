@@ -1,5 +1,5 @@
 
-package org.drip.sequence.random;
+package org.drip.sequence.functional;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,13 +29,157 @@ package org.drip.sequence.random;
  */
 
 /**
- * MultivariateFunction contains the implementation of the objective Function dependent on Multivariate
- *  Random Variables.
+ * MultivariateRandom contains the implementation of the objective Function dependent on Multivariate Random
+ *  Variables.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class MultivariateFunction extends org.drip.function.deterministic.AbstractMultivariate {
+public abstract class MultivariateRandom extends org.drip.function.deterministic.AbstractMultivariate {
+
+	/**
+	 * Compute the Target Variate Function Metrics conditional on the specified Input Non-Target Variate
+	 *  Parameter Sequence Off of the Target Variate Ghost Sample Sequence
+	 * 
+	 * @param adblNonTargetVariate The Non-Target Variate Parameters
+	 * @param iTargetVariateIndex Target Variate Index
+	 * @param adblTargetVariateGhostSample Target Variate Ghost Sample
+	 * 
+	 * @return The Variate-specific Function Metrics
+	 */
+
+	public org.drip.sequence.metrics.SingleSequenceAgnosticMetrics ghostTargetVariateMetrics (
+		final double[] adblNonTargetVariate,
+		final int iTargetVariateIndex,
+		final double[] adblTargetVariateGhostSample)
+	{
+		if (!org.drip.function.deterministic.AbstractMultivariate.ValidateInput (adblNonTargetVariate) ||
+			null == adblTargetVariateGhostSample)
+			return null;
+
+		int iNumNonTargetVariate = adblNonTargetVariate.length;
+		int iNumTargetVariateSample = adblTargetVariateGhostSample.length;
+
+		if (0 > iTargetVariateIndex || iTargetVariateIndex > iNumNonTargetVariate || 0 ==
+			iNumTargetVariateSample)
+			return null;
+
+		double[] adblFunctionArgs = new double[iNumNonTargetVariate + 1];
+		double[] adblFunctionSequence = new double[iNumTargetVariateSample];
+
+		for (int i = 0; i < iNumNonTargetVariate; ++i) {
+			if (i < iTargetVariateIndex)
+				adblFunctionArgs[i] = adblNonTargetVariate[i];
+			else if (i >= iTargetVariateIndex)
+				adblFunctionArgs[i + 1] = adblNonTargetVariate[i];
+		}
+
+		try {
+			for (int i = 0; i < iNumTargetVariateSample; ++i) {
+				adblFunctionArgs[iTargetVariateIndex] = adblTargetVariateGhostSample[i];
+
+				adblFunctionSequence[i] = evaluate (adblFunctionArgs);
+			}
+
+			return new org.drip.sequence.metrics.SingleSequenceAgnosticMetrics (adblFunctionSequence, null);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Compute the Target Variate Function Metrics conditional on the specified Input Non-Target Variate
+	 *  Parameter Sequence Off of the Target Variate Ghost Sample Sequence
+	 * 
+	 * @param aSSAM Array of Variate Sequence Metrics
+	 * @param aiNonTargetVariateSequenceIndex Array of Non-Target Variate Sequence Indexes
+	 * @param iTargetVariateIndex Target Variate Index
+	 * @param adblTargetVariateGhostSample Target Variate Ghost Sample
+	 * 
+	 * @return The Variate-specific Function Metrics
+	 */
+
+	public org.drip.sequence.metrics.SingleSequenceAgnosticMetrics ghostTargetVariateMetrics (
+		final org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM,
+		final int[] aiNonTargetVariateSequenceIndex,
+		final int iTargetVariateIndex,
+		final double[] adblTargetVariateGhostSample)
+	{
+		if (null == aSSAM || null == aiNonTargetVariateSequenceIndex || 0 > iTargetVariateIndex) return null;
+
+		int iNumNonTargetVariate = aSSAM.length - 1;
+		double[] adblNonTargetVariate = new double[iNumNonTargetVariate];
+
+		if (0 >= iNumNonTargetVariate || iNumNonTargetVariate != aiNonTargetVariateSequenceIndex.length ||
+			iTargetVariateIndex > iNumNonTargetVariate)
+			return null;
+
+		for (int i = 0; i < iNumNonTargetVariate; ++i)
+			adblNonTargetVariate[i] = aSSAM[i < iTargetVariateIndex ? i : i +
+				1].sequence()[aiNonTargetVariateSequenceIndex[i]];
+
+		return ghostTargetVariateMetrics (adblNonTargetVariate, iTargetVariateIndex,
+			adblTargetVariateGhostSample);
+	}
+
+	/**
+	 * Compute the Target Variate Function Metrics over the full Non-target Variate Empirical Distribution
+	 *  Off of the Target Variate Ghost Sample Sequence
+	 * 
+	 * @param aSSAM Array of Variate Sequence Metrics
+	 * @param iTargetVariateIndex Target Variate Index
+	 * @param adblTargetVariateGhostSample Target Variate Ghost Sample
+	 * 
+	 * @return The Variate-specific Function Metrics
+	 */
+
+	public org.drip.sequence.metrics.SingleSequenceAgnosticMetrics ghostTargetVariateMetrics (
+		final org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM,
+		final int iTargetVariateIndex,
+		final double[] adblTargetVariateGhostSample)
+	{
+		if (null == aSSAM || 0 > iTargetVariateIndex) return null;
+
+		int iTargetVariateVarianceIndex = 0;
+		int iNumNonTargetVariate = aSSAM.length - 1;
+
+		if (0 >= iNumNonTargetVariate) return null;
+
+		org.drip.analytics.support.SequenceIndexIterator sii =
+			org.drip.analytics.support.SequenceIndexIterator.Standard (iNumNonTargetVariate,
+				aSSAM[0].sequence().length);
+
+		if (null == sii) return null;
+
+		double[] adblTargetVariateVariance = new double[sii.size()];
+
+		int[] aiNonTargetVariateSequenceIndex = sii.first();
+
+		while (null != aiNonTargetVariateSequenceIndex && aiNonTargetVariateSequenceIndex.length ==
+			iNumNonTargetVariate) {
+			org.drip.sequence.metrics.SingleSequenceAgnosticMetrics ssamGhostConditional =
+				ghostTargetVariateMetrics (aSSAM, aiNonTargetVariateSequenceIndex, iTargetVariateIndex,
+					adblTargetVariateGhostSample);
+
+			if (null == ssamGhostConditional) return null;
+
+			adblTargetVariateVariance[iTargetVariateVarianceIndex++] =
+				ssamGhostConditional.empiricalVariance();
+
+			aiNonTargetVariateSequenceIndex = sii.next();
+		}
+
+		try {
+			return new org.drip.sequence.metrics.SingleSequenceAgnosticMetrics (adblTargetVariateVariance,
+				null);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	/**
 	 * Compute the Target Variate Function Metrics conditional on the specified Input Non-Target Variate
@@ -53,40 +197,8 @@ public abstract class MultivariateFunction extends org.drip.function.determinist
 		final int iTargetVariateIndex,
 		final org.drip.sequence.metrics.SingleSequenceAgnosticMetrics ssamTarget)
 	{
-		if (!org.drip.function.deterministic.AbstractMultivariate.ValidateInput (adblNonTargetVariate) ||
-			null == ssamTarget)
-			return null;
-
-		int iNumNonTargetVariate = adblNonTargetVariate.length;
-
-		if (0 > iTargetVariateIndex || iTargetVariateIndex > iNumNonTargetVariate) return null;
-
-		double[] adblTargetVariateSample = ssamTarget.sequence();
-
-		int iNumTargetVariateSample = adblTargetVariateSample.length;
-		double[] adblFunctionArgs = new double[iNumNonTargetVariate + 1];
-		double[] adblFunctionSequence = new double[iNumTargetVariateSample];
-
-		for (int i = 0; i < iNumNonTargetVariate; ++i) {
-			if (i < iTargetVariateIndex)
-				adblFunctionArgs[i] = adblNonTargetVariate[i];
-			else if (i >= iTargetVariateIndex)
-				adblFunctionArgs[i + 1] = adblNonTargetVariate[i];
-		}
-
-		try {
-			for (int i = 0; i < iNumTargetVariateSample; ++i) {
-				adblFunctionArgs[iTargetVariateIndex] = adblTargetVariateSample[i];
-
-				adblFunctionSequence[i] = evaluate (adblFunctionArgs);
-			}
-
-			return new org.drip.sequence.metrics.SingleSequenceAgnosticMetrics (adblFunctionSequence, null);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return null == ssamTarget ? null : ghostTargetVariateMetrics (adblNonTargetVariate,
+			iTargetVariateIndex, ssamTarget.sequence());
 	}
 
 	/**

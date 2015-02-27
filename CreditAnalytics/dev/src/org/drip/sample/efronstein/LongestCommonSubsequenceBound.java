@@ -1,14 +1,14 @@
 
-package org.drip.sample.bounds;
+package org.drip.sample.efronstein;
 
 import org.drip.quant.common.FormatUtil;
+import org.drip.sequence.custom.LongestCommonSubsequence;
 import org.drip.sequence.functional.*;
 import org.drip.sequence.metrics.SingleSequenceAgnosticMetrics;
 import org.drip.sequence.random.*;
 import org.drip.service.api.CreditAnalytics;
 
 /*
-
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
@@ -36,33 +36,14 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * EfronSteinSequenceBound demonstrates the Computation of the Probabilistic Bounds for the Realization of
- * 	the Values of a Multivariate Function over Random Sequence Values using Variants of the Efron-Stein
- * 	Methodology.
+ * LongestCommonSubsequenceBound demonstrates the Computation of the Probabilistic Bounds for the Longest
+ *  Common Subsequence across each half over the Random Sequence Values using Variants of the Efron-Stein
+ *  Methodology.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class EfronSteinSequenceBound {
-
-	private static final MultivariateFunction MultiVariateFunction (
-		final int iNumVariate)
-		throws Exception
-	{
-		return new MultivariateFunction() {
-			@Override public double evaluate (
-				final double[] adblVariate)
-				throws Exception
-			{
-				double dblSum = 0.;
-
-				for (int i = 0; i < adblVariate.length; ++i)
-					dblSum += adblVariate[i];
-
-				return dblSum;
-			}
-		};
-	}
+public class LongestCommonSubsequenceBound {
 
 	private static final SingleSequenceAgnosticMetrics[] IIDDraw (
 		final RandomSequenceGenerator rsg,
@@ -79,6 +60,7 @@ public class EfronSteinSequenceBound {
 
 	private static final void MartingaleDifferencesRun (
 		final RandomSequenceGenerator rsg,
+		final MultivariateRandom func,
 		final int iNumSample,
 		final int iNumSet)
 		throws Exception
@@ -92,7 +74,7 @@ public class EfronSteinSequenceBound {
 			);
 
 			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
-				MultiVariateFunction (iNumSample),
+				func,
 				aSSAM
 			);
 
@@ -104,8 +86,9 @@ public class EfronSteinSequenceBound {
 		System.out.println (strDump + " |");
 	}
 
-	private static final void SymmetrizedDifferencesRun (
+	private static final void GhostVariateVarianceRun (
 		final RandomSequenceGenerator rsg,
+		final MultivariateRandom func,
 		final int iNumSample,
 		final int iNumSet)
 		throws Exception
@@ -119,7 +102,40 @@ public class EfronSteinSequenceBound {
 			);
 
 			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
-				MultiVariateFunction (iNumSample),
+				func,
+				aSSAM
+			);
+
+			SingleSequenceAgnosticMetrics[] aSSAMGhost = IIDDraw (
+				rsg,
+				iNumSample
+			);
+
+			if (0 != j) strDump += " |";
+
+			strDump += FormatUtil.FormatDouble (esam.ghostVarianceUpperBound (aSSAMGhost), 2, 2, 1.);
+		}
+
+		System.out.println (strDump + " |");
+	}
+
+	private static final void EfronSteinSteeleRun (
+		final RandomSequenceGenerator rsg,
+		final MultivariateRandom func,
+		final int iNumSample,
+		final int iNumSet)
+		throws Exception
+	{
+		String strDump = "\t| " + FormatUtil.FormatDouble (iNumSample, 2, 0, 1.) + " => ";
+
+		for (int j = 0; j < iNumSet; ++j) {
+			SingleSequenceAgnosticMetrics[] aSSAM = IIDDraw (
+				rsg,
+				iNumSample
+			);
+
+			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+				func,
 				aSSAM
 			);
 
@@ -136,8 +152,9 @@ public class EfronSteinSequenceBound {
 		System.out.println (strDump + " |");
 	}
 
-	private static final void BoundedDifferencesRun (
+	private static final void PivotDifferencesRun (
 		final RandomSequenceGenerator rsg,
+		final MultivariateRandom func,
 		final int iNumSample,
 		final int iNumSet)
 		throws Exception
@@ -151,7 +168,35 @@ public class EfronSteinSequenceBound {
 			);
 
 			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
-				MultiVariateFunction (iNumSample),
+				func,
+				aSSAM
+			);
+
+			if (0 != j) strDump += " |";
+
+			strDump += FormatUtil.FormatDouble (esam.pivotVarianceUpperBound (func), 2, 2, 1.);
+		}
+
+		System.out.println (strDump + " |");
+	}
+
+	private static final void BoundedDifferencesRun (
+		final RandomSequenceGenerator rsg,
+		final MultivariateRandom func,
+		final int iNumSample,
+		final int iNumSet)
+		throws Exception
+	{
+		String strDump = "\t| " + FormatUtil.FormatDouble (iNumSample, 2, 0, 1.) + " => ";
+
+		for (int j = 0; j < iNumSet; ++j) {
+			SingleSequenceAgnosticMetrics[] aSSAM = IIDDraw (
+				rsg,
+				iNumSample
+			);
+
+			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+				func,
 				aSSAM
 			);
 
@@ -170,28 +215,46 @@ public class EfronSteinSequenceBound {
 		CreditAnalytics.Init ("");
 
 		int iNumSet = 5;
-		boolean bRunMartingaleDifferences = true;
 
 		int[] aiSampleSize = new int[] {
-			3, 10, 25, 50
+			3, 10, 25
 		};
 
-		if (bRunMartingaleDifferences) {
-			System.out.println ("\n\t|-----------------------------------------------|");
+		BoundedUniform bu = new BoundedUniform (0., 1.);
 
-			System.out.println ("\t|  Martingale Differences Variance Upper Bound  |");
+		MultivariateRandom func = new LongestCommonSubsequence();
 
-			System.out.println ("\t|-----------------------------------------------|");
+		System.out.println ("\n\t|-----------------------------------------------|");
 
-			for (int iSampleSize : aiSampleSize)
-				MartingaleDifferencesRun (
-					new BoundedUniform (0., 1.),
-					iSampleSize,
-					iNumSet
-				);
+		System.out.println ("\t|  Martingale Differences Variance Upper Bound  |");
 
-			System.out.println ("\t|-----------------------------------------------|");
-		}
+		System.out.println ("\t|-----------------------------------------------|");
+
+		for (int iSampleSize : aiSampleSize)
+			MartingaleDifferencesRun (
+				bu,
+				func,
+				iSampleSize,
+				iNumSet
+			);
+
+		System.out.println ("\t|-----------------------------------------------|");
+
+		System.out.println ("\n\t|-----------------------------------------------|");
+
+		System.out.println ("\t|   Symmetrized Variate Variance Upper Bound    |");
+
+		System.out.println ("\t|-----------------------------------------------|");
+
+		for (int iSampleSize : aiSampleSize)
+			GhostVariateVarianceRun (
+				bu,
+				func,
+				iSampleSize,
+				iNumSet
+			);
+
+		System.out.println ("\t|-----------------------------------------------|");
 
 		aiSampleSize = new int[] {
 			3, 10, 25, 50, 75, 99
@@ -199,13 +262,30 @@ public class EfronSteinSequenceBound {
 
 		System.out.println ("\n\t|-----------------------------------------------|");
 
-		System.out.println ("\t|  Symmetrized Differences Variance Upper Bound |");
+		System.out.println ("\t|    Efron-Stein-Steele Variance Upper Bound    |");
 
 		System.out.println ("\t|-----------------------------------------------|");
 
 		for (int iSampleSize : aiSampleSize)
-			SymmetrizedDifferencesRun (
-				new BoundedUniform (0., 1.),
+			EfronSteinSteeleRun (
+				bu,
+				func,
+				iSampleSize,
+				iNumSet
+			);
+
+		System.out.println ("\t|-----------------------------------------------|");
+
+		System.out.println ("\n\t|-----------------------------------------------|");
+
+		System.out.println ("\t|    Pivoted Differences Variance Upper Bound   |");
+
+		System.out.println ("\t|-----------------------------------------------|");
+
+		for (int iSampleSize : aiSampleSize)
+			PivotDifferencesRun (
+				bu,
+				func,
 				iSampleSize,
 				iNumSet
 			);
@@ -220,7 +300,8 @@ public class EfronSteinSequenceBound {
 
 		for (int iSampleSize : aiSampleSize)
 			BoundedDifferencesRun (
-				new BoundedUniform (0., 1.),
+				bu,
+				func,
 				iSampleSize,
 				iNumSet
 			);

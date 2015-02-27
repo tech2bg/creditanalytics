@@ -68,7 +68,7 @@ public abstract class AbstractUnivariate {
 		throws java.lang.Exception;
 
 	/**
-	 * Calculate the derivative
+	 * Calculate the Differential
 	 * 
 	 * @param dblVariate Variate at which the derivative is to be calculated
 	 * @param dblOFBase Base Value for the Objective Function
@@ -77,7 +77,7 @@ public abstract class AbstractUnivariate {
 	 * @return The Derivative
 	 */
 
-	public org.drip.quant.calculus.Differential calcDifferential (
+	public org.drip.quant.calculus.Differential differential (
 		final double dblVariate,
 		final double dblOFBase,
 		final int iOrder)
@@ -119,7 +119,7 @@ public abstract class AbstractUnivariate {
 	}
 
 	/**
-	 * Calculate the derivative
+	 * Calculate the Differential
 	 * 
 	 * @param dblVariate Variate at which the derivative is to be calculated
 	 * @param iOrder Order of the derivative to be computed
@@ -127,12 +127,12 @@ public abstract class AbstractUnivariate {
 	 * @return The Derivative
 	 */
 
-	public org.drip.quant.calculus.Differential calcDifferential (
+	public org.drip.quant.calculus.Differential differential (
 		final double dblVariate,
 		final int iOrder)
 	{
 		try {
-			return calcDifferential (dblVariate, evaluate (dblVariate), iOrder);
+			return differential (dblVariate, evaluate (dblVariate), iOrder);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -149,12 +149,12 @@ public abstract class AbstractUnivariate {
 	 * @return The Derivative
 	 */
 
-	public double calcDerivative (
+	public double derivative (
 		final double dblVariate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		return calcDifferential (dblVariate, evaluate (dblVariate), iOrder).calcSlope (true);
+		return differential (dblVariate, evaluate (dblVariate), iOrder).calcSlope (true);
 	}
 
 	/**

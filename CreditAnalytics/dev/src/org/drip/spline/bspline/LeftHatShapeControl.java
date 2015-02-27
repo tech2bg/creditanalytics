@@ -83,13 +83,12 @@ public class LeftHatShapeControl extends org.drip.spline.bspline.BasisHatShapeCo
 			tension() * dblWidth + tension() * dblWidth * dblWidth));
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		if (0 >= iOrder)
-			throw new java.lang.Exception ("LeftHatShapeControl::calcDerivative => Invalid Inputs");
+		if (0 >= iOrder) throw new java.lang.Exception ("LeftHatShapeControl::derivative => Invalid Inputs");
 
 		if (!in (dblPredictorOrdinate) || 0. == tension()) return 0.;
 
@@ -108,7 +107,7 @@ public class LeftHatShapeControl extends org.drip.spline.bspline.BasisHatShapeCo
 				dblPredictorOrdinate))) / (dblWidth * (6. + 6. * tension() * dblWidth + tension() * dblWidth
 					* dblWidth));
 
-		return super.calcDerivative (dblPredictorOrdinate, iOrder);
+		return super.derivative (dblPredictorOrdinate, iOrder);
 	}
 
 	@Override public double integrate (

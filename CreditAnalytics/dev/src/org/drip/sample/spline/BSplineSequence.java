@@ -74,7 +74,7 @@ public class BSplineSequence {
 				"\t\tResponse[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
 				FormatUtil.FormatDouble (me.evaluate (dblX), 1, 5, 1.) + " | " +
 				FormatUtil.FormatDouble (me.normalizedCumulative (dblX), 1, 5, 1.) + " | " +
-				FormatUtil.FormatDouble (me.calcDerivative (dblX, iOrder), 1, 5, 1.));
+				FormatUtil.FormatDouble (me.derivative (dblX, iOrder), 1, 5, 1.));
 
 			dblX += dblXIncrement;
 		}

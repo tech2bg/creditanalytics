@@ -300,7 +300,7 @@ public class FixedPointSearch {
 				return 1. + 3. * dblVariate - 2. * java.lang.Math.sin (dblVariate); */
 			}
 
-			@Override public Differential calcDifferential (
+			@Override public Differential differential (
 				final double dblVariate,
 				final double dblOFBase,
 				final int iOrder)

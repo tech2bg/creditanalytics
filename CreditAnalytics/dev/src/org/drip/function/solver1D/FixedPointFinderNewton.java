@@ -52,7 +52,7 @@ public class FixedPointFinderNewton extends org.drip.function.solver1D.FixedPoin
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate))
 			throw new java.lang.Exception ("FixedPointFinderNewton::calcVariateOFSlope => Invalid input!");
 
-		org.drip.quant.calculus.Differential diff = _of.calcDifferential (dblVariate, 1);
+		org.drip.quant.calculus.Differential diff = _of.differential (dblVariate, 1);
 
 		if (null == diff)
 			throw new java.lang.Exception

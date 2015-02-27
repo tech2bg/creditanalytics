@@ -658,7 +658,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.function.determin
 				return responseValue (dblVariate);
 			}
 
-			@Override public double calcDerivative (
+			@Override public double derivative (
 				final double dblVariate,
 				final int iOrder)
 				throws java.lang.Exception

@@ -71,13 +71,13 @@ public class KLKHyperbolicTensionPhy extends org.drip.function.deterministic.Abs
 		return java.lang.Math.sinh (_dblTension * dblVariate) / java.lang.Math.sinh (_dblTension);
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblVariate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || 0 > iOrder)
-			throw new java.lang.Exception ("KLKHyperbolicTensionPhy::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("KLKHyperbolicTensionPhy::derivative => Invalid Inputs");
 
 		return java.lang.Math.pow (_dblTension, iOrder) * java.lang.Math.sinh (_dblTension * dblVariate) /
 			java.lang.Math.sinh (_dblTension);
@@ -119,10 +119,10 @@ public class KLKHyperbolicTensionPhy extends org.drip.function.deterministic.Abs
 
 		System.out.println ("KLKHyperbolicTensionPhy[1.0] = " + khtp.evaluate (1.0));
 
-		System.out.println ("KLKHyperbolicTensionPhyDeriv[0.0] = " + khtp.calcDerivative (0.0, 2));
+		System.out.println ("KLKHyperbolicTensionPhyDeriv[0.0] = " + khtp.derivative (0.0, 2));
 
-		System.out.println ("KLKHyperbolicTensionPhyDeriv[0.5] = " + khtp.calcDerivative (0.5, 2));
+		System.out.println ("KLKHyperbolicTensionPhyDeriv[0.5] = " + khtp.derivative (0.5, 2));
 
-		System.out.println ("KLKHyperbolicTensionPhyDeriv[1.0] = " + khtp.calcDerivative (1.0, 2));
+		System.out.println ("KLKHyperbolicTensionPhyDeriv[1.0] = " + khtp.derivative (1.0, 2));
 	}
 }

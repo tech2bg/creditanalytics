@@ -114,19 +114,19 @@ public class BasisMonicHatComparison {
 
 		while (dblX <= crrr.right()) {
 			System.out.println ("\tDeriv[" + dblX + "] => " +
-				FormatUtil.FormatDouble (smbf.calcDerivative (dblX, 1), 1, 5, 1.));
+				FormatUtil.FormatDouble (smbf.derivative (dblX, 1), 1, 5, 1.));
 
 			System.out.println ("\t\tCubic Rational Left Deriv[" + dblX + "]  => " +
-				FormatUtil.FormatDouble (crlr.calcDerivative (dblX, 3), 1, 5, 1.));
+				FormatUtil.FormatDouble (crlr.derivative (dblX, 3), 1, 5, 1.));
 
 			System.out.println ("\t\tCubic Rational Right Deriv[" + dblX + "] => " +
-				FormatUtil.FormatDouble (crrr.calcDerivative (dblX, 3), 1, 5, 1.));
+				FormatUtil.FormatDouble (crrr.derivative (dblX, 3), 1, 5, 1.));
 
 			System.out.println ("\t\tTPBH Left Deriv[" + dblX + "]  => " +
-				FormatUtil.FormatDouble (tpbhLeft.calcDerivative (dblX, 1), 1, 5, 1.));
+				FormatUtil.FormatDouble (tpbhLeft.derivative (dblX, 1), 1, 5, 1.));
 
 			System.out.println ("\t\tTPBH Right Deriv[" + dblX + "] => " +
-				FormatUtil.FormatDouble (tpbhRight.calcDerivative (dblX, 1), 1, 5, 1.));
+				FormatUtil.FormatDouble (tpbhRight.derivative (dblX, 1), 1, 5, 1.));
 
 			dblX += 0.5;
 		}

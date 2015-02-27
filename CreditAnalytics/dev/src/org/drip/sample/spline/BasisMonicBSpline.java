@@ -130,7 +130,7 @@ public class BasisMonicBSpline {
 		while (dblX <= 3.0) {
 			System.out.println (
 				"\t\t\tDeriv[" + FormatUtil.FormatDouble (dblX, 1, 3, 1.) + "] : " +
-				FormatUtil.FormatDouble (me.calcDerivative (dblX, iOrder), 1, 5, 1.));
+				FormatUtil.FormatDouble (me.derivative (dblX, iOrder), 1, 5, 1.));
 
 			dblX += dblXIncrement;
 		}

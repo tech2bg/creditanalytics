@@ -37,13 +37,53 @@ package org.drip.sequence.custom;
 
 public class BinPacking {
 
-	public static final double MinimumNumberOfBins (
-		final double[] adblVariate)
-		throws java.lang.Exception
+	private static final boolean UpdateBin (
+		java.util.Map<java.lang.Integer, java.lang.Double> mapBin,
+		final double dblVariate)
 	{
-		if (!org.drip.function.deterministic.AbstractMultivariate.ValidateInput (adblVariate))
-			throw new java.lang.Exception ("BinPacking::MinimumNumberOfBins => Invalid Input Sequence");
+		for (java.util.Map.Entry<java.lang.Integer, java.lang.Double> meBin : mapBin.entrySet()) {
+			double dblBinCapacity = meBin.getValue();
 
-		return java.lang.Double.NaN;
+			if (dblBinCapacity > dblVariate) {
+				meBin.setValue (dblBinCapacity - dblVariate);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static final org.drip.sequence.functional.BoundedMultivariateRandom MinimumNumberOfBins()
+	{
+		org.drip.sequence.functional.BoundedMultivariateRandom funcMinBins = new
+			org.drip.sequence.functional.BoundedMultivariateRandom() {
+			@Override public double evaluate (
+				final double[] adblVariate)
+				throws java.lang.Exception
+			{
+				java.util.Map<java.lang.Integer, java.lang.Double> mapBin = new
+					java.util.HashMap<java.lang.Integer, java.lang.Double>();
+
+				int iLastEntry = -1;
+				int iNumVariate = adblVariate.length;
+
+				for (int i = 0; i < iNumVariate; ++i) {
+					if (0 == i || !UpdateBin (mapBin, adblVariate[i]))
+						mapBin.put (++iLastEntry, 1. - adblVariate[i]);
+				}
+
+				return mapBin.size();
+			}
+
+			@Override public double targetVarianceBound (
+				final int iTargetVariateIndex)
+				throws java.lang.Exception
+			{
+				return 1.;
+			}
+		};
+
+		return funcMinBins;
 	}
 }

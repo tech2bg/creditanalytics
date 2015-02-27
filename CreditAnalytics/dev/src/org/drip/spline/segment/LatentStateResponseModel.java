@@ -1491,7 +1491,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 				return _be.responseValueDerivative (_adblResponseBasisCoeff, dblX, 1);
 			}
 
-			@Override public org.drip.quant.calculus.Differential calcDifferential (
+			@Override public org.drip.quant.calculus.Differential differential (
 				final double dblX,
 				final double dblOFBase,
 				final int iOrder)

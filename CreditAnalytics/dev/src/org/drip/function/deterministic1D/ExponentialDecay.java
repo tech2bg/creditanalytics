@@ -70,13 +70,13 @@ public class ExponentialDecay extends org.drip.function.deterministic.AbstractUn
 		return java.lang.Math.exp (-1. * _dblHazard * (dblVariate - _dblEpoch));
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblVariate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || 0 >= iOrder)
-			throw new java.lang.Exception ("ExponentialDecay::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("ExponentialDecay::derivative => Invalid Inputs");
 
 		double dblDerivativeFactor = 1;
 

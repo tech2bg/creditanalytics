@@ -134,8 +134,7 @@ public class SegmentBasisEvaluator implements org.drip.spline.segment.BasisEvalu
 	{
 		double dblX = null == _ics ? dblPredictorOrdinate : _ics.localize (dblPredictorOrdinate);
 
-		if (null == _rssc)
-			return _fs.indexedBasisFunction (iBasisFunctionIndex).calcDerivative (dblX, iOrder);
+		if (null == _rssc) return _fs.indexedBasisFunction (iBasisFunctionIndex).derivative (dblX, iOrder);
 
 		double dblShapeControllerPredictorOrdinate = _rssc.isLocal() && null != _ics ? dblX :
 			dblPredictorOrdinate;
@@ -144,14 +143,14 @@ public class SegmentBasisEvaluator implements org.drip.spline.segment.BasisEvalu
 
 		for (int i = 0; i <= iOrder; ++i) {
 			double dblBasisFunctionDeriv = 0 == i ? _fs.indexedBasisFunction (iBasisFunctionIndex).evaluate
-				(dblX) : _fs.indexedBasisFunction (iBasisFunctionIndex).calcDerivative (dblX, i);
+				(dblX) : _fs.indexedBasisFunction (iBasisFunctionIndex).derivative (dblX, i);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblBasisFunctionDeriv))
 				throw new java.lang.Exception
 					("SegmentBasisEvaluator::shapedBasisFunctionDerivative => Cannot compute Basis Function Derivative");
 
 			double dblShapeControlDeriv = iOrder == i ? _rssc.shapeController().evaluate
-				(dblShapeControllerPredictorOrdinate) : _rssc.shapeController().calcDerivative
+				(dblShapeControllerPredictorOrdinate) : _rssc.shapeController().derivative
 					(dblShapeControllerPredictorOrdinate, iOrder - i);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblShapeControlDeriv))
@@ -192,7 +191,7 @@ public class SegmentBasisEvaluator implements org.drip.spline.segment.BasisEvalu
 		double dblX = null == _ics ? dblPredictorOrdinate : _ics.localize (dblPredictorOrdinate);
 
 		for (int i = 0; i < iNumBasis; ++i)
-			dblDerivative += adblResponseBasisCoeff[i] * _fs.indexedBasisFunction (i).calcDerivative (dblX,
+			dblDerivative += adblResponseBasisCoeff[i] * _fs.indexedBasisFunction (i).derivative (dblX,
 				iOrder);
 
 		return dblDerivative;
@@ -222,7 +221,7 @@ public class SegmentBasisEvaluator implements org.drip.spline.segment.BasisEvalu
 					("SegmentBasisEvaluator::responseValueDerivative => Cannot compute Basis Function Derivative");
 
 			double dblShapeControlDeriv = iOrder == i ? _rssc.shapeController().evaluate
-				(dblShapeControllerPredictorOrdinate) : _rssc.shapeController().calcDerivative
+				(dblShapeControllerPredictorOrdinate) : _rssc.shapeController().derivative
 					(dblShapeControllerPredictorOrdinate, iOrder - i);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblShapeControlDeriv))

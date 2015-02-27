@@ -1,5 +1,5 @@
 
-package org.drip.sequence.random;
+package org.drip.sequence.functional;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,36 +29,26 @@ package org.drip.sequence.random;
  */
 
 /**
- * BoundedUniform implements the Bounded Uniform Distribution, with a Uniform Distribution between a lower
- *  and an upper Bound.
+ * BoundedMultivariateRandom contains the Implementation of the Bounded Objective Function dependent on
+ *  Multivariate Random Variables.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BoundedUniform extends org.drip.sequence.random.Bounded {
-	private java.util.Random _rng = new java.util.Random();
+public abstract class BoundedMultivariateRandom extends
+	org.drip.sequence.functional.MultivariateRandom {
 
 	/**
-	 * BoundedUniform Distribution Constructor
+	 * Retrieve the Maximal Variance Bound over the Non-target Variate Space for the Target Variate
 	 * 
-	 * @param dblLowerBound The Lower Bound
-	 * @param dblUpperBound The Upper Bound
+	 * @param iTargetVariateIndex The Index corresponding to the Variate on which the Bound is sought
+	 * 
+	 * @return The Maximal Bound over the Non-target Variate Space for the Target Variate
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public BoundedUniform (
-		final double dblLowerBound,
-		final double dblUpperBound)
-		throws java.lang.Exception
-	{
-		super (dblLowerBound, dblUpperBound);
-	}
-
-	@Override public double random()
-	{
-		double dblLowerBound = lowerBound();
-
-		return dblLowerBound + _rng.nextDouble() * (upperBound() - dblLowerBound);
-	}
+	public abstract double targetVarianceBound (
+		final int iTargetVariateIndex)
+		throws java.lang.Exception;
 }

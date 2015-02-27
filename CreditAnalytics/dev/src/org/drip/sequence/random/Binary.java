@@ -1,5 +1,5 @@
 
-package org.drip.function.deterministic1D;
+package org.drip.sequence.random;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -7,8 +7,6 @@ package org.drip.function.deterministic1D;
 
 /*!
  * Copyright (C) 2015 Lakshmi Krishnamurthy
- * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -31,39 +29,48 @@ package org.drip.function.deterministic1D;
  */
 
 /**
- * BernsteinPolynomial provides the evaluation of the BernsteinPolynomial and its derivatives for a specified
- * 	variate.
+ * Binary implements the Standard {0, 1}-valued Binary Random Number Generator.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BernsteinPolynomial extends org.drip.function.deterministic1D.UnivariateConvolution {
+public class Binary extends org.drip.sequence.random.Bounded {
+	private double _dblPositiveProbability = java.lang.Double.NaN;
+
+	private java.util.Random _rng = new java.util.Random();
 
 	/**
-	 * Construct a BernsteinPolynomial instance
+	 * Binary Distribution Constructor
 	 * 
-	 * @param iBaseExponent Base Exponent
-	 * @param iComplementExponent Complement Exponent
+	 * @param dblPositiveProbability Probability of Generating ONE
 	 * 
-	 * @throws java.lang.Exception Thrown if the inputs are invalid
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public BernsteinPolynomial (
-		final int iBaseExponent,
-		final int iComplementExponent)
+	public Binary (
+		final double dblPositiveProbability)
 		throws java.lang.Exception
 	{
-		super (new org.drip.function.deterministic1D.NaturalLogSeriesElement (iBaseExponent), new
-			org.drip.function.deterministic1D.UnivariateReflection (new org.drip.function.deterministic1D.NaturalLogSeriesElement
-				(iComplementExponent)));
+		super (0.,1.);
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblPositiveProbability = dblPositiveProbability) || 0.
+			> _dblPositiveProbability || 1. < _dblPositiveProbability)
+			throw new java.lang.Exception ("BoundedUniform ctr: Invalid Inputs!");
 	}
 
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		BernsteinPolynomial bp = new BernsteinPolynomial (3, 3);
+	/**
+	 * Retrieve the Positive Instance Probability
+	 * 
+	 * @return The Positive Instance Probability
+	 */
 
-		System.out.println ("BPDeriv[0.25] = " + bp.derivative (0.25, 1));
+	public double positiveProbability()
+	{
+		return _dblPositiveProbability;
+	}
+
+	@Override public double random()
+	{
+		return _rng.nextDouble() < _dblPositiveProbability ? 0. : 1.;
 	}
 }

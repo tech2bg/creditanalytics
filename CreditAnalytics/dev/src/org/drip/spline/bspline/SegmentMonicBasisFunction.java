@@ -75,18 +75,18 @@ public class SegmentMonicBasisFunction extends org.drip.spline.bspline.SegmentBa
 			_tbhRight.evaluate (dblPredictorOrdinate);
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblPredictorOrdinate))
-			throw new java.lang.Exception ("SegmentMonicBasisFunction::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("SegmentMonicBasisFunction::derivative => Invalid Inputs");
 
 		if (dblPredictorOrdinate < leading() || dblPredictorOrdinate > trailing()) return 0.;
 
-		return dblPredictorOrdinate < following() ? _tbhLeft.calcDerivative (dblPredictorOrdinate, iOrder) :
-			_tbhRight.calcDerivative (dblPredictorOrdinate, iOrder);
+		return dblPredictorOrdinate < following() ? _tbhLeft.derivative (dblPredictorOrdinate, iOrder) :
+			_tbhRight.derivative (dblPredictorOrdinate, iOrder);
 	}
 
 	@Override public double integrate (

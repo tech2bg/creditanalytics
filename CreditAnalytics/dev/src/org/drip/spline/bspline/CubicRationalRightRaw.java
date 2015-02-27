@@ -77,17 +77,17 @@ public class CubicRationalRightRaw extends org.drip.spline.bspline.TensionBasisH
 		return 0. == tension() ? dblCubicValue / 6. : dblCubicValue * _rhsc.evaluate (dblPredictorOrdinate);
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (0 > iOrder)
-			throw new java.lang.Exception ("CubicRationalRightRaw::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("CubicRationalRightRaw::derivative => Invalid Inputs");
 
 		if (!in (dblPredictorOrdinate)) return 0.;
 
-		if (0. != tension()) return super.calcDerivative (dblPredictorOrdinate, iOrder);
+		if (0. != tension()) return super.derivative (dblPredictorOrdinate, iOrder);
 
 		double dblGap = right() - dblPredictorOrdinate;
 

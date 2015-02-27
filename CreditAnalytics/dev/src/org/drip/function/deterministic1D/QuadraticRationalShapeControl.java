@@ -71,7 +71,7 @@ public class QuadraticRationalShapeControl extends org.drip.function.determinist
 		return 1. / (1. + _dblLambda * dblX * (1. - dblX));
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblX,
 		final int iOrder)
 		throws java.lang.Exception
@@ -87,7 +87,7 @@ public class QuadraticRationalShapeControl extends org.drip.function.determinist
 		if (2 == iOrder)
 			return (2. * dblDBetaDX * dblDBetaDX - dblBeta * dblD2BetaDX2) / (dblBeta * dblBeta * dblBeta);
 
-		return super.calcDerivative (dblX, iOrder);
+		return super.derivative (dblX, iOrder);
 	}
 
 	@Override public double integrate (
@@ -122,8 +122,8 @@ public class QuadraticRationalShapeControl extends org.drip.function.determinist
 	{
 		QuadraticRationalShapeControl qrsc = new QuadraticRationalShapeControl (1.);
 
-		System.out.println (qrsc.calcDerivative (0., 2));
+		System.out.println (qrsc.derivative (0., 2));
 
-		System.out.println (qrsc.calcDerivative (1., 2));
+		System.out.println (qrsc.derivative (1., 2));
 	}
 }

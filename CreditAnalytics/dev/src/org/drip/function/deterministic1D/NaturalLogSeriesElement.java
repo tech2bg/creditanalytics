@@ -65,7 +65,7 @@ public class NaturalLogSeriesElement extends org.drip.function.deterministic.Abs
 			(_iExponent);
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblVariate,
 		final int iOrder)
 		throws java.lang.Exception

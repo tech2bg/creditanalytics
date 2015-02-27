@@ -67,13 +67,13 @@ public class Polynomial extends org.drip.function.deterministic.AbstractUnivaria
 		return java.lang.Math.pow (dblVariate, _iDegree);
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblVariate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || 0 > iOrder)
-			throw new java.lang.Exception ("Polynomial::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("Polynomial::derivative => Invalid Inputs");
 
 		return iOrder > _iDegree ? 0. : java.lang.Math.pow (dblVariate, _iDegree - iOrder) *
 			org.drip.quant.common.NumberUtil.NPK (_iDegree, _iDegree - iOrder);
@@ -115,10 +115,10 @@ public class Polynomial extends org.drip.function.deterministic.AbstractUnivaria
 
 		System.out.println ("Poly[1.0] = " + poly.evaluate (1.0));
 
-		System.out.println ("Deriv[0.0] = " + poly.calcDerivative (0.0, 3));
+		System.out.println ("Deriv[0.0] = " + poly.derivative (0.0, 3));
 
-		System.out.println ("Deriv[0.5] = " + poly.calcDerivative (0.5, 3));
+		System.out.println ("Deriv[0.5] = " + poly.derivative (0.5, 3));
 
-		System.out.println ("Deriv[1.0] = " + poly.calcDerivative (1.0, 3));
+		System.out.println ("Deriv[1.0] = " + poly.derivative (1.0, 3));
 	}
 }

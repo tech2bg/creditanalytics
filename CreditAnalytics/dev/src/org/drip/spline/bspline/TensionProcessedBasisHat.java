@@ -65,22 +65,20 @@ public class TensionProcessedBasisHat extends org.drip.spline.bspline.TensionBas
 		final double dblPredictorOrdinate)
 		throws java.lang.Exception
 	{
-		if (!in (dblPredictorOrdinate)) return 0.;
-
-		return _tbhRaw.calcDerivative (dblPredictorOrdinate, _iDerivOrder);
+		return in (dblPredictorOrdinate) ? _tbhRaw.derivative (dblPredictorOrdinate, _iDerivOrder) : 0.;
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblPredictorOrdinate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (0 > iOrder)
-			throw new java.lang.Exception ("TensionProcessedBasisHat::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("TensionProcessedBasisHat::derivative => Invalid Inputs");
 
 		if (!in (dblPredictorOrdinate)) return 0.;
 
-		return _tbhRaw.calcDerivative (dblPredictorOrdinate, iOrder + _iDerivOrder);
+		return _tbhRaw.derivative (dblPredictorOrdinate, iOrder + _iDerivOrder);
 	}
 
 	@Override public double integrate (
@@ -100,8 +98,8 @@ public class TensionProcessedBasisHat extends org.drip.spline.bspline.TensionBas
 
 		if (1 == _iDerivOrder) return _tbhRaw.evaluate (dblBoundedEnd) - _tbhRaw.evaluate (dblBoundedBegin);
 
-		return _tbhRaw.calcDerivative (dblBoundedEnd, _iDerivOrder - 1) - _tbhRaw.calcDerivative
-			(dblBoundedBegin, _iDerivOrder - 1);
+		return _tbhRaw.derivative (dblBoundedEnd, _iDerivOrder - 1) - _tbhRaw.derivative (dblBoundedBegin,
+			_iDerivOrder - 1);
 	}
 
 	@Override public double normalizer()
@@ -109,7 +107,7 @@ public class TensionProcessedBasisHat extends org.drip.spline.bspline.TensionBas
 	{
 		if (1 == _iDerivOrder) return _tbhRaw.evaluate (right()) - _tbhRaw.evaluate (left());
 
-		return _tbhRaw.calcDerivative (right(), _iDerivOrder - 1) - _tbhRaw.calcDerivative (left(),
-			_iDerivOrder - 1);
+		return _tbhRaw.derivative (right(), _iDerivOrder - 1) - _tbhRaw.derivative (left(), _iDerivOrder -
+			1);
 	}
 }

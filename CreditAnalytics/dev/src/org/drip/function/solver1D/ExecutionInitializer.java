@@ -219,7 +219,7 @@ public class ExecutionInitializer {
 			throw new java.lang.Exception
 				("ExecutionInitializer::isInConvergenceZone => Cannot increment OF deriv count in the output");
 
-		org.drip.quant.calculus.Differential diff1D = _of.calcDifferential (dblConvergenceZoneVariate, 1);
+		org.drip.quant.calculus.Differential diff1D = _of.differential (dblConvergenceZoneVariate, 1);
 
 		if (null == diff1D)
 			throw new java.lang.Exception
@@ -230,7 +230,7 @@ public class ExecutionInitializer {
 			throw new java.lang.Exception
 				("ExecutionInitializer::isInConvergenceZone => Cannot increment OF deriv in the output");
 
-		org.drip.quant.calculus.Differential diff2D = _of.calcDifferential (dblConvergenceZoneVariate, 2);
+		org.drip.quant.calculus.Differential diff2D = _of.differential (dblConvergenceZoneVariate, 2);
 
 		if (null == diff2D)
 			throw new java.lang.Exception

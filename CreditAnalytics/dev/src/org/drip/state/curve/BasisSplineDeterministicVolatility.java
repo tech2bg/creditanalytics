@@ -128,6 +128,6 @@ public class BasisSplineDeterministicVolatility extends org.drip.analytics.defin
 			}
 		};
 
-		return au.calcDerivative (dblDate, iOrder);
+		return au.derivative (dblDate, iOrder);
 	}
 }

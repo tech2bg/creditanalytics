@@ -202,7 +202,7 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 			}
 		};
 
-		return au.calcDerivative (dblPredictorOrdinate, iOrder);
+		return au.derivative (dblPredictorOrdinate, iOrder);
 	}
 
 	@Override public org.drip.quant.calculus.WengertJacobian jackDResponseDCalibrationInput (
@@ -468,7 +468,7 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 				return responseValue (dblVariate);
 			}
 
-			@Override public double calcDerivative (
+			@Override public double derivative (
 				final double dblVariate,
 				final int iOrder)
 				throws java.lang.Exception

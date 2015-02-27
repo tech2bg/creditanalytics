@@ -66,15 +66,15 @@ public class UnivariateReflection extends org.drip.function.deterministic.Abstra
 		return _au.evaluate (1. - dblVariate);
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblVariate,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || 0 >= iOrder)
-			throw new java.lang.Exception ("UnivariateReflection::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("UnivariateReflection::derivative => Invalid Inputs");
 
-		return java.lang.Math.pow (-1., iOrder) * _au.calcDerivative (1. - dblVariate, iOrder);
+		return java.lang.Math.pow (-1., iOrder) * _au.derivative (1. - dblVariate, iOrder);
 	}
 
 	@Override public double integrate (
@@ -101,10 +101,10 @@ public class UnivariateReflection extends org.drip.function.deterministic.Abstra
 
 		System.out.println ("UnivariateReflection[1.0] = " + ur.evaluate (1.0));
 
-		System.out.println ("UnivariateReflectionDeriv[0.0] = " + ur.calcDerivative (0.0, 3));
+		System.out.println ("UnivariateReflectionDeriv[0.0] = " + ur.derivative (0.0, 3));
 
-		System.out.println ("UnivariateReflectionDeriv[0.5] = " + ur.calcDerivative (0.5, 3));
+		System.out.println ("UnivariateReflectionDeriv[0.5] = " + ur.derivative (0.5, 3));
 
-		System.out.println ("UnivariateReflectionDeriv[1.0] = " + ur.calcDerivative (1.0, 3));
+		System.out.println ("UnivariateReflectionDeriv[1.0] = " + ur.derivative (1.0, 3));
 	}
 }

@@ -75,10 +75,10 @@ public class UnivariateReciprocal extends org.drip.function.deterministic.Abstra
 
 		System.out.println ("UnivariateReciprocal[1.0] = " + ur.evaluate (1.0));
 
-		System.out.println ("UnivariateReciprocalDeriv[0.0] = " + ur.calcDerivative (0.0, 3));
+		System.out.println ("UnivariateReciprocalDeriv[0.0] = " + ur.derivative (0.0, 3));
 
-		System.out.println ("UnivariateReciprocalDeriv[0.5] = " + ur.calcDerivative (0.5, 3));
+		System.out.println ("UnivariateReciprocalDeriv[0.5] = " + ur.derivative (0.5, 3));
 
-		System.out.println ("UnivariateReciprocalDeriv[1.0] = " + ur.calcDerivative (1.0, 3));
+		System.out.println ("UnivariateReciprocalDeriv[1.0] = " + ur.derivative (1.0, 3));
 	}
 }

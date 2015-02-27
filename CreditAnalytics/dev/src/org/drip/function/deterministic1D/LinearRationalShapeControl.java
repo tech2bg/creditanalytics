@@ -71,13 +71,13 @@ public class LinearRationalShapeControl extends org.drip.function.deterministic.
 		return 1. / (1. + _dblLambda * dblX);
 	}
 
-	@Override public double calcDerivative (
+	@Override public double derivative (
 		final double dblX,
 		final int iOrder)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
-			throw new java.lang.Exception ("LinearRationalShapeControl::calcDerivative => Invalid Inputs");
+			throw new java.lang.Exception ("LinearRationalShapeControl::derivative => Invalid Inputs");
 
 		double dblDerivative = 1. / (1. + _dblLambda * dblX);
 
