@@ -7,8 +7,6 @@ package org.drip.function.deterministic1D;
 
 /*!
  * Copyright (C) 2015 Lakshmi Krishnamurthy
- * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -31,20 +29,41 @@ package org.drip.function.deterministic1D;
  */
 
 /**
- * Idempotent provides the Implementation of the Idempotent Operator - f(x) = x.
+ * OffsetIdempotent provides the Implementation of the Offset Idempotent Operator - f(x) = x - C.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class Idempotent extends org.drip.function.deterministic.AbstractUnivariate {
+public class OffsetIdempotent extends org.drip.function.deterministic.AbstractUnivariate {
+	private double _dblOffset = java.lang.Double.NaN;
 
 	/**
-	 * Idempotent constructor - DO NOTHING
+	 * OffsetIdempotent Constructor
+	 * 
+	 * @param dblOffset The Offset
+	 * 
+	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
-	public Idempotent()
+	public OffsetIdempotent (
+		final double dblOffset)
+		throws java.lang.Exception
 	{
 		super (null);
+
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblOffset = dblOffset))
+			throw new java.lang.Exception ("OffsetIdempotent ctr: Invalid Inputs");
+	}
+
+	/**
+	 * Retrieve the Offset
+	 * 
+	 * @return The Offset
+	 */
+
+	public double offset()
+	{
+		return _dblOffset;
 	}
 
 	@Override public double evaluate (
@@ -52,9 +71,9 @@ public class Idempotent extends org.drip.function.deterministic.AbstractUnivaria
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate))
-			throw new java.lang.Exception ("Idempotent::evaluate => Invalid Inputs");
+			throw new java.lang.Exception ("OffsetIdempotent::evaluate => Invalid Inputs");
 
-		return dblVariate;
+		return dblVariate - _dblOffset;
 	}
 
 	@Override public double derivative (
@@ -63,7 +82,7 @@ public class Idempotent extends org.drip.function.deterministic.AbstractUnivaria
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || 0 > iOrder)
-			throw new java.lang.Exception ("Idempotent::derivative => Invalid Inputs");
+			throw new java.lang.Exception ("OffsetIdempotent::derivative => Invalid Inputs");
 
 		return iOrder > 1 ? 0. : 1;
 	}
@@ -75,8 +94,8 @@ public class Idempotent extends org.drip.function.deterministic.AbstractUnivaria
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblBegin) || !org.drip.quant.common.NumberUtil.IsValid
 			(dblEnd))
-			throw new java.lang.Exception ("Idempotent::integrate => Invalid Inputs");
+			throw new java.lang.Exception ("OffsetIdempotent::integrate => Invalid Inputs");
 
-		return 0.5 * (dblEnd * dblEnd - dblBegin - dblBegin);
+		return 0.5 * (dblEnd * dblEnd - dblBegin - dblBegin) + _dblOffset * (dblEnd - dblBegin);
 	}
 }

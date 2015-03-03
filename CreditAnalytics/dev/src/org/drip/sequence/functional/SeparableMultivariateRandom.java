@@ -29,26 +29,26 @@ package org.drip.sequence.functional;
  */
 
 /**
- * BoundedMultivariateRandom contains the Implementation of the Bounded Objective Function dependent on
- *  Multivariate Random Variables.
+ * SeparableMultivariateRandom exposes the Variance of the Objective Function dependent on Multivariate
+ *  Random Variables where the Multivariate Function is a Linear Combination of Bounded Univariate Functions
+ *  acting on each Random Variate.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class BoundedMultivariateRandom extends
-	org.drip.sequence.functional.MultivariateRandom {
+public interface SeparableMultivariateRandom {
 
 	/**
-	 * Retrieve the Maximal Agnostic Variance Bound over the Non-target Variate Space for the Target Variate
+	 * Compute the Variance associated with the Target Variate Function
 	 * 
-	 * @param iTargetVariateIndex The Index corresponding to the Variate on which the Bound is sought
+	 * @param iTargetVariateIndex The Target Variate Index
 	 * 
-	 * @return The Maximal Agnostic Bound over the Non-target Variate Space for the Target Variate
+	 * @return Variance associated with the Target Variate Function
 	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public abstract double targetVariateVarianceBound (
+	public abstract double targetVariateVariance (
 		final int iTargetVariateIndex)
 		throws java.lang.Exception;
 }

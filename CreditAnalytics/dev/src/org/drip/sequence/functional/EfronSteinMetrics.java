@@ -29,13 +29,13 @@ package org.drip.sequence.functional;
  */
 
 /**
- * EfronSteinAgnosticMetrics contains the Variance-based non-exponential Sample Distribution/Bounding Metrics
- *  and Agnostic Bounds related to the Functional Transformation of the specified Sequence.
+ * EfronSteinMetrics contains the Variance-based non-exponential Sample Distribution/Bounding Metrics and
+ *  Agnostic Bounds related to the Functional Transformation of the specified Sequence.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class EfronSteinAgnosticMetrics {
+public class EfronSteinMetrics {
 	private org.drip.sequence.functional.MultivariateRandom _func = null;
 	private org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] _aSSAM = null;
 
@@ -57,7 +57,7 @@ public class EfronSteinAgnosticMetrics {
 	}
 
 	/**
-	 * EfronSteinAgnosticMetrics Constructor
+	 * EfronSteinMetrics Constructor
 	 * 
 	 * @param func Multivariate Objective Function
 	 * @param aSSAM Array of the individual Single Sequence Metrics
@@ -65,24 +65,24 @@ public class EfronSteinAgnosticMetrics {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public EfronSteinAgnosticMetrics (
+	public EfronSteinMetrics (
 		final org.drip.sequence.functional.MultivariateRandom func,
 		final org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM)
 		throws java.lang.Exception
 	{
 		if (null == (_func = func) || null == (_aSSAM = aSSAM))
-			throw new java.lang.Exception ("EfronSteinAgnosticMetrics ctr: Invalid Inputs");
+			throw new java.lang.Exception ("EfronSteinMetrics ctr: Invalid Inputs");
 
 		int iNumVariable = _aSSAM.length;
 
 		if (0 == iNumVariable)
-			throw new java.lang.Exception ("EfronSteinAgnosticMetrics ctr: Invalid Inputs");
+			throw new java.lang.Exception ("EfronSteinMetrics ctr: Invalid Inputs");
 
 		int iSequenceLength = _aSSAM[0].sequence().length;
 
 		for (int i = 1; i < iNumVariable; ++i) {
 			if (null == _aSSAM[i] || _aSSAM[i].sequence().length != iSequenceLength)
-				throw new java.lang.Exception ("EfronSteinAgnosticMetrics ctr: Invalid Inputs");
+				throw new java.lang.Exception ("EfronSteinMetrics ctr: Invalid Inputs");
 		}
 	}
 
@@ -143,7 +143,7 @@ public class EfronSteinAgnosticMetrics {
 	 * @return The Array of the Associated Sequence Metrics
 	 */
 
-	public org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] variateVarianceMetrics()
+	public org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] variateFunctionVarianceMetrics()
 	{
 		int iNumVariate = _aSSAM.length;
 		org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM = new
@@ -298,11 +298,11 @@ public class EfronSteinAgnosticMetrics {
 		int iNumVariate = _aSSAM.length;
 		double dblVarianceUpperBound = 0.;
 
-		org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM = variateVarianceMetrics();
+		org.drip.sequence.metrics.SingleSequenceAgnosticMetrics[] aSSAM = variateFunctionVarianceMetrics();
 
 		if (null == aSSAM || iNumVariate != aSSAM.length)
 			throw new java.lang.Exception
-				("EfronSteinAgnosticMetrics::martingaleVarianceUpperBound => Cannot compute Univariate Variance Metrics");
+				("EfronSteinMetrics::martingaleVarianceUpperBound => Cannot compute Univariate Variance Metrics");
 
 		for (int i = 0; i < iNumVariate; ++i)
 			dblVarianceUpperBound += aSSAM[i].empiricalExpectation();
@@ -332,7 +332,7 @@ public class EfronSteinAgnosticMetrics {
 
 		if (null == aSSAM || iNumVariate != aSSAM.length)
 			throw new java.lang.Exception
-				("EfronSteinAgnosticMetrics::ghostVarianceUpperBound => Cannot compute Target Ghost Variance Metrics");
+				("EfronSteinMetrics::ghostVarianceUpperBound => Cannot compute Target Ghost Variance Metrics");
 
 		for (int i = 0; i < iNumVariate; ++i)
 			dblVarianceUpperBound += aSSAM[i].empiricalExpectation();
@@ -362,7 +362,7 @@ public class EfronSteinAgnosticMetrics {
 
 		if (null == aSSAM || iNumVariate != aSSAM.length)
 			throw new java.lang.Exception
-				("EfronSteinAgnosticMetrics::efronSteinSteeleBound => Cannot compute Symmetrized Difference Metrics");
+				("EfronSteinMetrics::efronSteinSteeleBound => Cannot compute Symmetrized Difference Metrics");
 
 		for (int i = 0; i < iNumVariate; ++i)
 			dblVarianceUpperBound += aSSAM[i].empiricalRawMoment (2, false);
@@ -392,7 +392,7 @@ public class EfronSteinAgnosticMetrics {
 
 		if (null == aSSAM || iNumVariate != aSSAM.length)
 			throw new java.lang.Exception
-				("EfronSteinAgnosticMetrics::pivotVarianceUpperBound => Cannot compute Pivoted Difference Metrics");
+				("EfronSteinMetrics::pivotVarianceUpperBound => Cannot compute Pivoted Difference Metrics");
 
 		for (int i = 0; i < iNumVariate; ++i)
 			dblVarianceUpperBound += aSSAM[i].empiricalRawMoment (2, false);
@@ -413,7 +413,7 @@ public class EfronSteinAgnosticMetrics {
 	{
 		if (!(_func instanceof org.drip.sequence.functional.BoundedMultivariateRandom))
 			throw new java.lang.Exception
-				("EfronSteinAgnosticMetrics::boundedVarianceUpperBound => Invalid Bounded Metrics");
+				("EfronSteinMetrics::boundedVarianceUpperBound => Invalid Bounded Metrics");
 
 		int iNumVariate = _aSSAM.length;
 		double dblVarianceUpperBound = 0.;
@@ -421,7 +421,33 @@ public class EfronSteinAgnosticMetrics {
 			(org.drip.sequence.functional.BoundedMultivariateRandom) _func;
 
 		for (int i = 0; i < iNumVariate; ++i)
-			dblVarianceUpperBound += boundedFunc.targetVarianceBound (i);
+			dblVarianceUpperBound += boundedFunc.targetVariateVarianceBound (i);
+
+		return 0.5 * dblVarianceUpperBound;
+	}
+
+	/**
+	 * Compute the Multivariate Variance Upper Bound using the Separable Variance Bound
+	 * 
+	 * @return The Multivariate Variance Upper Bound using the Separable Variance Bound
+	 * 
+	 * @throws java.lang.Exception Thrown if the Upper Bound cannot be calculated
+	 */
+
+	public double separableVarianceUpperBound()
+		throws java.lang.Exception
+	{
+		if (!(_func instanceof org.drip.sequence.functional.SeparableMultivariateRandom))
+			throw new java.lang.Exception
+				("EfronSteinMetrics::separableVarianceUpperBound => Invalid Bounded Metrics");
+
+		int iNumVariate = _aSSAM.length;
+		double dblVarianceUpperBound = 0.;
+		org.drip.sequence.functional.SeparableMultivariateRandom separableFunc =
+			(org.drip.sequence.functional.SeparableMultivariateRandom) _func;
+
+		for (int i = 0; i < iNumVariate; ++i)
+			dblVarianceUpperBound += separableFunc.targetVariateVariance (i);
 
 		return 0.5 * dblVarianceUpperBound;
 	}

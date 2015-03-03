@@ -1068,4 +1068,26 @@ public class AnalyticsHelper {
 			(dtValue.julian(), bond.maturityDate().julian(), bond.accrualDC(), false, null,
 				bond.currency()));
 	}
+
+	/**
+	 * Construct a Normalized, Equally Weighted Array from the Specified Number of Elements
+	 * 
+	 * @param iNumElement Number of Elements
+	 * 
+	 * @return The Normalized, Equally Weighted Array
+	 */
+
+	public static final double[] NormalizedEqualWeightedArray (
+		final int iNumElement)
+	{
+		if (0 >= iNumElement) return null;
+
+		double dblWeight = 1. / iNumElement;
+		double[] adblEqualWeighted = new double[iNumElement];
+
+		for (int i = 0; i < iNumElement; ++i)
+			adblEqualWeighted[i] = dblWeight;
+
+		return adblEqualWeighted;
+	}
 }

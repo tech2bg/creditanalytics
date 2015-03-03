@@ -59,7 +59,7 @@ public class Bullet {
 	 */
 
 	private double _dblBaseNotional = java.lang.Double.NaN;
-	private org.drip.product.params.FactorSchedule _notlSchedule = null;
+	private org.drip.quant.common.Array2D _notlSchedule = null;
 
 	private org.drip.analytics.output.ConvexityAdjustment convexityAdjustment (
 		final double dblValueDate,
@@ -120,7 +120,7 @@ public class Bullet {
 		final double dblPayDate,
 		final double dblFXFixingDate,
 		final double dblBaseNotional,
-		final org.drip.product.params.FactorSchedule notlSchedule,
+		final org.drip.quant.common.Array2D notlSchedule,
 		final java.lang.String strPayCurrency,
 		final java.lang.String strCouponCurrency,
 		final org.drip.state.identifier.CreditLabel creditLabel)
@@ -137,7 +137,7 @@ public class Bullet {
 		_dblFXFixingDate = dblFXFixingDate;
 
 		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.BulletSchedule();
+			_notlSchedule = org.drip.quant.common.Array2D.BulletSchedule();
 	}
 
 	/**
@@ -253,7 +253,7 @@ public class Bullet {
 	 * @return Notional Schedule
 	 */
 
-	public org.drip.product.params.FactorSchedule notionalSchedule()
+	public org.drip.quant.common.Array2D notionalSchedule()
 	{
 		return _notlSchedule;
 	}
@@ -275,7 +275,7 @@ public class Bullet {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Bullet::notional => Invalid Inputs");
 
-		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.factor (dblDate));
+		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.y (dblDate));
 	}
 
 	/**
@@ -298,7 +298,7 @@ public class Bullet {
 			(dblDate2))
 			throw new java.lang.Exception ("Bullet::notional => Invalid Dates");
 
-		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.factor (dblDate1, dblDate2));
+		return _dblBaseNotional * (null == _notlSchedule ? 1. : _notlSchedule.y (dblDate1, dblDate2));
 	}
 
 	/**

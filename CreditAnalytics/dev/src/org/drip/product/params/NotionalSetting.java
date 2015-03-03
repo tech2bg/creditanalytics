@@ -1,6 +1,8 @@
 
 package org.drip.product.params;
 
+import org.drip.quant.common.Array2D;
+
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
@@ -65,7 +67,7 @@ public class NotionalSetting implements org.drip.product.params.Validatable {
 	private java.lang.String _strDenominationCurrency = "";
 	private double _dblNotionalAmount = java.lang.Double.NaN;
 	private int _iPeriodAmortizationMode = PERIOD_AMORT_AT_START;
-	private org.drip.product.params.FactorSchedule _fsOutstanding = null;
+	private org.drip.quant.common.Array2D _fsOutstanding = null;
 
 	/**
 	 * Construct the NotionalSetting from the notional schedule and the amount.
@@ -80,7 +82,7 @@ public class NotionalSetting implements org.drip.product.params.Validatable {
 	public NotionalSetting (
 		final double dblNotionalAmount,
 		final java.lang.String strDenominationCurrency,
-		final FactorSchedule fsOutstanding,
+		final Array2D fsOutstanding,
 		final int iPeriodAmortizationMode,
 		final boolean bPriceOffOriginalNotional)
 	{
@@ -97,7 +99,7 @@ public class NotionalSetting implements org.drip.product.params.Validatable {
 			_strDenominationCurrency || _strDenominationCurrency.isEmpty())
 			return false;
 
-		if (null == _fsOutstanding) _fsOutstanding = FactorSchedule.BulletSchedule();
+		if (null == _fsOutstanding) _fsOutstanding = Array2D.BulletSchedule();
 
 		return true;
 	}
@@ -141,7 +143,7 @@ public class NotionalSetting implements org.drip.product.params.Validatable {
 	 * @return The Outstanding Factor Schedule
 	 */
 
-	public org.drip.product.params.FactorSchedule outstandingFactorSchedule()
+	public org.drip.quant.common.Array2D outstandingFactorSchedule()
 	{
 		return _fsOutstanding;
 	}

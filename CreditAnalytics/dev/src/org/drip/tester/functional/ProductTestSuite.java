@@ -2288,15 +2288,15 @@ public class ProductTestSuite {
 		}
 
 		if (!bond.setCouponSetting (new org.drip.product.params.CouponSetting
-			(org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblCouponFactor),
-				"FLOATER", 0.01, java.lang.Double.NaN, java.lang.Double.NaN))) {
+			(org.drip.quant.common.Array2D.FromArray (adblDate, adblCouponFactor), "FLOATER", 0.01,
+				java.lang.Double.NaN, java.lang.Double.NaN))) {
 			System.out.println ("Cannot initialize bond Coupon params!");
 
 			System.exit (127);
 		}
 
 		if (!bond.setNotionalSetting (new org.drip.product.params.NotionalSetting (1, "USD",
-			org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblNotionalFactor),
+			org.drip.quant.common.Array2D.FromArray (adblDate, adblNotionalFactor),
 				org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START, false))) {
 			System.out.println ("Cannot initialize bond Notional params!");
 

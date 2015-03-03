@@ -1,8 +1,8 @@
 
 package org.drip.sample.efronstein;
 
-import org.drip.function.deterministic1D.Polynomial;
 import org.drip.quant.common.FormatUtil;
+import org.drip.sequence.custom.GlivenkoCantelliUniformDeviation;
 import org.drip.sequence.functional.*;
 import org.drip.sequence.metrics.SingleSequenceAgnosticMetrics;
 import org.drip.sequence.random.*;
@@ -59,24 +59,23 @@ public class BoundedVariateSumBound {
 		return aSSAM;
 	}
 
-	private static final IndependentBoundedVariateSum BoundedSumFunction (
+	private static final GlivenkoCantelliUniformDeviation BoundedSumFunction (
 		final BoundedUniform bu,
 		final int iNumVariate)
 		throws Exception
 	{
-		double[] adblBound = new double[iNumVariate];
 		double[] adblWeight = new double[iNumVariate];
 
-		for (int i = 0; i < iNumVariate; ++i) {
+		for (int i = 0; i < iNumVariate; ++i)
 			adblWeight[i] = 1.;
 
-			adblBound[i] = bu.upperBound() - bu.lowerBound();
-		}
-
-		return new IndependentBoundedVariateSum (
-			new Polynomial (1),
-			adblWeight,
-			adblBound
+		return new GlivenkoCantelliUniformDeviation (
+			new BoundedIdempotentUnivariateRandom (
+				0.,
+				null,
+				bu.upperBound() - bu.lowerBound()
+			),
+			adblWeight
 		);
 	}
 
@@ -94,7 +93,7 @@ public class BoundedVariateSumBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				BoundedSumFunction (bu, iNumSample),
 				aSSAM
 			);
@@ -121,7 +120,7 @@ public class BoundedVariateSumBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				BoundedSumFunction (bu, iNumSample),
 				aSSAM
 			);
@@ -153,7 +152,7 @@ public class BoundedVariateSumBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				BoundedSumFunction (bu, iNumSample),
 				aSSAM
 			);
@@ -187,14 +186,14 @@ public class BoundedVariateSumBound {
 
 			MultivariateRandom func = BoundedSumFunction (bu, iNumSample);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);
 
 			if (0 != j) strDump += " |";
 
-			strDump += FormatUtil.FormatDouble (esam.pivotVarianceUpperBound (func), 2, 2, 1.);
+			strDump += FormatUtil.FormatDouble (esam.pivotVarianceUpperBound (new FlatMultivariateRandom (0.)), 2, 2, 1.);
 		}
 
 		System.out.println (strDump + " |");
@@ -214,7 +213,7 @@ public class BoundedVariateSumBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				BoundedSumFunction (bu, iNumSample),
 				aSSAM
 			);
@@ -236,7 +235,7 @@ public class BoundedVariateSumBound {
 		int iNumSet = 5;
 
 		int[] aiSampleSize = new int[] {
-			3, 10, 25
+			3, 10, 25, 50
 		};
 
 		BoundedUniform bu = new BoundedUniform (0., 1.);

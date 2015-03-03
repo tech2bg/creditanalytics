@@ -42,8 +42,8 @@ public abstract class CompositePeriod {
 	private java.lang.String _strPayCurrency = "";
 	private double _dblPayDate = java.lang.Double.NaN;
 	private double _dblBaseNotional = java.lang.Double.NaN;
-	private org.drip.product.params.FactorSchedule _fsCoupon = null;
-	private org.drip.product.params.FactorSchedule _fsNotional = null;
+	private org.drip.quant.common.Array2D _fsCoupon = null;
+	private org.drip.quant.common.Array2D _fsNotional = null;
 	private org.drip.state.identifier.CreditLabel _creditLabel = null;
 	private org.drip.param.period.FixingSetting _fxFixingSetting = null;
 	private java.util.List<org.drip.analytics.cashflow.ComposableUnitPeriod> _lsCUP = null;
@@ -364,7 +364,7 @@ public abstract class CompositePeriod {
 	 * @return Period Notional Schedule
 	 */
 
-	public org.drip.product.params.FactorSchedule notionalSchedule()
+	public org.drip.quant.common.Array2D notionalSchedule()
 	{
 		return _fsNotional;
 	}
@@ -387,7 +387,7 @@ public abstract class CompositePeriod {
 			throw new java.lang.Exception ("CompositePeriod::notional => Invalid Inputs: " + dblDate + " [" +
 				startDate() + " => " + endDate() + "]");
 
-		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.factor (dblDate));
+		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.y (dblDate));
 	}
 
 	/**
@@ -410,7 +410,7 @@ public abstract class CompositePeriod {
 			(dblDate2) || !contains (dblDate1) || !contains (dblDate2))
 			throw new java.lang.Exception ("CompositePeriod::notional => Invalid Dates");
 
-		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.factor (dblDate1, dblDate2));
+		return _dblBaseNotional * (null == _fsNotional ? 1. : _fsNotional.y (dblDate1, dblDate2));
 	}
 
 	/**
@@ -419,7 +419,7 @@ public abstract class CompositePeriod {
 	 * @return Period Coupon Schedule
 	 */
 
-	public org.drip.product.params.FactorSchedule couponSchedule()
+	public org.drip.quant.common.Array2D couponSchedule()
 	{
 		return _fsCoupon;
 	}
@@ -441,7 +441,7 @@ public abstract class CompositePeriod {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || !contains (dblDate))
 			throw new java.lang.Exception ("CompositePeriod::couponFactor => Invalid Inputs");
 
-		return null == _fsCoupon ? 1. : _fsCoupon.factor (dblDate);
+		return null == _fsCoupon ? 1. : _fsCoupon.y (dblDate);
 	}
 
 	/**
@@ -464,7 +464,7 @@ public abstract class CompositePeriod {
 			(dblDate2) || !contains (dblDate1) || !contains (dblDate2))
 			throw new java.lang.Exception ("CompositePeriod::couponFactor => Invalid Dates");
 
-		return null == _fsCoupon ? 1. : _fsCoupon.factor (dblDate1, dblDate2);
+		return null == _fsCoupon ? 1. : _fsCoupon.y (dblDate1, dblDate2);
 	}
 
 	/**

@@ -1,8 +1,8 @@
 
 package org.drip.sample.efronstein;
 
-import org.drip.function.deterministic1D.Polynomial;
 import org.drip.quant.common.FormatUtil;
+import org.drip.sequence.custom.GlivenkoCantelliUniformDeviation;
 import org.drip.sequence.functional.*;
 import org.drip.sequence.metrics.SingleSequenceAgnosticMetrics;
 import org.drip.sequence.random.*;
@@ -58,24 +58,24 @@ public class BinaryVariateSumBound {
 		return aSSAM;
 	}
 
-	private static final IndependentBinaryVariateSum BinarySumFunction (
+	private static final GlivenkoCantelliUniformDeviation BinarySumFunction (
 		final Binary binarySequenceGenerator,
 		final int iNumVariate)
 		throws Exception
 	{
 		double[] adblWeight = new double[iNumVariate];
-		double[] adblPositiveProbability = new double[iNumVariate];
 
-		for (int i = 0; i < iNumVariate; ++i) {
+		for (int i = 0; i < iNumVariate; ++i)
 			adblWeight[i] = 1. / iNumVariate;
 
-			adblPositiveProbability[i] = binarySequenceGenerator.positiveProbability();
-		}
-
-		return new IndependentBinaryVariateSum (
-			new Polynomial (1),
-			adblWeight,
-			adblPositiveProbability
+		return new GlivenkoCantelliUniformDeviation (
+			new BinaryIdempotentUnivariateRandom (
+				0.,
+				null,
+				1.,
+				binarySequenceGenerator.positiveProbability()
+			),
+			adblWeight
 		);
 	}
 
@@ -93,7 +93,7 @@ public class BinaryVariateSumBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				BinarySumFunction (binarySequenceGenerator, iNumSample),
 				aSSAM
 			);
@@ -120,7 +120,7 @@ public class BinaryVariateSumBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				BinarySumFunction (binarySequenceGenerator, iNumSample),
 				aSSAM
 			);
@@ -152,7 +152,7 @@ public class BinaryVariateSumBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				BinarySumFunction (binarySequenceGenerator, iNumSample),
 				aSSAM
 			);
@@ -189,14 +189,14 @@ public class BinaryVariateSumBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);
 
 			if (0 != j) strDump += " |";
 
-			strDump += FormatUtil.FormatDouble (esam.pivotVarianceUpperBound (func), 1, 3, 1.);
+			strDump += FormatUtil.FormatDouble (esam.pivotVarianceUpperBound (new FlatMultivariateRandom (0.)), 1, 3, 1.);
 		}
 
 		System.out.println (strDump + " |");
@@ -216,7 +216,7 @@ public class BinaryVariateSumBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				BinarySumFunction (binarySequenceGenerator, iNumSample),
 				aSSAM
 			);

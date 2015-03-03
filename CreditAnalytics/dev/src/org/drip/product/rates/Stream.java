@@ -298,9 +298,9 @@ public class Stream {
 		if (null == cp || !cp.contains (dblDate2))
 			throw new java.lang.Exception ("Stream::notional => Invalid Inputs");
 
-		org.drip.product.params.FactorSchedule notlSchedule = cp.notionalSchedule();
+		org.drip.quant.common.Array2D notlSchedule = cp.notionalSchedule();
 
-		return initialNotional() * (null == notlSchedule ? 1. : notlSchedule.factor (dblDate1, dblDate2));
+		return initialNotional() * (null == notlSchedule ? 1. : notlSchedule.y (dblDate1, dblDate2));
 	}
 
 	/**

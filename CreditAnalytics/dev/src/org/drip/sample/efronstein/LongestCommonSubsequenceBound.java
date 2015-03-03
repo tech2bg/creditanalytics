@@ -73,7 +73,7 @@ public class LongestCommonSubsequenceBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);
@@ -101,7 +101,7 @@ public class LongestCommonSubsequenceBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);
@@ -134,7 +134,7 @@ public class LongestCommonSubsequenceBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);
@@ -167,7 +167,7 @@ public class LongestCommonSubsequenceBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);
@@ -195,7 +195,7 @@ public class LongestCommonSubsequenceBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);

@@ -124,4 +124,9 @@ public class UnivariatePoisson extends org.drip.quant.distribution.Univariate {
 	{
 	    return _dblLambda;
 	}
+
+	@Override public org.drip.quant.common.Array2D histogram()
+	{
+		return null;
+	}
 }

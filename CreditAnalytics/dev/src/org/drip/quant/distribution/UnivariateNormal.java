@@ -109,6 +109,11 @@ public class UnivariateNormal extends org.drip.quant.distribution.Univariate {
 	    return _dblSigma * _dblSigma;
 	}
 
+	@Override public org.drip.quant.common.Array2D histogram()
+	{
+		return null;
+	}
+
 	public static final void main (
 		final java.lang.String[] astrArgs)
 		throws java.lang.Exception

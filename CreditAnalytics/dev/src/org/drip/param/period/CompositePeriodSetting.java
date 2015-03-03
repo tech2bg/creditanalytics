@@ -40,8 +40,8 @@ public class CompositePeriodSetting {
 	private java.lang.String _strTenor = "";
 	private java.lang.String _strPayCurrency = "";
 	private double _dblBaseNotional = java.lang.Double.NaN;
-	private org.drip.product.params.FactorSchedule _fsCoupon = null;
-	private org.drip.product.params.FactorSchedule _fsNotional = null;
+	private org.drip.quant.common.Array2D _fsCoupon = null;
+	private org.drip.quant.common.Array2D _fsNotional = null;
 	private org.drip.state.identifier.CreditLabel _creditLabel = null;
 	private org.drip.param.period.FixingSetting _fxFixingSetting = null;
 	private org.drip.analytics.daycount.DateAdjustParams _dapPay = null;
@@ -68,8 +68,8 @@ public class CompositePeriodSetting {
 		final java.lang.String strPayCurrency,
 		final org.drip.analytics.daycount.DateAdjustParams dapPay,
 		final double dblBaseNotional,
-		final org.drip.product.params.FactorSchedule fsCoupon,
-		final org.drip.product.params.FactorSchedule fsNotional,
+		final org.drip.quant.common.Array2D fsCoupon,
+		final org.drip.quant.common.Array2D fsNotional,
 		final org.drip.param.period.FixingSetting fxFixingSetting,
 		final org.drip.state.identifier.CreditLabel creditLabel)
 		throws java.lang.Exception
@@ -84,10 +84,10 @@ public class CompositePeriodSetting {
 		_fxFixingSetting = fxFixingSetting;
 
 		if (null == (_fsCoupon = fsCoupon))
-			_fsCoupon = org.drip.product.params.FactorSchedule.BulletSchedule();
+			_fsCoupon = org.drip.quant.common.Array2D.BulletSchedule();
 
 		if (null == (_fsNotional = fsNotional))
-			_fsNotional = org.drip.product.params.FactorSchedule.BulletSchedule();
+			_fsNotional = org.drip.quant.common.Array2D.BulletSchedule();
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class CompositePeriodSetting {
 	 * @return The Notional Schedule
 	 */
 
-	public org.drip.product.params.FactorSchedule notionalSchedule()
+	public org.drip.quant.common.Array2D notionalSchedule()
 	{
 		return _fsNotional;
 	}
@@ -162,7 +162,7 @@ public class CompositePeriodSetting {
 	 * @return The Coupon Schedule
 	 */
 
-	public org.drip.product.params.FactorSchedule couponSchedule()
+	public org.drip.quant.common.Array2D couponSchedule()
 	{
 		return _fsCoupon;
 	}

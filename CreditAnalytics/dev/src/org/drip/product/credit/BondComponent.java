@@ -1018,7 +1018,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 			!org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("Bond::notional => Bad state/inputs");
 
-		return _notionalSetting.outstandingFactorSchedule().factor (dblDate);
+		return _notionalSetting.outstandingFactorSchedule().y (dblDate);
 	}
 
 	@Override public double notional (
@@ -1031,7 +1031,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 				!org.drip.quant.common.NumberUtil.IsValid (dblEndDate))
 			throw new java.lang.Exception ("Bond::notional => Bad state/inputs");
 
-		return _notionalSetting.outstandingFactorSchedule().factor (dblStartDate, dblEndDate);
+		return _notionalSetting.outstandingFactorSchedule().y (dblStartDate, dblEndDate);
 	}
 
 	@Override public double initialNotional()

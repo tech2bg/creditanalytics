@@ -182,7 +182,7 @@ public abstract class MultivariateRandom extends org.drip.function.deterministic
 	}
 
 	/**
-	 * Compute the Target Variate Function Metrics conditional on the specified Input Non-Target Variate
+	 * Compute the Target Variate Function Metrics Conditional on the specified Input Non-Target Variate
 	 *  Parameter Sequence
 	 * 
 	 * @param adblNonTargetVariate The Non-Target Variate Parameters
@@ -202,7 +202,7 @@ public abstract class MultivariateRandom extends org.drip.function.deterministic
 	}
 
 	/**
-	 * Compute the Target Variate Function Metrics conditional on the specified Input Non-target Variate
+	 * Compute the Target Variate Function Metrics Conditional on the specified Input Non-target Variate
 	 *  Parameter Sequence
 	 * 
 	 * @param aSSAM Array of Variate Sequence Metrics

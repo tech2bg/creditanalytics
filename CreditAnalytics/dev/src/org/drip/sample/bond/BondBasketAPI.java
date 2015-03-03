@@ -18,7 +18,6 @@ import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
 import org.drip.product.credit.*;
 import org.drip.product.definition.*;
-import org.drip.product.params.FactorSchedule;
 
 /*
  * Credit Analytics API Imports
@@ -26,6 +25,7 @@ import org.drip.product.params.FactorSchedule;
 
 import org.drip.product.rates.*;
 import org.drip.param.creator.*;
+import org.drip.quant.common.Array2D;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.state.creator.*;
@@ -333,7 +333,7 @@ public class BondBasketAPI {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FactorSchedule MakeFSPrincipal()
+	private static final Array2D MakeFSPrincipal()
 		throws Exception
 	{
 		double[] adblDate = new double[5];
@@ -345,7 +345,7 @@ public class BondBasketAPI {
 		for (int i = 0; i < 5; ++i)
 			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 
-		return FactorSchedule.FromDateFactorArray (adblDate, adblFactor);
+		return Array2D.FromArray (adblDate, adblFactor);
 	}
 
 	/*
@@ -354,7 +354,7 @@ public class BondBasketAPI {
 	 *  	USE WITH CARE: This sample ignores errors and does not handle exceptions.
 	 */
 
-	private static final FactorSchedule MakeFSCoupon()
+	private static final Array2D MakeFSCoupon()
 		throws Exception
 	{
 		double[] adblDate = new double[5];
@@ -366,7 +366,7 @@ public class BondBasketAPI {
 		for (int i = 0; i < 5; ++i)
 			adblDate[i] = dtEOSStart.addYears (i + 2).julian();
 
-		return FactorSchedule.FromDateFactorArray (adblDate, adblFactor);
+		return Array2D.FromArray (adblDate, adblFactor);
 	}
 
 	/*

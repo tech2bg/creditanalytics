@@ -121,4 +121,24 @@ public class UnivariateBoundedUniformInteger extends org.drip.quant.distribution
 	{
 	    return (_iFinish - _iStart) * (_iFinish - _iStart) / 12.;
 	}
+
+	@Override public org.drip.quant.common.Array2D histogram()
+	{
+		int iGridWidth = _iFinish - _iStart;
+		double[] adblX = new double[iGridWidth];
+		double[] adblY = new double[iGridWidth];
+
+		for (int i = 0; i < iGridWidth; ++i) {
+			adblY[i] = 1. / iGridWidth;
+			adblX[i] = _iStart + (i + 1);
+		}
+
+		try {
+			
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }

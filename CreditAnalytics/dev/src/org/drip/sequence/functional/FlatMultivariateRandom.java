@@ -1,5 +1,5 @@
 
-package org.drip.function.deterministic1D;
+package org.drip.sequence.functional;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,33 +29,46 @@ package org.drip.function.deterministic1D;
  */
 
 /**
- * BennettFunction is implementation of the Bennett's Function used in the Estimation of the Bennett's
- * 	Concentration Inequality.
+ * FlatMultivariateRandom contains the Implementation of the Flat Objective Function dependent on
+ *  Multivariate Random Variables.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BennettFunction extends org.drip.function.deterministic.AbstractUnivariate {
+public class FlatMultivariateRandom extends org.drip.sequence.functional.MultivariateRandom {
+	private double _dblFlatValue = java.lang.Double.NaN;
 
 	/**
-	 * BennettFunction constructor
+	 * FlatMultivariateRandom Constructor
 	 * 
-	 * @throws java.lang.Exception Thrown if BennettFunction cannot be instantiated
+	 * @param dblFlatValue The Flat Value
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public BennettFunction()
+	public FlatMultivariateRandom (
+		final double dblFlatValue)
 		throws java.lang.Exception
 	{
-		super (null);
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblFlatValue = dblFlatValue))
+			throw new java.lang.Exception ("FlatMultivariateRandom ctr: Invalid Inputs");
+	}
+
+	/**
+	 * Retrieve the Flat Value
+	 * 
+	 * @return The Flat Value
+	 */
+
+	public double flatValue()
+	{
+		return _dblFlatValue;
 	}
 
 	@Override public double evaluate (
-		final double dblVariate)
+		final double[] adblVariate)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || dblVariate < 0.)
-			throw new java.lang.Exception ("BennettFunction::evaluate => Invalid Inputs");
-
-		return (1. + dblVariate) * java.lang.Math.log (1. + dblVariate) - dblVariate;
+		return _dblFlatValue;
 	}
 }

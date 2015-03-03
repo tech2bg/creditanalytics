@@ -143,8 +143,8 @@ public class BondBuilder {
 		final java.lang.String strDayCount,
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
-		final org.drip.product.params.FactorSchedule fsPrincipalOutstanding,
-		final org.drip.product.params.FactorSchedule fsCoupon)
+		final org.drip.quant.common.Array2D fsPrincipalOutstanding,
+		final org.drip.quant.common.Array2D fsCoupon)
 	{
 		if (null == strName || strName.isEmpty() || null == strCurrency || strCurrency.isEmpty() || null ==
 			dtEffective || null == dtMaturity || !org.drip.quant.common.NumberUtil.IsValid (dblCoupon))
@@ -198,8 +198,8 @@ public class BondBuilder {
 		final java.lang.String strDayCount,
 		final org.drip.analytics.date.JulianDate dtEffective,
 		final org.drip.analytics.date.JulianDate dtMaturity,
-		final org.drip.product.params.FactorSchedule fsPrincipalOutstanding,
-		final org.drip.product.params.FactorSchedule fsCoupon)
+		final org.drip.quant.common.Array2D fsPrincipalOutstanding,
+		final org.drip.quant.common.Array2D fsCoupon)
 	{
 		if (null == strName || strName.isEmpty() || null == strCurrency || strCurrency.isEmpty() || null ==
 			dtEffective || null == dtMaturity || !org.drip.quant.common.NumberUtil.IsValid (dblSpread))
@@ -344,16 +344,16 @@ public class BondBuilder {
 
 		return CreateBondFromParams (null, new org.drip.product.params.IdentifierSet (strName, strName,
 			strName, strCurrency), new org.drip.product.params.CouponSetting
-				(org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblCouponFactor), "",
-					1., java.lang.Double.NaN, java.lang.Double.NaN), null, new
+				(org.drip.quant.common.Array2D.FromArray (adblDate, adblCouponFactor), "", 1.,
+					java.lang.Double.NaN, java.lang.Double.NaN), null, new
 						org.drip.product.params.QuoteConvention (null, "", dtEffective.julian(), 100., 0,
 							strCurrency, org.drip.analytics.daycount.Convention.DATE_ROLL_ACTUAL), new
 								org.drip.product.params.CreditSetting (30, java.lang.Double.NaN, true,
 									strCreditCurveName, true), new org.drip.product.params.TerminationSetting
 										(false, false, false), bfpgp, new
 											org.drip.product.params.NotionalSetting (100., strCurrency,
-												org.drip.product.params.FactorSchedule.FromDateFactorArray
-													(adblDate, adblNormalizedPrincipal),
+												org.drip.quant.common.Array2D.FromArray (adblDate,
+													adblNormalizedPrincipal),
 														org.drip.product.params.NotionalSetting.PERIOD_AMORT_AT_START,
 			false));
 	}

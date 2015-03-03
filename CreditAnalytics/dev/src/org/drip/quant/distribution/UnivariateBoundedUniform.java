@@ -36,6 +36,8 @@ package org.drip.quant.distribution;
  */
 
 public class UnivariateBoundedUniform extends org.drip.quant.distribution.Univariate {
+	private static final int GRID_WIDTH = 100;
+
 	private double _dblLowerBound = java.lang.Double.NaN;
 	private double _dblUpperBound = java.lang.Double.NaN;
 
@@ -99,5 +101,25 @@ public class UnivariateBoundedUniform extends org.drip.quant.distribution.Univar
 	@Override public double variance()
 	{
 	    return (_dblUpperBound - _dblLowerBound) * (_dblUpperBound - _dblLowerBound) / 12.;
+	}
+
+	@Override public org.drip.quant.common.Array2D histogram()
+	{
+		double[] adblX = new double[GRID_WIDTH];
+		double[] adblY = new double[GRID_WIDTH];
+		double dblWidth = (_dblUpperBound - _dblLowerBound) / GRID_WIDTH;
+
+		for (int i = 0; i < GRID_WIDTH; ++i) {
+			adblY[i] = 1. / GRID_WIDTH;
+			adblX[i] = _dblLowerBound + (i + 1) * dblWidth;
+		}
+
+		try {
+			
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

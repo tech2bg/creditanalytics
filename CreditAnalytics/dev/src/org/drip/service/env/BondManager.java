@@ -220,7 +220,7 @@ public class BondManager {
 		return null;
 	}
 
-	private static final org.drip.product.params.FactorSchedule ExtractAmortizationSchedule (
+	private static final org.drip.quant.common.Array2D ExtractAmortizationSchedule (
 		final java.sql.Statement stmt,
 		final java.lang.String strBondId)
 	{
@@ -263,8 +263,7 @@ public class BondManager {
 		for (double dblPrincipalPaydownFactor : ldblPrincipalPaydownFactors)
 			adblPrincipalPaydownFactor[i++] = dblPrincipalPaydownFactor;
 
-		return org.drip.product.params.FactorSchedule.FromDateFactorDeltaArray (adblDate,
-			adblPrincipalPaydownFactor);
+		return org.drip.quant.common.Array2D.FromXYDeltaArray (adblDate, adblPrincipalPaydownFactor, 1.);
 	}
 
 	/**
@@ -749,7 +748,7 @@ public class BondManager {
 
 				bond.setEmbeddedPutSchedule (ExtractEOS2 (stmt, strBondId, dblFirstExDate, true));
 
-				org.drip.product.params.FactorSchedule fsEOS = ExtractAmortizationSchedule (stmt,
+				org.drip.quant.common.Array2D fsEOS = ExtractAmortizationSchedule (stmt,
 					strBondId);
 
 				if (null != fsEOS)
@@ -775,7 +774,7 @@ public class BondManager {
 
 				bond.setEmbeddedPutSchedule (ExtractEOS2 (stmt, strBondId, dblScheduleStart, true));
 
-				org.drip.product.params.FactorSchedule fsEOS = ExtractAmortizationSchedule (stmt, strBondId);
+				org.drip.quant.common.Array2D fsEOS = ExtractAmortizationSchedule (stmt, strBondId);
 
 				if (null != fsEOS)
 					bond.setNotionalSetting (new org.drip.product.params.NotionalSetting (1.,

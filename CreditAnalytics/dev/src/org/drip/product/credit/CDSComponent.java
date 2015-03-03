@@ -57,7 +57,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 	private double _dblMaturity = java.lang.Double.NaN;
 	private double _dblEffective = java.lang.Double.NaN;
 	private org.drip.product.params.CreditSetting _crValParams = null;
-	private org.drip.product.params.FactorSchedule _notlSchedule = null;
+	private org.drip.quant.common.Array2D _notlSchedule = null;
 	private org.drip.param.valuation.CashSettleParams _settleParams = null;
 	private java.util.List<org.drip.analytics.cashflow.CompositePeriod> _lsCouponPeriod = null;
 
@@ -407,7 +407,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		final org.drip.analytics.daycount.DateAdjustParams dapAccrualEnd,
 		final org.drip.analytics.daycount.DateAdjustParams dapPay,
 		final org.drip.analytics.daycount.DateAdjustParams dapReset,
-		final org.drip.product.params.FactorSchedule notlSchedule,
+		final org.drip.quant.common.Array2D notlSchedule,
 		final double dblNotional,
 		final java.lang.String strCouponCurrency,
 		final org.drip.product.params.CreditSetting crValParams,
@@ -425,7 +425,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		java.lang.String strTenor = (12 / iFreq) + "M";
 
 		if (null == (_notlSchedule = notlSchedule))
-			_notlSchedule = org.drip.product.params.FactorSchedule.BulletSchedule();
+			_notlSchedule = org.drip.quant.common.Array2D.BulletSchedule();
 
 		org.drip.param.period.UnitCouponAccrualSetting ucas = new
 			org.drip.param.period.UnitCouponAccrualSetting (iFreq, strCouponDC, _bApplyCpnEOMAdj,
@@ -511,7 +511,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 		if (null == _notlSchedule || !org.drip.quant.common.NumberUtil.IsValid (dblDate))
 			throw new java.lang.Exception ("CDSComponent::notional => Bad date");
 
-		return _notlSchedule.factor (dblDate);
+		return _notlSchedule.y (dblDate);
 	}
 
 	@Override public double notional (
@@ -523,7 +523,7 @@ public class CDSComponent extends org.drip.product.definition.CreditDefaultSwap 
 			!org.drip.quant.common.NumberUtil.IsValid (dblDate2))
 			throw new java.lang.Exception ("CDSComponent::notional => Bad date");
 
-		return _notlSchedule.factor (dblDate1, dblDate2);
+		return _notlSchedule.y (dblDate1, dblDate2);
 	}
 
 	@Override public double recovery (

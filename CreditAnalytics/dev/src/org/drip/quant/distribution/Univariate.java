@@ -98,4 +98,12 @@ public abstract class Univariate {
 	 */
 
 	public abstract double variance();
+
+	/**
+	 * Retrieve the Univariate Weighted Histogram
+	 * 
+	 * @return The Univariate Weighted Histogram
+	 */
+
+	public abstract org.drip.quant.common.Array2D histogram();
 }

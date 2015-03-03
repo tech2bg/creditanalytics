@@ -12,8 +12,8 @@ import org.drip.param.market.CurveSurfaceQuoteSet;
 import org.drip.param.period.*;
 import org.drip.param.valuation.*;
 import org.drip.product.creator.*;
-import org.drip.product.params.FactorSchedule;
 import org.drip.product.rates.*;
+import org.drip.quant.common.Array2D;
 import org.drip.quant.common.FormatUtil;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
@@ -130,7 +130,7 @@ public class RollerCoasterSwap {
 	private static final FixFloatComponent[] SwapInstrumentsFromMaturityTenor (
 		final JulianDate dtEffective,
 		final String strCurrency,
-		final FactorSchedule fsNotional,
+		final Array2D fsNotional,
 		final String[] astrMaturityTenor)
 		throws Exception
 	{
@@ -241,10 +241,10 @@ public class RollerCoasterSwap {
 		return aIRS;
 	}
 
-	private static final FactorSchedule RollerCoaster1 (
+	private static final Array2D RollerCoaster1 (
 		final JulianDate dtSpot)
 	{
-		return FactorSchedule.FromDateFactorArray (
+		return Array2D.FromArray (
 			new double[] {
 				dtSpot.julian(),
 				dtSpot.addYears (2).julian(),
@@ -272,10 +272,10 @@ public class RollerCoasterSwap {
 		);
 	}
 
-	private static final FactorSchedule RollerCoaster2 (
+	private static final Array2D RollerCoaster2 (
 		final JulianDate dtSpot)
 	{
-		return FactorSchedule.FromDateFactorArray (
+		return Array2D.FromArray (
 			new double[] {
 				dtSpot.julian(),
 				dtSpot.addYears (2).julian(),

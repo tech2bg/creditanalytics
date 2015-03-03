@@ -76,7 +76,7 @@ public class BinPacking {
 				return mapBin.size();
 			}
 
-			@Override public double targetVarianceBound (
+			@Override public double targetVariateVarianceBound (
 				final int iTargetVariateIndex)
 				throws java.lang.Exception
 			{

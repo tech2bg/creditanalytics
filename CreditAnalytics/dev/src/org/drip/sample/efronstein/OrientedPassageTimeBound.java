@@ -2,7 +2,7 @@
 package org.drip.sample.efronstein;
 
 import org.drip.quant.common.FormatUtil;
-import org.drip.sequence.custom.GlivenkoCantelliUniformDeviation;
+import org.drip.sequence.custom.OrientedPercolationFirstPassage;
 import org.drip.sequence.functional.*;
 import org.drip.sequence.metrics.SingleSequenceAgnosticMetrics;
 import org.drip.sequence.random.*;
@@ -36,13 +36,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * GlivenkoCantelliUniformBound demonstrates the Computation of the Probabilistic Bounds for the Uniform
- * Deviation of an Empirical Sample from its Population Mean using Variants of the Efron-Stein Methodology.
+ * OrientedPassageTimeBound demonstrates the Computation of the Probabilistic Bounds for the First Passage
+ * Time in a Grid of Oriented Percolation using Variants of the Efron-Stein Methodology.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class GlivenkoCantelliUniformBound {
+public class OrientedPassageTimeBound {
 
 	private static final SingleSequenceAgnosticMetrics[] IIDDraw (
 		final RandomSequenceGenerator rsg,
@@ -57,23 +57,9 @@ public class GlivenkoCantelliUniformBound {
 		return aSSAM;
 	}
 
-	private static final GlivenkoCantelliUniformDeviation GlivenkoCantelliFunction (
-		final Binary binarySequenceGenerator,
-		final int iNumVariate)
-		throws Exception
-	{
-		return GlivenkoCantelliUniformDeviation.Create (
-			new BoundedIdempotentUnivariateRandom (
-				binarySequenceGenerator.positiveProbability(),
-				null,
-				1.
-			),
-			iNumVariate
-		);
-	}
-
 	private static final void MartingaleDifferencesRun (
-		final Binary binarySequenceGenerator,
+		final RandomSequenceGenerator rsg,
+		final MultivariateRandom func,
 		final int iNumSample,
 		final int iNumSet)
 		throws Exception
@@ -82,103 +68,7 @@ public class GlivenkoCantelliUniformBound {
 
 		for (int j = 0; j < iNumSet; ++j) {
 			SingleSequenceAgnosticMetrics[] aSSAM = IIDDraw (
-				binarySequenceGenerator,
-				iNumSample
-			);
-
-			EfronSteinMetrics esam = new EfronSteinMetrics (
-				GlivenkoCantelliFunction (binarySequenceGenerator, iNumSample),
-				aSSAM
-			);
-
-			if (0 != j) strDump += " |";
-
-			strDump += FormatUtil.FormatDouble (esam.martingaleVarianceUpperBound(), 1, 3, 1.);
-		}
-
-		System.out.println (strDump + " |");
-	}
-
-	private static final void GhostVariateVarianceRun (
-		final Binary binarySequenceGenerator,
-		final int iNumSample,
-		final int iNumSet)
-		throws Exception
-	{
-		String strDump = "\t| " + FormatUtil.FormatDouble (iNumSample, 2, 0, 1.) + " => ";
-
-		for (int j = 0; j < iNumSet; ++j) {
-			SingleSequenceAgnosticMetrics[] aSSAM = IIDDraw (
-				binarySequenceGenerator,
-				iNumSample
-			);
-
-			EfronSteinMetrics esam = new EfronSteinMetrics (
-				GlivenkoCantelliFunction (binarySequenceGenerator, iNumSample),
-				aSSAM
-			);
-
-			SingleSequenceAgnosticMetrics[] aSSAMGhost = IIDDraw (
-				binarySequenceGenerator,
-				iNumSample
-			);
-
-			if (0 != j) strDump += " |";
-
-			strDump += FormatUtil.FormatDouble (esam.ghostVarianceUpperBound (aSSAMGhost), 1, 3, 1.);
-		}
-
-		System.out.println (strDump + " |");
-	}
-
-	private static final void EfronSteinSteeleRun (
-		final Binary binarySequenceGenerator,
-		final int iNumSample,
-		final int iNumSet)
-		throws Exception
-	{
-		String strDump = "\t| " + FormatUtil.FormatDouble (iNumSample, 2, 0, 1.) + " => ";
-
-		for (int j = 0; j < iNumSet; ++j) {
-			SingleSequenceAgnosticMetrics[] aSSAM = IIDDraw (
-				binarySequenceGenerator,
-				iNumSample
-			);
-
-			EfronSteinMetrics esam = new EfronSteinMetrics (
-				GlivenkoCantelliFunction (binarySequenceGenerator, iNumSample),
-				aSSAM
-			);
-
-			SingleSequenceAgnosticMetrics[] aSSAMGhost = IIDDraw (
-				binarySequenceGenerator,
-				iNumSample
-			);
-
-			if (0 != j) strDump += " |";
-
-			strDump += FormatUtil.FormatDouble (esam.efronSteinSteeleBound (aSSAMGhost), 1, 3, 1.);
-		}
-
-		System.out.println (strDump + " |");
-	}
-
-	private static final void PivotDifferencesRun (
-		final Binary binarySequenceGenerator,
-		final int iNumSample,
-		final int iNumSet)
-		throws Exception
-	{
-		String strDump = "\t| " + FormatUtil.FormatDouble (iNumSample, 2, 0, 1.) + " => ";
-
-		for (int j = 0; j < iNumSet; ++j) {
-			MultivariateRandom func = GlivenkoCantelliFunction (
-				binarySequenceGenerator,
-				iNumSample
-			);
-
-			SingleSequenceAgnosticMetrics[] aSSAM = IIDDraw (
-				binarySequenceGenerator,
+				rsg,
 				iNumSample
 			);
 
@@ -189,14 +79,15 @@ public class GlivenkoCantelliUniformBound {
 
 			if (0 != j) strDump += " |";
 
-			strDump += FormatUtil.FormatDouble (esam.pivotVarianceUpperBound (func), 1, 3, 1.);
+			strDump += FormatUtil.FormatDouble (esam.martingaleVarianceUpperBound(), 2, 2, 1.);
 		}
 
 		System.out.println (strDump + " |");
 	}
 
-	private static final void BoundedDifferencesRun (
-		final Binary binarySequenceGenerator,
+	private static final void GhostVariateVarianceRun (
+		final RandomSequenceGenerator rsg,
+		final MultivariateRandom func,
 		final int iNumSample,
 		final int iNumSet)
 		throws Exception
@@ -205,18 +96,112 @@ public class GlivenkoCantelliUniformBound {
 
 		for (int j = 0; j < iNumSet; ++j) {
 			SingleSequenceAgnosticMetrics[] aSSAM = IIDDraw (
-				binarySequenceGenerator,
+				rsg,
 				iNumSample
 			);
 
 			EfronSteinMetrics esam = new EfronSteinMetrics (
-				GlivenkoCantelliFunction (binarySequenceGenerator, iNumSample),
+				func,
+				aSSAM
+			);
+
+			SingleSequenceAgnosticMetrics[] aSSAMGhost = IIDDraw (
+				rsg,
+				iNumSample
+			);
+
+			if (0 != j) strDump += " |";
+
+			strDump += FormatUtil.FormatDouble (esam.ghostVarianceUpperBound (aSSAMGhost), 2, 2, 1.);
+		}
+
+		System.out.println (strDump + " |");
+	}
+
+	private static final void EfronSteinSteeleRun (
+		final RandomSequenceGenerator rsg,
+		final MultivariateRandom func,
+		final int iNumSample,
+		final int iNumSet)
+		throws Exception
+	{
+		String strDump = "\t| " + FormatUtil.FormatDouble (iNumSample, 2, 0, 1.) + " => ";
+
+		for (int j = 0; j < iNumSet; ++j) {
+			SingleSequenceAgnosticMetrics[] aSSAM = IIDDraw (
+				rsg,
+				iNumSample
+			);
+
+			EfronSteinMetrics esam = new EfronSteinMetrics (
+				func,
+				aSSAM
+			);
+
+			SingleSequenceAgnosticMetrics[] aSSAMGhost = IIDDraw (
+				rsg,
+				iNumSample
+			);
+
+			if (0 != j) strDump += " |";
+
+			strDump += FormatUtil.FormatDouble (esam.efronSteinSteeleBound (aSSAMGhost), 2, 2, 1.);
+		}
+
+		System.out.println (strDump + " |");
+	}
+
+	private static final void PivotDifferencesRun (
+		final RandomSequenceGenerator rsg,
+		final MultivariateRandom func,
+		final int iNumSample,
+		final int iNumSet)
+		throws Exception
+	{
+		String strDump = "\t| " + FormatUtil.FormatDouble (iNumSample, 2, 0, 1.) + " => ";
+
+		for (int j = 0; j < iNumSet; ++j) {
+			SingleSequenceAgnosticMetrics[] aSSAM = IIDDraw (
+				rsg,
+				iNumSample
+			);
+
+			EfronSteinMetrics esam = new EfronSteinMetrics (
+				func,
 				aSSAM
 			);
 
 			if (0 != j) strDump += " |";
 
-			strDump += FormatUtil.FormatDouble (esam.boundedVarianceUpperBound(), 1, 3, 1.);
+			strDump += FormatUtil.FormatDouble (esam.pivotVarianceUpperBound (func), 2, 2, 1.);
+		}
+
+		System.out.println (strDump + " |");
+	}
+
+	private static final void BoundedDifferencesRun (
+		final RandomSequenceGenerator rsg,
+		final MultivariateRandom func,
+		final int iNumSample,
+		final int iNumSet)
+		throws Exception
+	{
+		String strDump = "\t| " + FormatUtil.FormatDouble (iNumSample, 2, 0, 1.) + " => ";
+
+		for (int j = 0; j < iNumSet; ++j) {
+			SingleSequenceAgnosticMetrics[] aSSAM = IIDDraw (
+				rsg,
+				iNumSample
+			);
+
+			EfronSteinMetrics esam = new EfronSteinMetrics (
+				func,
+				aSSAM
+			);
+
+			if (0 != j) strDump += " |";
+
+			strDump += FormatUtil.FormatDouble (esam.boundedVarianceUpperBound(), 2, 2, 1.);
 		}
 
 		System.out.println (strDump + " |");
@@ -231,10 +216,12 @@ public class GlivenkoCantelliUniformBound {
 		int iNumSet = 5;
 
 		int[] aiSampleSize = new int[] {
-			3, 10, 25, 50
+			3, 10, 25
 		};
 
-		Binary bin = new Binary (0.7);
+		BoundedUniform bu = new BoundedUniform (0., 1.);
+
+		MultivariateRandom func = new OrientedPercolationFirstPassage (0.5, 1.0);
 
 		System.out.println ("\n\t|-----------------------------------------------|");
 
@@ -244,7 +231,8 @@ public class GlivenkoCantelliUniformBound {
 
 		for (int iSampleSize : aiSampleSize)
 			MartingaleDifferencesRun (
-				bin,
+				bu,
+				func,
 				iSampleSize,
 				iNumSet
 			);
@@ -259,7 +247,8 @@ public class GlivenkoCantelliUniformBound {
 
 		for (int iSampleSize : aiSampleSize)
 			GhostVariateVarianceRun (
-				bin,
+				bu,
+				func,
 				iSampleSize,
 				iNumSet
 			);
@@ -278,7 +267,8 @@ public class GlivenkoCantelliUniformBound {
 
 		for (int iSampleSize : aiSampleSize)
 			EfronSteinSteeleRun (
-				bin,
+				bu,
+				func,
 				iSampleSize,
 				iNumSet
 			);
@@ -293,7 +283,8 @@ public class GlivenkoCantelliUniformBound {
 
 		for (int iSampleSize : aiSampleSize)
 			PivotDifferencesRun (
-				bin,
+				bu,
+				func,
 				iSampleSize,
 				iNumSet
 			);
@@ -308,7 +299,8 @@ public class GlivenkoCantelliUniformBound {
 
 		for (int iSampleSize : aiSampleSize)
 			BoundedDifferencesRun (
-				bin,
+				bu,
+				func,
 				iSampleSize,
 				iNumSet
 			);

@@ -1,6 +1,8 @@
 
 package org.drip.product.params;
 
+import org.drip.quant.common.Array2D;
+
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
@@ -43,7 +45,7 @@ package org.drip.product.params;
 public class CouponSetting implements org.drip.product.params.Validatable {
 	private java.lang.String _strCouponType = "";
 	private double _dblCouponRate = java.lang.Double.NaN;
-	private org.drip.product.params.FactorSchedule _fs = null;
+	private org.drip.quant.common.Array2D _fs = null;
 	private double _dblCouponFloorRate = java.lang.Double.NaN;
 	private double _dblCouponCeilingRate = java.lang.Double.NaN;
 
@@ -58,7 +60,7 @@ public class CouponSetting implements org.drip.product.params.Validatable {
 	 */
 
 	public CouponSetting (
-		final FactorSchedule fs,
+		final Array2D fs,
 		final java.lang.String strCouponType,
 		final double dblCouponRate,
 		final double dblCouponCeilingRate,
@@ -111,7 +113,7 @@ public class CouponSetting implements org.drip.product.params.Validatable {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblCouponRate)) return false;
 
-		if (null == _fs) _fs = FactorSchedule.BulletSchedule();
+		if (null == _fs) _fs = Array2D.BulletSchedule();
 
 		if (org.drip.quant.common.NumberUtil.IsValid (_dblCouponCeilingRate) &&
 			org.drip.quant.common.NumberUtil.IsValid (_dblCouponFloorRate) && _dblCouponCeilingRate <
@@ -127,7 +129,7 @@ public class CouponSetting implements org.drip.product.params.Validatable {
 	 * @return The Factor Schedule
 	 */
 
-	public org.drip.product.params.FactorSchedule factorSchedule()
+	public org.drip.quant.common.Array2D factorSchedule()
 	{
 		return _fs;
 	}

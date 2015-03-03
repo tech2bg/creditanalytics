@@ -72,7 +72,7 @@ public class MinimumBinPackingBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);
@@ -100,7 +100,7 @@ public class MinimumBinPackingBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);
@@ -133,7 +133,7 @@ public class MinimumBinPackingBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);
@@ -166,7 +166,7 @@ public class MinimumBinPackingBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);
@@ -194,7 +194,7 @@ public class MinimumBinPackingBound {
 				iNumSample
 			);
 
-			EfronSteinAgnosticMetrics esam = new EfronSteinAgnosticMetrics (
+			EfronSteinMetrics esam = new EfronSteinMetrics (
 				func,
 				aSSAM
 			);

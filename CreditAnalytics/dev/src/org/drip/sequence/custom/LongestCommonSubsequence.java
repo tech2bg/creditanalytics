@@ -108,7 +108,7 @@ public class LongestCommonSubsequence extends org.drip.sequence.functional.Bound
 			(adblVariate)) + 0.5 * expectationConjecture (adblVariate);
 	}
 
-	@Override public double targetVarianceBound (
+	@Override public double targetVariateVarianceBound (
 		final int iTargetVariateIndex)
 		throws java.lang.Exception
 	{

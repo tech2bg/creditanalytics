@@ -1,5 +1,5 @@
 
-package org.drip.sequence.functional;
+package org.drip.function.deterministic1D;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,26 +29,33 @@ package org.drip.sequence.functional;
  */
 
 /**
- * BoundedMultivariateRandom contains the Implementation of the Bounded Objective Function dependent on
- *  Multivariate Random Variables.
+ * Bennett is implementation of the Bennett's Function used in the Estimation of the Bennett's Concentration
+ *  Inequality.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class BoundedMultivariateRandom extends
-	org.drip.sequence.functional.MultivariateRandom {
+public class Bennett extends org.drip.function.deterministic.AbstractUnivariate {
 
 	/**
-	 * Retrieve the Maximal Agnostic Variance Bound over the Non-target Variate Space for the Target Variate
+	 * Bennett constructor
 	 * 
-	 * @param iTargetVariateIndex The Index corresponding to the Variate on which the Bound is sought
-	 * 
-	 * @return The Maximal Agnostic Bound over the Non-target Variate Space for the Target Variate
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 * @throws java.lang.Exception Thrown if Bennett cannot be instantiated
 	 */
 
-	public abstract double targetVariateVarianceBound (
-		final int iTargetVariateIndex)
-		throws java.lang.Exception;
+	public Bennett()
+		throws java.lang.Exception
+	{
+		super (null);
+	}
+
+	@Override public double evaluate (
+		final double dblVariate)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariate) || dblVariate < 0.)
+			throw new java.lang.Exception ("Bennett::evaluate => Invalid Inputs");
+
+		return (1. + dblVariate) * java.lang.Math.log (1. + dblVariate) - dblVariate;
+	}
 }

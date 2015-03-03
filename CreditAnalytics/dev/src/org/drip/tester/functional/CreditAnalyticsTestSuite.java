@@ -171,7 +171,7 @@ public class CreditAnalyticsTestSuite {
 	private static final boolean s_bOnTheRun = false;
 	private static final boolean s_bCDXSeries = false;
 
-	private static final org.drip.product.params.FactorSchedule MakeFSPrincipal()
+	private static final org.drip.quant.common.Array2D MakeFSPrincipal()
 	{
 		int NUM_SCHEDULE_ENTRIES = 5;
 		double[] adblDate = new double[NUM_SCHEDULE_ENTRIES];
@@ -187,7 +187,7 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		try {
-			return org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblFactor);
+			return org.drip.quant.common.Array2D.FromArray (adblDate, adblFactor);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -195,7 +195,7 @@ public class CreditAnalyticsTestSuite {
 		return null;
 	}
 
-	private static final org.drip.product.params.FactorSchedule MakeFSCoupon()
+	private static final org.drip.quant.common.Array2D MakeFSCoupon()
 	{
 		int NUM_SCHEDULE_ENTRIES = 5;
 		double[] adblDate = new double[NUM_SCHEDULE_ENTRIES];
@@ -211,7 +211,7 @@ public class CreditAnalyticsTestSuite {
 		}
 
 		try {
-			return org.drip.product.params.FactorSchedule.FromDateFactorArray (adblDate, adblFactor);
+			return org.drip.quant.common.Array2D.FromArray (adblDate, adblFactor);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
