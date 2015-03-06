@@ -236,4 +236,25 @@ public abstract class TermStructure implements org.drip.analytics.definition.Cur
 
 		return nodeDerivative (epoch().addTenor (strTenor).julian(), iOrder);
 	}
+
+	/**
+	 * Convert the Term Instance to a Univariate Function Instance
+	 * 
+	 * @return The Univariate Function Instance
+	 */
+
+	public org.drip.function.deterministic.AbstractUnivariate function()
+	{
+		org.drip.function.deterministic.AbstractUnivariate auTS = new
+			org.drip.function.deterministic.AbstractUnivariate (null) {
+			@Override public double evaluate (
+				final double dblX)
+				throws java.lang.Exception
+			{
+				return node (dblX);
+			}
+		};
+
+		return auTS;
+	}
 }
