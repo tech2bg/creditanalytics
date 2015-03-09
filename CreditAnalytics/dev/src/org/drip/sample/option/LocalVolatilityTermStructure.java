@@ -83,7 +83,7 @@ public class LocalVolatilityTermStructure {
 		for (int i = 0; i < adblStrikeATMFactor.length; ++i) {
 			System.out.print ("\t|  " + FormatUtil.FormatDouble (adblStrikeATMFactor[i], 1, 2, 1.) + "    =>");
 
-			TermStructure tsStrikeAnchor = volSurface.strikeAnchorTermStructure (adblStrikeATMFactor[i]);
+			TermStructure tsStrikeAnchor = volSurface.xAnchorTermStructure (adblStrikeATMFactor[i]);
 
 			for (int j = 0; j < astrMaturityTenor.length; ++j) {
 				double dblLocalVol = Math.sqrt (2. * (tsStrikeAnchor.nodeDerivative (astrMaturityTenor[j], 1) +
@@ -137,7 +137,7 @@ public class LocalVolatilityTermStructure {
 			aTSMaturityAnchor[j] = priceSurfCubicPoly.maturityAnchorTermStructure (astrMaturityTenor[j]);
 
 		for (int i = 0; i < adblStrikeATMFactor.length; ++i) {
-			TermStructure tsStrikeAnchor = priceSurfCubicPoly.strikeAnchorTermStructure (adblStrikeATMFactor[i]);
+			TermStructure tsStrikeAnchor = priceSurfCubicPoly.xAnchorTermStructure (adblStrikeATMFactor[i]);
 
 			for (int j = 0; j < astrMaturityTenor.length; ++j) {
 				System.out.println (Math.sqrt (2. * (tsStrikeAnchor.nodeDerivative (astrMaturityTenor[j], 1) +

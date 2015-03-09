@@ -125,19 +125,19 @@ public abstract class MarketSurface implements org.drip.analytics.definition.Cur
 	}
 
 	/**
-	 * Get the Market Node given the Strike and the Maturity
+	 * Get the Market Node given the X and the Y Ordinates
 	 * 
-	 * @param dblStrike The Strike
-	 * @param dblDate The Julian Maturity Date
+	 * @param dblX X
+	 * @param dblY Y
 	 * 
-	 * @return The Volatility evaluated from the Volatility Surface
+	 * @return The Latent State Metric Value evaluated from the Surface
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
 	public abstract double node (
-		final double dblStrike,
-		final double dblDate)
+		final double dblX,
+		final double dblY)
 		throws java.lang.Exception;
 
 	/**
@@ -151,7 +151,7 @@ public abstract class MarketSurface implements org.drip.analytics.definition.Cur
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public double node (
+	/* public double node (
 		final double dblStrike,
 		final org.drip.analytics.date.JulianDate dt)
 		throws java.lang.Exception
@@ -159,7 +159,7 @@ public abstract class MarketSurface implements org.drip.analytics.definition.Cur
 		if (null == dt) throw new java.lang.Exception ("MarketSurface::node => Invalid Inputs");
 
 		return node (dblStrike, dt.julian());
-	}
+	} */
 
 	/**
 	 * Get the Market Node given the Strike and the Tenor
@@ -184,26 +184,26 @@ public abstract class MarketSurface implements org.drip.analytics.definition.Cur
 	}
 
 	/**
-	 * Extract the Term Structure Constructed at the Strike Anchor Node
+	 * Extract the Term Structure Constructed at the X Anchor Node
 	 * 
-	 * @param dblStrike The Strike Anchor Node
+	 * @param dblXAnchor The X Anchor Node
 	 * 
-	 * @return The Term Structure Constructed at the Strike Anchor Node
+	 * @return The Term Structure Constructed at the X Anchor Node
 	 */
 
-	public abstract org.drip.analytics.definition.TermStructure strikeAnchorTermStructure (
-		final double dblStrikeAnchor);
+	public abstract org.drip.analytics.definition.TermStructure xAnchorTermStructure (
+		final double dblXAnchor);
 
 	/**
-	 * Extract the Term Structure Constructed at the Maturity Anchor Node
+	 * Extract the Term Structure Constructed at the Y Anchor Node
 	 * 
-	 * @param dblMaturityDateAnchor The Maturity Date Anchor
+	 * @param dblYAnchor The Y Anchor
 	 * 
-	 * @return The Term Structure Constructed at the Maturity Anchor Node
+	 * @return The Term Structure Constructed at the Y Anchor Node
 	 */
 
-	public abstract org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
-		final double dblMaturityDateAnchor);
+	public abstract org.drip.analytics.definition.TermStructure yAnchorTermStructure (
+		final double dblYAnchor);
 
 	/**
 	 * Extract the Term Structure Constructed at the Maturity Anchor Node
@@ -213,11 +213,11 @@ public abstract class MarketSurface implements org.drip.analytics.definition.Cur
 	 * @return The Term Structure Constructed at the Maturity Anchor Node
 	 */
 
-	public org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
+	/* public org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
 		final org.drip.analytics.date.JulianDate dtMaturityAnchor)
 	{
-		return null == dtMaturityAnchor ? null : maturityAnchorTermStructure (dtMaturityAnchor.julian());
-	}
+		return null == dtMaturityAnchor ? null : yAnchorTermStructure (dtMaturityAnchor.julian());
+	} */
 
 	/**
 	 * Extract the Term Structure Constructed at the Maturity Anchor Tenor
@@ -230,7 +230,7 @@ public abstract class MarketSurface implements org.drip.analytics.definition.Cur
 	public org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
 		final java.lang.String strTenorAnchor)
 	{
-		return null == strTenorAnchor || strTenorAnchor.isEmpty() ? null : maturityAnchorTermStructure
+		return null == strTenorAnchor || strTenorAnchor.isEmpty() ? null : yAnchorTermStructure
 			(epoch().addTenor (strTenorAnchor).julian());
 	}
 }

@@ -39,14 +39,14 @@ package org.drip.param.creator;
 public class ScenarioMarketSurfaceBuilder {
 
 	/**
-	 * Build an Instance of the Market Node Surface using custom wire span and surface splines
+	 * Build an Instance of the Market Node Surface using Custom Wire Span and Surface Splines.
 	 * 
 	 * @param strName Name of the Volatility Surface
 	 * @param dtStart Start/Epoch Julian Date
 	 * @param strCurrency Currency
 	 * @param collatParams Collateral Parameters
-	 * @param adblStrike Array of Strikes
-	 * @param adblMaturity Array of Maturities
+	 * @param adblX Array of X Ordinates
+	 * @param adblY Array of Y Ordinates
 	 * @param aadblNode Double Array of the Surface Nodes
 	 * @param scbcWireSpan The Wire Span Segment Customizer
 	 * @param scbcSurface The Surface Segment Customizer
@@ -59,42 +59,42 @@ public class ScenarioMarketSurfaceBuilder {
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final org.drip.param.valuation.CollateralizationParams collatParams,
-		final double[] adblStrike,
-		final double[] adblMaturity,
+		final double[] adblX,
+		final double[] adblY,
 		final double[][] aadblNode,
 		final org.drip.spline.params.SegmentCustomBuilderControl scbcWireSpan,
 		final org.drip.spline.params.SegmentCustomBuilderControl scbcSurface)
 	{
 		if (null == dtStart || null == strName || strName.isEmpty() || null == strCurrency ||
-			strCurrency.isEmpty() || null == adblStrike || null == adblMaturity || null == aadblNode || null
-				== scbcWireSpan || null == scbcSurface)
+			strCurrency.isEmpty() || null == adblX || null == adblY || null == aadblNode || null ==
+				scbcWireSpan || null == scbcSurface)
 			return null;
 
-		int iNumStrike = adblStrike.length;
+		int iNumX = adblX.length;
+		int iNumMaturity = adblY.length;
 		int iNumOuterNode = aadblNode.length;
-		int iNumMaturity = adblMaturity.length;
 
-		if (0 == iNumStrike || 0 == iNumMaturity || iNumStrike != iNumOuterNode) return null;
+		if (0 == iNumX || 0 == iNumMaturity || iNumX != iNumOuterNode) return null;
 
-		for (int i = 0; i < iNumStrike; ++i) {
+		for (int i = 0; i < iNumX; ++i) {
 			double[] adblInner = aadblNode[i];
 
 			if (null == adblInner || iNumMaturity != adblInner.length) return null;
 		}
 
 		org.drip.spline.params.SegmentCustomBuilderControl[] aSCBCWireSpan = new
-			org.drip.spline.params.SegmentCustomBuilderControl[iNumStrike - 1];
+			org.drip.spline.params.SegmentCustomBuilderControl[iNumX - 1];
 
-		for (int i = 0; i < iNumStrike - 1; ++i)
+		for (int i = 0; i < iNumX - 1; ++i)
 			aSCBCWireSpan[i] = scbcWireSpan;
 
 		java.util.TreeMap<java.lang.Double, org.drip.spline.grid.Span> mapWireSpan = new
 			java.util.TreeMap<java.lang.Double, org.drip.spline.grid.Span>();
 
-		for (int i = 0; i < iNumStrike; ++i) {
+		for (int i = 0; i < iNumX; ++i) {
 			org.drip.spline.stretch.MultiSegmentSequence mssWire =
 				org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
-					("Stretch@" + strName + "@" + org.drip.quant.common.StringUtil.GUID(), adblMaturity,
+					("Stretch@" + strName + "@" + org.drip.quant.common.StringUtil.GUID(), adblY,
 						aadblNode[i], aSCBCWireSpan, null,
 							org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
 								org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
@@ -102,7 +102,7 @@ public class ScenarioMarketSurfaceBuilder {
 			if (null == mssWire) return null;
 
 			try {
-				mapWireSpan.put (adblStrike[i], new org.drip.spline.grid.OverlappingStretchSpan (mssWire));
+				mapWireSpan.put (adblX[i], new org.drip.spline.grid.OverlappingStretchSpan (mssWire));
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -124,15 +124,15 @@ public class ScenarioMarketSurfaceBuilder {
 	}
 
 	/**
-	 * Construct a Scenario Market Surface off of cubic polynomial wire spline and cubic polynomial surface
+	 * Construct a Scenario Market Surface off of Cubic Polynomial Wire Spline and Cubic Polynomial Surface
 	 * 	Spline.
 	 * 
 	 * @param strName Name of the Volatility Surface
 	 * @param dtStart Start/Epoch Julian Date
 	 * @param strCurrency Currency
 	 * @param collatParams Collateral Parameters
-	 * @param adblStrike Array of Strikes
-	 * @param adblTenor Array of Maturity Tenors
+	 * @param adblX Array of X Ordinates
+	 * @param astrTenor Array of Maturity Tenors
 	 * @param aadblNode Double Array of the Surface Nodes
 	 * 
 	 * @return Instance of the Market Node Surface
@@ -143,21 +143,21 @@ public class ScenarioMarketSurfaceBuilder {
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final org.drip.param.valuation.CollateralizationParams collatParams,
-		final double[] adblStrike,
+		final double[] adblX,
 		final java.lang.String[] astrTenor,
 		final double[][] aadblNode)
 	{
 		if (null == astrTenor) return null;
 
 		int iNumTenor = astrTenor.length;
-		double[] adblMaturity = new double[iNumTenor];
+		double[] adblY = new double[iNumTenor];
 		org.drip.spline.params.SegmentCustomBuilderControl scbcSurface = null;
 		org.drip.spline.params.SegmentCustomBuilderControl scbcWireSpan = null;
 
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
+			adblY[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -175,19 +175,19 @@ public class ScenarioMarketSurfaceBuilder {
 			return null;
 		}
 
-		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblStrike,
-			adblMaturity, aadblNode, scbcWireSpan, scbcSurface);
+		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblX, adblY, aadblNode,
+			scbcWireSpan, scbcSurface);
 	}
 
 	/**
-	 * Construct a Scenario Market Surface off of quartic polynomial wire spline and quartic polynomial
-	 * 	surface Spline.
+	 * Construct a Scenario Market Surface off of Quartic Polynomial Wire Spline and Quartic Polynomial
+	 * 	Surface Spline.
 	 * 
 	 * @param strName Name of the Volatility Surface
 	 * @param dtStart Start/Epoch Julian Date
 	 * @param strCurrency Currency
 	 * @param collatParams Collateral Parameters
-	 * @param adblStrike Array of Strikes
+	 * @param adblX Array of X Ordinates
 	 * @param adblTenor Array of Maturity Tenors
 	 * @param aadblNode Double Array of the Surface Nodes
 	 * 
@@ -199,21 +199,21 @@ public class ScenarioMarketSurfaceBuilder {
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final org.drip.param.valuation.CollateralizationParams collatParams,
-		final double[] adblStrike,
+		final double[] adblX,
 		final java.lang.String[] astrTenor,
 		final double[][] aadblNode)
 	{
 		if (null == astrTenor) return null;
 
 		int iNumTenor = astrTenor.length;
-		double[] adblMaturity = new double[iNumTenor];
+		double[] adblY = new double[iNumTenor];
 		org.drip.spline.params.SegmentCustomBuilderControl scbcSurface = null;
 		org.drip.spline.params.SegmentCustomBuilderControl scbcWireSpan = null;
 
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
+			adblY[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -231,20 +231,20 @@ public class ScenarioMarketSurfaceBuilder {
 			return null;
 		}
 
-		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblStrike,
-			adblMaturity, aadblNode, scbcWireSpan, scbcSurface);
+		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblX, adblY, aadblNode,
+			scbcWireSpan, scbcSurface);
 	}
 
 	/**
-	 * Construct a Scenario Market Surface off of Kaklis-Pandelis wire spline and Kaklis-Pandelis surface
+	 * Construct a Scenario Market Surface off of Kaklis-Pandelis Wire Spline and Kaklis-Pandelis Surface
 	 * 	Spline.
 	 * 
 	 * @param strName Name of the Volatility Surface
 	 * @param dtStart Start/Epoch Julian Date
 	 * @param strCurrency Currency
 	 * @param collatParams Collateral Parameters
-	 * @param adblStrike Array of Strikes
-	 * @param adblTenor Array of Maturity Tenors
+	 * @param adblX Array of X Ordinates
+	 * @param astrTenor Array of Maturity Tenors
 	 * @param aadblNode Double Array of the Surface Nodes
 	 * 
 	 * @return Instance of the Market Node Surface
@@ -255,21 +255,21 @@ public class ScenarioMarketSurfaceBuilder {
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final org.drip.param.valuation.CollateralizationParams collatParams,
-		final double[] adblStrike,
+		final double[] adblX,
 		final java.lang.String[] astrTenor,
 		final double[][] aadblNode)
 	{
 		if (null == astrTenor) return null;
 
 		int iNumTenor = astrTenor.length;
-		double[] adblMaturity = new double[iNumTenor];
+		double[] adblY = new double[iNumTenor];
 		org.drip.spline.params.SegmentCustomBuilderControl scbcSurface = null;
 		org.drip.spline.params.SegmentCustomBuilderControl scbcWireSpan = null;
 
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
+			adblY[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -287,20 +287,20 @@ public class ScenarioMarketSurfaceBuilder {
 			return null;
 		}
 
-		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblStrike,
-			adblMaturity, aadblNode, scbcWireSpan, scbcSurface);
+		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblX, adblY, aadblNode,
+			scbcWireSpan, scbcSurface);
 	}
 
 	/**
-	 * Construct a Scenario Market Surface off of KLK Hyperbolic wire spline and KLK Hyperbolic surface
+	 * Construct a Scenario Market Surface off of KLK Hyperbolic Wire Spline and KLK Hyperbolic Surface
 	 * 	Spline.
 	 * 
 	 * @param strName Name of the Volatility Surface
 	 * @param dtStart Start/Epoch Julian Date
 	 * @param strCurrency Currency
 	 * @param collatParams Collateral Parameters
-	 * @param adblStrike Array of Strikes
-	 * @param adblTenor Array of Maturity Tenors
+	 * @param adblX Array of X Ordinates
+	 * @param astrTenor Array of Maturity Tenors
 	 * @param aadblNode Double Array of the Surface Nodes
 	 * @param dblTension The Tension Parameter
 	 * 
@@ -312,7 +312,7 @@ public class ScenarioMarketSurfaceBuilder {
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final org.drip.param.valuation.CollateralizationParams collatParams,
-		final double[] adblStrike,
+		final double[] adblX,
 		final java.lang.String[] astrTenor,
 		final double[][] aadblNode,
 		final double dblTension)
@@ -320,14 +320,14 @@ public class ScenarioMarketSurfaceBuilder {
 		if (null == astrTenor) return null;
 
 		int iNumTenor = astrTenor.length;
-		double[] adblMaturity = new double[iNumTenor];
+		double[] adblY = new double[iNumTenor];
 		org.drip.spline.params.SegmentCustomBuilderControl scbcSurface = null;
 		org.drip.spline.params.SegmentCustomBuilderControl scbcWireSpan = null;
 
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
+			adblY[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -345,19 +345,19 @@ public class ScenarioMarketSurfaceBuilder {
 			return null;
 		}
 
-		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblStrike,
-			adblMaturity, aadblNode, scbcWireSpan, scbcSurface);
+		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblX, adblY, aadblNode,
+			scbcWireSpan, scbcSurface);
 	}
 
 	/**
-	 * Construct a Scenario Market Surface off of KLK Rational Linear wire spline and KLK Rational Linear
+	 * Construct a Scenario Market Surface off of KLK Rational Linear Wire Spline and KLK Rational Linear
 	 * 	Surface Spline.
 	 * 
 	 * @param strName Name of the Volatility Surface
 	 * @param dtStart Start/Epoch Julian Date
 	 * @param strCurrency Currency
 	 * @param collatParams Collateral Parameters
-	 * @param adblStrike Array of Strikes
+	 * @param adblX Array of X Ordinates
 	 * @param adblTenor Array of Maturity Tenors
 	 * @param aadblNode Double Array of the Surface Nodes
 	 * @param dblTension The Tension Parameter
@@ -370,7 +370,7 @@ public class ScenarioMarketSurfaceBuilder {
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final org.drip.param.valuation.CollateralizationParams collatParams,
-		final double[] adblStrike,
+		final double[] adblX,
 		final java.lang.String[] astrTenor,
 		final double[][] aadblNode,
 		final double dblTension)
@@ -378,14 +378,14 @@ public class ScenarioMarketSurfaceBuilder {
 		if (null == astrTenor) return null;
 
 		int iNumTenor = astrTenor.length;
-		double[] adblMaturity = new double[iNumTenor];
+		double[] adblY = new double[iNumTenor];
 		org.drip.spline.params.SegmentCustomBuilderControl scbcSurface = null;
 		org.drip.spline.params.SegmentCustomBuilderControl scbcWireSpan = null;
 
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
+			adblY[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -403,20 +403,20 @@ public class ScenarioMarketSurfaceBuilder {
 			return null;
 		}
 
-		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblStrike,
-			adblMaturity, aadblNode, scbcWireSpan, scbcSurface);
+		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblX, adblY, aadblNode,
+			scbcWireSpan, scbcSurface);
 	}
 
 	/**
-	 * Construct a Scenario Market Surface off of KLK Rational Quadratic wire spline and KLK Rational
+	 * Construct a Scenario Market Surface off of KLK Rational Quadratic Wire Spline and KLK Rational
 	 * 	Quadratic Surface Spline.
 	 * 
 	 * @param strName Name of the Volatility Surface
 	 * @param dtStart Start/Epoch Julian Date
 	 * @param strCurrency Currency
 	 * @param collatParams Collateral Parameters
-	 * @param adblStrike Array of Strikes
-	 * @param adblTenor Array of Maturity Tenors
+	 * @param adblX Array of X Ordinates
+	 * @param astrTenor Array of Maturity Tenors
 	 * @param aadblNode Double Array of the Surface Nodes
 	 * @param dblTension The Tension Parameter
 	 * 
@@ -428,7 +428,7 @@ public class ScenarioMarketSurfaceBuilder {
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final org.drip.param.valuation.CollateralizationParams collatParams,
-		final double[] adblStrike,
+		final double[] adblX,
 		final java.lang.String[] astrTenor,
 		final double[][] aadblNode,
 		final double dblTension)
@@ -436,14 +436,14 @@ public class ScenarioMarketSurfaceBuilder {
 		if (null == astrTenor) return null;
 
 		int iNumTenor = astrTenor.length;
-		double[] adblMaturity = new double[iNumTenor];
+		double[] adblY = new double[iNumTenor];
 		org.drip.spline.params.SegmentCustomBuilderControl scbcSurface = null;
 		org.drip.spline.params.SegmentCustomBuilderControl scbcWireSpan = null;
 
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
+			adblY[i] = dtStart.addTenor (astrTenor[i]).julian();
 
 		try {
 			scbcWireSpan = new org.drip.spline.params.SegmentCustomBuilderControl
@@ -461,19 +461,19 @@ public class ScenarioMarketSurfaceBuilder {
 			return null;
 		}
 
-		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblStrike,
-			adblMaturity, aadblNode, scbcWireSpan, scbcSurface);
+		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblX, adblY, aadblNode,
+			scbcWireSpan, scbcSurface);
 	}
 
 	/**
-	 * Construct a Scenario Market Surface off of Custom wire spline and Custom Surface Spline.
+	 * Construct a Scenario Market Surface off of Custom Wire Spline and Custom Surface Spline.
 	 * 
 	 * @param strName Name of the Volatility Surface
 	 * @param dtStart Start/Epoch Julian Date
 	 * @param strCurrency Currency
 	 * @param collatParams Collateral Parameters
-	 * @param adblStrike Array of Strikes
-	 * @param adblTenor Array of Maturity Tenors
+	 * @param adblX Array of X Ordinates
+	 * @param astrTenor Array of Maturity Tenors
 	 * @param aadblNode Double Array of the Surface Nodes
 	 * @param scbcWireSpan The Wire Span Segment Customizer
 	 * @param scbcSurface The Surface Segment Customizer
@@ -486,7 +486,7 @@ public class ScenarioMarketSurfaceBuilder {
 		final org.drip.analytics.date.JulianDate dtStart,
 		final java.lang.String strCurrency,
 		final org.drip.param.valuation.CollateralizationParams collatParams,
-		final double[] adblStrike,
+		final double[] adblX,
 		final java.lang.String[] astrTenor,
 		final double[][] aadblNode,
 		final org.drip.spline.params.SegmentCustomBuilderControl scbcWireSpan,
@@ -495,15 +495,15 @@ public class ScenarioMarketSurfaceBuilder {
 		if (null == astrTenor) return null;
 
 		int iNumTenor = astrTenor.length;
-		double[] adblMaturity = new double[iNumTenor];
+		double[] adblY = new double[iNumTenor];
 
 		if (0 == iNumTenor) return null;
 
 		for (int i = 0; i < iNumTenor; ++i)
-			adblMaturity[i] = dtStart.addTenor (astrTenor[i]).julian();
+			adblY[i] = dtStart.addTenor (astrTenor[i]).julian();
 
-		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblStrike,
-			adblMaturity, aadblNode, scbcWireSpan, scbcSurface);
+		return CustomSplineWireSurface (strName, dtStart, strCurrency, collatParams, adblX, adblY, aadblNode,
+			scbcWireSpan, scbcSurface);
 	}
 
 	/**

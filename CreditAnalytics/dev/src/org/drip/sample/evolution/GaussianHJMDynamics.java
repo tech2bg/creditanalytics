@@ -1,0 +1,267 @@
+
+package org.drip.sample.evolution;
+
+import org.drip.analytics.date.*;
+import org.drip.analytics.definition.MarketSurface;
+import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic1D.FlatUnivariate;
+import org.drip.param.creator.ScenarioMarketSurfaceBuilder;
+import org.drip.quant.common.FormatUtil;
+import org.drip.sequence.random.*;
+import org.drip.service.api.CreditAnalytics;
+import org.drip.spline.basis.PolynomialFunctionSetParams;
+import org.drip.spline.params.*;
+import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
+import org.drip.state.dynamics.GaussianHJM;
+
+/*
+ * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ */
+
+/*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
+ * 
+ *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
+ * 		http://www.credit-trader.org/Begin.html
+ * 
+ *  DRIP is a free, full featured, fixed income rates, credit, and FX analytics library with a focus towards
+ *  	pricing/valuation, risk, and market making.
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *   	you may not use this file except in compliance with the License.
+ *   
+ *  You may obtain a copy of the License at
+ *  	http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  	distributed under the License is distributed on an "AS IS" BASIS,
+ *  	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  
+ *  See the License for the specific language governing permissions and
+ *  	limitations under the License.
+ */
+
+/**
+ * GaussianHJMDynamics demonstrates the Construction and Usage of the Gaussian HJM Model Dynamics for the
+ *  Evolution of the Instantaneous Forward Rate, the Price, and the Short Rate.
+ *
+ * @author Lakshmi Krishnamurthy
+ */
+
+public class GaussianHJMDynamics {
+
+	private static final MarketSurface FlatVolatilitySurface (
+		final JulianDate dtStart,
+		final String strCurrency,
+		final double dblFlatVol)
+		throws Exception
+	{
+		return ScenarioMarketSurfaceBuilder.CustomSplineWireSurface (
+			"VIEW_TARGET_VOLATILITY_SURFACE",
+			dtStart,
+			strCurrency,
+			null,
+			new double[] {
+				dtStart.julian(),
+				dtStart.addYears (2).julian(),
+				dtStart.addYears (4).julian(),
+				dtStart.addYears (6).julian(),
+				dtStart.addYears (8).julian(),
+				dtStart.addYears (10).julian()
+			},
+			new double[] {
+				dtStart.julian(),
+				dtStart.addYears (2).julian(),
+				dtStart.addYears (4).julian(),
+				dtStart.addYears (6).julian(),
+				dtStart.addYears (8).julian(),
+				dtStart.addYears (10).julian()
+			},
+			new double[][] {
+				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
+				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
+				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
+				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
+				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
+				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
+			},
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (4),
+				SegmentInelasticDesignControl.Create (2, 2),
+				null,
+				null
+			),
+			new SegmentCustomBuilderControl (
+				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+				new PolynomialFunctionSetParams (4),
+				SegmentInelasticDesignControl.Create (2, 2),
+				null,
+				null
+			)
+		);
+	}
+
+	private static final GaussianHJM HJMInstance (
+		final JulianDate dtStart,
+		final String strCurrency,
+		final MarketSurface mktSurfFlatVol,
+		final AbstractUnivariate auForwardRate)
+		throws Exception
+	{
+		return new GaussianHJM (
+			new MarketSurface[] {mktSurfFlatVol},
+			auForwardRate,
+			new RandomSequenceGenerator[] {
+				new BoxMullerGaussian (0., 1.)
+			}
+		);
+	}
+
+	private static final void InstantaneousForwardRateEvolution (
+		final GaussianHJM hjm,
+		final JulianDate dtStart,
+		final String strCurrency,
+		final String strViewTenor,
+		final String strTargetTenor,
+		final double dblStartingForwardRate,
+		final double dblStartingPrice)
+		throws Exception
+	{
+		int iDayStep = 2;
+		JulianDate dtSpot = dtStart;
+		double dblPrice = dblStartingPrice;
+		double dblShortRate = dblStartingForwardRate;
+		double dblForwardRate = dblStartingForwardRate;
+		double dblContinuouslyCompoundedShortRate = dblStartingForwardRate;
+
+		double dblViewDate = dtStart.addTenor (strViewTenor).julian();
+
+		double dblTargetDate = dtStart.addTenor (strTargetTenor).julian();
+
+		System.out.println ("\t|----------------------------------------------------------------------------------------||");
+
+		System.out.println ("\t|                                                                                        ||");
+
+		System.out.println ("\t|    Heath-Jarrow-Morton Gaussian Run                                                    ||");
+
+		System.out.println ("\t|    --------------------------------                                                    ||");
+
+		System.out.println ("\t|                                                                                        ||");
+
+		System.out.println ("\t|        L->R:                                                                           ||");
+
+		System.out.println ("\t|            Date                                                                        ||");
+
+		System.out.println ("\t|            Instantaneous Forward Rate (%)                                              ||");
+
+		System.out.println ("\t|            Instantaneous Forward Rate - Change (%)                                     ||");
+
+		System.out.println ("\t|            Short Rate (%)                                                              ||");
+
+		System.out.println ("\t|            Short Rate - Change (%)                                                     ||");
+
+		System.out.println ("\t|            Continuously Compounded Short Rate (%)                                      ||");
+
+		System.out.println ("\t|            Continuously Compounded Short Rate - Change (%)                             ||");
+
+		System.out.println ("\t|            Price                                                                       ||");
+
+		System.out.println ("\t|            Price - Change                                                              ||");
+
+		System.out.println ("\t|----------------------------------------------------------------------------------------||");
+
+		while (dtSpot.julian() < dblViewDate) {
+			double dblSpotDate = dtSpot.julian();
+
+			double dblIFRIncrement = hjm.instantaneousForwardRateIncrement (
+				dblViewDate,
+				dblTargetDate,
+				iDayStep / 365.25
+			);
+
+			dblForwardRate += dblIFRIncrement;
+
+			double dblShortRateIncrement = hjm.shortRateIncrement (
+				dblSpotDate,
+				dblViewDate,
+				iDayStep / 365.25
+			);
+
+			dblShortRate += dblShortRateIncrement;
+
+			double dblProportionalPriceIncrement = hjm.proportionalPriceIncrement (
+				dblViewDate,
+				dblTargetDate,
+				dblShortRate,
+				iDayStep / 365.25
+			);
+
+			dblPrice *= (1. + dblProportionalPriceIncrement);
+
+			double dblContinuouslyCompoundedShortRateIncrement = hjm.compoundedShortRateIncrement (
+				dblSpotDate,
+				dblViewDate,
+				dblTargetDate,
+				dblContinuouslyCompoundedShortRate,
+				dblShortRate,
+				iDayStep / 365.25
+			);
+
+			dblContinuouslyCompoundedShortRate += dblContinuouslyCompoundedShortRateIncrement;
+
+			System.out.println ("\t| [" + dtSpot + "] = " +
+				FormatUtil.FormatDouble (dblForwardRate, 1, 2, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblIFRIncrement, 1, 2, 100.) + "% || " +
+				FormatUtil.FormatDouble (dblShortRate, 1, 2, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblShortRateIncrement, 1, 2, 100.) + "% || " +
+				FormatUtil.FormatDouble (dblContinuouslyCompoundedShortRate, 1, 2, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblContinuouslyCompoundedShortRateIncrement, 1, 2, 100.) + "% || " +
+				FormatUtil.FormatDouble (dblPrice, 2, 2, 100.) + " | " +
+				FormatUtil.FormatDouble (dblProportionalPriceIncrement, 1, 2, 100.) + " || "
+			);
+
+			dtSpot = dtSpot.addBusDays (iDayStep, strCurrency);
+		}
+
+		System.out.println ("\t|----------------------------------------------------------------------------------------||");
+	}
+
+	public static final void main (
+		final String[] astrArgs)
+		throws Exception
+	{
+		CreditAnalytics.Init ("");
+
+		String strCurrency = "USD";
+
+		JulianDate dtSpot = DateUtil.Today();
+
+		double dblFlatVol = 0.01;
+		double dblFlatForwardRate = 0.05;
+		double dblStartingPrice = 0.9875;
+
+		MarketSurface mktSurfFlatVol = FlatVolatilitySurface (
+			dtSpot,
+			strCurrency,
+			dblFlatVol
+		);
+
+		GaussianHJM hjm = HJMInstance (
+			dtSpot,
+			strCurrency,
+			mktSurfFlatVol,
+			new FlatUnivariate (dblFlatForwardRate)
+		);
+
+		InstantaneousForwardRateEvolution (
+			hjm,
+			dtSpot,
+			strCurrency,
+			"3M",
+			"6M",
+			dblFlatForwardRate,
+			dblStartingPrice
+		);
+	}
+}

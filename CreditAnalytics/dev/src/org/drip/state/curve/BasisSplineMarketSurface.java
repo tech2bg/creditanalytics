@@ -78,7 +78,7 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 		return _wss.responseValue (dblStrike, dblDate);
 	}
 
-	@Override public org.drip.analytics.definition.TermStructure strikeAnchorTermStructure (
+	@Override public org.drip.analytics.definition.TermStructure xAnchorTermStructure (
 		final double dblStrikeAnchor)
 	{
 		try {
@@ -92,7 +92,7 @@ public class BasisSplineMarketSurface extends org.drip.analytics.definition.Mark
 		return null;
 	}
 
-	@Override public org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
+	@Override public org.drip.analytics.definition.TermStructure yAnchorTermStructure (
 		final double dblMaturityDateAnchor)
 	{
 		try {

@@ -111,7 +111,7 @@ public class MarketSurfaceTermStructure {
 		for (double dblStrike : adblStrikeATMFactor) {
 			System.out.print ("\t|  " + FormatUtil.FormatDouble (dblStrike, 1, 2, 1.) + "    =>");
 
-			TermStructure tsStrike = mktSurf.strikeAnchorTermStructure (dblStrike);
+			TermStructure tsStrike = mktSurf.xAnchorTermStructure (dblStrike);
 
 			for (String strMaturity : astrMaturityTenor)
 				System.out.print ("  " + FormatUtil.FormatDouble (tsStrike.node (strMaturity), 2, 2, 100.) + "%");

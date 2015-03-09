@@ -83,13 +83,13 @@ public class ScenarioLocalVolatilityBuilder {
 			org.drip.analytics.definition.TermStructure[iNumMaturity];
 
 		for (int j = 0; j < iNumMaturity; ++j) {
-			if (null == (aTSMaturityAnchor[j] = msCallPrice.maturityAnchorTermStructure (adblMaturity[j])))
+			if (null == (aTSMaturityAnchor[j] = msCallPrice.yAnchorTermStructure (adblMaturity[j])))
 				return null;
 		}
 
 		for (int i = 0; i < iNumStrike; ++i) {
-			org.drip.analytics.definition.TermStructure tsStrikeAnchor =
-				msCallPrice.strikeAnchorTermStructure (adblStrike[i]);
+			org.drip.analytics.definition.TermStructure tsStrikeAnchor = msCallPrice.xAnchorTermStructure
+				(adblStrike[i]);
 
 			if (null == tsStrikeAnchor) return null;
 
