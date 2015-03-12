@@ -34,7 +34,7 @@ package org.drip.sequence.random;
  * @author Lakshmi Krishnamurthy
  */
 
-public class Poisson extends org.drip.sequence.random.RandomSequenceGenerator {
+public class Poisson extends org.drip.sequence.random.UnivariateSequenceGenerator {
 	private double _dblLambda = java.lang.Double.NaN;
 	private double _dblExponentialLambda = java.lang.Double.NaN;
 

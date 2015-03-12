@@ -45,7 +45,7 @@ import org.drip.service.api.CreditAnalytics;
 public class MinimumBinPackingBound {
 
 	private static final SingleSequenceAgnosticMetrics[] IIDDraw (
-		final RandomSequenceGenerator rsg,
+		final UnivariateSequenceGenerator rsg,
 		final int iNumSample)
 		throws Exception
 	{
@@ -58,7 +58,7 @@ public class MinimumBinPackingBound {
 	}
 
 	private static final void MartingaleDifferencesRun (
-		final RandomSequenceGenerator rsg,
+		final UnivariateSequenceGenerator rsg,
 		final MultivariateRandom func,
 		final int iNumSample,
 		final int iNumSet)
@@ -86,7 +86,7 @@ public class MinimumBinPackingBound {
 	}
 
 	private static final void GhostVariateVarianceRun (
-		final RandomSequenceGenerator rsg,
+		final UnivariateSequenceGenerator rsg,
 		final MultivariateRandom func,
 		final int iNumSample,
 		final int iNumSet)
@@ -119,7 +119,7 @@ public class MinimumBinPackingBound {
 	}
 
 	private static final void EfronSteinSteeleRun (
-		final RandomSequenceGenerator rsg,
+		final UnivariateSequenceGenerator rsg,
 		final MultivariateRandom func,
 		final int iNumSample,
 		final int iNumSet)
@@ -152,7 +152,7 @@ public class MinimumBinPackingBound {
 	}
 
 	private static final void PivotDifferencesRun (
-		final RandomSequenceGenerator rsg,
+		final UnivariateSequenceGenerator rsg,
 		final MultivariateRandom func,
 		final int iNumSample,
 		final int iNumSet)
@@ -180,7 +180,7 @@ public class MinimumBinPackingBound {
 	}
 
 	private static final void BoundedDifferencesRun (
-		final RandomSequenceGenerator rsg,
+		final UnivariateSequenceGenerator rsg,
 		final MultivariateRandom func,
 		final int iNumSample,
 		final int iNumSet)

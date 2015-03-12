@@ -37,7 +37,7 @@ package org.drip.state.dynamics;
 public class HullWhite {
 	private double _dblA = java.lang.Double.NaN;
 	private double _dblSigma = java.lang.Double.NaN;
-	private org.drip.sequence.random.RandomSequenceGenerator _rsg = null;
+	private org.drip.sequence.random.UnivariateSequenceGenerator _rsg = null;
 	private org.drip.function.deterministic.AbstractUnivariate _auIFRInitial = null;
 
 	/**
@@ -55,7 +55,7 @@ public class HullWhite {
 		final double dblSigma,
 		final double dblA,
 		final org.drip.function.deterministic.AbstractUnivariate auIFRInitial,
-		final org.drip.sequence.random.RandomSequenceGenerator rsg)
+		final org.drip.sequence.random.UnivariateSequenceGenerator rsg)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblSigma = dblSigma) ||
@@ -103,7 +103,7 @@ public class HullWhite {
 	 * @return The Random Sequence Generator
 	 */
 
-	public org.drip.sequence.random.RandomSequenceGenerator rsg()
+	public org.drip.sequence.random.UnivariateSequenceGenerator rsg()
 	{
 		return _rsg;
 	}

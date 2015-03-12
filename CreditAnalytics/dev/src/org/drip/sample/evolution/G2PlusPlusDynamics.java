@@ -58,7 +58,7 @@ public class G2PlusPlusDynamics {
 			dblA,
 			dblEta,
 			dblB,
-			new RandomSequenceGenerator[] {
+			new UnivariateSequenceGenerator[] {
 				new BoxMullerGaussian (0., 1.),
 				new BoxMullerGaussian (0., 1.)
 			},

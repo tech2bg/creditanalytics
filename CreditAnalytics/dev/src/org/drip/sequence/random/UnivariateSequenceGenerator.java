@@ -29,12 +29,12 @@ package org.drip.sequence.random;
  */
 
 /**
- * RandomSequenceGenerator implements the Random Sequence Generator Functionality.
+ * UnivariateSequenceGenerator implements the Univariate Random Sequence Generator Functionality.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class RandomSequenceGenerator {
+public abstract class UnivariateSequenceGenerator {
 
 	/**
 	 * Generate a Random Number according to the specified rule

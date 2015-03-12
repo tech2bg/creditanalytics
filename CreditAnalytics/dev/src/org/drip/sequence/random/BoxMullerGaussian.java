@@ -34,7 +34,7 @@ package org.drip.sequence.random;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BoxMullerGaussian extends org.drip.sequence.random.RandomSequenceGenerator {
+public class BoxMullerGaussian extends org.drip.sequence.random.UnivariateSequenceGenerator {
 	private double _dblMean = java.lang.Double.NaN;
 	private double _dblSigma = java.lang.Double.NaN;
 	private double _dblVariance = java.lang.Double.NaN;

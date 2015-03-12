@@ -5,7 +5,7 @@ import org.drip.quant.common.FormatUtil;
 import org.drip.quant.distribution.*;
 import org.drip.sequence.metrics.*;
 import org.drip.sequence.random.BoundedUniformInteger;
-import org.drip.sequence.random.RandomSequenceGenerator;
+import org.drip.sequence.random.UnivariateSequenceGenerator;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -45,7 +45,7 @@ import org.drip.service.api.CreditAnalytics;
 public class IntegerRandomSequenceBound {
 
 	private static final void IntegerBounds (
-		final RandomSequenceGenerator iidsg,
+		final UnivariateSequenceGenerator iidsg,
 		final Univariate dist,
 		final int[] aiSampleSize)
 		throws Exception

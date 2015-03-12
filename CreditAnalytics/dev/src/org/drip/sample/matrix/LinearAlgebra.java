@@ -1,5 +1,5 @@
 
-package org.drip.sample.quant;
+package org.drip.sample.matrix;
 
 import org.drip.quant.common.*;
 import org.drip.quant.linearalgebra.*;
@@ -68,7 +68,8 @@ public class LinearAlgebra {
 			aadblA,
 			aadblAInv,
 			Matrix.Product (aadblA, aadblAInv),
-			false);
+			false
+		);
 
 		System.out.println ("---------------------------------\n\n");
 	}
@@ -135,12 +136,12 @@ public class LinearAlgebra {
 	public static final void LinearSystemSolver()
 	{
 		double[][] aadblA = new double[][] {
-				{1.000, 0.500, 0.333,  0.000,  0.000, 0.000},
-				{0.000, 0.000, 0.000,  1.000,  0.500, 0.333},
-				{1.000, 1.000, 1.000, -1.000,  0.000, 0.000},
-				{0.000, 0.500, 2.000,  0.000, -0.500, 0.000},
-				{0.000, 1.000, 0.000,  0.000,  0.000, 0.000},
-				{0.000, 0.000, 0.000,  0.000,  1.000, 0.000},
+			{1.000, 0.500, 0.333,  0.000,  0.000, 0.000},
+			{0.000, 0.000, 0.000,  1.000,  0.500, 0.333},
+			{1.000, 1.000, 1.000, -1.000,  0.000, 0.000},
+			{0.000, 0.500, 2.000,  0.000, -0.500, 0.000},
+			{0.000, 1.000, 0.000,  0.000,  0.000, 0.000},
+			{0.000, 0.000, 0.000,  0.000,  1.000, 0.000},
 		};
 		double[] adblB = new double[] {0.02, 0.026, 0., 0., 0., 0.};
 
@@ -150,7 +151,10 @@ public class LinearAlgebra {
 		 * Solve the Linear System using Gaussian Elimination
 		 */
 
-		LinearizationOutput lssGaussianElimination = LinearSystemSolver.SolveUsingGaussianElimination (aadblA, adblB);
+		LinearizationOutput lssGaussianElimination = LinearSystemSolver.SolveUsingGaussianElimination (
+			aadblA,
+			adblB
+		);
 
 		for (int i = 0; i < lssGaussianElimination.getTransformedRHS().length; ++i)
 			System.out.println ("GaussianElimination[" + i + "] = " + FormatUtil.FormatDouble

@@ -41,59 +41,61 @@ package org.drip.state.dynamics;
  */
 
 public class GaussianHJM {
-	private org.drip.sequence.random.RandomSequenceGenerator[] _aRSG = null;
-	private org.drip.function.deterministic.AbstractUnivariate _auIFRInitial = null;
-	private org.drip.analytics.definition.MarketSurface[] _aIFRVolatilitySurface = null;
+	private org.drip.sequence.random.MultivariateSequenceGenerator _msg = null;
+	private org.drip.analytics.definition.MarketSurface[] _aMSInstantaneousForwardRateVolatility = null;
+	private org.drip.function.deterministic.AbstractUnivariate _auInitialInstantaneousForwardRate = null;
 
-	private org.drip.function.deterministic.AbstractUnivariate customDateVolatilityFunction (
-		final int iIndex,
-		final double dblViewDate)
+	private org.drip.function.deterministic.AbstractUnivariate xDateVolatilityFunction (
+		final int iFactorIndex,
+		final double dblXDate)
 	{
-		org.drip.analytics.definition.TermStructure tsVolatilityViewDate =
-			_aIFRVolatilitySurface[iIndex].xAnchorTermStructure (dblViewDate);
+		org.drip.analytics.definition.TermStructure tsVolatilityXDate =
+			_aMSInstantaneousForwardRateVolatility[iFactorIndex].xAnchorTermStructure (dblXDate);
 
-		return null == tsVolatilityViewDate ? null : tsVolatilityViewDate.function();
+		return null == tsVolatilityXDate ? null : tsVolatilityXDate.function();
 	}
 
-	private double viewTargetVolatilityIntegral (
-		final int iIndex,
-		final double dblViewDate,
-		final double dblTargetDate)
+	private double volatilityIntegral (
+		final int iFactorIndex,
+		final double dblXDate,
+		final double dblYDate)
 		throws java.lang.Exception
 	{
-		org.drip.function.deterministic.AbstractUnivariate auVolatilityFunction =
-			customDateVolatilityFunction (iIndex, dblViewDate);
+		org.drip.function.deterministic.AbstractUnivariate auVolatilityFunction = xDateVolatilityFunction
+			(iFactorIndex, dblXDate);
 
 		if (null == auVolatilityFunction)
 			throw new java.lang.Exception
-				("GaussianHJM::viewTargetVolatilityIntegral => Cannot extract View Date Volatility Function");
+				("GaussianHJM::volatilityIntegral => Cannot extract X Date Volatility Function");
 
-		return auVolatilityFunction.integrate (dblViewDate, dblTargetDate) / 365.25;
+		return auVolatilityFunction.integrate (dblXDate, dblYDate) / 365.25;
 	}
 
 	/**
 	 * GaussianHJM Constructor
 	 * 
-	 * @param aIFRVolatilitySurface Array of the Instantaneous Forward Rate Volatility Surfaces
-	 * @param auIFRInitial The Initial Instantaneous Forward Rate Term Structure
-	 * @param aRSG Array of Random Sequence Generators
+	 * @param aMSInstantaneousForwardRateVolatility Array of the Instantaneous Forward Rate Volatility
+	 * 	Surfaces
+	 * @param auInitialInstantaneousForwardRate The Initial Instantaneous Forward Rate Term Structure
+	 * @param msg Multivariate Sequence Generator
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
 	public GaussianHJM (
-		final org.drip.analytics.definition.MarketSurface[] aIFRVolatilitySurface,
-		final org.drip.function.deterministic.AbstractUnivariate auIFRInitial,
-		final org.drip.sequence.random.RandomSequenceGenerator[] aRSG)
+		final org.drip.analytics.definition.MarketSurface[] aMSInstantaneousForwardRateVolatility,
+		final org.drip.function.deterministic.AbstractUnivariate auInitialInstantaneousForwardRate,
+		final org.drip.sequence.random.MultivariateSequenceGenerator msg)
 		throws java.lang.Exception
 	{
-		if (null == (_aIFRVolatilitySurface = aIFRVolatilitySurface) || null == (_auIFRInitial =
-			auIFRInitial) || null == (_aRSG = aRSG))
+		if (null == (_aMSInstantaneousForwardRateVolatility = aMSInstantaneousForwardRateVolatility) || null
+			== (_auInitialInstantaneousForwardRate = auInitialInstantaneousForwardRate) || null == (_msg =
+				msg))
 			throw new java.lang.Exception ("GaussianHJM ctr: Invalid Inputs");
 
-		int iNumFactor = _aRSG.length;
+		int iNumFactor = _msg.numVariate();
 
-		if (_aIFRVolatilitySurface.length != iNumFactor)
+		if (_aMSInstantaneousForwardRateVolatility.length != iNumFactor)
 			throw new java.lang.Exception ("GaussianHJM ctr: Invalid Inputs");
 	}
 
@@ -103,9 +105,9 @@ public class GaussianHJM {
 	 * @return The Array of Instantaneous Forward Rate Volatility Surfaces
 	 */
 
-	public org.drip.analytics.definition.MarketSurface[] ifrVolatilitySurface()
+	public org.drip.analytics.definition.MarketSurface[] instantaneousForwardVolatilitySurface()
 	{
-		return _aIFRVolatilitySurface;
+		return _aMSInstantaneousForwardRateVolatility;
 	}
 
 	/**
@@ -114,20 +116,20 @@ public class GaussianHJM {
 	 * @return The Initial Instantaneous Forward Rate Term Structure
 	 */
 
-	public org.drip.function.deterministic.AbstractUnivariate ifrInitialTermStructure()
+	public org.drip.function.deterministic.AbstractUnivariate instantaneousForwardInitialTermStructure()
 	{
-		return _auIFRInitial;
+		return _auInitialInstantaneousForwardRate;
 	}
 
 	/**
-	 * Retrieve the Array of Random Sequence Generator Instances
+	 * Retrieve the Multivariate Sequence Generator
 	 * 
-	 * @return The Array of Random Sequence Generator Instances
+	 * @return The Multivariate Sequence Generator
 	 */
 
-	public org.drip.sequence.random.RandomSequenceGenerator[] rsg()
+	public org.drip.sequence.random.MultivariateSequenceGenerator msg()
 	{
-		return _aRSG;
+		return _msg;
 	}
 
 	/**
@@ -155,22 +157,26 @@ public class GaussianHJM {
 			throw new java.lang.Exception
 				("GaussianHJM::instantaneousForwardRateIncrement => Invalid Inputs");
 
-		double dblIFRIncrement = 0.;
-		int iNumFactor = _aRSG.length;
+		int iNumFactor = _msg.numVariate();
+
+		double[] adblMultivariateRandom = _msg.random();
+
+		double dblIntantaneousForwardRateIncrement = 0.;
 
 		for (int i = 0; i < iNumFactor; ++i) {
-			double dblViewTargetDateVol = _aIFRVolatilitySurface[i].node (dblViewDate, dblTargetDate);
+			double dblViewTargetDatePointVolatility = _aMSInstantaneousForwardRateVolatility[i].node
+				(dblViewDate, dblTargetDate);
 
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblViewTargetDateVol))
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblViewTargetDatePointVolatility))
 				throw new java.lang.Exception
-					("GaussianHJM::instantaneousForwardRateIncrement => Cannot compute View/Target Date Volatility");
+					("GaussianHJM::instantaneousForwardRateIncrement => Cannot compute View/Target Date Point Volatility");
 
-			dblIFRIncrement += viewTargetVolatilityIntegral (i, dblViewDate, dblTargetDate) *
-				dblViewTargetDateVol * dblViewTimeIncrement + dblViewTargetDateVol * java.lang.Math.sqrt
-					(dblViewTimeIncrement) * _aRSG[i].random();
+			dblIntantaneousForwardRateIncrement += volatilityIntegral (i, dblViewDate, dblTargetDate) *
+				dblViewTargetDatePointVolatility * dblViewTimeIncrement + dblViewTargetDatePointVolatility *
+					java.lang.Math.sqrt (dblViewTimeIncrement) * adblMultivariateRandom[i];
 		}
 
-		return dblIFRIncrement;
+		return dblIntantaneousForwardRateIncrement;
 	}
 
 	/**
@@ -200,12 +206,15 @@ public class GaussianHJM {
 					!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
 			throw new java.lang.Exception ("GaussianHJM::proportionalPriceIncrement => Invalid Inputs");
 
-		int iNumFactor = _aRSG.length;
+		int iNumFactor = _msg.numVariate();
+
+		double[] adblMultivariateRandom = _msg.random();
+
 		double dblProportionalPriceIncrement = dblShortRate * dblViewTimeIncrement;
 
 		for (int i = 0; i < iNumFactor; ++i)
-			dblProportionalPriceIncrement -= viewTargetVolatilityIntegral (i, dblViewDate, dblTargetDate) *
-				java.lang.Math.sqrt (dblViewTimeIncrement) * _aRSG[i].random();
+			dblProportionalPriceIncrement -= volatilityIntegral (i, dblViewDate, dblTargetDate) *
+				java.lang.Math.sqrt (dblViewTimeIncrement) * adblMultivariateRandom[i];
 
 		return dblProportionalPriceIncrement;
 	}
@@ -233,19 +242,23 @@ public class GaussianHJM {
 				!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
 			throw new java.lang.Exception ("GaussianHJM::shortRateIncrement => Invalid Inputs");
 
-		int iNumFactor = _aRSG.length;
 		double dblShortRateIncrement = 0.;
 
+		int iNumFactor = _msg.numVariate();
+
+		double[] adblMultivariateRandom = _msg.random();
+
 		for (int i = 0; i < iNumFactor; ++i) {
-			double dblViewDateVol = _aIFRVolatilitySurface[i].node (dblViewDate, dblViewDate);
+			double dblViewDatePointVolatility = _aMSInstantaneousForwardRateVolatility[i].node (dblViewDate,
+				dblViewDate);
 
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblViewDateVol))
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblViewDatePointVolatility))
 				throw new java.lang.Exception
-					("GaussianHJM::shortRateIncrement => Cannot compute View Date Volatility");
+					("GaussianHJM::shortRateIncrement => Cannot compute View Date Point Volatility");
 
-			dblShortRateIncrement += viewTargetVolatilityIntegral (i, dblSpotDate, dblViewDate) *
-				dblViewDateVol * dblViewTimeIncrement + dblViewDateVol * java.lang.Math.sqrt
-					(dblViewTimeIncrement) * _aRSG[i].random();
+			dblShortRateIncrement += volatilityIntegral (i, dblSpotDate, dblViewDate) *
+				dblViewDatePointVolatility * dblViewTimeIncrement + dblViewDatePointVolatility *
+					java.lang.Math.sqrt (dblViewTimeIncrement) * adblMultivariateRandom[i];
 		}
 
 		return dblShortRateIncrement;
@@ -286,64 +299,202 @@ public class GaussianHJM {
 							!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
 			throw new java.lang.Exception ("GaussianHJM::compoundedShortRateIncrement => Invalid Inputs");
 
-		int iNumFactor = _aRSG.length;
+		int iNumFactor = _msg.numVariate();
+
+		double[] adblMultivariateRandom = _msg.random();
+
 		double dblCompoundedShortRateIncrement = (dblCompoundedShortRate - dblShortRate) *
 			dblViewTimeIncrement;
 
 		for (int i = 0; i < iNumFactor; ++i) {
-			double dblViewTargetVolatilityIntegral = viewTargetVolatilityIntegral (i, dblViewDate,
-				dblTargetDate);
+			double dblViewTargetVolatilityIntegral = volatilityIntegral (i, dblViewDate, dblTargetDate);
 
 			dblCompoundedShortRateIncrement += 0.5 * dblViewTargetVolatilityIntegral *
 				dblViewTargetVolatilityIntegral * dblViewTimeIncrement + dblViewTargetVolatilityIntegral *
-					java.lang.Math.sqrt (dblViewTimeIncrement) * _aRSG[i].random();
+					java.lang.Math.sqrt (dblViewTimeIncrement) * adblMultivariateRandom[i];
 		}
 
 		return dblCompoundedShortRateIncrement * 365.25 / (dblTargetDate - dblViewDate);
 	}
 
 	/**
-	 * Compute the Forward Rate Increment given the Spot Date, the View Date, the Target Date, the Current
-	 *  Forward Rate, and the View Time Increment
+	 * Compute the LIBOR Forward Rate Increment given the Spot Date, the View Date, the Target Date, the
+	 *  Current LIBOR Forward Rate, and the View Time Increment
 	 * 
 	 * @param dblSpotDate The Spot Date
 	 * @param dblViewDate The View Date
 	 * @param dblTargetDate The Target Date
-	 * @param dblForwardRate The Forward Rate
+	 * @param dblLIBORForwardRate The LIBOR Forward Rate
 	 * @param dblViewTimeIncrement The View Time Increment
 	 * 
 	 * @return The Forward Rate Increment
 	 * 
-	 * @throws java.lang.Exception Thrown if the Forward Rate Increment cannot be computed
+	 * @throws java.lang.Exception Thrown if the LIBOR Forward Rate Increment cannot be computed
 	 */
 
-	public double forwardRateIncrement (
+	public double liborForwardRateIncrement (
 		final double dblSpotDate,
 		final double dblViewDate,
 		final double dblTargetDate,
-		final double dblForwardRate,
+		final double dblLIBORForwardRate,
 		final double dblViewTimeIncrement)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblViewDate >= dblTargetDate ||
-					!org.drip.quant.common.NumberUtil.IsValid (dblForwardRate) ||
+					!org.drip.quant.common.NumberUtil.IsValid (dblLIBORForwardRate) ||
 						!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
-			throw new java.lang.Exception ("GaussianHJM::forwardRateIncrement => Invalid Inputs");
+			throw new java.lang.Exception ("GaussianHJM::liborForwardRateIncrement => Invalid Inputs");
 
-		int iNumFactor = _aRSG.length;
-		double dblForwardRateIncrement = 0.;
-		double dblViewTargetVolatilityIntegral = 0.;
+		int iNumFactor = _msg.numVariate();
 
-		for (int i = 0; i < iNumFactor; ++i) {
-			dblViewTargetVolatilityIntegral += viewTargetVolatilityIntegral (i, dblViewDate, dblTargetDate);
+		double[] adblMultivariateRandom = _msg.random();
 
-			dblForwardRateIncrement += viewTargetVolatilityIntegral (i, dblSpotDate, dblTargetDate) +
-				java.lang.Math.sqrt (dblViewTimeIncrement) * _aRSG[i].random();
+		double dblLIBORForwardRateVolIncrement = 0.;
+
+		for (int i = 0; i < iNumFactor; ++i)
+			dblLIBORForwardRateVolIncrement += volatilityIntegral (i, dblViewDate, dblTargetDate) *
+				(volatilityIntegral (i, dblSpotDate, dblTargetDate) + java.lang.Math.sqrt
+					(dblViewTimeIncrement) * adblMultivariateRandom[i]);
+
+		return (dblLIBORForwardRate + (365.25 / (dblTargetDate - dblViewDate))) *
+			dblLIBORForwardRateVolIncrement;
+	}
+
+	/**
+	 * Compute the Shifted LIBOR Forward Rate Increment given the Spot Date, the View Date, the Target Date,
+	 * 	the Current Shifted LIBOR Forward Rate, and the View Time Increment
+	 * 
+	 * @param dblSpotDate The Spot Date
+	 * @param dblViewDate The View Date
+	 * @param dblTargetDate The Target Date
+	 * @param dblShiftedLIBORForwardRate The Shifted LIBOR Forward Rate
+	 * @param dblViewTimeIncrement The View Time Increment
+	 * 
+	 * @return The Shifted Forward Rate Increment
+	 * 
+	 * @throws java.lang.Exception Thrown if the Shifted LIBOR Forward Rate Increment cannot be computed
+	 */
+
+	public double shiftedLIBORForwardIncrement (
+		final double dblSpotDate,
+		final double dblViewDate,
+		final double dblTargetDate,
+		final double dblShiftedLIBORForwardRate,
+		final double dblViewTimeIncrement)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblViewDate >= dblTargetDate ||
+					!org.drip.quant.common.NumberUtil.IsValid (dblShiftedLIBORForwardRate) ||
+						!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
+			throw new java.lang.Exception ("GaussianHJM::shiftedLIBORForwardIncrement => Invalid Inputs");
+
+		int iNumFactor = _msg.numVariate();
+
+		double[] adblMultivariateRandom = _msg.random();
+
+		double dblShiftedLIBORVolIncrement = 0.;
+
+		for (int i = 0; i < iNumFactor; ++i)
+			dblShiftedLIBORVolIncrement += volatilityIntegral (i, dblViewDate, dblTargetDate) *
+				(volatilityIntegral (i, dblSpotDate, dblTargetDate) + java.lang.Math.sqrt
+					(dblViewTimeIncrement) * adblMultivariateRandom[i]);
+
+		return dblShiftedLIBORForwardRate * dblShiftedLIBORVolIncrement;
+	}
+
+	public org.drip.state.dynamics.QMSnapshot qmIncrement (
+		final double dblSpotDate,
+		final double dblViewDate,
+		final double dblTargetDate,
+		final double dblViewTimeIncrement,
+		final org.drip.state.dynamics.QMSnapshot qmInitial)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblViewDate >= dblTargetDate ||
+					!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement) || null == qmInitial)
+			return null;
+
+		int iNumFactor = _msg.numVariate();
+
+		double dblInitialPrice = qmInitial.price();
+
+		double[] adblMultivariateRandom = _msg.random();
+
+		double dblInitialShortRate = qmInitial.shortRate();
+
+		double dblInitialLIBORForwardRate = qmInitial.liborForwardRate();
+
+		double dblInitialCompoundedShortRate = qmInitial.compoundedShortRate();
+
+		double dblViewTimeIncrementSQRT = java.lang.Math.sqrt (dblViewTimeIncrement);
+
+		double dblShortRateIncrement = 0.;
+		double dblShiftedLIBORForwardRateIncrement = 0.;
+		double dblInstantaneousForwardRateIncrement = 0.;
+		double dblPriceIncrement = dblInitialShortRate * dblViewTimeIncrement;
+		double dblCompoundedShortRateIncrement = (dblInitialCompoundedShortRate - dblInitialShortRate) *
+			dblViewTimeIncrement;
+
+		try {
+			for (int i = 0; i < iNumFactor; ++i) {
+				double dblViewViewPointVolatility = _aMSInstantaneousForwardRateVolatility[i].node
+					(dblViewDate, dblViewDate);
+
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblViewViewPointVolatility)) return null;
+
+				double dblViewTargetPointVolatility = _aMSInstantaneousForwardRateVolatility[i].node
+					(dblViewDate, dblTargetDate);
+
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblViewTargetPointVolatility)) return null;
+
+				double dblViewTargetVolatilityIntegral = volatilityIntegral (i, dblViewDate, dblTargetDate);
+
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblViewTargetVolatilityIntegral)) return null;
+
+				double dblSpotViewVolatilityIntegral = volatilityIntegral (i, dblSpotDate, dblViewDate);
+
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotViewVolatilityIntegral)) return null;
+
+				double dblSpotTargetVolatilityIntegral = volatilityIntegral (i, dblSpotDate, dblTargetDate);
+
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotTargetVolatilityIntegral)) return null;
+
+				double dblScaledMultivariateRandom = dblViewTimeIncrementSQRT * adblMultivariateRandom[i];
+				dblInstantaneousForwardRateIncrement += dblViewTargetVolatilityIntegral *
+					dblViewTargetPointVolatility * dblViewTimeIncrement + dblViewTargetPointVolatility *
+						dblScaledMultivariateRandom;
+				dblShortRateIncrement += dblSpotViewVolatilityIntegral * dblViewViewPointVolatility *
+					dblViewTimeIncrement + dblViewViewPointVolatility * dblScaledMultivariateRandom;
+				dblCompoundedShortRateIncrement += 0.5 * dblViewTargetVolatilityIntegral *
+					dblViewTargetVolatilityIntegral * dblViewTimeIncrement + dblViewTargetVolatilityIntegral
+						* dblScaledMultivariateRandom;
+				dblShiftedLIBORForwardRateIncrement += dblViewTargetVolatilityIntegral *
+					(dblSpotTargetVolatilityIntegral + dblScaledMultivariateRandom);
+				dblPriceIncrement -= dblViewTargetVolatilityIntegral * dblScaledMultivariateRandom;
+			}
+
+			dblPriceIncrement *= dblInitialPrice;
+			dblCompoundedShortRateIncrement *= 365.25 / (dblTargetDate - dblViewDate);
+			double dblLIBORForwardRateIncrement = (dblInitialLIBORForwardRate + (365.25 / (dblTargetDate -
+				dblViewDate))) * dblShiftedLIBORForwardRateIncrement;
+
+			return new org.drip.state.dynamics.QMSnapshot (qmInitial.instantaneousForwardRate() +
+				dblInstantaneousForwardRateIncrement, dblInstantaneousForwardRateIncrement,
+					dblInitialLIBORForwardRate + dblLIBORForwardRateIncrement, dblLIBORForwardRateIncrement,
+						qmInitial.shiftedLIBORForwardRate() + dblShiftedLIBORForwardRateIncrement,
+							dblShiftedLIBORForwardRateIncrement, dblInitialShortRate + dblShortRateIncrement,
+								dblShortRateIncrement, dblInitialCompoundedShortRate +
+									dblCompoundedShortRateIncrement, dblCompoundedShortRateIncrement,
+										dblInitialPrice + dblPriceIncrement, dblPriceIncrement);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
 		}
 
-		return (dblForwardRate + (365.25 / (dblViewDate - dblSpotDate))) * dblViewTargetVolatilityIntegral *
-			dblForwardRateIncrement;
+		return null;
 	}
 }

@@ -35,7 +35,7 @@ package org.drip.sequence.random;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BoundedUniformInteger extends org.drip.sequence.random.RandomSequenceGenerator {
+public class BoundedUniformInteger extends org.drip.sequence.random.UnivariateSequenceGenerator {
 	private int _iStart = -1;
 	private int _iFinish = -1;
 

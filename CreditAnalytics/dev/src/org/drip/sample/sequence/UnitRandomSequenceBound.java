@@ -5,7 +5,7 @@ import org.drip.quant.common.FormatUtil;
 import org.drip.quant.distribution.*;
 import org.drip.sequence.metrics.*;
 import org.drip.sequence.random.BoundedUniform;
-import org.drip.sequence.random.RandomSequenceGenerator;
+import org.drip.sequence.random.UnivariateSequenceGenerator;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -62,7 +62,7 @@ public class UnitRandomSequenceBound {
 	}
 
 	private static final void ChernoffBinomialBounds (
-		final RandomSequenceGenerator iidsg,
+		final UnivariateSequenceGenerator iidsg,
 		final Univariate dist,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
@@ -84,7 +84,7 @@ public class UnitRandomSequenceBound {
 	}
 
 	private static final void PoissonChernoffBinomialBounds (
-		final RandomSequenceGenerator iidsg,
+		final UnivariateSequenceGenerator iidsg,
 		final Univariate dist,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
@@ -106,7 +106,7 @@ public class UnitRandomSequenceBound {
 	}
 
 	private static final void KarpHagerupRubUpperBounds (
-		final RandomSequenceGenerator iidsg,
+		final UnivariateSequenceGenerator iidsg,
 		final Univariate dist,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
@@ -128,7 +128,7 @@ public class UnitRandomSequenceBound {
 	}
 
 	private static final void KarpHagerupRubLowerBounds (
-		final RandomSequenceGenerator iidsg,
+		final UnivariateSequenceGenerator iidsg,
 		final Univariate dist,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)

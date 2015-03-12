@@ -59,7 +59,7 @@ public class BinaryClassifierSupremumBound {
 	}
 
 	private static final SingleSequenceAgnosticMetrics[] IIDDraw (
-		final RandomSequenceGenerator rsg,
+		final UnivariateSequenceGenerator rsg,
 		final int iNumSample)
 		throws Exception
 	{

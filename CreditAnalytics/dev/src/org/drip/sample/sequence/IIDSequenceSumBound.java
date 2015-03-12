@@ -61,7 +61,7 @@ public class IIDSequenceSumBound {
 	}
 
 	private static final void WeakLawBounds (
-		final RandomSequenceGenerator iidsg,
+		final UnivariateSequenceGenerator iidsg,
 		final Univariate dist,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
@@ -83,7 +83,7 @@ public class IIDSequenceSumBound {
 	}
 
 	private static final void ChernoffHoeffdingBounds (
-		final RandomSequenceGenerator iidsg,
+		final UnivariateSequenceGenerator iidsg,
 		final Univariate dist,
 		final double dblSupport,
 		final int[] aiSampleSize,
@@ -106,7 +106,7 @@ public class IIDSequenceSumBound {
 	}
 
 	private static final void BennettBounds (
-		final RandomSequenceGenerator iidsg,
+		final UnivariateSequenceGenerator iidsg,
 		final Univariate dist,
 		final double dblSupport,
 		final int[] aiSampleSize,
@@ -129,7 +129,7 @@ public class IIDSequenceSumBound {
 	}
 
 	private static final void BernsteinBounds (
-		final RandomSequenceGenerator iidsg,
+		final UnivariateSequenceGenerator iidsg,
 		final Univariate dist,
 		final double dblSupport,
 		final int[] aiSampleSize,

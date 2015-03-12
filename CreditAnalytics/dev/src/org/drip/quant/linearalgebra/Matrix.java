@@ -6,6 +6,7 @@ package org.drip.quant.linearalgebra;
  */
 
 /*!
+ * Copyright (C) 2015 Lakshmi Krishnamurthy
  * Copyright (C) 2014 Lakshmi Krishnamurthy
  * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
@@ -447,6 +448,71 @@ public class Matrix {
 		if (null == aadblAInv || iSize != aadblAInv.length || iSize != aadblAInv[0].length) return null;
 
 		return Product (aadblAInv, aadblZ2YJack);
+	}
+
+	/**
+	 * Transpose the specified Square Matrix
+	 * 
+	 * @param aadblA The Input Square Matrix
+	 * 
+	 * @return The Transpose of the Square Matrix
+	 */
+
+	public static final double[][] Tranpose (
+		final double[][] aadblA)
+	{
+		if (null == aadblA) return null;
+
+		int iSize = aadblA.length;
+		double[][] aadblATranspose = new double[iSize][iSize];
+
+		if (0 == iSize || null == aadblA[0] || iSize != aadblA[0].length) return null;
+
+		for (int i = 0; i < iSize; ++i) {
+			for (int j = 0; j < iSize; ++j)
+				aadblATranspose[i][j] = aadblA[j][i];
+		}
+
+		return aadblATranspose;
+	}
+
+	/**
+	 * Compute the Cholesky-Banachiewicz Factorization of the specified Matrix.
+	 * 
+	 * @param aadblA The Input Matrix
+	 * 
+	 * @return The Factorized Matrix
+	 */
+
+	public static final double[][] CholeskyBanachiewiczFactorization (
+		final double[][] aadblA)
+	{
+		if (null == aadblA) return null;
+
+		int iSize = aadblA.length;
+		double[][] aadblL = new double[iSize][iSize];
+
+		if (0 == iSize || null == aadblA[0] || iSize != aadblA[0].length) return null;
+
+		for (int i = 0; i < iSize; ++i) {
+			for (int j = 0; j < iSize; ++j) {
+				aadblL[i][j] = 0.;
+
+				if (i == j) {
+					for (int k = 0; k < j; ++k)
+						aadblL[j][j] -= aadblL[j][k] * aadblL[j][k];
+
+					aadblL[j][j] = java.lang.Math.sqrt (aadblL[j][j] + aadblA[j][j]);
+				} else if (i > j) {
+					for (int k = 0; k < j; ++k)
+						aadblL[i][j] -= aadblL[i][k] * aadblL[j][k];
+
+					aadblL[i][j] = (aadblA[i][j] + aadblL[i][j]) / aadblL[j][j];
+				}
+			}
+		}
+
+		return aadblL;
 	}
 
 	public static final void main (

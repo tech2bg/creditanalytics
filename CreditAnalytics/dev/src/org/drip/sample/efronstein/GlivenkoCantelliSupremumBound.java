@@ -48,7 +48,7 @@ import org.drip.service.api.CreditAnalytics;
 public class GlivenkoCantelliSupremumBound {
 
 	private static final SingleSequenceAgnosticMetrics[] IIDDraw (
-		final RandomSequenceGenerator rsg,
+		final UnivariateSequenceGenerator rsg,
 		final int iNumSample)
 		throws Exception
 	{

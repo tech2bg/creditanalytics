@@ -40,7 +40,7 @@ public class G2PlusPlus {
 	private double _dblEta = java.lang.Double.NaN;
 	private double _dblRho = java.lang.Double.NaN;
 	private double _dblSigma = java.lang.Double.NaN;
-	private org.drip.sequence.random.RandomSequenceGenerator[] _aRSG = null;
+	private org.drip.sequence.random.UnivariateSequenceGenerator[] _aRSG = null;
 	private org.drip.function.deterministic.AbstractUnivariate _auIFRInitial = null;
 
 	/**
@@ -62,7 +62,7 @@ public class G2PlusPlus {
 		final double dblA,
 		final double dblEta,
 		final double dblB,
-		final org.drip.sequence.random.RandomSequenceGenerator[] aRSG,
+		final org.drip.sequence.random.UnivariateSequenceGenerator[] aRSG,
 		final double dblRho,
 		final org.drip.function.deterministic.AbstractUnivariate auIFRInitial)
 		throws java.lang.Exception
@@ -137,7 +137,7 @@ public class G2PlusPlus {
 	 * @return The Random Sequence Generator Array
 	 */
 
-	public org.drip.sequence.random.RandomSequenceGenerator[] rsg()
+	public org.drip.sequence.random.UnivariateSequenceGenerator[] rsg()
 	{
 		return _aRSG;
 	}

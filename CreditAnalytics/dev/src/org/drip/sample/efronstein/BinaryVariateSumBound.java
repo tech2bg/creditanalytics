@@ -46,7 +46,7 @@ import org.drip.service.api.CreditAnalytics;
 public class BinaryVariateSumBound {
 
 	private static final SingleSequenceAgnosticMetrics[] IIDDraw (
-		final RandomSequenceGenerator rsg,
+		final UnivariateSequenceGenerator rsg,
 		final int iNumSample)
 		throws Exception
 	{

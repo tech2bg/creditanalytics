@@ -5,7 +5,7 @@ import org.drip.quant.common.FormatUtil;
 import org.drip.quant.distribution.*;
 import org.drip.sequence.metrics.*;
 import org.drip.sequence.random.Poisson;
-import org.drip.sequence.random.RandomSequenceGenerator;
+import org.drip.sequence.random.UnivariateSequenceGenerator;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -62,7 +62,7 @@ public class PoissonRandomSequenceBound {
 	}
 
 	private static final void ChernoffStirlingBounds (
-		final RandomSequenceGenerator iidsg,
+		final UnivariateSequenceGenerator iidsg,
 		final Univariate dist,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
