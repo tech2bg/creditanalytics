@@ -1,12 +1,11 @@
 
 package org.drip.sample.matrix;
 
-import org.drip.quant.common.NumberUtil;
-import org.drip.quant.linearalgebra.Matrix;
+import org.drip.quant.common.*;
+import org.drip.quant.eigen.*;
 import org.drip.service.api.CreditAnalytics;
 
 /*
-
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
@@ -34,13 +33,29 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * CholeskyFactorization demonstrates the Cholesky Factorization and Transpose Reconciliation of the Input
- * 	Matrix.
+ * Eigenization demonstrates how to generate the eigenvalue and eigenvector for the Input Matrix.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CholeskyFactorization {
+public class Eigenization {
+
+	private static final void PrincipalComponentRun (
+		final PowerIterationComponentExtractor pice,
+		final double[][] aadblA)
+		throws Exception
+	{
+		EigenComponent ec = pice.principalComponent (aadblA);
+
+		double[] adblEigenvector = ec.eigenvector();
+
+		java.lang.String strDump = "[" + FormatUtil.FormatDouble (ec.eigenvalue(), 1, 4, 1.) + "] => ";
+
+		for (int i = 0; i < adblEigenvector.length; ++i)
+			strDump += FormatUtil.FormatDouble (adblEigenvector[i], 1, 4, 1.) + " | ";
+
+		System.out.println ("\t" + strDump);
+	}
 
 	public static final void main (
 		final String[] astrArg)
@@ -48,31 +63,24 @@ public class CholeskyFactorization {
 	{
 		CreditAnalytics.Init ("");
 
+		double dblCorr1 = 0.1;
+		double dblCorr2 = 0.4;
+
 		double[][] aadblA = {
-			{1.0, 0.3, 0.0},
-			{0.3, 1.0, 0.1},
-			{0.0, 0.1, 1.0}
+			{     1.0, dblCorr1,      0.0},
+			{dblCorr1,      1.0, dblCorr2},
+			{     0.0, dblCorr2,      1.0}
 		};
 
-		double[][] aadblACholesky = Matrix.CholeskyBanachiewiczFactorization (aadblA);
-
-		double[][] aadblACholeskyTranspose = Matrix.Transpose (aadblACholesky);
-
-		System.out.println ("\n\t------------------------------------------------------------------------------------------------------");
-
-		NumberUtil.Print2DArrayTriplet (
-			"\t\tSOURCE",
-			"CHOLESKY",
-			"ORIGINAL",
-			aadblA,
-			aadblACholesky,
-			Matrix.Product (
-				aadblACholesky,
-				aadblACholeskyTranspose
-			),
+		PowerIterationComponentExtractor pice = new PowerIterationComponentExtractor (
+			30,
+			0.000001,
 			false
 		);
 
-		System.out.println ("\t------------------------------------------------------------------------------------------------------");
+		PrincipalComponentRun (
+			pice,
+			aadblA
+		);
 	}
 }

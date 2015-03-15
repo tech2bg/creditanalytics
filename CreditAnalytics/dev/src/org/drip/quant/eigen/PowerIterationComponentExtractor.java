@@ -1,5 +1,5 @@
 
-package org.drip.quant.linearalgebra;
+package org.drip.quant.eigen;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -7,8 +7,6 @@ package org.drip.quant.linearalgebra;
 
 /*!
  * Copyright (C) 2015 Lakshmi Krishnamurthy
- * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -36,10 +34,20 @@ package org.drip.quant.linearalgebra;
  * @author Lakshmi Krishnamurthy
  */
 
-public class PowerIterationComponentExtractor {
+public class PowerIterationComponentExtractor implements org.drip.quant.eigen.ComponentExtractor {
 	private int _iMaxIteration = -1;
 	private boolean _bToleranceAbsolute = false;
 	private double _dblTolerance = java.lang.Double.NaN;
+
+	/**
+	 * PowerIterationComponentExtractor Constructor
+	 * 
+	 * @param iMaxIteration Maximum Number of Iterations
+	 * @param dblTolerance Tolerance
+	 * @param bToleranceAbsolute Is Tolerance Absolute
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
 
 	public PowerIterationComponentExtractor (
 		final int iMaxIteration,
@@ -87,15 +95,7 @@ public class PowerIterationComponentExtractor {
 		return _bToleranceAbsolute;
 	}
 
-	/**
-	 * Compute the Principal Component of the Specified Matrix
-	 * 
-	 * @param aadblA The Input Matrix
-	 * 
-	 * @return The Principal EigenComponent Instance
-	 */
-
-	public org.drip.quant.linearalgebra.EigenComponent principalComponent (
+	@Override public org.drip.quant.eigen.EigenComponent principalComponent (
 		final double[][] aadblA)
 	{
 		if (null == aadblA) return null;
@@ -120,6 +120,7 @@ public class PowerIterationComponentExtractor {
 			adblEigenvector[i] /= dblEigenvalue;
 
 		double dblAbsoluteTolerance = _bToleranceAbsolute ? _dblTolerance : dblEigenvalue * _dblTolerance;
+		dblAbsoluteTolerance = dblAbsoluteTolerance > _dblTolerance ? dblAbsoluteTolerance : _dblTolerance;
 
 		while (iIter < _iMaxIteration) {
 			for (int i = 0; i < iSize; ++i) {
@@ -149,12 +150,17 @@ public class PowerIterationComponentExtractor {
 		if (iIter >= _iMaxIteration) return null;
 
 		try {
-			return new org.drip.quant.linearalgebra.EigenComponent (adblEigenvector, java.lang.Math.pow
-				(dblEigenvalue, 1. / (iIter + 1)));
+			return new org.drip.quant.eigen.EigenComponent (adblEigenvector, dblEigenvalue);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
+		return null;
+	}
+
+	@Override public org.drip.quant.eigen.EigenOutput eigenize (
+		final double[][] aadblA)
+	{
 		return null;
 	}
 }

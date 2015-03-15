@@ -458,7 +458,7 @@ public class Matrix {
 	 * @return The Transpose of the Square Matrix
 	 */
 
-	public static final double[][] Tranpose (
+	public static final double[][] Transpose (
 		final double[][] aadblA)
 	{
 		if (null == aadblA) return null;
@@ -515,36 +515,198 @@ public class Matrix {
 		return aadblL;
 	}
 
-	public static final void main (
-		final java.lang.String[] astrArg)
+	/**
+	 * Dot Product of Vectora A and E
+	 * 
+	 * @param adblA Vector A
+	 * @param adblE Vector E
+	 * 
+	 * @return The Dot Product
+	 * 
+	 * @throws Thrown if the Dot-Product cannot be computed
+	 */
+
+	public static final double DotProduct (
+		final double[] adblA,
+		final double[] adblE)
+		throws java.lang.Exception
 	{
-		// double[][] aadblA = new double[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9.01}};
-		// double[][] aadblA = new double[][] {{1, 2, 3}, {4, 5, 5}, {9, 7, 2}};
-		// double[][] aadblA = new double[][] {{1, 1, 1}, {3, 0, 7}, {1, -1, 1}};
-		/* double[][] aadblA = new double[][] {
-			{1. / 6., 0., 0., 0.},
-			{0., 0., 0., 1. / 6.},
-			{-0.5, 0.5, 0., 0.},
-			{1., -2., 1., 0.}
-		}; */
+		if (null == adblA || null == adblE)
+			throw new java.lang.Exception ("Matrix::DotProduct => Invalid Inputs!");
 
-		double[][] aadblA = new double[][] {
-			{1.0000, 0.5000, 0.3333,  0.0000,  0.0000, 0.0000},
-			{0.0000, 0.0000, 0.0000,  1.0000,  0.5000, 0.3333},
-			{1.0000, 1.0000, 1.0000, -1.0000,  0.0000, 0.0000},
-			{0.0000, 0.5000, 2.0000,  0.0000, -0.5000, 0.0000},
-			{0.0000, 1.0000, 0.0000,  0.0000,  0.0000, 0.0000},
-			{0.0000, 0.0000, 0.0000,  0.0000,  0.0000, 1.0000},
-		};
+		int iSize = adblA.length;
+		double dblDotProduct = 0.;
 
-		double[][] aadblAInv = Invert (aadblA, "");
+		if (0 == iSize || iSize != adblE.length)
+			throw new java.lang.Exception ("Matrix::DotProduct => Invalid Inputs!");
 
-		org.drip.quant.common.NumberUtil.Print2DArray ("AINV", aadblAInv, false);
+		for (int i = 0; i < iSize; ++i)
+			dblDotProduct += adblE[i] * adblA[i];
 
-		System.out.println ("\n");
+		return dblDotProduct;
+	}
 
-		double[][] aadblProduct = Product (aadblA, aadblAInv);
+	/**
+	 * Project the Vector A along the Vector E
+	 * 
+	 * @param adblA Vector A
+	 * @param adblE Vector E
+	 * 
+	 * @return The Vector of Projection of A along E
+	 */
 
-		org.drip.quant.common.NumberUtil.Print2DArray ("PROD", aadblProduct, false);
+	public static final double[] Project (
+		final double[] adblA,
+		final double[] adblE)
+	{
+		if (null == adblA || null == adblE) return null;
+
+		int iSize = adblA.length;
+		double dblProjection = java.lang.Double.NaN;
+		double[] adblProjectAOnE = new double[iSize];
+
+		if (0 == iSize || iSize != adblE.length) return null;
+
+		try {
+			dblProjection = DotProduct (adblA, adblE) / DotProduct (adblE, adblE);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		for (int i = 0; i < iSize; ++i)
+			adblProjectAOnE[i] = adblE[i] * dblProjection;
+
+		return adblProjectAOnE;
+	}
+
+	/**
+	 * Normalize the Input Vector
+	 * 
+	 * @param adbl The Input Vector
+	 * 
+	 * @return The Normalized Vector
+	 */
+
+	public static final double[] Normalize (
+		final double[] adbl)
+	{
+		if (null == adbl) return null;
+
+		double dblNorm = 0.;
+		int iSize = adbl.length;
+		double[] adblNormalized = new double[iSize];
+
+		if (0 == iSize) return null;
+
+		for (int i = 0; i < iSize; ++i)
+			dblNorm += adbl[i] * adbl[i];
+
+		dblNorm = java.lang.Math.sqrt (dblNorm);
+
+		for (int i = 0; i < iSize; ++i)
+			adblNormalized[i] = adbl[i] / dblNorm;
+
+		return adblNormalized;
+	}
+
+	/**
+	 * Orthogonalize the Specified Matrix Using the Graham-Schmidt Method
+	 * 
+	 * @param aadblV The Input Matrix
+	 * 
+	 * @return The Orthogonalized Matrix
+	 */
+
+	public static final double[][] GrahamSchmidtOrthogonalization (
+		final double[][] aadblV)
+	{
+		if (null == aadblV) return null;
+
+		int iSize = aadblV.length;
+		double[][] aadblU = new double[iSize][iSize];
+
+		if (0 == iSize || null == aadblV[0] || iSize != aadblV[0].length) return null;
+
+		for (int i = 0; i < iSize; ++i) {
+			for (int j = 0; j < iSize; ++j)
+				aadblU[i][j] = aadblV[i][j];
+
+			for (int j = 0; j < i; ++j) {
+				double dblProjectionAmplitude = java.lang.Double.NaN;
+
+				try {
+					dblProjectionAmplitude = DotProduct (aadblV[i], aadblU[j]) / DotProduct (aadblU[j],
+						aadblU[j]);
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+
+				for (int k = 0; k < iSize; ++k)
+					aadblU[i][k] -= dblProjectionAmplitude * aadblU[j][k];
+			}
+		}
+
+		return aadblU;
+	}
+
+	/**
+	 * Orthonormalize the Specified Matrix Using the Graham-Schmidt Method
+	 * 
+	 * @param aadblV The Input Matrix
+	 * 
+	 * @return The Orthonormalized Matrix
+	 */
+
+	public static final double[][] GrahamSchmidtOrthonormalization (
+		final double[][] aadblV)
+	{
+		double[][] aadblVOrthogonal = GrahamSchmidtOrthogonalization (aadblV);
+
+		if (null == aadblVOrthogonal) return null;
+
+		int iSize = aadblVOrthogonal.length;
+
+		double[][] aadblVOrthonormal = new double[iSize][];
+
+		for (int i = 0; i < iSize; ++i)
+			aadblVOrthonormal[i] = Normalize (aadblVOrthogonal[i]);
+
+		return aadblVOrthonormal;
+	}
+
+	/**
+	 * Perform a QR Decomposition on the Input Matrix
+	 * 
+	 * @param aadblA The Input Matrix
+	 * 
+	 * @return The Output of QR Decomposition
+	 */
+
+	public static final org.drip.quant.linearalgebra.QR QRDecomposition (
+		final double[][] aadblA)
+	{
+		double[][] aadblQ = GrahamSchmidtOrthonormalization (aadblA);
+
+		if (null == aadblQ) return null;
+
+		int iSize = aadblQ.length;
+		double[][] aadblR = new double[iSize][iSize];
+
+		try {
+			for (int i = 0; i < iSize; ++i) {
+				for (int j = 0; j < iSize; ++j)
+					aadblR[i][j] = 1 > j ? DotProduct (aadblQ[i], aadblA[j]) : 0.;
+			}
+
+			return new org.drip.quant.linearalgebra.QR (aadblQ, aadblR);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

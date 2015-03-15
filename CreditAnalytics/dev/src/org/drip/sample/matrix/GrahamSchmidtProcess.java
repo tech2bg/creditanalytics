@@ -1,12 +1,12 @@
 
 package org.drip.sample.matrix;
 
+import org.drip.quant.common.FormatUtil;
 import org.drip.quant.common.NumberUtil;
 import org.drip.quant.linearalgebra.Matrix;
 import org.drip.service.api.CreditAnalytics;
 
 /*
-
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
@@ -34,45 +34,54 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * CholeskyFactorization demonstrates the Cholesky Factorization and Transpose Reconciliation of the Input
- * 	Matrix.
+ * GrahamSchmidtProcess illustrates the Graham Schmidt Orthogonalization and Orthonormalization.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CholeskyFactorization {
+public class GrahamSchmidtProcess {
 
 	public static final void main (
-		final String[] astrArg)
+		final String[] astrArgs)
 		throws Exception
 	{
 		CreditAnalytics.Init ("");
 
-		double[][] aadblA = {
-			{1.0, 0.3, 0.0},
-			{0.3, 1.0, 0.1},
-			{0.0, 0.1, 1.0}
+		double[][] aadblV = new double[][] {
+			{3, 1, 4, 9},
+			{2, 2, 6, 0},
+			{1, 8, 3, 5},
+			{7, 0, 4, 5}
 		};
 
-		double[][] aadblACholesky = Matrix.CholeskyBanachiewiczFactorization (aadblA);
+		double[][] aadblUOrthogonal = Matrix.GrahamSchmidtOrthogonalization (aadblV);
 
-		double[][] aadblACholeskyTranspose = Matrix.Transpose (aadblACholesky);
+		NumberUtil.PrintMatrix ("ORTHOGONAL", aadblUOrthogonal);
 
-		System.out.println ("\n\t------------------------------------------------------------------------------------------------------");
-
-		NumberUtil.Print2DArrayTriplet (
-			"\t\tSOURCE",
-			"CHOLESKY",
-			"ORIGINAL",
-			aadblA,
-			aadblACholesky,
-			Matrix.Product (
-				aadblACholesky,
-				aadblACholeskyTranspose
-			),
-			false
+		System.out.println (
+			"ORTHOGONAL TEST: " +
+			FormatUtil.FormatDouble (
+				Matrix.DotProduct (
+					aadblUOrthogonal[0],
+					aadblUOrthogonal[1]
+				),
+			1, 1, 1.
+			)
 		);
 
-		System.out.println ("\t------------------------------------------------------------------------------------------------------");
+		double[][] aadblUOrthonormal = Matrix.GrahamSchmidtOrthonormalization (aadblV);
+
+		NumberUtil.PrintMatrix ("ORTHONORMAL", aadblUOrthonormal);
+
+		System.out.println (
+			"ORTHONORMAL TEST: " +
+			FormatUtil.FormatDouble (
+				Matrix.DotProduct (
+					aadblUOrthonormal[0],
+					aadblUOrthonormal[1]
+				),
+			1, 1, 1.
+			)
+		);
 	}
 }

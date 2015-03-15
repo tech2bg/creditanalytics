@@ -2,11 +2,10 @@
 package org.drip.sample.matrix;
 
 import org.drip.quant.common.NumberUtil;
-import org.drip.quant.linearalgebra.Matrix;
+import org.drip.quant.linearalgebra.*;
 import org.drip.service.api.CreditAnalytics;
 
 /*
-
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  */
 
@@ -34,45 +33,51 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * CholeskyFactorization demonstrates the Cholesky Factorization and Transpose Reconciliation of the Input
- * 	Matrix.
+ * QRDecomposition demonstrates the technique to perform a QR Decomposition of the Input Square Matrix into
+ * 	an Orthogonal and an Upper Triangular Counterparts.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CholeskyFactorization {
+public class QRDecomposition {
 
 	public static final void main (
-		final String[] astrArg)
-		throws Exception
+		final String[] astrArgs)
 	{
 		CreditAnalytics.Init ("");
 
 		double[][] aadblA = {
-			{1.0, 0.3, 0.0},
-			{0.3, 1.0, 0.1},
-			{0.0, 0.1, 1.0}
+			{ 12, -51,   4},
+			{  6, 167, -68},
+			{ -4,  24, -41}
 		};
 
-		double[][] aadblACholesky = Matrix.CholeskyBanachiewiczFactorization (aadblA);
+		QR qr = Matrix.QRDecomposition (aadblA);
 
-		double[][] aadblACholeskyTranspose = Matrix.Transpose (aadblACholesky);
+		NumberUtil.PrintMatrix ("Initial Q:   ", qr.q());
 
-		System.out.println ("\n\t------------------------------------------------------------------------------------------------------");
+		System.out.println();
 
-		NumberUtil.Print2DArrayTriplet (
-			"\t\tSOURCE",
-			"CHOLESKY",
-			"ORIGINAL",
-			aadblA,
-			aadblACholesky,
-			Matrix.Product (
-				aadblACholesky,
-				aadblACholeskyTranspose
-			),
-			false
-		);
+		NumberUtil.PrintMatrix ("Inverse Q:   ", Matrix.InvertUsingGaussianElimination (qr.q()));
 
-		System.out.println ("\t------------------------------------------------------------------------------------------------------");
+		System.out.println();
+
+		NumberUtil.PrintMatrix ("Transpose Q: ", Matrix.Transpose (qr.q()));
+
+		System.out.println();
+
+		for (int i = 0; i < 30; ++i) {
+			double[][] aadblQTranspose = Matrix.Transpose (qr.q());
+
+			double[][] aadblQTA = Matrix.Product (aadblQTranspose, aadblA);
+
+			aadblA = Matrix.Product (aadblQTA, qr.q());
+
+			NumberUtil.PrintMatrix ("A" + (i + 1), aadblA);
+
+			System.out.println();
+
+			qr = Matrix.QRDecomposition (aadblA);
+		}
 	}
 }

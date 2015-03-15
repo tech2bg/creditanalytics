@@ -2,7 +2,7 @@
 package org.drip.sample.matrix;
 
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.linearalgebra.*;
+import org.drip.quant.eigen.*;
 import org.drip.service.api.CreditAnalytics;
 
 /*
@@ -64,7 +64,7 @@ public class PrincipalComponent {
 		for (int i = 0; i < adblEigenvector.length; ++i)
 			strDump += FormatUtil.FormatDouble (adblEigenvector[i], 1, 4, 1.) + " | ";
 
-		System.out.println ("\tPrincipal Component => " + strDump);
+		System.out.println ("\t{" + FormatUtil.FormatDouble (dblCorr1, 1, 4, 1.) + " ||" + FormatUtil.FormatDouble (dblCorr2, 1, 4, 1.) + "} => " + strDump);
 	}
 
 	public static final void main (
@@ -75,11 +75,11 @@ public class PrincipalComponent {
 
 		PowerIterationComponentExtractor pice = new PowerIterationComponentExtractor (
 			30,
-			0.001,
+			0.000001,
 			false
 		);
 
-		for (int i = 0; i < 100; ++i)
+		for (int i = 0; i < 50; ++i)
 			PrincipalComponentRun (pice);
 	}
 }

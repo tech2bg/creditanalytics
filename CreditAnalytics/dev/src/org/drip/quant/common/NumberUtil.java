@@ -432,4 +432,24 @@ public class NumberUtil {
 
 		return true;
 	}
+
+	public static final boolean PrintMatrix (
+		final java.lang.String strName,
+		final double[][] aadblA)
+	{
+		if (null == aadblA || 0 == aadblA.length) return false;
+
+		int iSize = aadblA.length;
+
+		for (int i = 0; i < iSize; ++i) {
+			java.lang.String strDump = strName  + " => ";
+
+			for (int j = 0; j < iSize; ++j)
+				strDump += org.drip.quant.common.FormatUtil.FormatDouble (aadblA[i][j], 1, 6, 1.) + " |";
+
+			System.out.println (strDump);
+		}
+
+		return true;
+	}
 }

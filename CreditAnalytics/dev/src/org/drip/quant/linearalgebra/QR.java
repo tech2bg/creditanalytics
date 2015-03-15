@@ -29,58 +29,58 @@ package org.drip.quant.linearalgebra;
  */
 
 /**
- * EigenizationOutput holds the results of the Eigenization Operation - the Eigenvectors and the Eigenvalues.
+ * QR hlds the Results of QR Decomposition - viz., the Q and the R Matrices.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class EigenizationOutput {
-	private double[] _adblEigenvalue = null;
-	private double[][] _aadblEigenvector = null;
+public class QR {
+	private double[][] _aadblQ = null;
+	private double[][] _aadblR = null;
 
 	/**
-	 * EigenizationOutput Constructor
+	 * QR Constructor
 	 * 
-	 * @param aadblEigenvector Array of Eigenvectors
-	 * @param adblEigenvalue Array of Eigenvalues
+	 * @param aadblQ Q
+	 * @param aadblR R
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public EigenizationOutput (
-		final double[][] aadblEigenvector,
-		final double[] adblEigenvalue)
+	public QR (
+		final double[][] aadblQ,
+		final double[][] aadblR)
 		throws java.lang.Exception
 	{
-		if (null == (_aadblEigenvector = aadblEigenvector) || null == (_adblEigenvalue = adblEigenvalue))
-			throw new java.lang.Exception ("EigenizationOutput ctr: Invalid Inputs");
+		if (null == (_aadblQ = aadblQ) || null == (_aadblR = aadblR))
+			throw new java.lang.Exception ("QR ctr: Invalid Inputs!");
 
-		int iNumVector = _adblEigenvalue.length;
+		int iSize = _aadblQ.length;
 
-		if (0 == iNumVector || iNumVector != _aadblEigenvector.length || null == _aadblEigenvector[0] ||
-			iNumVector != _aadblEigenvector[0].length)
-			throw new java.lang.Exception ("EigenizationOutput ctr: Invalid Inputs");
+		if (0 == iSize || null == _aadblQ[0] || iSize != _aadblQ[0].length || iSize != _aadblR.length || null
+			== _aadblR[0] || iSize != _aadblR[0].length)
+			throw new java.lang.Exception ("QR ctr: Invalid Inputs!");
 	}
 
 	/**
-	 * Retrieve the Array of Eigenvectors
+	 * Retrieve Q
 	 * 
-	 * @return The Array of Eigenvectors
+	 * @return Q
 	 */
 
-	public double[][] eigenvector()
+	public double[][] q()
 	{
-		return _aadblEigenvector;
+		return _aadblQ;
 	}
 
 	/**
-	 * Retrieve the Array of Eigenvalues
+	 * Retrieve R
 	 * 
-	 * @return The Array of Eigenvalues
+	 * @return R
 	 */
 
-	public double[] eigenvalue()
+	public double[][] r()
 	{
-		return _adblEigenvalue;
+		return _aadblR;
 	}
 }
