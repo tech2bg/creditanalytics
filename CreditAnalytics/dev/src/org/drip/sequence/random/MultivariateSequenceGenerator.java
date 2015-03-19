@@ -119,6 +119,7 @@ public class MultivariateSequenceGenerator {
 	{
 		return _aUSG.length;
 	}
+
 	/**
 	 * Generate the Set of Multivariate Random Numbers according to the specified rule
 	 * 

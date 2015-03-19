@@ -40,12 +40,39 @@ import org.drip.service.api.CreditAnalytics;
 
 public class Eigenization {
 
-	private static final void PrincipalComponentRun (
-		final PowerIterationComponentExtractor pice,
-		final double[][] aadblA)
-		throws Exception
+	private static final void EigenRun (
+		final QREigenComponentExtractor qrece)
 	{
-		EigenComponent ec = pice.principalComponent (aadblA);
+		double dblCorr1 = 0.5 * Math.random();
+
+		double dblCorr2 = 0.5 * Math.random();
+
+		double[][] aadblA = {
+			{     1.0, dblCorr1,      0.0},
+			{dblCorr1,      1.0, dblCorr2},
+			{     0.0, dblCorr2,      1.0}
+		};
+
+		EigenOutput eo = qrece.eigenize (aadblA);
+
+		if (null == eo) return;
+
+		System.out.println ("\n\t|----------------------------------------|");
+
+		System.out.println ("\t|-----------" + FormatUtil.FormatDouble (dblCorr1, 1, 4, 1.) + " ||| " + FormatUtil.FormatDouble (dblCorr2, 1, 4, 1.) + " ---------|");
+
+		System.out.println ("\t|----------------------------------------|");
+
+		for (int i = 0; i < aadblA.length; ++i) {
+			java.lang.String strDump = "\t[" + FormatUtil.FormatDouble (eo.eigenvalue()[i], 1, 4, 1.) + "] => ";
+
+			for (int j = 0; j < aadblA.length; ++j)
+				strDump += FormatUtil.FormatDouble (eo.eigenvector()[i][j], 1, 4, 1.) + " | ";
+
+			System.out.println (strDump);
+		}
+
+		EigenComponent ec = qrece.principalComponent (aadblA);
 
 		double[] adblEigenvector = ec.eigenvector();
 
@@ -55,32 +82,24 @@ public class Eigenization {
 			strDump += FormatUtil.FormatDouble (adblEigenvector[i], 1, 4, 1.) + " | ";
 
 		System.out.println ("\t" + strDump);
+
+		System.out.println ("\t|----------------------------------------|");
 	}
 
 	public static final void main (
-		final String[] astrArg)
+		final String[] astrArgs)
 		throws Exception
 	{
 		CreditAnalytics.Init ("");
 
-		double dblCorr1 = 0.1;
-		double dblCorr2 = 0.4;
-
-		double[][] aadblA = {
-			{     1.0, dblCorr1,      0.0},
-			{dblCorr1,      1.0, dblCorr2},
-			{     0.0, dblCorr2,      1.0}
-		};
-
-		PowerIterationComponentExtractor pice = new PowerIterationComponentExtractor (
-			30,
-			0.000001,
-			false
+		QREigenComponentExtractor qrece = new QREigenComponentExtractor (
+			50,
+			0.00001
 		);
 
-		PrincipalComponentRun (
-			pice,
-			aadblA
-		);
+		int iNumRun = 10;
+
+		for (int iRun = 0; iRun < iNumRun; ++iRun)
+			EigenRun (qrece);
 	}
 }

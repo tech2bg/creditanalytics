@@ -43,41 +43,44 @@ public class QRDecomposition {
 
 	public static final void main (
 		final String[] astrArgs)
+		throws Exception
 	{
 		CreditAnalytics.Init ("");
 
-		double[][] aadblA = {
+		/* double[][] aadblA = {
 			{ 12, -51,   4},
 			{  6, 167, -68},
 			{ -4,  24, -41}
+		}; */
+
+		double[][] aadblA = {
+			{ 1.0, 0.1, 0.0},
+			{ 0.1, 1.0, 0.4},
+			{ 0.0, 0.4, 1.0}
 		};
 
 		QR qr = Matrix.QRDecomposition (aadblA);
 
-		NumberUtil.PrintMatrix ("Initial Q:   ", qr.q());
+		double[][] aadblR = qr.r();
+
+		NumberUtil.PrintMatrix ("Initial R:   ", aadblR);
 
 		System.out.println();
 
-		NumberUtil.PrintMatrix ("Inverse Q:   ", Matrix.InvertUsingGaussianElimination (qr.q()));
+		double[][] aadblQ = qr.q();
+
+		NumberUtil.PrintMatrix ("Initial Q:   ", aadblQ);
 
 		System.out.println();
 
-		NumberUtil.PrintMatrix ("Transpose Q: ", Matrix.Transpose (qr.q()));
+		NumberUtil.PrintMatrix ("Inverse Q:   ", Matrix.InvertUsingGaussianElimination (aadblQ));
 
 		System.out.println();
 
-		for (int i = 0; i < 30; ++i) {
-			double[][] aadblQTranspose = Matrix.Transpose (qr.q());
+		double[][] aadblQT = Matrix.Transpose (aadblQ);
 
-			double[][] aadblQTA = Matrix.Product (aadblQTranspose, aadblA);
+		NumberUtil.PrintMatrix ("Transpose Q: ", aadblQT);
 
-			aadblA = Matrix.Product (aadblQTA, qr.q());
-
-			NumberUtil.PrintMatrix ("A" + (i + 1), aadblA);
-
-			System.out.println();
-
-			qr = Matrix.QRDecomposition (aadblA);
-		}
+		System.out.println();
 	}
 }

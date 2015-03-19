@@ -44,6 +44,30 @@ package org.drip.quant.linearalgebra;
 public class Matrix {
 
 	/**
+	 * Lower Triangular Matrix
+	 */
+
+	public static int LOWER_TRIANGULAR = 1;
+
+	/**
+	 * Upper Triangular Matrix
+	 */
+
+	public static int UPPER_TRIANGULAR = 2;
+
+	/**
+	 * Lower+Upper Triangular Matrix
+	 */
+
+	public static int LOWER_AND_UPPER_TRIANGULAR = 3;
+
+	/**
+	 * Non Triangular Matrix
+	 */
+
+	public static int NON_TRIANGULAR = 0;
+
+	/**
 	 * Diagonalize the specified row in the source matrix, and apply comparable operations to the target
 	 * 
 	 * @param iQ Row in the Source Matrix
@@ -699,7 +723,7 @@ public class Matrix {
 		try {
 			for (int i = 0; i < iSize; ++i) {
 				for (int j = 0; j < iSize; ++j)
-					aadblR[i][j] = 1 > j ? DotProduct (aadblQ[i], aadblA[j]) : 0.;
+					aadblR[i][j] = i > j ? DotProduct (aadblQ[i], aadblA[j]) : 0.;
 			}
 
 			return new org.drip.quant.linearalgebra.QR (aadblQ, aadblR);
@@ -708,5 +732,46 @@ public class Matrix {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Retrieve the Triangular Type of the Matrix
+	 * 
+	 * @param aadblA The Input Matrix
+	 * @param dblFloor The Floor Level that means "Zero"
+	 * 
+	 * @return The Triangular Type
+	 */
+
+	public static final int TriangularType (
+		final double[][] aadblA,
+		final double dblFloor)
+	{
+		if (null == aadblA || !org.drip.quant.common.NumberUtil.IsValid (dblFloor) || dblFloor < 0.)
+			return NON_TRIANGULAR;
+
+		int iSize = aadblA.length;
+		boolean bLowerTriangular = true;
+		boolean bUpperTriangular = true;
+
+		if (1 >= iSize || null == aadblA[0] || iSize != aadblA[0].length) return NON_TRIANGULAR;
+
+		for (int i = 0; i < iSize; ++i) {
+			for (int j = 0; j < iSize; ++j) {
+				if (i > j) {
+					if (java.lang.Math.abs (aadblA[i][j]) > dblFloor) bLowerTriangular = false;
+				} else if (i < j) {
+					if (java.lang.Math.abs (aadblA[i][j]) > dblFloor) bUpperTriangular = false;
+				}
+			}
+		}
+
+		if (bLowerTriangular && bUpperTriangular) return LOWER_AND_UPPER_TRIANGULAR;
+
+		if (bLowerTriangular && !bUpperTriangular) return LOWER_TRIANGULAR;
+
+		if (!bLowerTriangular && bUpperTriangular) return UPPER_TRIANGULAR;
+
+		return NON_TRIANGULAR;
 	}
 }
