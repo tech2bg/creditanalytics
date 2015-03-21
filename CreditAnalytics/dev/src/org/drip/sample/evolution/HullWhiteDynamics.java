@@ -61,61 +61,77 @@ public class HullWhiteDynamics {
 
 	private static final void ShortRateEvolution (
 		final HullWhite hw,
-		final JulianDate dtStart,
+		final JulianDate dtSpot,
 		final String strCurrency,
 		final String strViewTenor,
 		final double dblStartingShortRate)
 		throws Exception
 	{
 		int iDayStep = 2;
-		JulianDate dtSpot = dtStart;
+		JulianDate dtView = dtSpot;
 		double dblShortRate = dblStartingShortRate;
 
-		double dblStartDate = dtStart.julian();
+		double dblSpotDate = dtSpot.julian();
 
-		double dblEndDate = dtStart.addTenor (strViewTenor).julian();
+		double dblEndDate = dtSpot.addTenor (strViewTenor).julian();
 
-		System.out.println ("\n\t|---------------------------------|");
+		System.out.println ("\t|--------------------------------------------------||");
 
-		System.out.println ("\t|                                 |");
+		System.out.println ("\t|                                                  ||");
 
-		System.out.println ("\t|    Hull-White Evolution Run     |");
+		System.out.println ("\t|    Hull-White Evolution Run                      ||");
 
-		System.out.println ("\t|    ------------------------     |");
+		System.out.println ("\t|    ------------------------                      ||");
 
-		System.out.println ("\t|                                 |");
+		System.out.println ("\t|                                                  ||");
 
-		System.out.println ("\t|    L->R:                        |");
+		System.out.println ("\t|    L->R:                                         ||");
 
-		System.out.println ("\t|        Date                     |");
+		System.out.println ("\t|        Date                                      ||");
 
-		System.out.println ("\t|        Short Rate (%)           |");
+		System.out.println ("\t|        Short Rate (%)                            ||");
 
-		System.out.println ("\t|        Short Rate - Change (%)  |");
+		System.out.println ("\t|        Short Rate - Change (%)                   ||");
 
-		System.out.println ("\t|---------------------------------|");
+		System.out.println ("\t|        Alpha (%)                                 ||");
 
-		while (dtSpot.julian() < dblEndDate) {
-			double dblSpotDate = dtSpot.julian();
+		System.out.println ("\t|        Theta (%)                                 ||");
+
+		System.out.println ("\t|--------------------------------------------------||");
+
+		while (dtView.julian() < dblEndDate) {
+			double dblViewDate = dtView.julian();
+
+			double dblAlpha = hw.alpha (
+				dblSpotDate,
+				dblViewDate
+			);
+
+			double dblTheta = hw.theta (
+				dblSpotDate,
+				dblViewDate
+			);
 
 			double dblShortRateIncrement = hw.shortRateIncrement (
-				dblStartDate,
 				dblSpotDate,
+				dblViewDate,
 				dblShortRate,
 				iDayStep / 365.25
 			);
 
 			dblShortRate += dblShortRateIncrement;
 
-			System.out.println ("\t| [" + dtSpot + "] = " +
+			System.out.println ("\t| [" + dtView + "] = " +
 				FormatUtil.FormatDouble (dblShortRate, 1, 2, 100.) + "% | " +
-				FormatUtil.FormatDouble (dblShortRateIncrement, 1, 2, 100.) + "% || "
+				FormatUtil.FormatDouble (dblShortRateIncrement, 1, 2, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblAlpha, 1, 2, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblTheta, 1, 2, 100.) + "% || "
 			);
 
-			dtSpot = dtSpot.addBusDays (iDayStep, strCurrency);
+			dtView = dtView.addBusDays (iDayStep, strCurrency);
 		}
 
-		System.out.println ("\t|---------------------------------|");
+		System.out.println ("\t|--------------------------------------------------||");
 	}
 
 	public static final void main (
@@ -128,7 +144,7 @@ public class HullWhiteDynamics {
 
 		String strCurrency = "USD";
 		double dblStartingShortRate = 0.05;
-		double dblSigma = 0.1;
+		double dblSigma = 0.05;
 		double dblA = 1.;
 
 		HullWhite hw = HullWhiteEvolver (

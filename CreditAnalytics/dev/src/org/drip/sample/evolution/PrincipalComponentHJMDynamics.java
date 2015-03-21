@@ -12,7 +12,7 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
-import org.drip.state.dynamics.GaussianHJM;
+import org.drip.state.dynamics.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -42,13 +42,14 @@ import org.drip.state.dynamics.GaussianHJM;
  */
 
 /**
- * GaussianHJMDynamics demonstrates the Construction and Usage of the Gaussian HJM Model Dynamics for the
- *  Evolution of the Instantaneous Forward Rate, the Price, and the Short Rate.
+ * PrincipalComponentHJMDynamics demonstrates the Construction and Usage of the PCA-Based Multi-Factor
+ *  Gaussian HJM Model Dynamics for the Evolution of the Instantaneous Forward Rate, the Price, and the Short
+ *  Rate.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class GaussianHJMDynamics {
+public class PrincipalComponentHJMDynamics {
 
 	private static final MarketSurface FlatVolatilitySurface (
 		final JulianDate dtStart,
@@ -102,29 +103,45 @@ public class GaussianHJMDynamics {
 		);
 	}
 
-	private static final GaussianHJM HJMInstance (
+	private static final MultiFactorGaussianHJM HJMInstance (
 		final JulianDate dtStart,
 		final String strCurrency,
-		final MarketSurface mktSurfFlatVol,
-		final AbstractUnivariate auForwardRate)
+		final MarketSurface mktSurfFlatVol1,
+		final MarketSurface mktSurfFlatVol2,
+		final MarketSurface mktSurfFlatVol3,
+		final AbstractUnivariate auForwardRate,
+		final int iNumFactor)
 		throws Exception
 	{
-		return new GaussianHJM (
-			new MarketSurface[] {mktSurfFlatVol},
-			auForwardRate,
-			new MultivariateSequenceGenerator (
+		MultiFactorVolatility mfv = new MultiFactorVolatility (
+			new MarketSurface[] {
+				mktSurfFlatVol1,
+				mktSurfFlatVol2,
+				mktSurfFlatVol3
+			},
+			new PrincipalFactorSequenceGenerator (
 				new UnivariateSequenceGenerator[] {
+					new BoxMullerGaussian (0., 1.),
+					new BoxMullerGaussian (0., 1.),
 					new BoxMullerGaussian (0., 1.)
 				},
 				new double[][] {
-					{1.}
-				}
+					{1.0, 0.1, 0.2},
+					{0.1, 1.0, 0.2},
+					{0.2, 0.1, 1.0}
+				},
+				iNumFactor
 			)
+		);
+
+		return new MultiFactorGaussianHJM (
+			mfv,
+			auForwardRate
 		);
 	}
 
-	private static final void InstantaneousForwardRateEvolution (
-		final GaussianHJM hjm,
+	private static final void Evolve (
+		final MultiFactorGaussianHJM hjm,
 		final JulianDate dtStart,
 		final String strCurrency,
 		final String strViewTenor,
@@ -150,9 +167,13 @@ public class GaussianHJMDynamics {
 
 		System.out.println ("\t|                                                                                                                               ||");
 
-		System.out.println ("\t|    Heath-Jarrow-Morton Gaussian Run                                                                                           ||");
+		System.out.println ("\t|    Multi-Factor PCA-Based Gaussian HJM Run                                                                                    ||");
 
-		System.out.println ("\t|    --------------------------------                                                                                           ||");
+		System.out.println ("\t|    ---------------------------------------                                                                                    ||");
+
+		System.out.println ("\t|                                                                                                                               ||");
+
+		System.out.println ("\t|        Number of Prinicipal Components: " + hjm.mfv().msg().numFactor() + "                                                                                     ||");
 
 		System.out.println ("\t|                                                                                                                               ||");
 
@@ -276,31 +297,54 @@ public class GaussianHJMDynamics {
 
 		JulianDate dtSpot = DateUtil.Today();
 
-		double dblFlatVol = 0.01;
+		double dblFlatVol1 = 0.01;
+		double dblFlatVol2 = 0.02;
+		double dblFlatVol3 = 0.03;
 		double dblFlatForwardRate = 0.05;
 		double dblStartingPrice = 0.9875;
 
-		MarketSurface mktSurfFlatVol = FlatVolatilitySurface (
+		MarketSurface mktSurfFlatVol1 = FlatVolatilitySurface (
 			dtSpot,
 			strCurrency,
-			dblFlatVol
+			dblFlatVol1
 		);
 
-		GaussianHJM hjm = HJMInstance (
+		MarketSurface mktSurfFlatVol2 = FlatVolatilitySurface (
 			dtSpot,
 			strCurrency,
-			mktSurfFlatVol,
-			new FlatUnivariate (dblFlatForwardRate)
+			dblFlatVol2
 		);
 
-		InstantaneousForwardRateEvolution (
-			hjm,
+		MarketSurface mktSurfFlatVol3 = FlatVolatilitySurface (
 			dtSpot,
 			strCurrency,
-			"3M",
-			"6M",
-			dblFlatForwardRate,
-			dblStartingPrice
+			dblFlatVol3
 		);
+
+		int[] aiNumFactor = new int[] {
+			1, 2, 3
+		};
+
+		for (int iNumFactor : aiNumFactor) {
+			MultiFactorGaussianHJM hjm = HJMInstance (
+				dtSpot,
+				strCurrency,
+				mktSurfFlatVol1,
+				mktSurfFlatVol2,
+				mktSurfFlatVol3,
+				new FlatUnivariate (dblFlatForwardRate),
+				iNumFactor
+			);
+
+			Evolve (
+				hjm,
+				dtSpot,
+				strCurrency,
+				"3M",
+				"6M",
+				dblFlatForwardRate,
+				dblStartingPrice
+			);
+		}
 	}
 }

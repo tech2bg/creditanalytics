@@ -37,7 +37,7 @@ package org.drip.state.dynamics;
 public class HullWhite {
 	private double _dblA = java.lang.Double.NaN;
 	private double _dblSigma = java.lang.Double.NaN;
-	private org.drip.sequence.random.UnivariateSequenceGenerator _rsg = null;
+	private org.drip.sequence.random.UnivariateSequenceGenerator _usg = null;
 	private org.drip.function.deterministic.AbstractUnivariate _auIFRInitial = null;
 
 	/**
@@ -46,7 +46,7 @@ public class HullWhite {
 	 * @param dblSigma Sigma
 	 * @param dblA A
 	 * @param auIFRInitial The Initial Instantaneous Forward Rate Term Structure
-	 * @param rsg Random Sequence Generators
+	 * @param usg Univariate Random Sequence Generator
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
@@ -55,12 +55,12 @@ public class HullWhite {
 		final double dblSigma,
 		final double dblA,
 		final org.drip.function.deterministic.AbstractUnivariate auIFRInitial,
-		final org.drip.sequence.random.UnivariateSequenceGenerator rsg)
+		final org.drip.sequence.random.UnivariateSequenceGenerator usg)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblSigma = dblSigma) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblA = dblA) || null == (_auIFRInitial =
-				auIFRInitial) || null == (_rsg = rsg))
+				auIFRInitial) || null == (_usg = usg))
 			throw new java.lang.Exception ("HullWhite ctr: Invalid Inputs");
 	}
 
@@ -105,7 +105,33 @@ public class HullWhite {
 
 	public org.drip.sequence.random.UnivariateSequenceGenerator rsg()
 	{
-		return _rsg;
+		return _usg;
+	}
+
+	/**
+	 * Calculate the Alpha
+	 * 
+	 * @param dblSpotDate The Spot Date
+	 * @param dblViewDate The View Date
+	 * 
+	 * @return Alpha
+	 * 
+	 * @throws java.lang.Exception Thrown if Alpha cannot be computed
+	 */
+
+	public double alpha (
+		final double dblSpotDate,
+		final double dblViewDate)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate)
+			throw new java.lang.Exception ("HullWhite::alpha => Invalid Inputs");
+
+		double dblAlphaVol = _dblSigma * (1. - java.lang.Math.exp (_dblA * (dblViewDate - dblSpotDate) /
+			365.25)) / _dblA;
+
+		return _auIFRInitial.evaluate (dblViewDate) + 0.5 * dblAlphaVol * dblAlphaVol;
 	}
 
 	/**
@@ -160,6 +186,100 @@ public class HullWhite {
 			throw new java.lang.Exception ("HullWhite::shortRateIncrement => Invalid Inputs");
 
 		return (theta (dblSpotDate, dblViewDate) - _dblA * dblShortRate) * dblViewTimeIncrement + _dblSigma *
-			java.lang.Math.sqrt (dblViewTimeIncrement) * _rsg.random();
+			java.lang.Math.sqrt (dblViewTimeIncrement) * _usg.random();
+	}
+
+	/**
+	 * Generate the Metrics associated with the Evolution of the Short Rate from an Initial to a Final Date
+	 * 
+	 * @param dblSpotDate The Spot/Epoch Date
+	 * @param dblInitialDate The Initial Date
+	 * @param dblFinalDate The Final Date
+	 * @param dblInitialShortRate The Initial Short Rate
+	 * 
+	 * @return The Evolution Metrics
+	 */
+
+	public org.drip.state.dynamics.HullWhiteEvolutionMetrics evolve (
+		final double dblSpotDate,
+		final double dblInitialDate,
+		final double dblFinalDate,
+		final double dblInitialShortRate)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblInitialDate) || dblInitialDate < dblSpotDate ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblFinalDate) || dblFinalDate <= dblInitialDate ||
+					!org.drip.quant.common.NumberUtil.IsValid (dblInitialShortRate))
+			return null;
+
+		double dblDate = dblInitialDate;
+		double dblTimeIncrement = 1. / 365.25;
+		double dblShortRate = dblInitialShortRate;
+		double dblEvolutionIncrement = (dblFinalDate - dblInitialDate) / 365.25;
+
+		while (dblDate < dblFinalDate) {
+			try {
+				dblShortRate += shortRateIncrement (dblSpotDate, dblDate, dblShortRate, dblTimeIncrement);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+
+			++dblDate;
+		}
+
+		double dblADF = java.lang.Math.exp (-1. * _dblA * dblEvolutionIncrement);
+
+		double dblB = (1. - dblADF) / _dblA;
+
+		try {
+			return new org.drip.state.dynamics.HullWhiteEvolutionMetrics (dblInitialDate, dblFinalDate,
+				dblInitialShortRate, dblShortRate, dblInitialShortRate * dblADF + alpha (dblSpotDate,
+					dblFinalDate) - alpha (dblSpotDate, dblInitialDate) * dblADF, 0.5 * _dblSigma * _dblSigma
+						* (1. - dblADF * dblADF) / _dblA, java.lang.Math.exp (dblB * _auIFRInitial.evaluate
+							(dblInitialDate) - 0.25 * _dblSigma * _dblSigma * (1. - java.lang.Math.exp (-2. *
+								_dblA * (dblInitialDate - dblSpotDate) / 365.25)) * dblB * dblB / _dblA));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Generate the Metrics associated with the Transition that results from using a Trinomial Tree Using the
+	 *  Starting Node Metrics
+	 * 
+	 * @param dblSpotDate The Spot/Epoch Date
+	 * @param dblInitialDate The Initial Date
+	 * @param dblFinalDate The Final Date
+	 * @param hwnmInitial The Initial Node Metrics
+	 * 
+	 * @return The Hull White Transition Metrics
+	 */
+
+	public org.drip.state.dynamics.HullWhiteTransitionMetrics evolveTrinomialTree (
+		final double dblSpotDate,
+		final double dblInitialDate,
+		final double dblFinalDate,
+		final org.drip.state.dynamics.HullWhiteNodeMetrics hwnmInitial)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblInitialDate) || dblInitialDate < dblSpotDate ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblFinalDate) || dblFinalDate <= dblInitialDate)
+			return null;
+
+		double dblADF = java.lang.Math.exp (-1. * _dblA * (dblFinalDate - dblInitialDate) / 365.25);
+
+		try {
+			return new org.drip.state.dynamics.HullWhiteTransitionMetrics (dblInitialDate, dblFinalDate, null
+				== hwnmInitial ? 0. : hwnmInitial.x() * dblADF, 0.5 * _dblSigma * _dblSigma * (1. - dblADF *
+					dblADF) / _dblA, alpha (dblSpotDate, dblFinalDate));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

@@ -42,14 +42,15 @@ import org.drip.state.dynamics.*;
  */
 
 /**
- * QMHJMDynamics demonstrates the Construction and Usage of the 3-Factor Gaussian HJM Model Dynamics for the
- *  Evolution of the Discount Factor Quantification Metrics - the Instantaneous Forward Rate, the LIBOR
- *  Forward Rate, the Shifted LIBOR Forward Rate, the Short Rate, the Compounded Short Rate, and the Price.
+ * PrincipalComponentQMHJMDynamics demonstrates the Construction and Usage of the Principal Component-Based
+ *  Gaussian HJM Model Dynamics for the Evolution of the Discount Factor Quantification Metrics - the
+ *  Instantaneous Forward Rate, the LIBOR Forward Rate, the Shifted LIBOR Forward Rate, the Short Rate, the
+ *  Compounded Short Rate, and the Price.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class QMHJMDynamics {
+public class PrincipalComponentQMHJMDynamics {
 
 	private static final MarketSurface FlatVolatilitySurface (
 		final JulianDate dtStart,
@@ -103,23 +104,23 @@ public class QMHJMDynamics {
 		);
 	}
 
-	private static final GaussianHJM HJMInstance (
+	private static final MultiFactorGaussianHJM HJMInstance (
 		final JulianDate dtStart,
 		final String strCurrency,
 		final MarketSurface mktSurfFlatVol1,
 		final MarketSurface mktSurfFlatVol2,
 		final MarketSurface mktSurfFlatVol3,
-		final AbstractUnivariate auForwardRate)
+		final AbstractUnivariate auForwardRate,
+		final int iNumFactor)
 		throws Exception
 	{
-		return new GaussianHJM (
+		MultiFactorVolatility mfv = new MultiFactorVolatility (
 			new MarketSurface[] {
 				mktSurfFlatVol1,
 				mktSurfFlatVol2,
 				mktSurfFlatVol3
 			},
-			auForwardRate,
-			new MultivariateSequenceGenerator (
+			new PrincipalFactorSequenceGenerator (
 				new UnivariateSequenceGenerator[] {
 					new BoxMullerGaussian (0., 1.),
 					new BoxMullerGaussian (0., 1.),
@@ -129,8 +130,14 @@ public class QMHJMDynamics {
 					{1.0, 0.1, 0.2},
 					{0.1, 1.0, 0.2},
 					{0.2, 0.1, 1.0}
-				}
+				},
+				iNumFactor
 			)
+		);
+
+		return new MultiFactorGaussianHJM (
+			mfv,
+			auForwardRate
 		);
 	}
 
@@ -159,7 +166,7 @@ public class QMHJMDynamics {
 	}
 
 	private static final void QMEvolution (
-		final GaussianHJM hjm,
+		final MultiFactorGaussianHJM hjm,
 		final JulianDate dtStart,
 		final String strCurrency,
 		final String strViewTenor,
@@ -179,9 +186,13 @@ public class QMHJMDynamics {
 
 		System.out.println ("\t|                                                                                                                               ||");
 
-		System.out.println ("\t|    3-Factor Gaussian HJM Quantification Metric Run                                                                            ||");
+		System.out.println ("\t|    Multi-Factor PCA-Based Gaussian HJM Quantification Metric Run                                                              ||");
 
-		System.out.println ("\t|    -----------------------------------------------                                                                            ||");
+		System.out.println ("\t|    -------------------------------------------------------------                                                              ||");
+
+		System.out.println ("\t|                                                                                                                               ||");
+
+		System.out.println ("\t|        Number of Prinicipal Components: " + hjm.mfv().msg().numFactor() + "                                                                                     ||");
 
 		System.out.println ("\t|                                                                                                                               ||");
 
@@ -285,15 +296,6 @@ public class QMHJMDynamics {
 			dblFlatVol3
 		);
 
-		GaussianHJM hjm = HJMInstance (
-			dtSpot,
-			strCurrency,
-			mktSurfFlatVol1,
-			mktSurfFlatVol2,
-			mktSurfFlatVol3,
-			new FlatUnivariate (dblFlatForwardRate)
-		);
-
 		QMSnapshot qmInitial = InitQMSnap (
 			dtSpot,
 			strViewTenor,
@@ -302,13 +304,29 @@ public class QMHJMDynamics {
 			dblInitialPrice
 		);
 
-		QMEvolution (
-			hjm,
-			dtSpot,
-			strCurrency,
-			strViewTenor,
-			strTargetTenor,
-			qmInitial
-		);
+		int[] aiNumFactor = new int[] {
+			1, 2, 3
+		};
+
+		for (int iNumFactor : aiNumFactor) {
+			MultiFactorGaussianHJM hjm = HJMInstance (
+				dtSpot,
+				strCurrency,
+				mktSurfFlatVol1,
+				mktSurfFlatVol2,
+				mktSurfFlatVol3,
+				new FlatUnivariate (dblFlatForwardRate),
+				iNumFactor
+			);
+
+			QMEvolution (
+				hjm,
+				dtSpot,
+				strCurrency,
+				strViewTenor,
+				strTargetTenor,
+				qmInitial
+			);
+		}
 	}
 }
