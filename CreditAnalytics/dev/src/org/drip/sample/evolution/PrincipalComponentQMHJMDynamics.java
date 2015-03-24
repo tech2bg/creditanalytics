@@ -3,6 +3,7 @@ package org.drip.sample.evolution;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.definition.MarketSurface;
+import org.drip.dynamics.hjm.*;
 import org.drip.function.deterministic.AbstractUnivariate;
 import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.param.creator.ScenarioMarketSurfaceBuilder;
@@ -12,7 +13,6 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
-import org.drip.state.dynamics.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -104,7 +104,7 @@ public class PrincipalComponentQMHJMDynamics {
 		);
 	}
 
-	private static final MultiFactorGaussianHJM HJMInstance (
+	private static final MultiFactorStateEvolver HJMInstance (
 		final JulianDate dtStart,
 		final String strCurrency,
 		final MarketSurface mktSurfFlatVol1,
@@ -135,7 +135,7 @@ public class PrincipalComponentQMHJMDynamics {
 			)
 		);
 
-		return new MultiFactorGaussianHJM (
+		return new MultiFactorStateEvolver (
 			mfv,
 			auForwardRate
 		);
@@ -166,7 +166,7 @@ public class PrincipalComponentQMHJMDynamics {
 	}
 
 	private static final void QMEvolution (
-		final MultiFactorGaussianHJM hjm,
+		final MultiFactorStateEvolver hjm,
 		final JulianDate dtStart,
 		final String strCurrency,
 		final String strViewTenor,
@@ -309,7 +309,7 @@ public class PrincipalComponentQMHJMDynamics {
 		};
 
 		for (int iNumFactor : aiNumFactor) {
-			MultiFactorGaussianHJM hjm = HJMInstance (
+			MultiFactorStateEvolver hjm = HJMInstance (
 				dtSpot,
 				strCurrency,
 				mktSurfFlatVol1,

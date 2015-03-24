@@ -2,11 +2,11 @@
 package org.drip.sample.evolution;
 
 import org.drip.analytics.date.*;
+import org.drip.dynamics.hullwhite.*;
 import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.quant.common.FormatUtil;
 import org.drip.sequence.random.BoxMullerGaussian;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.state.dynamics.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -44,13 +44,13 @@ import org.drip.state.dynamics.*;
 
 public class HullWhiteMetrics {
 
-	private static final HullWhite HullWhiteEvolver (
+	private static final StateEvolver HullWhiteEvolver (
 		final double dblSigma,
 		final double dblA,
 		final double dblStartingForwardRate)
 		throws Exception
 	{
-		return new HullWhite (
+		return new StateEvolver (
 			dblSigma,
 			dblA,
 			new FlatUnivariate (dblStartingForwardRate),
@@ -59,7 +59,7 @@ public class HullWhiteMetrics {
 	}
 
 	private static final void DumpMetrics (
-		final HullWhiteEvolutionMetrics hwem)
+		final StateEvolutionMetrics hwem)
 		throws Exception
 	{
 		System.out.println ("\t| [" + new JulianDate (hwem.initialDate()) + " -> " +
@@ -85,7 +85,7 @@ public class HullWhiteMetrics {
 		double dblA = 1.;
 		int iNumRun = 50;
 
-		HullWhite hw = HullWhiteEvolver (
+		StateEvolver hw = HullWhiteEvolver (
 			dblSigma,
 			dblA,
 			dblStartingShortRate

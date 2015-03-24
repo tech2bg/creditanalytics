@@ -2,11 +2,11 @@
 package org.drip.sample.evolution;
 
 import org.drip.analytics.date.*;
+import org.drip.dynamics.hjm.G2PlusPlus;
 import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.quant.common.FormatUtil;
 import org.drip.sequence.random.*;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.state.dynamics.G2PlusPlus;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

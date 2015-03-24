@@ -1,5 +1,5 @@
 
-package org.drip.state.dynamics;
+package org.drip.dynamics.hullwhite;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,33 +29,41 @@ package org.drip.state.dynamics;
  */
 
 /**
- * HullWhiteNodeMetrics records the Metrics associated with each Node in the Evolution of the Instantaneous
- *  Short Rate using the Hull-White Model.
+ * TrinomialTreeNodeMetrics records the Metrics associated with each Node in the Trinomial Tree Evolution of
+ *  the Instantaneous Short Rate using the Hull-White Model.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class HullWhiteNodeMetrics {
+public class TrinomialTreeNodeMetrics {
+	private long _lTimeIndex = -1L;
+	private long _lXStochasticIndex = 0L;
 	private double _dblX = java.lang.Double.NaN;
 	private double _dblAlpha = java.lang.Double.NaN;
 
 	/**
-	 * HullWhiteNodeMetrics Constructor
+	 * TrinomialTreeNodeMetrics Constructor
 	 * 
+	 * @param lTimeIndex The Tree Node's Time Index
+	 * @param lXStochasticIndex The Tree Node's Stochastic Index
 	 * @param dblX X
 	 * @param dblAlpha Alpha
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public HullWhiteNodeMetrics (
+	public TrinomialTreeNodeMetrics (
+		final long lTimeIndex,
+		final long lXStochasticIndex,
 		final double dblX,
 		final double dblAlpha)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblX = dblX) ||
+		if (0 > (_lTimeIndex = lTimeIndex) || !org.drip.quant.common.NumberUtil.IsValid (_dblX = dblX) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblAlpha = dblAlpha))
-			throw new java.lang.Exception ("HullWhiteNodeMetrics ctr: Invalid Inputs");
+			throw new java.lang.Exception ("TrinomialTreeNodeMetrics ctr: Invalid Inputs");
+
+		_lXStochasticIndex = lXStochasticIndex;
 	}
 
 	/**
@@ -89,5 +97,27 @@ public class HullWhiteNodeMetrics {
 	public double shortRate()
 	{
 		return _dblX + _dblAlpha;
+	}
+
+	/**
+	 * Retrieve the Tree Node's Time Index
+	 * 
+	 * @return The Time Index
+	 */
+
+	public long timeIndex()
+	{
+		return _lTimeIndex;
+	}
+
+	/**
+	 * Retrieve the Tree Node's X Stochastic Index
+	 * 
+	 * @return The Tree Node's X Stochastic Index
+	 */
+
+	public long xStochasticIndex()
+	{
+		return _lXStochasticIndex;
 	}
 }

@@ -1,5 +1,5 @@
 
-package org.drip.state.dynamics;
+package org.drip.dynamics.hjm;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,23 +29,23 @@ package org.drip.state.dynamics;
  */
 
 /**
- * MultiFactorGaussianHJM sets up and implements the Base Multi-Factor No-arbitrage Dynamics of the Rates
+ * MultiFactorStateEvolver sets up and implements the Base Multi-Factor No-arbitrage Dynamics of the Rates
  * 	State Quantifiers as formulated in:
  * 
  * 		Heath, D., R. Jarrow, and A. Morton (1992): Bond Pricing and Term Structure of Interest Rates: A New
  * 			Methodology for Contingent Claims Valuation, Econometrica 60 (1), 77-105.
  *
- * In particular it looks to evolve the Multi-factor Gaussian Instantaneous Forward Rates.
+ * In particular it looks to evolve the Multi-factor Instantaneous Forward Rates.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultiFactorGaussianHJM {
-	private org.drip.state.dynamics.MultiFactorVolatility _mfv = null;
+public class MultiFactorStateEvolver {
+	private org.drip.dynamics.hjm.MultiFactorVolatility _mfv = null;
 	private org.drip.function.deterministic.AbstractUnivariate _auInitialInstantaneousForwardRate = null;
 
 	/**
-	 * MultiFactorGaussianHJM Constructor
+	 * MultiFactorStateEvolver Constructor
 	 * 
 	 * @param mfv The Multi-Factor Volatility Instance
 	 * @param auInitialInstantaneousForwardRate The Initial Instantaneous Forward Rate Term Structure
@@ -53,14 +53,14 @@ public class MultiFactorGaussianHJM {
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
-	public MultiFactorGaussianHJM (
-		final org.drip.state.dynamics.MultiFactorVolatility mfv,
+	public MultiFactorStateEvolver (
+		final org.drip.dynamics.hjm.MultiFactorVolatility mfv,
 		final org.drip.function.deterministic.AbstractUnivariate auInitialInstantaneousForwardRate)
 		throws java.lang.Exception
 	{
 		if (null == (_mfv = mfv) || null == (_auInitialInstantaneousForwardRate =
 			auInitialInstantaneousForwardRate))
-			throw new java.lang.Exception ("MultiFactorGaussianHJM ctr: Invalid Inputs");
+			throw new java.lang.Exception ("MultiFactorStateEvolver ctr: Invalid Inputs");
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class MultiFactorGaussianHJM {
 	 * @return The Multi-factor Volatility Instance
 	 */
 
-	public org.drip.state.dynamics.MultiFactorVolatility mfv()
+	public org.drip.dynamics.hjm.MultiFactorVolatility mfv()
 	{
 		return _mfv;
 	}
@@ -108,7 +108,7 @@ public class MultiFactorGaussianHJM {
 			!org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblTargetDate <= dblViewDate ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
 			throw new java.lang.Exception
-				("MultiFactorGaussianHJM::instantaneousForwardRateIncrement => Invalid Inputs");
+				("MultiFactorStateEvolver::instantaneousForwardRateIncrement => Invalid Inputs");
 
 		org.drip.sequence.random.PrincipalFactorSequenceGenerator pfsg = _mfv.msg();
 
@@ -123,7 +123,7 @@ public class MultiFactorGaussianHJM {
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblFactorPointVolatility))
 				throw new java.lang.Exception
-					("MultiFactorGaussianHJM::instantaneousForwardRateIncrement => Cannot compute View/Target Date Point Volatility");
+					("MultiFactorStateEvolver::instantaneousForwardRateIncrement => Cannot compute View/Target Date Point Volatility");
 
 			dblIntantaneousForwardRateIncrement += _mfv.volatilityIntegral (i, dblViewDate, dblTargetDate) *
 				dblFactorPointVolatility * dblViewTimeIncrement + dblFactorPointVolatility *
@@ -159,7 +159,7 @@ public class MultiFactorGaussianHJM {
 				!org.drip.quant.common.NumberUtil.IsValid (dblShortRate) ||
 					!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
 			throw new java.lang.Exception
-				("MultiFactorGaussianHJM::proportionalPriceIncrement => Invalid Inputs");
+				("MultiFactorStateEvolver::proportionalPriceIncrement => Invalid Inputs");
 
 		org.drip.sequence.random.PrincipalFactorSequenceGenerator pfsg = _mfv.msg();
 
@@ -197,7 +197,7 @@ public class MultiFactorGaussianHJM {
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
-			throw new java.lang.Exception ("MultiFactorGaussianHJM::shortRateIncrement => Invalid Inputs");
+			throw new java.lang.Exception ("MultiFactorStateEvolver::shortRateIncrement => Invalid Inputs");
 
 		double dblShortRateIncrement = 0.;
 
@@ -212,7 +212,7 @@ public class MultiFactorGaussianHJM {
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblViewDateFactorVolatility))
 				throw new java.lang.Exception
-					("MultiFactorGaussianHJM::shortRateIncrement => Cannot compute View Date Factor Volatility");
+					("MultiFactorStateEvolver::shortRateIncrement => Cannot compute View Date Factor Volatility");
 
 			dblShortRateIncrement += _mfv.volatilityIntegral (i, dblSpotDate, dblViewDate) *
 				dblViewDateFactorVolatility * dblViewTimeIncrement + dblViewDateFactorVolatility *
@@ -256,7 +256,7 @@ public class MultiFactorGaussianHJM {
 						!org.drip.quant.common.NumberUtil.IsValid (dblShortRate) ||
 							!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
 			throw new java.lang.Exception
-				("MultiFactorGaussianHJM::compoundedShortRateIncrement => Invalid Inputs");
+				("MultiFactorStateEvolver::compoundedShortRateIncrement => Invalid Inputs");
 
 		org.drip.sequence.random.PrincipalFactorSequenceGenerator pfsg = _mfv.msg();
 
@@ -307,7 +307,7 @@ public class MultiFactorGaussianHJM {
 					!org.drip.quant.common.NumberUtil.IsValid (dblLIBORForwardRate) ||
 						!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
 			throw new java.lang.Exception
-				("MultiFactorGaussianHJM::liborForwardRateIncrement => Invalid Inputs");
+				("MultiFactorStateEvolver::liborForwardRateIncrement => Invalid Inputs");
 
 		org.drip.sequence.random.PrincipalFactorSequenceGenerator pfsg = _mfv.msg();
 
@@ -355,7 +355,7 @@ public class MultiFactorGaussianHJM {
 					!org.drip.quant.common.NumberUtil.IsValid (dblShiftedLIBORForwardRate) ||
 						!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
 			throw new java.lang.Exception
-				("MultiFactorGaussianHJM::shiftedLIBORForwardIncrement => Invalid Inputs");
+				("MultiFactorStateEvolver::shiftedLIBORForwardIncrement => Invalid Inputs");
 
 		org.drip.sequence.random.PrincipalFactorSequenceGenerator pfsg = _mfv.msg();
 
@@ -385,12 +385,12 @@ public class MultiFactorGaussianHJM {
 	 * @return The Incremental QM Snapshot Instance
 	 */
 
-	public org.drip.state.dynamics.QMSnapshot qmIncrement (
+	public org.drip.dynamics.hjm.QMSnapshot qmIncrement (
 		final double dblSpotDate,
 		final double dblViewDate,
 		final double dblTargetDate,
 		final double dblViewTimeIncrement,
-		final org.drip.state.dynamics.QMSnapshot qmInitial)
+		final org.drip.dynamics.hjm.QMSnapshot qmInitial)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
@@ -466,7 +466,7 @@ public class MultiFactorGaussianHJM {
 			double dblLIBORForwardRateIncrement = (dblInitialLIBORForwardRate + (365.25 / (dblTargetDate -
 				dblViewDate))) * dblShiftedLIBORForwardRateIncrement;
 
-			return new org.drip.state.dynamics.QMSnapshot (qmInitial.instantaneousForwardRate() +
+			return new org.drip.dynamics.hjm.QMSnapshot (qmInitial.instantaneousForwardRate() +
 				dblInstantaneousForwardRateIncrement, dblInstantaneousForwardRateIncrement,
 					dblInitialLIBORForwardRate + dblLIBORForwardRateIncrement, dblLIBORForwardRateIncrement,
 						qmInitial.shiftedLIBORForwardRate() + dblShiftedLIBORForwardRateIncrement,

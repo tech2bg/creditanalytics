@@ -1,5 +1,5 @@
 
-package org.drip.state.dynamics;
+package org.drip.dynamics.hullwhite;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,19 +29,19 @@ package org.drip.state.dynamics;
  */
 
 /**
- * HullWhite provides the Hull-White One-Factor Gaussian HJM Short Rate Dynamics Implementation.
+ * StateEvolver provides the Hull-White One-Factor Gaussian HJM Short Rate Dynamics Implementation.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class HullWhite {
+public class StateEvolver {
 	private double _dblA = java.lang.Double.NaN;
 	private double _dblSigma = java.lang.Double.NaN;
 	private org.drip.sequence.random.UnivariateSequenceGenerator _usg = null;
 	private org.drip.function.deterministic.AbstractUnivariate _auIFRInitial = null;
 
 	/**
-	 * HullWhite Constructor
+	 * StateEvolver Constructor
 	 * 
 	 * @param dblSigma Sigma
 	 * @param dblA A
@@ -51,7 +51,7 @@ public class HullWhite {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public HullWhite (
+	public StateEvolver (
 		final double dblSigma,
 		final double dblA,
 		final org.drip.function.deterministic.AbstractUnivariate auIFRInitial,
@@ -61,7 +61,7 @@ public class HullWhite {
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblSigma = dblSigma) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblA = dblA) || null == (_auIFRInitial =
 				auIFRInitial) || null == (_usg = usg))
-			throw new java.lang.Exception ("HullWhite ctr: Invalid Inputs");
+			throw new java.lang.Exception ("StateEvolver ctr: Invalid Inputs");
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class HullWhite {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate)
-			throw new java.lang.Exception ("HullWhite::alpha => Invalid Inputs");
+			throw new java.lang.Exception ("StateEvolver::alpha => Invalid Inputs");
 
 		double dblAlphaVol = _dblSigma * (1. - java.lang.Math.exp (_dblA * (dblViewDate - dblSpotDate) /
 			365.25)) / _dblA;
@@ -152,7 +152,7 @@ public class HullWhite {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate)
-			throw new java.lang.Exception ("HullWhite::theta => Invalid Inputs");
+			throw new java.lang.Exception ("StateEvolver::theta => Invalid Inputs");
 
 		return _auIFRInitial.derivative (dblViewDate, 1) + _dblA * _auIFRInitial.evaluate (dblViewDate) +
 			_dblSigma * _dblSigma / (2. * _dblA) * (1. - java.lang.Math.exp (-2. * _dblA * (dblViewDate -
@@ -183,7 +183,7 @@ public class HullWhite {
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblShortRate) ||
 					!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
-			throw new java.lang.Exception ("HullWhite::shortRateIncrement => Invalid Inputs");
+			throw new java.lang.Exception ("StateEvolver::shortRateIncrement => Invalid Inputs");
 
 		return (theta (dblSpotDate, dblViewDate) - _dblA * dblShortRate) * dblViewTimeIncrement + _dblSigma *
 			java.lang.Math.sqrt (dblViewTimeIncrement) * _usg.random();
@@ -200,7 +200,7 @@ public class HullWhite {
 	 * @return The Evolution Metrics
 	 */
 
-	public org.drip.state.dynamics.HullWhiteEvolutionMetrics evolve (
+	public org.drip.dynamics.hullwhite.StateEvolutionMetrics evolve (
 		final double dblSpotDate,
 		final double dblInitialDate,
 		final double dblFinalDate,
@@ -234,7 +234,7 @@ public class HullWhite {
 		double dblB = (1. - dblADF) / _dblA;
 
 		try {
-			return new org.drip.state.dynamics.HullWhiteEvolutionMetrics (dblInitialDate, dblFinalDate,
+			return new org.drip.dynamics.hullwhite.StateEvolutionMetrics (dblInitialDate, dblFinalDate,
 				dblInitialShortRate, dblShortRate, dblInitialShortRate * dblADF + alpha (dblSpotDate,
 					dblFinalDate) - alpha (dblSpotDate, dblInitialDate) * dblADF, 0.5 * _dblSigma * _dblSigma
 						* (1. - dblADF * dblADF) / _dblA, java.lang.Math.exp (dblB * _auIFRInitial.evaluate
@@ -253,33 +253,125 @@ public class HullWhite {
 	 * 
 	 * @param dblSpotDate The Spot/Epoch Date
 	 * @param dblInitialDate The Initial Date
-	 * @param dblFinalDate The Final Date
+	 * @param dblTerminalDate The Terminal Date
 	 * @param hwnmInitial The Initial Node Metrics
 	 * 
 	 * @return The Hull White Transition Metrics
 	 */
 
-	public org.drip.state.dynamics.HullWhiteTransitionMetrics evolveTrinomialTree (
+	public org.drip.dynamics.hullwhite.TrinomialTreeTransitionMetrics evolveTrinomialTree (
 		final double dblSpotDate,
 		final double dblInitialDate,
-		final double dblFinalDate,
-		final org.drip.state.dynamics.HullWhiteNodeMetrics hwnmInitial)
+		final double dblTerminalDate,
+		final org.drip.dynamics.hullwhite.TrinomialTreeNodeMetrics hwnmInitial)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblInitialDate) || dblInitialDate < dblSpotDate ||
-				!org.drip.quant.common.NumberUtil.IsValid (dblFinalDate) || dblFinalDate <= dblInitialDate)
+				!org.drip.quant.common.NumberUtil.IsValid (dblTerminalDate) || dblTerminalDate <=
+					dblInitialDate)
 			return null;
 
-		double dblADF = java.lang.Math.exp (-1. * _dblA * (dblFinalDate - dblInitialDate) / 365.25);
+		long lTreeTimeIndex = 0L;
+		double dblExpectedTerminalX = 0.;
+		long lTreeStochasticBaseIndex = 0L;
+
+		if (null != hwnmInitial) {
+			dblExpectedTerminalX = hwnmInitial.x();
+
+			lTreeTimeIndex = hwnmInitial.timeIndex() + 1;
+
+			lTreeStochasticBaseIndex = hwnmInitial.xStochasticIndex();
+		}
+
+		double dblADF = java.lang.Math.exp (-1. * _dblA * (dblTerminalDate - dblInitialDate) / 365.25);
 
 		try {
-			return new org.drip.state.dynamics.HullWhiteTransitionMetrics (dblInitialDate, dblFinalDate, null
-				== hwnmInitial ? 0. : hwnmInitial.x() * dblADF, 0.5 * _dblSigma * _dblSigma * (1. - dblADF *
-					dblADF) / _dblA, alpha (dblSpotDate, dblFinalDate));
+			return new org.drip.dynamics.hullwhite.TrinomialTreeTransitionMetrics (dblInitialDate, dblTerminalDate,
+				lTreeTimeIndex, lTreeStochasticBaseIndex, dblExpectedTerminalX * dblADF, 0.5 * _dblSigma *
+					_dblSigma * (1. - dblADF * dblADF) / _dblA, alpha (dblSpotDate, dblTerminalDate));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
+	}
+
+	/**
+	 * Evolve the Trinomial Tree Sequence
+	 * 
+	 * @param dblSpotDate The Spot Date
+	 * @param dblInitialDate The Initial Date
+	 * @param iDayIncrement The Day Increment
+	 * @param iNumIncrement Number of Times to Increment
+	 * @param hwnm Starting Node Metrics
+	 * @param hwsm The Sequence Metrics
+	 * 
+	 * @return TRUE => The Tree Successfully Evolved
+	 */
+
+	public boolean evolveTrinomialTreeSequence (
+		final double dblSpotDate,
+		final double dblInitialDate,
+		final int iDayIncrement,
+		final int iNumIncrement,
+		final org.drip.dynamics.hullwhite.TrinomialTreeNodeMetrics hwnm,
+		final org.drip.dynamics.hullwhite.TrinomialTreeSequenceMetrics hwsm)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblInitialDate) || dblInitialDate < dblSpotDate || 0
+				>= iDayIncrement || null == hwsm)
+			return false;
+
+		if (0 == iNumIncrement) return true;
+
+		org.drip.dynamics.hullwhite.TrinomialTreeTransitionMetrics hwtm = evolveTrinomialTree (dblSpotDate,
+			dblInitialDate, dblInitialDate + iDayIncrement, hwnm);
+
+		if (!hwsm.addTransitionMetrics (hwtm)) return false;
+
+		org.drip.dynamics.hullwhite.TrinomialTreeNodeMetrics hwnmUp = hwtm.upNodeMetrics();
+
+		if (!hwsm.addNodeMetrics (hwnmUp) || (null != hwnm && !hwsm.setTransitionProbability (hwnm, hwnmUp,
+			hwtm.probabilityUp())) || !evolveTrinomialTreeSequence (dblSpotDate, dblInitialDate +
+				iDayIncrement, iDayIncrement, iNumIncrement - 1, hwnmUp, hwsm))
+			return false;
+
+		org.drip.dynamics.hullwhite.TrinomialTreeNodeMetrics hwnmDown = hwtm.downNodeMetrics();
+
+		if (!hwsm.addNodeMetrics (hwnmDown) || (null != hwnm && !hwsm.setTransitionProbability (hwnm,
+			hwnmDown, hwtm.probabilityDown())) || !evolveTrinomialTreeSequence (dblSpotDate, dblInitialDate +
+				iDayIncrement, iDayIncrement, iNumIncrement - 1, hwnmDown, hwsm))
+			return false;
+
+		org.drip.dynamics.hullwhite.TrinomialTreeNodeMetrics hwnmStay = hwtm.stayNodeMetrics();
+
+		if (!hwsm.addNodeMetrics (hwnmStay) || (null != hwnm && !hwsm.setTransitionProbability (hwnm,
+			hwnmStay, hwtm.probabilityStay())) || !evolveTrinomialTreeSequence (dblSpotDate, dblInitialDate +
+				iDayIncrement, iDayIncrement, iNumIncrement - 1, hwnmStay, hwsm))
+			return false;
+
+		return true;
+	}
+
+	/**
+	 * Evolve the Trinomial Tree Sequence
+	 * 
+	 * @param dblSpotDate The Spot Date
+	 * @param iDayIncrement The Day Increment
+	 * @param iNumIncrement Number of Times to Increment
+	 * 
+	 * @return The Sequence Metrics
+	 */
+
+	public org.drip.dynamics.hullwhite.TrinomialTreeSequenceMetrics evolveTrinomialTreeSequence (
+		final double dblSpotDate,
+		final int iDayIncrement,
+		final int iNumIncrement)
+	{
+		org.drip.dynamics.hullwhite.TrinomialTreeSequenceMetrics hwsm = new
+			org.drip.dynamics.hullwhite.TrinomialTreeSequenceMetrics();
+
+		return evolveTrinomialTreeSequence (dblSpotDate, dblSpotDate, iDayIncrement, iNumIncrement, null,
+			hwsm) ? hwsm : null;
 	}
 }

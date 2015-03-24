@@ -1,5 +1,5 @@
 
-package org.drip.state.dynamics;
+package org.drip.dynamics.hullwhite;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,13 +29,13 @@ package org.drip.state.dynamics;
  */
 
 /**
- * HullWhiteEvolutionMetrics records the Metrics associated with the Evolution of the Instantaneous Short
- * 	Rate from a Starting to the Terminal Date.
+ * StateEvolutionMetrics records the Metrics associated with the Evolution of the Instantaneous Short Rate
+ *  from a Starting to the Terminal Date.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class HullWhiteEvolutionMetrics {
+public class StateEvolutionMetrics {
 	private double _dblFinalDate = java.lang.Double.NaN;
 	private double _dblInitialDate = java.lang.Double.NaN;
 	private double _dblInitialShortRate = java.lang.Double.NaN;
@@ -45,7 +45,7 @@ public class HullWhiteEvolutionMetrics {
 	private double _dblRealizedFinalShortRate = java.lang.Double.NaN;
 
 	/**
-	 * HullWhiteEvolutionMetrics Constructor
+	 * StateEvolutionMetrics Constructor
 	 * 
 	 * @param dblInitialDate The Initial Date
 	 * @param dblFinalDate The Final Date
@@ -58,7 +58,7 @@ public class HullWhiteEvolutionMetrics {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public HullWhiteEvolutionMetrics (
+	public StateEvolutionMetrics (
 		final double dblInitialDate,
 		final double dblFinalDate,
 		final double dblInitialShortRate,
@@ -78,7 +78,7 @@ public class HullWhiteEvolutionMetrics {
 									(_dblFinalShortRateVariance = dblFinalShortRateVariance) ||
 										!org.drip.quant.common.NumberUtil.IsValid (_dblZeroCouponBondPrice =
 											dblZeroCouponBondPrice))
-			throw new java.lang.Exception ("HullWhiteEvolutionMetrics ctr: Invalid Inputs!");
+			throw new java.lang.Exception ("StateEvolutionMetrics ctr: Invalid Inputs!");
 	}
 
 	/**
@@ -162,8 +162,7 @@ public class HullWhiteEvolutionMetrics {
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblFinalInitialZeroRatio))
-			throw new java.lang.Exception
-				("HullWhiteEvolutionMetrics::zeroCouponBondPrice => Invalid Inputs");
+			throw new java.lang.Exception ("StateEvolutionMetrics::zeroCouponBondPrice => Invalid Inputs");
 
 		return dblFinalInitialZeroRatio * _dblZeroCouponBondPrice;
 	}

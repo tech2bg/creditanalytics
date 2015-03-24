@@ -2,11 +2,11 @@
 package org.drip.sample.evolution;
 
 import org.drip.analytics.date.*;
+import org.drip.dynamics.hullwhite.*;
 import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.quant.common.FormatUtil;
 import org.drip.sequence.random.BoxMullerGaussian;
 import org.drip.service.api.CreditAnalytics;
-import org.drip.state.dynamics.*;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -44,13 +44,13 @@ import org.drip.state.dynamics.*;
 
 public class HullWhiteTrinomialTree {
 
-	private static final HullWhite HullWhiteEvolver (
+	private static final StateEvolver HullWhiteEvolver (
 		final double dblSigma,
 		final double dblA,
 		final double dblStartingForwardRate)
 		throws Exception
 	{
-		return new HullWhite (
+		return new StateEvolver (
 			dblSigma,
 			dblA,
 			new FlatUnivariate (dblStartingForwardRate),
@@ -59,12 +59,12 @@ public class HullWhiteTrinomialTree {
 	}
 
 	private static final void DumpMetrics (
-		final HullWhiteTransitionMetrics hwtm)
+		final TrinomialTreeTransitionMetrics hwtm)
 		throws Exception
 	{
 		System.out.println ("\t| [" + new JulianDate (hwtm.initialDate()) + " -> " +
-			new JulianDate (hwtm.finalDate()) + "] => " +
-			FormatUtil.FormatDouble (hwtm.expectedFinalX(), 1, 4, 1.) + " | " +
+			new JulianDate (hwtm.terminalDate()) + "] => " +
+			FormatUtil.FormatDouble (hwtm.expectedTerminalX(), 1, 4, 1.) + " | " +
 			FormatUtil.FormatDouble (Math.sqrt (hwtm.xVariance()), 1, 2, 100.) + "% | " +
 			FormatUtil.FormatDouble (hwtm.xStochasticShift(), 1, 4, 1.) + " || " +
 			FormatUtil.FormatDouble (hwtm.probabilityUp(), 1, 4, 1.) + " | " +
@@ -142,7 +142,7 @@ public class HullWhiteTrinomialTree {
 		double dblSigma = 0.01;
 		double dblA = 1.;
 
-		HullWhite hw = HullWhiteEvolver (
+		StateEvolver hw = HullWhiteEvolver (
 			dblSigma,
 			dblA,
 			dblStartingShortRate
@@ -153,7 +153,7 @@ public class HullWhiteTrinomialTree {
 		double dblFinalDate = dtSpot.addMonths (6).julian();
 
 		double dblInitialDate = dblSpotDate;
-		HullWhiteTransitionMetrics hwtm = null;
+		TrinomialTreeTransitionMetrics hwtm = null;
 
 		TreeHeader ("\t|    Hull-White Trinomial Tree Upwards Evolution Metrics                                                                                             ||");
 
