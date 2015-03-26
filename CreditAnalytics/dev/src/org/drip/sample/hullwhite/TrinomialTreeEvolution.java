@@ -1,5 +1,5 @@
 
-package org.drip.sample.evolution;
+package org.drip.sample.hullwhite;
 
 import org.drip.analytics.date.*;
 import org.drip.dynamics.hullwhite.*;
@@ -36,13 +36,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * HullWhiteTrinomialTree demonstrates the Construction and Usage of the Hull-White Trinomial Tree and the
+ * TrinomialTreeEvolution demonstrates the Construction and Usage of the Hull-White Trinomial Tree and the
  *  Eventual Evolution of the Short Rate on it.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class HullWhiteTrinomialTree {
+public class TrinomialTreeEvolution {
 
 	private static final StateEvolver HullWhiteEvolver (
 		final double dblSigma,

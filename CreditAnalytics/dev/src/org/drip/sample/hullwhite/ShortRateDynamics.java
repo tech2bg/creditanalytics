@@ -1,8 +1,7 @@
 
-package org.drip.sample.evolution;
+package org.drip.sample.hullwhite;
 
-import org.drip.analytics.date.DateUtil;
-import org.drip.analytics.date.JulianDate;
+import org.drip.analytics.date.*;
 import org.drip.dynamics.hullwhite.StateEvolver;
 import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.quant.common.FormatUtil;
@@ -37,13 +36,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * HullWhiteDynamics demonstrates the Construction and Usage of the Hull-White 1F Model Dynamics for the
+ * ShortRateDynamics demonstrates the Construction and Usage of the Hull-White 1F Model Dynamics for the
  *  Evolution of the Short Rate.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class HullWhiteDynamics {
+public class ShortRateDynamics {
 
 	private static final StateEvolver HullWhiteEvolver (
 		final double dblSigma,

@@ -1,5 +1,5 @@
 
-package org.drip.sample.evolution;
+package org.drip.sample.hullwhite;
 
 import java.util.Map;
 
@@ -38,13 +38,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * HullWhiteTreeCalibration demonstrates the Construction and Calibration of the Hull-White Trinomial Tree
+ * TrinomialTreeCalibration demonstrates the Construction and Calibration of the Hull-White Trinomial Tree
  * 	and the Eventual Evolution of the Short Rate on it.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class HullWhiteTreeCalibration {
+public class TrinomialTreeCalibration {
 
 	private static final String SourceToTarget (
 		final String strKey)

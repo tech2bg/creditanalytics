@@ -1,9 +1,10 @@
 
-package org.drip.sample.evolution;
+package org.drip.sample.hjm;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.definition.MarketSurface;
-import org.drip.dynamics.hjm.*;
+import org.drip.dynamics.hjm.MultiFactorStateEvolver;
+import org.drip.dynamics.hjm.MultiFactorVolatility;
 import org.drip.function.deterministic.AbstractUnivariate;
 import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.param.creator.ScenarioMarketSurfaceBuilder;
@@ -42,15 +43,13 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * MultiFactorQMHJMDynamics demonstrates the Construction and Usage of the 3-Factor Gaussian HJM Model
- *  Dynamics for the Evolution of the Discount Factor Quantification Metrics - the Instantaneous Forward
- *  Rate, the LIBOR Forward Rate, the Shifted LIBOR Forward Rate, the Short Rate, the Compounded Short Rate,
- *  and the Price.
+ * MultiFactorDynamics demonstrates the Construction and Usage of the Multi-Factor Gaussian Model Dynamics
+ *  for the Evolution of the Instantaneous Forward Rate, the Price, and the Short Rate.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultiFactorQMHJMDynamics {
+public class MultiFactorDynamics {
 
 	private static final MarketSurface FlatVolatilitySurface (
 		final JulianDate dtStart,
@@ -140,37 +139,14 @@ public class MultiFactorQMHJMDynamics {
 		);
 	}
 
-	private static final QMSnapshot InitQMSnap (
-		final JulianDate dtStart,
-		final String strViewTenor,
-		final String strTargetTenor,
-		final double dblInitialForwardRate,
-		final double dblInitialPrice)
-		throws Exception
-	{
-		return new QMSnapshot (
-			dblInitialForwardRate,
-			0.,
-			dblInitialForwardRate,
-			0.,
-			dblInitialForwardRate + (365.25 / (dtStart.addTenor (strTargetTenor).julian() - dtStart.addTenor (strViewTenor).julian())),
-			0.,
-			dblInitialForwardRate,
-			0.,
-			dblInitialForwardRate,
-			0.,
-			dblInitialPrice,
-			0.
-		);
-	}
-
-	private static final void QMEvolution (
+	private static final void Evolve (
 		final MultiFactorStateEvolver hjm,
 		final JulianDate dtStart,
 		final String strCurrency,
 		final String strViewTenor,
 		final String strTargetTenor,
-		final QMSnapshot qmInitial)
+		final double dblStartingForwardRate,
+		final double dblStartingPrice)
 		throws Exception
 	{
 		double dblViewDate = dtStart.addTenor (strViewTenor).julian();
@@ -178,16 +154,21 @@ public class MultiFactorQMHJMDynamics {
 		double dblTargetDate = dtStart.addTenor (strTargetTenor).julian();
 
 		int iDayStep = 2;
-		QMSnapshot qm = qmInitial;
 		JulianDate dtSpot = dtStart;
+		double dblPrice = dblStartingPrice;
+		double dblShortRate = dblStartingForwardRate;
+		double dblLIBORForwardRate = dblStartingForwardRate;
+		double dblInstantaneousForwardRate = dblStartingForwardRate;
+		double dblContinuouslyCompoundedShortRate = dblStartingForwardRate;
+		double dblShiftedLIBORForwardRate = dblStartingForwardRate + (365.25 / (dblTargetDate - dblViewDate));
 
 		System.out.println ("\t|-------------------------------------------------------------------------------------------------------------------------------||");
 
 		System.out.println ("\t|                                                                                                                               ||");
 
-		System.out.println ("\t|    3-Factor Gaussian HJM Quantification Metric Run                                                                            ||");
+		System.out.println ("\t|    Heath-Jarrow-Morton Gaussian Run                                                                                           ||");
 
-		System.out.println ("\t|    -----------------------------------------------                                                                            ||");
+		System.out.println ("\t|    --------------------------------                                                                                           ||");
 
 		System.out.println ("\t|                                                                                                                               ||");
 
@@ -224,33 +205,78 @@ public class MultiFactorQMHJMDynamics {
 		while (dtSpot.julian() < dblViewDate) {
 			double dblSpotDate = dtSpot.julian();
 
-			qm = hjm.qmIncrement (
+			double dblIFRIncrement = hjm.instantaneousForwardRateIncrement (
+				dblViewDate,
+				dblTargetDate,
+				iDayStep / 365.25
+			);
+
+			dblInstantaneousForwardRate += dblIFRIncrement;
+
+			double dblLIBORForwardRateIncrement = hjm.liborForwardRateIncrement (
 				dblSpotDate,
 				dblViewDate,
 				dblTargetDate,
-				iDayStep / 365.25,
-				qm
+				dblLIBORForwardRate,
+				iDayStep / 365.25
 			);
+
+			dblLIBORForwardRate += dblLIBORForwardRateIncrement;
+
+			double dblShiftedLIBORForwardRateIncrement = hjm.shiftedLIBORForwardIncrement (
+				dblSpotDate,
+				dblViewDate,
+				dblTargetDate,
+				dblShiftedLIBORForwardRate,
+				iDayStep / 365.25
+			);
+
+			dblShiftedLIBORForwardRate += dblShiftedLIBORForwardRateIncrement;
+
+			double dblShortRateIncrement = hjm.shortRateIncrement (
+				dblSpotDate,
+				dblViewDate,
+				iDayStep / 365.25
+			);
+
+			dblShortRate += dblShortRateIncrement;
+
+			double dblProportionalPriceIncrement = hjm.proportionalPriceIncrement (
+				dblViewDate,
+				dblTargetDate,
+				dblShortRate,
+				iDayStep / 365.25
+			);
+
+			dblPrice *= (1. + dblProportionalPriceIncrement);
+
+			double dblContinuouslyCompoundedShortRateIncrement = hjm.compoundedShortRateIncrement (
+				dblSpotDate,
+				dblViewDate,
+				dblTargetDate,
+				dblContinuouslyCompoundedShortRate,
+				dblShortRate,
+				iDayStep / 365.25
+			);
+
+			dblContinuouslyCompoundedShortRate += dblContinuouslyCompoundedShortRateIncrement;
 
 			System.out.println ("\t| [" + dtSpot + "] = " +
-				FormatUtil.FormatDouble (qm.instantaneousForwardRate(), 1, 2, 100.) + "% | " +
-				FormatUtil.FormatDouble (qm.instantaneousForwardRateIncrement(), 1, 2, 100.) + "% || " +
-				FormatUtil.FormatDouble (qm.liborForwardRate(), 1, 2, 100.) + "% | " +
-				FormatUtil.FormatDouble (qm.liborForwardRateIncrement(), 1, 2, 100.) + "% || " +
-				FormatUtil.FormatDouble (qm.shiftedLIBORForwardRate(), 1, 4, 1.) + " | " +
-				FormatUtil.FormatDouble (qm.shiftedLIBORForwardRateIncrement(), 1, 2, 100.) + "% || " +
-				FormatUtil.FormatDouble (qm.shortRate(), 1, 2, 100.) + "% | " +
-				FormatUtil.FormatDouble (qm.shortRateIncrement(), 1, 2, 100.) + "% || " +
-				FormatUtil.FormatDouble (qm.compoundedShortRate(), 1, 2, 100.) + "% | " +
-				FormatUtil.FormatDouble (qm.compoundedShortRateIncrement(), 1, 2, 100.) + "% || " +
-				FormatUtil.FormatDouble (qm.price(), 2, 2, 100.) + " | " +
-				FormatUtil.FormatDouble (qm.priceIncrement(), 1, 2, 100.) + " || "
+				FormatUtil.FormatDouble (dblInstantaneousForwardRate, 1, 2, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblIFRIncrement, 1, 2, 100.) + "% || " +
+				FormatUtil.FormatDouble (dblLIBORForwardRate, 1, 2, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblLIBORForwardRateIncrement, 1, 2, 100.) + "% || " +
+				FormatUtil.FormatDouble (dblShiftedLIBORForwardRate, 1, 4, 1.) + " | " +
+				FormatUtil.FormatDouble (dblShiftedLIBORForwardRateIncrement, 1, 2, 100.) + "% || " +
+				FormatUtil.FormatDouble (dblShortRate, 1, 2, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblShortRateIncrement, 1, 2, 100.) + "% || " +
+				FormatUtil.FormatDouble (dblContinuouslyCompoundedShortRate, 1, 2, 100.) + "% | " +
+				FormatUtil.FormatDouble (dblContinuouslyCompoundedShortRateIncrement, 1, 2, 100.) + "% || " +
+				FormatUtil.FormatDouble (dblPrice, 2, 2, 100.) + " | " +
+				FormatUtil.FormatDouble (dblProportionalPriceIncrement, 1, 2, 100.) + " || "
 			);
 
-			dtSpot = dtSpot.addBusDays (
-				iDayStep,
-				strCurrency
-			);
+			dtSpot = dtSpot.addBusDays (iDayStep, strCurrency);
 		}
 
 		System.out.println ("\t|-------------------------------------------------------------------------------------------------------------------------------||");
@@ -263,15 +289,14 @@ public class MultiFactorQMHJMDynamics {
 		CreditAnalytics.Init ("");
 
 		String strCurrency = "USD";
-		double dblFlatVol1 = 0.007;
-		double dblFlatVol2 = 0.009;
-		double dblFlatVol3 = 0.004;
-		double dblFlatForwardRate = 0.05;
-		double dblInitialPrice = 0.9875;
-		String strViewTenor = "3M";
-		String strTargetTenor = "6M";
 
 		JulianDate dtSpot = DateUtil.Today();
+
+		double dblFlatVol1 = 0.01;
+		double dblFlatVol2 = 0.02;
+		double dblFlatVol3 = 0.03;
+		double dblFlatForwardRate = 0.05;
+		double dblStartingPrice = 0.9875;
 
 		MarketSurface mktSurfFlatVol1 = FlatVolatilitySurface (
 			dtSpot,
@@ -300,21 +325,14 @@ public class MultiFactorQMHJMDynamics {
 			new FlatUnivariate (dblFlatForwardRate)
 		);
 
-		QMSnapshot qmInitial = InitQMSnap (
-			dtSpot,
-			strViewTenor,
-			strTargetTenor,
-			dblFlatForwardRate,
-			dblInitialPrice
-		);
-
-		QMEvolution (
+		Evolve (
 			hjm,
 			dtSpot,
 			strCurrency,
-			strViewTenor,
-			strTargetTenor,
-			qmInitial
+			"3M",
+			"6M",
+			dblFlatForwardRate,
+			dblStartingPrice
 		);
 	}
 }

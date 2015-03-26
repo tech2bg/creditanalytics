@@ -1,5 +1,5 @@
 
-package org.drip.sample.evolution;
+package org.drip.sample.hjm;
 
 import org.drip.analytics.date.*;
 import org.drip.dynamics.hjm.G2PlusPlus;

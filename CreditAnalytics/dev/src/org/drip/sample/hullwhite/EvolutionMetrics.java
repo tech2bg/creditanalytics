@@ -1,5 +1,5 @@
 
-package org.drip.sample.evolution;
+package org.drip.sample.hullwhite;
 
 import org.drip.analytics.date.*;
 import org.drip.dynamics.hullwhite.*;
@@ -36,13 +36,13 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 /**
- * HullWhiteDynamics demonstrates the Construction and Usage of the Hull-White Metrics Using Hull-White 1F
+ * EvolutionMetrics demonstrates the Construction and Usage of the Hull-White Metrics Using Hull-White 1F
  * 	Model Dynamics for the Evolution of the Short Rate.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class HullWhiteMetrics {
+public class EvolutionMetrics {
 
 	private static final StateEvolver HullWhiteEvolver (
 		final double dblSigma,

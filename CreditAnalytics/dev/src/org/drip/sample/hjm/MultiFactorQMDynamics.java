@@ -1,5 +1,5 @@
 
-package org.drip.sample.evolution;
+package org.drip.sample.hjm;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.definition.MarketSurface;
@@ -42,15 +42,14 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * PrincipalComponentQMHJMDynamics demonstrates the Construction and Usage of the Principal Component-Based
- *  Gaussian HJM Model Dynamics for the Evolution of the Discount Factor Quantification Metrics - the
- *  Instantaneous Forward Rate, the LIBOR Forward Rate, the Shifted LIBOR Forward Rate, the Short Rate, the
- *  Compounded Short Rate, and the Price.
+ * MultiFactorQMDynamics demonstrates the Construction and Usage of the 3-Factor Gaussian Model Dynamics for
+ *  the Evolution of the Discount Factor Quantification Metrics - the Instantaneous Forward Rate, the LIBOR
+ *  Forward Rate, the Shifted LIBOR Forward Rate, the Short Rate, the Compounded Short Rate, and the Price.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class PrincipalComponentQMHJMDynamics {
+public class MultiFactorQMDynamics {
 
 	private static final MarketSurface FlatVolatilitySurface (
 		final JulianDate dtStart,
@@ -110,8 +109,7 @@ public class PrincipalComponentQMHJMDynamics {
 		final MarketSurface mktSurfFlatVol1,
 		final MarketSurface mktSurfFlatVol2,
 		final MarketSurface mktSurfFlatVol3,
-		final AbstractUnivariate auForwardRate,
-		final int iNumFactor)
+		final AbstractUnivariate auForwardRate)
 		throws Exception
 	{
 		MultiFactorVolatility mfv = new MultiFactorVolatility (
@@ -131,7 +129,7 @@ public class PrincipalComponentQMHJMDynamics {
 					{0.1, 1.0, 0.2},
 					{0.2, 0.1, 1.0}
 				},
-				iNumFactor
+				3
 			)
 		);
 
@@ -186,13 +184,9 @@ public class PrincipalComponentQMHJMDynamics {
 
 		System.out.println ("\t|                                                                                                                               ||");
 
-		System.out.println ("\t|    Multi-Factor PCA-Based Gaussian HJM Quantification Metric Run                                                              ||");
+		System.out.println ("\t|    3-Factor Gaussian HJM Quantification Metric Run                                                                            ||");
 
-		System.out.println ("\t|    -------------------------------------------------------------                                                              ||");
-
-		System.out.println ("\t|                                                                                                                               ||");
-
-		System.out.println ("\t|        Number of Prinicipal Components: " + hjm.mfv().msg().numFactor() + "                                                                                     ||");
+		System.out.println ("\t|    -----------------------------------------------                                                                            ||");
 
 		System.out.println ("\t|                                                                                                                               ||");
 
@@ -296,6 +290,15 @@ public class PrincipalComponentQMHJMDynamics {
 			dblFlatVol3
 		);
 
+		MultiFactorStateEvolver hjm = HJMInstance (
+			dtSpot,
+			strCurrency,
+			mktSurfFlatVol1,
+			mktSurfFlatVol2,
+			mktSurfFlatVol3,
+			new FlatUnivariate (dblFlatForwardRate)
+		);
+
 		QMSnapshot qmInitial = InitQMSnap (
 			dtSpot,
 			strViewTenor,
@@ -304,29 +307,13 @@ public class PrincipalComponentQMHJMDynamics {
 			dblInitialPrice
 		);
 
-		int[] aiNumFactor = new int[] {
-			1, 2, 3
-		};
-
-		for (int iNumFactor : aiNumFactor) {
-			MultiFactorStateEvolver hjm = HJMInstance (
-				dtSpot,
-				strCurrency,
-				mktSurfFlatVol1,
-				mktSurfFlatVol2,
-				mktSurfFlatVol3,
-				new FlatUnivariate (dblFlatForwardRate),
-				iNumFactor
-			);
-
-			QMEvolution (
-				hjm,
-				dtSpot,
-				strCurrency,
-				strViewTenor,
-				strTargetTenor,
-				qmInitial
-			);
-		}
+		QMEvolution (
+			hjm,
+			dtSpot,
+			strCurrency,
+			strViewTenor,
+			strTargetTenor,
+			qmInitial
+		);
 	}
 }

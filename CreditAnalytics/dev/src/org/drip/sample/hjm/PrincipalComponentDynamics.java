@@ -1,5 +1,5 @@
 
-package org.drip.sample.evolution;
+package org.drip.sample.hjm;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.definition.MarketSurface;
@@ -42,14 +42,13 @@ import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
  */
 
 /**
- * PrincipalComponentHJMDynamics demonstrates the Construction and Usage of the PCA-Based Multi-Factor
- *  Gaussian HJM Model Dynamics for the Evolution of the Instantaneous Forward Rate, the Price, and the Short
- *  Rate.
+ * PrincipalComponentDynamics demonstrates the Construction and Usage of the PCA-Based Multi-Factor Gaussian
+ *  Model Dynamics for the Evolution of the Instantaneous Forward Rate, the Price, and the Short Rate.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class PrincipalComponentHJMDynamics {
+public class PrincipalComponentDynamics {
 
 	private static final MarketSurface FlatVolatilitySurface (
 		final JulianDate dtStart,
