@@ -50,6 +50,12 @@ public class LatentStateStatic {
 	public static final java.lang.String FORWARD_QM_FORWARD_RATE = "FORWARD_QM_FORWARD_RATE";
 
 	/**
+	 * Forward Latent State Quantification Metric - Shifted Forward Rate
+	 */
+
+	public static final java.lang.String FORWARD_QM_SHIFTED_FORWARD_RATE = "FORWARD_QM_SHIFTED_FORWARD_RATE";
+
+	/**
 	 * Forward Latent State Quantification Metric - Instantaneous Forward Rate
 	 */
 
@@ -75,8 +81,27 @@ public class LatentStateStatic {
 	public static final java.lang.String DISCOUNT_QM_ZERO_RATE = "DISCOUNT_QM_ZERO_RATE";
 
 	/**
+	 * Discount Latent State Quantification Metric - Compounded Short Rate
+	 */
+
+	public static final java.lang.String DISCOUNT_QM_COMPOUNDED_SHORT_RATE =
+		"DISCOUNT_QM_COMPOUNDED_SHORT_RATE";
+
+	/**
 	 * Discount Latent State Quantification Metric - Forward Rate
 	 */
 
 	public static final java.lang.String DISCOUNT_QM_FORWARD_RATE = "DISCOUNT_QM_FORWARD_RATE";
+
+	/**
+	 * Volatility Latent State
+	 */
+
+	public static final java.lang.String LATENT_STATE_VOLATILITY = "LATENT_STATE_VOLATILITY";
+
+	/**
+	 * Volatility Latent State Quantification Metric - Discount Factor
+	 */
+
+	public static final java.lang.String VOLATILITY_QM_VOLATILITY = "VOLATILITY_QM_VOLATILITY";
 }

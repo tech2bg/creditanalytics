@@ -40,13 +40,17 @@ package org.drip.dynamics.hjm;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultiFactorStateEvolver {
+public class MultiFactorStateEvolver implements org.drip.dynamics.evolution.StateEvolver {
 	private org.drip.dynamics.hjm.MultiFactorVolatility _mfv = null;
+	private org.drip.state.identifier.ForwardLabel _lslForward = null;
+	private org.drip.state.identifier.FundingLabel _lslFunding = null;
 	private org.drip.function.deterministic.AbstractUnivariate _auInitialInstantaneousForwardRate = null;
 
 	/**
 	 * MultiFactorStateEvolver Constructor
 	 * 
+	 * @param lslFunding The Funding Latent State Label
+	 * @param lslForward The Forward Latent State Label
 	 * @param mfv The Multi-Factor Volatility Instance
 	 * @param auInitialInstantaneousForwardRate The Initial Instantaneous Forward Rate Term Structure
 	 * 
@@ -54,13 +58,37 @@ public class MultiFactorStateEvolver {
 	 */
 
 	public MultiFactorStateEvolver (
+		final org.drip.state.identifier.FundingLabel lslFunding,
+		final org.drip.state.identifier.ForwardLabel lslForward,
 		final org.drip.dynamics.hjm.MultiFactorVolatility mfv,
 		final org.drip.function.deterministic.AbstractUnivariate auInitialInstantaneousForwardRate)
 		throws java.lang.Exception
 	{
-		if (null == (_mfv = mfv) || null == (_auInitialInstantaneousForwardRate =
-			auInitialInstantaneousForwardRate))
+		if (null == (_lslFunding = lslFunding) || null == (_lslForward = lslForward) || null == (_mfv = mfv)
+			|| null == (_auInitialInstantaneousForwardRate = auInitialInstantaneousForwardRate))
 			throw new java.lang.Exception ("MultiFactorStateEvolver ctr: Invalid Inputs");
+	}
+
+	/**
+	 * Retrieve the Funding Label
+	 * 
+	 * @return The Funding Label
+	 */
+
+	public org.drip.state.identifier.FundingLabel fundingLabel()
+	{
+		return _lslFunding;
+	}
+
+	/**
+	 * Retrieve the Forward Label
+	 * 
+	 * @return The Forward Label
+	 */
+
+	public org.drip.state.identifier.ForwardLabel forwardLabel()
+	{
+		return _lslForward;
 	}
 
 	/**
@@ -373,55 +401,48 @@ public class MultiFactorStateEvolver {
 		return dblShiftedLIBORForwardRate * dblShiftedLIBORVolIncrement;
 	}
 
-	/**
-	 * Compute the Incremental QM Snapshot
-	 * 
-	 * @param dblSpotDate The Spot Date
-	 * @param dblViewDate The View Date
-	 * @param dblTargetDate The Target Date
-	 * @param dblViewTimeIncrement The View Time Increment
-	 * @param qmInitial The Initial QM Snapshot
-	 * 
-	 * @return The Incremental QM Snapshot Instance
-	 */
-
-	public org.drip.dynamics.hjm.QMSnapshot qmIncrement (
+	@Override public org.drip.dynamics.evolution.LSQMUpdate evolve (
 		final double dblSpotDate,
 		final double dblViewDate,
-		final double dblTargetDate,
 		final double dblViewTimeIncrement,
-		final org.drip.dynamics.hjm.QMSnapshot qmInitial)
+		final org.drip.dynamics.evolution.LSQMUpdate lsqmPrev)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
-				!org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblViewDate >= dblTargetDate ||
-					!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement) || null == qmInitial)
+				!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement) || null == lsqmPrev ||
+					!(lsqmPrev instanceof org.drip.dynamics.hjm.ShortForwardRateUpdate))
 			return null;
 
 		org.drip.sequence.random.PrincipalFactorSequenceGenerator pfsg = _mfv.msg();
+
+		double dblViewTimeIncrementSQRT = java.lang.Math.sqrt (dblViewTimeIncrement);
 
 		double[] adblMultivariateRandom = pfsg.random();
 
 		int iNumFactor = pfsg.numFactor();
 
-		double dblInitialPrice = qmInitial.price();
-
-		double dblInitialShortRate = qmInitial.shortRate();
-
-		double dblInitialLIBORForwardRate = qmInitial.liborForwardRate();
-
-		double dblInitialCompoundedShortRate = qmInitial.compoundedShortRate();
-
-		double dblViewTimeIncrementSQRT = java.lang.Math.sqrt (dblViewTimeIncrement);
-
-		double dblShortRateIncrement = 0.;
-		double dblShiftedLIBORForwardRateIncrement = 0.;
-		double dblInstantaneousForwardRateIncrement = 0.;
-		double dblPriceIncrement = dblInitialShortRate * dblViewTimeIncrement;
-		double dblCompoundedShortRateIncrement = (dblInitialCompoundedShortRate - dblInitialShortRate) *
-			dblViewTimeIncrement;
+		org.drip.dynamics.hjm.ShortForwardRateUpdate qmInitial =
+			(org.drip.dynamics.hjm.ShortForwardRateUpdate) lsqmPrev;
 
 		try {
+			double dblInitialPrice = qmInitial.price();
+
+			double dblInitialShortRate = qmInitial.shortRate();
+
+			double dblInitialLIBORForwardRate = qmInitial.liborForwardRate();
+
+			double dblInitialCompoundedShortRate = qmInitial.compoundedShortRate();
+
+			double dblTargetDate = new org.drip.analytics.date.JulianDate (dblViewDate).addTenor
+				(_lslForward.tenor()).julian();
+
+			double dblShortRateIncrement = 0.;
+			double dblShiftedLIBORForwardRateIncrement = 0.;
+			double dblInstantaneousForwardRateIncrement = 0.;
+			double dblPriceIncrement = dblInitialShortRate * dblViewTimeIncrement;
+			double dblCompoundedShortRateIncrement = (dblInitialCompoundedShortRate - dblInitialShortRate) *
+				dblViewTimeIncrement;
+
 			for (int i = 0; i < iNumFactor; ++i) {
 				double dblViewDateFactorVolatility = _mfv.factorPointVolatility (i, dblViewDate,
 					dblViewDate);
@@ -466,14 +487,16 @@ public class MultiFactorStateEvolver {
 			double dblLIBORForwardRateIncrement = (dblInitialLIBORForwardRate + (365.25 / (dblTargetDate -
 				dblViewDate))) * dblShiftedLIBORForwardRateIncrement;
 
-			return new org.drip.dynamics.hjm.QMSnapshot (qmInitial.instantaneousForwardRate() +
-				dblInstantaneousForwardRateIncrement, dblInstantaneousForwardRateIncrement,
-					dblInitialLIBORForwardRate + dblLIBORForwardRateIncrement, dblLIBORForwardRateIncrement,
-						qmInitial.shiftedLIBORForwardRate() + dblShiftedLIBORForwardRateIncrement,
-							dblShiftedLIBORForwardRateIncrement, dblInitialShortRate + dblShortRateIncrement,
-								dblShortRateIncrement, dblInitialCompoundedShortRate +
-									dblCompoundedShortRateIncrement, dblCompoundedShortRateIncrement,
-										dblInitialPrice + dblPriceIncrement, dblPriceIncrement);
+			return org.drip.dynamics.hjm.ShortForwardRateUpdate.Create (_lslFunding, _lslForward,
+				dblViewDate, dblTargetDate, qmInitial.instantaneousForwardRate() +
+					dblInstantaneousForwardRateIncrement, dblInstantaneousForwardRateIncrement,
+						dblInitialLIBORForwardRate + dblLIBORForwardRateIncrement,
+							dblLIBORForwardRateIncrement, qmInitial.shiftedLIBORForwardRate() +
+								dblShiftedLIBORForwardRateIncrement, dblShiftedLIBORForwardRateIncrement,
+									dblInitialShortRate + dblShortRateIncrement, dblShortRateIncrement,
+										dblInitialCompoundedShortRate + dblCompoundedShortRateIncrement,
+											dblCompoundedShortRateIncrement, dblInitialPrice +
+												dblPriceIncrement, dblPriceIncrement);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

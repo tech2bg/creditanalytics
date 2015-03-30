@@ -35,9 +35,8 @@ package org.drip.dynamics.evolution;
  */
 
 public class LSQMRecord {
-	private java.util.Map<org.drip.state.identifier.LatentStateLabel, java.util.Map<java.lang.String,
-		java.lang.Double>> _mmLSQMValue = new java.util.HashMap<org.drip.state.identifier.LatentStateLabel,
-			java.util.Map<java.lang.String, java.lang.Double>>();
+	private java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmLSQMValue =
+		new java.util.HashMap<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>();
 
 	/**
 	 * Empty LSQMRecord Constructor
@@ -53,7 +52,7 @@ public class LSQMRecord {
 	 * @return The Latent State Labels
 	 */
 
-	public java.util.Set<org.drip.state.identifier.LatentStateLabel> latentStateLabel()
+	public java.util.Set<java.lang.String> latentStateLabel()
 	{
 		return _mmLSQMValue.keySet();
 	}
@@ -69,7 +68,7 @@ public class LSQMRecord {
 	public boolean containsLatentState (
 		final org.drip.state.identifier.LatentStateLabel lsl)
 	{
-		return null == lsl ? false : _mmLSQMValue.containsKey (lsl);
+		return null == lsl ? false : _mmLSQMValue.containsKey (lsl.fullyQualifiedName());
 	}
 
 	/**
@@ -87,15 +86,17 @@ public class LSQMRecord {
 		final java.lang.String strQM,
 		final double dblValue)
 	{
-		if (null == strQM || strQM.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid (dblValue))
+		if (null == lsl || null == strQM || strQM.isEmpty() || !org.drip.quant.common.NumberUtil.IsValid
+			(dblValue))
 			return false;
 
-		java.util.Map<java.lang.String, java.lang.Double> mapLSQM = containsLatentState (lsl) ?
-			_mmLSQMValue.get (lsl) : new java.util.HashMap<java.lang.String, java.lang.Double>();
+		java.util.Map<java.lang.String, java.lang.Double> mapLSQM = _mmLSQMValue.containsKey
+			(lsl.fullyQualifiedName()) ? _mmLSQMValue.get (lsl.fullyQualifiedName()) : new
+				java.util.HashMap<java.lang.String, java.lang.Double>();
 
 		mapLSQM.put (strQM, dblValue);
 
-		_mmLSQMValue.put (lsl, mapLSQM);
+		_mmLSQMValue.put (lsl.fullyQualifiedName(), mapLSQM);
 
 		return true;
 	}
@@ -113,8 +114,8 @@ public class LSQMRecord {
 		final org.drip.state.identifier.LatentStateLabel lsl,
 		final java.lang.String strQM)
 	{
-		return null == lsl || null == strQM || strQM.isEmpty() ? false : _mmLSQMValue.containsKey (lsl) &&
-			_mmLSQMValue.get (lsl).containsKey (strQM);
+		return null == lsl || null == strQM || strQM.isEmpty() ? false : _mmLSQMValue.containsKey
+			(lsl.fullyQualifiedName()) && _mmLSQMValue.get (lsl.fullyQualifiedName()).containsKey (strQM);
 	}
 
 	/**
@@ -133,10 +134,12 @@ public class LSQMRecord {
 		final java.lang.String strQM)
 		throws java.lang.Exception
 	{
-		if (null == lsl || null == strQM || strQM.isEmpty() ? false : !_mmLSQMValue.containsKey (lsl))
+		if (null == lsl || null == strQM || strQM.isEmpty() || !_mmLSQMValue.containsKey
+			(lsl.fullyQualifiedName()))
 			throw new java.lang.Exception ("LSQMRecord::qm => Invalid Inputs");
 
-		java.util.Map<java.lang.String, java.lang.Double> mapLSQM = _mmLSQMValue.get (lsl);
+		java.util.Map<java.lang.String, java.lang.Double> mapLSQM = _mmLSQMValue.get
+			(lsl.fullyQualifiedName());
 
 		if (!mapLSQM.containsKey (strQM))
 			throw new java.lang.Exception ("LSQMRecord::qm => No LSQM Entry");

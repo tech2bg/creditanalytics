@@ -29,20 +29,23 @@ package org.drip.dynamics.hullwhite;
  */
 
 /**
- * StateEvolver provides the Hull-White One-Factor Gaussian HJM Short Rate Dynamics Implementation.
+ * SingleFactorStateEvolver provides the Hull-White One-Factor Gaussian HJM Short Rate Dynamics
+ * 	Implementation.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class StateEvolver {
+public class SingleFactorStateEvolver implements org.drip.dynamics.evolution.StateEvolver {
 	private double _dblA = java.lang.Double.NaN;
 	private double _dblSigma = java.lang.Double.NaN;
+	private org.drip.state.identifier.FundingLabel _lslFunding = null;
 	private org.drip.sequence.random.UnivariateSequenceGenerator _usg = null;
 	private org.drip.function.deterministic.AbstractUnivariate _auIFRInitial = null;
 
 	/**
-	 * StateEvolver Constructor
+	 * SingleFactorStateEvolver Constructor
 	 * 
+	 * @param lslFunding The Funding Latent State Label
 	 * @param dblSigma Sigma
 	 * @param dblA A
 	 * @param auIFRInitial The Initial Instantaneous Forward Rate Term Structure
@@ -51,17 +54,29 @@ public class StateEvolver {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public StateEvolver (
+	public SingleFactorStateEvolver (
+		final org.drip.state.identifier.FundingLabel lslFunding,
 		final double dblSigma,
 		final double dblA,
 		final org.drip.function.deterministic.AbstractUnivariate auIFRInitial,
 		final org.drip.sequence.random.UnivariateSequenceGenerator usg)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblSigma = dblSigma) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblA = dblA) || null == (_auIFRInitial =
+		if (null == (_lslFunding = lslFunding) || !org.drip.quant.common.NumberUtil.IsValid (_dblSigma =
+			dblSigma) || !org.drip.quant.common.NumberUtil.IsValid (_dblA = dblA) || null == (_auIFRInitial =
 				auIFRInitial) || null == (_usg = usg))
-			throw new java.lang.Exception ("StateEvolver ctr: Invalid Inputs");
+			throw new java.lang.Exception ("SingleFactorStateEvolver ctr: Invalid Inputs");
+	}
+
+	/**
+	 * Retrieve the Funding Label
+	 * 
+	 * @return The Funding Label
+	 */
+
+	public org.drip.state.identifier.FundingLabel fundingLabel()
+	{
+		return _lslFunding;
 	}
 
 	/**
@@ -126,7 +141,7 @@ public class StateEvolver {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate)
-			throw new java.lang.Exception ("StateEvolver::alpha => Invalid Inputs");
+			throw new java.lang.Exception ("SingleFactorStateEvolver::alpha => Invalid Inputs");
 
 		double dblAlphaVol = _dblSigma * (1. - java.lang.Math.exp (_dblA * (dblViewDate - dblSpotDate) /
 			365.25)) / _dblA;
@@ -152,7 +167,7 @@ public class StateEvolver {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate)
-			throw new java.lang.Exception ("StateEvolver::theta => Invalid Inputs");
+			throw new java.lang.Exception ("SingleFactorStateEvolver::theta => Invalid Inputs");
 
 		return _auIFRInitial.derivative (dblViewDate, 1) + _dblA * _auIFRInitial.evaluate (dblViewDate) +
 			_dblSigma * _dblSigma / (2. * _dblA) * (1. - java.lang.Math.exp (-2. * _dblA * (dblViewDate -
@@ -183,39 +198,39 @@ public class StateEvolver {
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblShortRate) ||
 					!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement))
-			throw new java.lang.Exception ("StateEvolver::shortRateIncrement => Invalid Inputs");
+			throw new java.lang.Exception ("SingleFactorStateEvolver::shortRateIncrement => Invalid Inputs");
 
 		return (theta (dblSpotDate, dblViewDate) - _dblA * dblShortRate) * dblViewTimeIncrement + _dblSigma *
 			java.lang.Math.sqrt (dblViewTimeIncrement) * _usg.random();
 	}
 
-	/**
-	 * Generate the Metrics associated with the Evolution of the Short Rate from an Initial to a Final Date
-	 * 
-	 * @param dblSpotDate The Spot/Epoch Date
-	 * @param dblInitialDate The Initial Date
-	 * @param dblFinalDate The Final Date
-	 * @param dblInitialShortRate The Initial Short Rate
-	 * 
-	 * @return The Evolution Metrics
-	 */
-
-	public org.drip.dynamics.hullwhite.StateEvolutionMetrics evolve (
+	@Override public org.drip.dynamics.evolution.LSQMUpdate evolve (
 		final double dblSpotDate,
-		final double dblInitialDate,
-		final double dblFinalDate,
-		final double dblInitialShortRate)
+		final double dblViewDate,
+		final double dblViewTimeIncrement,
+		final org.drip.dynamics.evolution.LSQMUpdate lsqmPrev)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
-			!org.drip.quant.common.NumberUtil.IsValid (dblInitialDate) || dblInitialDate < dblSpotDate ||
-				!org.drip.quant.common.NumberUtil.IsValid (dblFinalDate) || dblFinalDate <= dblInitialDate ||
-					!org.drip.quant.common.NumberUtil.IsValid (dblInitialShortRate))
+			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblViewDate < dblSpotDate ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement) || null == lsqmPrev ||
+					!(lsqmPrev instanceof org.drip.dynamics.hullwhite.ShortRateUpdate))
 			return null;
 
-		double dblDate = dblInitialDate;
+		double dblDate = dblViewDate;
 		double dblTimeIncrement = 1. / 365.25;
+		double dblInitialShortRate = java.lang.Double.NaN;
+		double dblFinalDate = dblViewDate + dblViewTimeIncrement;
+
+		try {
+			dblInitialShortRate = ((org.drip.dynamics.hullwhite.ShortRateUpdate)
+				lsqmPrev).realizedFinalShortRate();
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
 		double dblShortRate = dblInitialShortRate;
-		double dblEvolutionIncrement = (dblFinalDate - dblInitialDate) / 365.25;
 
 		while (dblDate < dblFinalDate) {
 			try {
@@ -229,17 +244,18 @@ public class StateEvolver {
 			++dblDate;
 		}
 
-		double dblADF = java.lang.Math.exp (-1. * _dblA * dblEvolutionIncrement);
+		double dblADF = java.lang.Math.exp (-1. * _dblA * dblViewTimeIncrement);
 
 		double dblB = (1. - dblADF) / _dblA;
 
 		try {
-			return new org.drip.dynamics.hullwhite.StateEvolutionMetrics (dblInitialDate, dblFinalDate,
-				dblInitialShortRate, dblShortRate, dblInitialShortRate * dblADF + alpha (dblSpotDate,
-					dblFinalDate) - alpha (dblSpotDate, dblInitialDate) * dblADF, 0.5 * _dblSigma * _dblSigma
-						* (1. - dblADF * dblADF) / _dblA, java.lang.Math.exp (dblB * _auIFRInitial.evaluate
-							(dblInitialDate) - 0.25 * _dblSigma * _dblSigma * (1. - java.lang.Math.exp (-2. *
-								_dblA * (dblInitialDate - dblSpotDate) / 365.25)) * dblB * dblB / _dblA));
+			return org.drip.dynamics.hullwhite.ShortRateUpdate.Create (_lslFunding, dblViewDate,
+				dblFinalDate, dblInitialShortRate, dblShortRate, dblInitialShortRate * dblADF + alpha
+					(dblSpotDate, dblFinalDate) - alpha (dblSpotDate, dblViewDate) * dblADF, 0.5 * _dblSigma
+						* _dblSigma * (1. - dblADF * dblADF) / _dblA, java.lang.Math.exp (dblB *
+							_auIFRInitial.evaluate (dblViewDate) - 0.25 * _dblSigma * _dblSigma * (1. -
+								java.lang.Math.exp (-2. * _dblA * (dblViewDate - dblSpotDate) / 365.25)) *
+									dblB * dblB / _dblA));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

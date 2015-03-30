@@ -3,6 +3,7 @@ package org.drip.sample.hjm;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.definition.MarketSurface;
+import org.drip.analytics.support.AnalyticsHelper;
 import org.drip.dynamics.hjm.*;
 import org.drip.function.deterministic.AbstractUnivariate;
 import org.drip.function.deterministic1D.FlatUnivariate;
@@ -13,6 +14,8 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
+import org.drip.state.identifier.ForwardLabel;
+import org.drip.state.identifier.FundingLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -107,6 +110,7 @@ public class PrincipalComponentQMDynamics {
 	private static final MultiFactorStateEvolver HJMInstance (
 		final JulianDate dtStart,
 		final String strCurrency,
+		final String strTenor,
 		final MarketSurface mktSurfFlatVol1,
 		final MarketSurface mktSurfFlatVol2,
 		final MarketSurface mktSurfFlatVol3,
@@ -136,25 +140,32 @@ public class PrincipalComponentQMDynamics {
 		);
 
 		return new MultiFactorStateEvolver (
+			FundingLabel.Standard (strCurrency),
+			ForwardLabel.Create (strCurrency, strTenor),
 			mfv,
 			auForwardRate
 		);
 	}
 
-	private static final QMSnapshot InitQMSnap (
+	private static final ShortForwardRateUpdate InitQMSnap (
 		final JulianDate dtStart,
+		final String strCurrency,
 		final String strViewTenor,
-		final String strTargetTenor,
+		final String strTenor,
 		final double dblInitialForwardRate,
 		final double dblInitialPrice)
 		throws Exception
 	{
-		return new QMSnapshot (
+		return ShortForwardRateUpdate.Create (
+			FundingLabel.Standard (strCurrency),
+			ForwardLabel.Create (strCurrency, strTenor),
+			dtStart.julian(),
+			dtStart.julian(),
 			dblInitialForwardRate,
 			0.,
 			dblInitialForwardRate,
 			0.,
-			dblInitialForwardRate + (365.25 / (dtStart.addTenor (strTargetTenor).julian() - dtStart.addTenor (strViewTenor).julian())),
+			dblInitialForwardRate + (365.25 / AnalyticsHelper.TenorToDays (strTenor)),
 			0.,
 			dblInitialForwardRate,
 			0.,
@@ -170,16 +181,13 @@ public class PrincipalComponentQMDynamics {
 		final JulianDate dtStart,
 		final String strCurrency,
 		final String strViewTenor,
-		final String strTargetTenor,
-		final QMSnapshot qmInitial)
+		final ShortForwardRateUpdate qmInitial)
 		throws Exception
 	{
 		double dblViewDate = dtStart.addTenor (strViewTenor).julian();
 
-		double dblTargetDate = dtStart.addTenor (strTargetTenor).julian();
-
 		int iDayStep = 2;
-		QMSnapshot qm = qmInitial;
+		ShortForwardRateUpdate qm = qmInitial;
 		JulianDate dtSpot = dtStart;
 
 		System.out.println ("\t|-------------------------------------------------------------------------------------------------------------------------------||");
@@ -229,10 +237,9 @@ public class PrincipalComponentQMDynamics {
 		while (dtSpot.julian() < dblViewDate) {
 			double dblSpotDate = dtSpot.julian();
 
-			qm = hjm.qmIncrement (
+			qm = (ShortForwardRateUpdate) hjm.evolve (
 				dblSpotDate,
 				dblViewDate,
-				dblTargetDate,
 				iDayStep / 365.25,
 				qm
 			);
@@ -274,7 +281,7 @@ public class PrincipalComponentQMDynamics {
 		double dblFlatForwardRate = 0.05;
 		double dblInitialPrice = 0.9875;
 		String strViewTenor = "3M";
-		String strTargetTenor = "6M";
+		String strTenor = "3M";
 
 		JulianDate dtSpot = DateUtil.Today();
 
@@ -296,10 +303,11 @@ public class PrincipalComponentQMDynamics {
 			dblFlatVol3
 		);
 
-		QMSnapshot qmInitial = InitQMSnap (
+		ShortForwardRateUpdate qmInitial = InitQMSnap (
 			dtSpot,
+			strCurrency,
 			strViewTenor,
-			strTargetTenor,
+			strTenor,
 			dblFlatForwardRate,
 			dblInitialPrice
 		);
@@ -312,6 +320,7 @@ public class PrincipalComponentQMDynamics {
 			MultiFactorStateEvolver hjm = HJMInstance (
 				dtSpot,
 				strCurrency,
+				strTenor,
 				mktSurfFlatVol1,
 				mktSurfFlatVol2,
 				mktSurfFlatVol3,
@@ -324,7 +333,6 @@ public class PrincipalComponentQMDynamics {
 				dtSpot,
 				strCurrency,
 				strViewTenor,
-				strTargetTenor,
 				qmInitial
 			);
 		}

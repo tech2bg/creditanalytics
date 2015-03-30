@@ -36,14 +36,14 @@ package org.drip.dynamics.sabr;
  */
 
 public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
-	private double _dblForwardRateVolatility = java.lang.Double.NaN;
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
-	private double _dblForwardRateVolatilityIncrement = java.lang.Double.NaN;
 
 	/**
-	 * ForwardRateUpdate Constructor
+	 * ForwardRateUpdate Creator
 	 * 
 	 * @param lslForward The Forward Rate Latent State Label
+	 * @param dblInitialDate The Initial Date
+	 * @param dblFinalDate The Final Date
 	 * @param dblForwardRate The Forward Rate
 	 * @param dblForwardRateIncrement The Forward Rate Increment
 	 * @param dblForwardRateVolatility The Forward Volatility 
@@ -54,6 +54,8 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 
 	public static final ForwardRateUpdate Create (
 		final org.drip.state.identifier.ForwardLabel lslForward,
+		final double dblInitialDate,
+		final double dblFinalDate,
 		final double dblForwardRate,
 		final double dblForwardRateIncrement,
 		final double dblForwardRateVolatility,
@@ -65,6 +67,11 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE, dblForwardRate))
 			return null;
 
+		if (!lrSnapshot.setQM (org.drip.state.identifier.VolatilityLabel.Standard (lslForward),
+			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_VOLATILITY,
+				dblForwardRateVolatility))
+			return null;
+
 		org.drip.dynamics.evolution.LSQMRecord lrIncrement = new org.drip.dynamics.evolution.LSQMRecord();
 
 		if (!lrIncrement.setQM (lslForward,
@@ -72,9 +79,13 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 				dblForwardRateIncrement))
 			return null;
 
+		if (!lrIncrement.setQM (org.drip.state.identifier.VolatilityLabel.Standard (lslForward),
+			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_VOLATILITY,
+				dblForwardRateVolatilityIncrement))
+			return null;
+
 		try {
-			return new ForwardRateUpdate (lslForward, lrSnapshot, lrIncrement, dblForwardRateVolatility,
-				dblForwardRateVolatilityIncrement);
+			return new ForwardRateUpdate (lslForward, dblInitialDate, dblFinalDate, lrSnapshot, lrIncrement);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -82,30 +93,17 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 		return null;
 	}
 
-	/**
-	 * ForwardRateUpdate Constructor
-	 * 
-	 * @param dblForwardRate The Forward Rate
-	 * @param dblForwardRateIncrement The Forward Rate Increment
-	 * @param dblForwardRateVolatility The Forward Volatility 
-	 * @param dblForwardRateVolatilityIncrement The Forward Volatility Rate
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
-	 */
-
 	private ForwardRateUpdate (
 		final org.drip.state.identifier.ForwardLabel lslForward,
+		final double dblInitialDate,
+		final double dblFinalDate,
 		final org.drip.dynamics.evolution.LSQMRecord lrSnapshot,
-		final org.drip.dynamics.evolution.LSQMRecord lrIncrement,
-		final double dblForwardRateVolatility,
-		final double dblForwardRateVolatilityIncrement)
+		final org.drip.dynamics.evolution.LSQMRecord lrIncrement)
 		throws java.lang.Exception
 	{
-		super (lrSnapshot, lrIncrement);
+		super (dblInitialDate, dblFinalDate, lrSnapshot, lrIncrement);
 
-		if (null == (_lslForward = lslForward) || !org.drip.quant.common.NumberUtil.IsValid
-			(_dblForwardRateVolatility = dblForwardRateVolatility) || !org.drip.quant.common.NumberUtil.IsValid
-				(_dblForwardRateVolatilityIncrement = dblForwardRateVolatilityIncrement))
+		if (null == (_lslForward = lslForward))
 			throw new java.lang.Exception ("ForwardRateUpdate ctr: Invalid Inputs");
 	}
 
@@ -143,21 +141,29 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 	 * Retrieve the Forward Rate Volatility
 	 * 
 	 * @return The Forward Rate Volatility
+	 * 
+	 * @throws java.lang.Exception Thrown if the Forward Rate Volatility is not available
 	 */
 
 	public double forwardRateVolatility()
+		throws java.lang.Exception
 	{
-		return _dblForwardRateVolatility;
+		return snapshot().qm (org.drip.state.identifier.VolatilityLabel.Standard (_lslForward),
+			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_VOLATILITY);
 	}
 
 	/**
 	 * Retrieve the Forward Rate Volatility Increment
 	 * 
 	 * @return The Forward Rate Volatility Increment
+	 * 
+	 * @throws java.lang.Exception Thrown if the Forward Rate Volatility Increment is not available
 	 */
 
 	public double forwardRateVolatilityIncrement()
+		throws java.lang.Exception
 	{
-		return _dblForwardRateVolatilityIncrement;
+		return increment().qm (org.drip.state.identifier.VolatilityLabel.Standard (_lslForward),
+			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_VOLATILITY);
 	}
 }

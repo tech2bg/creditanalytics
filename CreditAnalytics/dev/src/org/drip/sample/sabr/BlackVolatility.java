@@ -43,13 +43,13 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class BlackVolatility {
 
-	private static StateEvolver SABREvolver (
+	private static StochasticVolatilityStateEvolver SABREvolver (
 		final double dblBeta,
 		final double dblRho,
 		final double dblVolatilityOfVolatility)
 		throws Exception
 	{
-		return new StateEvolver (
+		return new StochasticVolatilityStateEvolver (
 			ForwardLabel.Create ("USD", "6M"),
 			dblBeta,
 			dblRho,
@@ -60,7 +60,7 @@ public class BlackVolatility {
 	}
 
 	private static void VolatilitySurface (
-		final StateEvolver seSABR,
+		final StochasticVolatilityStateEvolver seSABR,
 		final double[] adblStrike,
 		final double dblATMForwardRate,
 		final double dblTTE,
@@ -96,7 +96,7 @@ public class BlackVolatility {
 		double[] adblStrike = {0.30, 0.35, 0.40, 0.45, 0.50};
 		double[] adblTTE = {0.25, 0.50, 0.75, 1.00, 2.00, 3.00, 4.00, 5.00, 7.00, 9.99};
 
-		StateEvolver seSABR = SABREvolver (
+		StochasticVolatilityStateEvolver seSABR = SABREvolver (
 			dblBeta,
 			dblRho,
 			dblVolatilityOfVolatility

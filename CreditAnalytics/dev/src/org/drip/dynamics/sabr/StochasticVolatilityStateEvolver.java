@@ -29,12 +29,12 @@ package org.drip.dynamics.sabr;
  */
 
 /**
- * StateEvolver provides the SABR Stochastic Volatility Evolution Dynamics.
+ * StochasticVolatilityStateEvolver provides the SABR Stochastic Volatility Evolution Dynamics.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class StateEvolver {
+public class StochasticVolatilityStateEvolver implements org.drip.dynamics.evolution.StateEvolver {
 	private double _dblRho = java.lang.Double.NaN;
 	private double _dblBeta = java.lang.Double.NaN;
 	private double _dblIdiosyncraticRho = java.lang.Double.NaN;
@@ -57,7 +57,7 @@ public class StateEvolver {
 	 * @return The Gaussian SABR Instance
 	 */
 
-	public static final StateEvolver Gaussian (
+	public static final StochasticVolatilityStateEvolver Gaussian (
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblRho,
 		final double dblVolatilityOfVolatility,
@@ -65,8 +65,8 @@ public class StateEvolver {
 		final org.drip.sequence.random.UnivariateSequenceGenerator usgForwardRateVolatilityIdiosyncratic)
 	{
 		try {
-			return new StateEvolver (lslForward, 0., dblRho, dblVolatilityOfVolatility, usgForwardRate,
-				usgForwardRateVolatilityIdiosyncratic);
+			return new StochasticVolatilityStateEvolver (lslForward, 0., dblRho, dblVolatilityOfVolatility,
+				usgForwardRate, usgForwardRateVolatilityIdiosyncratic);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -87,7 +87,7 @@ public class StateEvolver {
 	 * @return The Log-normal SABR Instance
 	 */
 
-	public static final StateEvolver Lognormal (
+	public static final StochasticVolatilityStateEvolver Lognormal (
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblRho,
 		final double dblVolatilityOfVolatility,
@@ -95,8 +95,8 @@ public class StateEvolver {
 		final org.drip.sequence.random.UnivariateSequenceGenerator usgForwardRateVolatilityIdiosyncratic)
 	{
 		try {
-			return new StateEvolver (lslForward, 1., dblRho, dblVolatilityOfVolatility, usgForwardRate,
-				usgForwardRateVolatilityIdiosyncratic);
+			return new StochasticVolatilityStateEvolver (lslForward, 1., dblRho, dblVolatilityOfVolatility,
+				usgForwardRate, usgForwardRateVolatilityIdiosyncratic);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -117,7 +117,7 @@ public class StateEvolver {
 	 * @return The Constant Elasticity of Variance SABR Instance
 	 */
 
-	public static final StateEvolver CEV (
+	public static final StochasticVolatilityStateEvolver CEV (
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblBeta,
 		final double dblRho,
@@ -125,7 +125,7 @@ public class StateEvolver {
 		final org.drip.sequence.random.UnivariateSequenceGenerator usgForwardRateVolatilityIdiosyncratic)
 	{
 		try {
-			return new StateEvolver (lslForward, dblBeta, dblRho, 0., usgForwardRate,
+			return new StochasticVolatilityStateEvolver (lslForward, dblBeta, dblRho, 0., usgForwardRate,
 				usgForwardRateVolatilityIdiosyncratic);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -135,7 +135,7 @@ public class StateEvolver {
 	}
 
 	/**
-	 * SABR StateEvolver Constructor
+	 * StochasticVolatilityStateEvolver Constructor
 	 * 
 	 * @param lslForward The Forward Rate Latent State Label
 	 * @param dblBeta SABR Beta
@@ -148,7 +148,7 @@ public class StateEvolver {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public StateEvolver (
+	public StochasticVolatilityStateEvolver (
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblBeta,
 		final double dblRho,
@@ -163,9 +163,20 @@ public class StateEvolver {
 					dblVolatilityOfVolatility) || null == (_usgForwardRate = usgForwardRate) || (0. !=
 						_dblVolatilityOfVolatility && null == (_usgForwardRateVolatilityIdiosyncratic =
 							usgForwardRateVolatilityIdiosyncratic)))
-			throw new java.lang.Exception ("StateEvolver ctr => Invalid Inputs");
+			throw new java.lang.Exception ("StochasticVolatilityStateEvolver ctr => Invalid Inputs");
 
 		_dblIdiosyncraticRho = java.lang.Math.sqrt (1. - _dblRho * _dblRho);
+	}
+
+	/**
+	 * Retrieve the Forward Label
+	 * 
+	 * @return The Forward Label
+	 */
+
+	public org.drip.state.identifier.ForwardLabel forwardLabel()
+	{
+		return _lslForward;
 	}
 
 	/**
@@ -224,32 +235,25 @@ public class StateEvolver {
 		return _usgForwardRateVolatilityIdiosyncratic;
 	}
 
-	/**
-	 * Evolve the Latent State and return the LSQM Snapshot
-	 * 
-	 * @param dblSpotDate The Spot Date
-	 * @param dblViewDate The View Date
-	 * @param dblViewTimeIncrement The View Time Increment
-	 * @param lsqmPrev The Previous LSQM
-	 * 
-	 * @return The LSQM Snapshot
-	 */
-
-	public org.drip.dynamics.sabr.ForwardRateUpdate evolve (
+	@Override public org.drip.dynamics.evolution.LSQMUpdate evolve (
 		final double dblSpotDate,
 		final double dblViewDate,
 		final double dblViewTimeIncrement,
-		final org.drip.dynamics.sabr.ForwardRateUpdate lsqmPrev)
+		final org.drip.dynamics.evolution.LSQMUpdate lsqmPrev)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblViewDate < dblSpotDate ||
-				!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) || null == lsqmPrev)
+				!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) || null == lsqmPrev || !(lsqmPrev
+					instanceof org.drip.dynamics.sabr.ForwardRateUpdate))
 			return null;
 
-		try {
-			double dblForwardRate = lsqmPrev.forwardRate();
+		org.drip.dynamics.sabr.ForwardRateUpdate fruPrev = (org.drip.dynamics.sabr.ForwardRateUpdate)
+			lsqmPrev;
 
-			double dblForwardRateVolatility = lsqmPrev.forwardRateVolatility();
+		try {
+			double dblForwardRate = fruPrev.forwardRate();
+
+			double dblForwardRateVolatility = fruPrev.forwardRateVolatility();
 
 			double dblTimeIncrementSQRT = java.lang.Math.sqrt (dblViewTimeIncrement);
 
@@ -262,9 +266,10 @@ public class StateEvolver {
 				* dblTimeIncrementSQRT * (_dblRho * dblForwardRateZ + _dblIdiosyncraticRho *
 					_usgForwardRateVolatilityIdiosyncratic.random());
 
-			return org.drip.dynamics.sabr.ForwardRateUpdate.Create (_lslForward, dblForwardRate +
-				dblForwardRateIncrement, dblForwardRateIncrement, dblForwardRateVolatility +
-					dblForwardRateVolatilityIncrement, dblForwardRateVolatilityIncrement);
+			return org.drip.dynamics.sabr.ForwardRateUpdate.Create (_lslForward, dblViewDate, dblViewDate +
+				dblViewTimeIncrement * 365.25, dblForwardRate + dblForwardRateIncrement,
+					dblForwardRateIncrement, dblForwardRateVolatility + dblForwardRateVolatilityIncrement,
+						dblForwardRateVolatilityIncrement);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

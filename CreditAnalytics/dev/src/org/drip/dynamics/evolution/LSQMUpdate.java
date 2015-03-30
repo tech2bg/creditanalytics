@@ -35,12 +35,16 @@ package org.drip.dynamics.evolution;
  */
 
 public class LSQMUpdate {
+	private double _dblFinalDate = java.lang.Double.NaN;
+	private double _dblInitialDate = java.lang.Double.NaN;
 	private org.drip.dynamics.evolution.LSQMRecord _lrSnapshot = null;
 	private org.drip.dynamics.evolution.LSQMRecord _lrIncrement = null;
 
 	/**
 	 * LSQMUpdate Update Constructor
 	 * 
+	 * @param dblInitialDate The Initial Date
+	 * @param dblFinalDate The Final Date
 	 * @param lrSnapshot The LSQM Record Snapshot
 	 * @param lrIncrement The LSQM Record Update
 	 * 
@@ -48,14 +52,40 @@ public class LSQMUpdate {
 	 */
 
 	public LSQMUpdate (
+		final double dblInitialDate,
+		final double dblFinalDate,
 		final org.drip.dynamics.evolution.LSQMRecord lrSnapshot,
 		final org.drip.dynamics.evolution.LSQMRecord lrIncrement)
 		throws java.lang.Exception
 	{
-		if (null == (_lrSnapshot = lrSnapshot))
+		if (null == (_lrSnapshot = lrSnapshot) || !org.drip.quant.common.NumberUtil.IsValid (_dblInitialDate
+			= dblInitialDate) || !org.drip.quant.common.NumberUtil.IsValid (_dblFinalDate = dblFinalDate) ||
+				_dblFinalDate < _dblInitialDate)
 			throw new java.lang.Exception ("LSQMUpdate ctr: Invalid Inputs");
 
 		_lrIncrement = lrIncrement;
+	}
+
+	/**
+	 * Retrieve the Initial Date
+	 * 
+	 * @return The Initial Date
+	 */
+
+	public double initialDate()
+	{
+		return _dblInitialDate;
+	}
+
+	/**
+	 * Retrieve the Final Date
+	 * 
+	 * @return The Final Date
+	 */
+
+	public double finalDate()
+	{
+		return _dblFinalDate;
 	}
 
 	/**

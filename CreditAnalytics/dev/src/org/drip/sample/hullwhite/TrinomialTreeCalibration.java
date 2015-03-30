@@ -9,6 +9,7 @@ import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.quant.common.FormatUtil;
 import org.drip.sequence.random.BoxMullerGaussian;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.state.identifier.FundingLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -62,13 +63,15 @@ public class TrinomialTreeCalibration {
 			FormatUtil.FormatDouble (Double.parseDouble (astrTargetNode[1]), 1, 0, 1.) + "]";
 	}
 
-	private static final StateEvolver HullWhiteEvolver (
+	private static final SingleFactorStateEvolver HullWhiteEvolver (
+		final String strCurrency,
 		final double dblSigma,
 		final double dblA,
 		final double dblStartingForwardRate)
 		throws Exception
 	{
-		return new StateEvolver (
+		return new SingleFactorStateEvolver (
+			FundingLabel.Standard (strCurrency),
 			dblSigma,
 			dblA,
 			new FlatUnivariate (dblStartingForwardRate),
@@ -124,11 +127,12 @@ public class TrinomialTreeCalibration {
 
 		double dblA = 0.1;
 		double dblSigma = 0.01;
-
+		String strCurrency = "USD";
 		String[] astrTenor = {"3M", "6M", "9M"};
 		double[] adblQuote = {0.0026, 0.00412, 0.00572};
 
-		StateEvolver hw = HullWhiteEvolver (
+		SingleFactorStateEvolver hw = HullWhiteEvolver (
+			strCurrency,
 			dblSigma,
 			dblA,
 			adblQuote[0]

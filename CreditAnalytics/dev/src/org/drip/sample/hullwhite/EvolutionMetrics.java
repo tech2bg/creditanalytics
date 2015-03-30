@@ -7,6 +7,7 @@ import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.quant.common.FormatUtil;
 import org.drip.sequence.random.BoxMullerGaussian;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.state.identifier.FundingLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -44,13 +45,15 @@ import org.drip.service.api.CreditAnalytics;
 
 public class EvolutionMetrics {
 
-	private static final StateEvolver HullWhiteEvolver (
+	private static final SingleFactorStateEvolver HullWhiteEvolver (
+		final String strCurrency,
 		final double dblSigma,
 		final double dblA,
 		final double dblStartingForwardRate)
 		throws Exception
 	{
-		return new StateEvolver (
+		return new SingleFactorStateEvolver (
+			FundingLabel.Standard (strCurrency),
 			dblSigma,
 			dblA,
 			new FlatUnivariate (dblStartingForwardRate),
@@ -59,7 +62,7 @@ public class EvolutionMetrics {
 	}
 
 	private static final void DumpMetrics (
-		final StateEvolutionMetrics hwem)
+		final ShortRateUpdate hwem)
 		throws Exception
 	{
 		System.out.println ("\t| [" + new JulianDate (hwem.initialDate()) + " -> " +
@@ -80,12 +83,14 @@ public class EvolutionMetrics {
 
 		JulianDate dtSpot = DateUtil.Today();
 
+		String strCurrency = "USD";
 		double dblStartingShortRate = 0.05;
 		double dblSigma = 0.03;
 		double dblA = 1.;
 		int iNumRun = 50;
 
-		StateEvolver hw = HullWhiteEvolver (
+		SingleFactorStateEvolver hw = HullWhiteEvolver (
+			strCurrency,
 			dblSigma,
 			dblA,
 			dblStartingShortRate
@@ -125,13 +130,24 @@ public class EvolutionMetrics {
 
 		System.out.println ("\t|--------------------------------------------------------------------------||");
 
+		ShortRateUpdate sruInitial = ShortRateUpdate.Create (
+			FundingLabel.Standard (strCurrency),
+			dblInitialDate,
+			dblInitialDate,
+			dblStartingShortRate,
+			dblStartingShortRate,
+			dblStartingShortRate,
+			0.,
+			1.
+		);
+
 		for (int i = 0; i < iNumRun; ++i)
 			DumpMetrics (
-				hw.evolve (
+				(ShortRateUpdate) hw.evolve (
 					dblSpotDate,
 					dblInitialDate,
-					dblFinalDate,
-					dblStartingShortRate
+					(dblFinalDate - dblInitialDate) / 365.25,
+					sruInitial
 				)
 			);
 

@@ -13,6 +13,8 @@ import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.MultiSegmentSequenceBuilder;
+import org.drip.state.identifier.ForwardLabel;
+import org.drip.state.identifier.FundingLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -134,6 +136,8 @@ public class PrincipalComponentDynamics {
 		);
 
 		return new MultiFactorStateEvolver (
+			FundingLabel.Standard (strCurrency),
+			ForwardLabel.Create (strCurrency, "6M"),
 			mfv,
 			auForwardRate
 		);

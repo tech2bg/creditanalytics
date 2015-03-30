@@ -7,7 +7,6 @@ package org.drip.state.identifier;
 
 /*!
  * Copyright (C) 2015 Lakshmi Krishnamurthy
- * Copyright (C) 2014 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -30,28 +29,28 @@ package org.drip.state.identifier;
  */
 
 /**
- * FundingLabel contains the Identifier Parameters referencing the Latent State of the named Funding Discount
- *  Curve. Currently it only contains the funding currency.
+ * VolatilityLabel contains the Identifier Parameters referencing the Latent State of the named Volatility
+ *  Curve. Currently it only contains the label of the underlying Latent State.
  *  
  * @author Lakshmi Krishnamurthy
  */
 
-public class FundingLabel implements org.drip.state.identifier.LatentStateLabel {
-	private java.lang.String _strCurrency = "";
+public class VolatilityLabel implements org.drip.state.identifier.LatentStateLabel {
+	private org.drip.state.identifier.LatentStateLabel _lslUnderlyingState = null;
 
 	/**
-	 * Make a Standard Funding Label from the Funding Currency
+	 * Make a Standard Volatility Latent State Label from the Underlying Latent State Label
 	 * 
-	 * @param strCurrency The Funding Currency
+	 * @param lslUnderlyingState Underlying Latent State Label
 	 * 
-	 * @return The Funding Label
+	 * @return The Volatility Label
 	 */
 
-	public static final FundingLabel Standard (
-		final java.lang.String strCurrency)
+	public static final VolatilityLabel Standard (
+		final org.drip.state.identifier.LatentStateLabel lslUnderlyingState)
 	{
 		try {
-			return new FundingLabel (strCurrency);
+			return new VolatilityLabel (lslUnderlyingState);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -59,23 +58,31 @@ public class FundingLabel implements org.drip.state.identifier.LatentStateLabel 
 		return null;
 	}
 
-	private FundingLabel (
-		final java.lang.String strCurrency)
+	/**
+	 * VolatilityLabel constructor
+	 * 
+	 * @param lslUnderlyingState Underlying Latent State Label
+	 * 
+	 * @throws java.lang.Exception Thrown if the inputs are invalid
+	 */
+
+	private VolatilityLabel (
+		final org.drip.state.identifier.LatentStateLabel lslUnderlyingState)
 		throws java.lang.Exception
 	{
-		if (null == (_strCurrency = strCurrency) || _strCurrency.isEmpty())
-			throw new java.lang.Exception ("FundingLabel ctr: Invalid Inputs");
+		if (null == (_lslUnderlyingState = lslUnderlyingState))
+			throw new java.lang.Exception ("VolatilityLabel ctr: Invalid Inputs");
 	}
 
 	@Override public java.lang.String fullyQualifiedName()
 	{
-		return _strCurrency;
+		return _lslUnderlyingState.fullyQualifiedName() + "::VOL";
 	}
 
 	@Override public boolean match (
 		final org.drip.state.identifier.LatentStateLabel lslOther)
 	{
-		return null == lslOther || !(lslOther instanceof org.drip.state.identifier.FundingLabel) ? false :
-			_strCurrency.equalsIgnoreCase (lslOther.fullyQualifiedName());
+		return null == lslOther || !(lslOther instanceof org.drip.state.identifier.VolatilityLabel) ? false :
+			fullyQualifiedName().equalsIgnoreCase (lslOther.fullyQualifiedName());
 	}
 }

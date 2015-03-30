@@ -7,6 +7,7 @@ import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.quant.common.FormatUtil;
 import org.drip.sequence.random.BoxMullerGaussian;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.state.identifier.FundingLabel;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -44,13 +45,15 @@ import org.drip.service.api.CreditAnalytics;
 
 public class TrinomialTreeEvolution {
 
-	private static final StateEvolver HullWhiteEvolver (
+	private static final SingleFactorStateEvolver HullWhiteEvolver (
+		final String strCurrency,
 		final double dblSigma,
 		final double dblA,
 		final double dblStartingForwardRate)
 		throws Exception
 	{
-		return new StateEvolver (
+		return new SingleFactorStateEvolver (
+			FundingLabel.Standard (strCurrency),
 			dblSigma,
 			dblA,
 			new FlatUnivariate (dblStartingForwardRate),
@@ -138,11 +141,13 @@ public class TrinomialTreeEvolution {
 
 		JulianDate dtSpot = DateUtil.Today();
 
+		String strCurrency = "USD";
 		double dblStartingShortRate = 0.05;
 		double dblSigma = 0.01;
 		double dblA = 1.;
 
-		StateEvolver hw = HullWhiteEvolver (
+		SingleFactorStateEvolver hw = HullWhiteEvolver (
+			strCurrency,
 			dblSigma,
 			dblA,
 			dblStartingShortRate

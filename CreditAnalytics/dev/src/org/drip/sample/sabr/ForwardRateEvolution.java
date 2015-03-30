@@ -44,13 +44,13 @@ import org.drip.state.identifier.ForwardLabel;
 
 public class ForwardRateEvolution {
 
-	private static StateEvolver SABREvolver (
+	private static StochasticVolatilityStateEvolver SABREvolver (
 		final double dblBeta,
 		final double dblRho,
 		final double dblVolatilityOfVolatility)
 		throws Exception
 	{
-		return new StateEvolver (
+		return new StochasticVolatilityStateEvolver (
 			ForwardLabel.Create ("USD", "6M"),
 			dblBeta,
 			dblRho,
@@ -61,9 +61,9 @@ public class ForwardRateEvolution {
 	}
 
 	private static void SABREvolution (
-		final StateEvolver seSABR1,
-		final StateEvolver seSABR2,
-		final StateEvolver seSABR3,
+		final StochasticVolatilityStateEvolver seSABR1,
+		final StochasticVolatilityStateEvolver seSABR2,
+		final StochasticVolatilityStateEvolver seSABR3,
 		final double dblSpotDate,
 		final double dblTerminalDate,
 		final ForwardRateUpdate lsqmInitial1,
@@ -101,21 +101,21 @@ public class ForwardRateEvolution {
 		System.out.println ("\t||---------------------------------------------------------------------------------||");
 
 		while (dblDate < dblTerminalDate) {
-			lsqm1 = seSABR1.evolve (
+			lsqm1 = (ForwardRateUpdate) seSABR1.evolve (
 				dblSpotDate,
 				dblDate,
 				dblTimeIncrement,
 				lsqm1
 			);
 
-			lsqm2 = seSABR2.evolve (
+			lsqm2 = (ForwardRateUpdate) seSABR2.evolve (
 				dblSpotDate,
 				dblDate,
 				dblTimeIncrement,
 				lsqm2
 			);
 
-			lsqm3 = seSABR3.evolve (
+			lsqm3 = (ForwardRateUpdate) seSABR3.evolve (
 				dblSpotDate,
 				dblDate,
 				dblTimeIncrement,
@@ -152,19 +152,19 @@ public class ForwardRateEvolution {
 		double[] adblBeta = {0.00, 0.50, 1.00};
 		double[] adblForwardRateVolatility = {0.03, 0.26, 0.51};
 
-		StateEvolver seSABR1 = SABREvolver (
+		StochasticVolatilityStateEvolver seSABR1 = SABREvolver (
 			adblBeta[0],
 			dblRho,
 			dblVolatilityOfVolatility
 		);
 
-		StateEvolver seSABR2 = SABREvolver (
+		StochasticVolatilityStateEvolver seSABR2 = SABREvolver (
 			adblBeta[1],
 			dblRho,
 			dblVolatilityOfVolatility
 		);
 
-		StateEvolver seSABR3 = SABREvolver (
+		StochasticVolatilityStateEvolver seSABR3 = SABREvolver (
 			adblBeta[2],
 			dblRho,
 			dblVolatilityOfVolatility
@@ -172,6 +172,8 @@ public class ForwardRateEvolution {
 
 		ForwardRateUpdate lsqmInitial1 = ForwardRateUpdate.Create (
 			ForwardLabel.Create ("USD", "6M"),
+			dtSpot.julian(),
+			dtSpot.julian(),
 			dblForwardRate,
 			0.,
 			adblForwardRateVolatility[0],
@@ -180,6 +182,8 @@ public class ForwardRateEvolution {
 
 		ForwardRateUpdate lsqmInitial2 = ForwardRateUpdate.Create (
 			ForwardLabel.Create ("USD", "6M"),
+			dtSpot.julian(),
+			dtSpot.julian(),
 			dblForwardRate,
 			0.,
 			adblForwardRateVolatility[1],
@@ -188,6 +192,8 @@ public class ForwardRateEvolution {
 
 		ForwardRateUpdate lsqmInitial3 = ForwardRateUpdate.Create (
 			ForwardLabel.Create ("USD", "6M"),
+			dtSpot.julian(),
+			dtSpot.julian(),
 			dblForwardRate,
 			0.,
 			adblForwardRateVolatility[2],
