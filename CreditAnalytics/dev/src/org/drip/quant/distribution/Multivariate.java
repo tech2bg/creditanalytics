@@ -7,8 +7,6 @@ package org.drip.quant.distribution;
 
 /*!
  * Copyright (C) 2015 Lakshmi Krishnamurthy
- * Copyright (C) 2014 Lakshmi Krishnamurthy
- * Copyright (C) 2013 Lakshmi Krishnamurthy
  * 
  *  This file is part of DRIP, a free-software/open-source library for fixed income analysts and developers -
  * 		http://www.credit-trader.org/Begin.html
@@ -31,79 +29,69 @@ package org.drip.quant.distribution;
  */
 
 /**
- * Univariate implements the base abstract class behind univariate distributions. It exports methods for
+ * Multivariate implements the base abstract class behind Multivariate distributions. It exports methods for
  * 	incremental, cumulative, and inverse cumulative distribution densities.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class Univariate {
+public abstract class Multivariate {
 
 	/**
-	 * Compute the cumulative under the distribution to the given value
+	 * Compute the Cumulative under the Distribution to the given Variaate Array
 	 * 
-	 * @param dblX Variate to which the cumulative is to be computed
+	 * @param adblX Variate Array to which the Cumulative is to be computed
 	 * 
-	 * @return The cumulative
+	 * @return The Cumulative
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public abstract double cumulative (
-		final double dblX)
+		final double[] adblX)
 		throws java.lang.Exception;
 
 	/**
-	 * Compute the incremental under the distribution between the 2 variates
+	 * Compute the Incremental under the Distribution between the 2 Variate Arrays
 	 * 
-	 * @param dblXLeft Left Variate to which the cumulative is to be computed
-	 * @param dblXRight Right Variate to which the cumulative is to be computed
+	 * @param adblXLeft Left Variate Array to which the Cumulative is to be computed
+	 * @param adblXRight Right Variate Array to which the Cumulative is to be computed
 	 * 
-	 * @return The incremental
+	 * @return The Incremental
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
 	public abstract double incremental (
-		final double dblXLeft,
-		final double dblXRight)
+		final double[] adblXLeft,
+		final double[] adblXRight)
 		throws java.lang.Exception;
 
 	/**
-	 * Compute the inverse cumulative under the distribution corresponding to the given value
+	 * Compute the Inverse Cumulative under the Distribution corresponding to the given Variate Array
 	 * 
-	 * @param dblX Value corresponding to which the inverse cumulative is to be computed
+	 * @param adblX Variate Array corresponding to which the Inverse Cumulative needs to be computed
 	 * 
-	 * @return The inverse cumulative
+	 * @return The Inverse Cumulative
 	 * 
 	 * @throws java.lang.Exception Thrown if the input is invalid
 	 */
 
 	public abstract double invCumulative (
-		final double dblX)
+		final double[] adblX)
 		throws java.lang.Exception;
 
 	/**
-	 * Retrieve the Mean of the Distribution
+	 * Compute the Density under the Distribution at the given Variate Array
 	 * 
-	 * @return The Mean of the Distribution
+	 * @param adblX Variate Array at which the Density needs to be computed
+	 * 
+	 * @return The Density
+	 * 
+	 * @throws java.lang.Exception Thrown if the input is invalid
 	 */
 
-	public abstract double mean();
-
-	/**
-	 * Retrieve the Variance of the Distribution
-	 * 
-	 * @return The Variance of the Distribution
-	 */
-
-	public abstract double variance();
-
-	/**
-	 * Retrieve the Univariate Weighted Histogram
-	 * 
-	 * @return The Univariate Weighted Histogram
-	 */
-
-	public abstract org.drip.quant.common.Array2D histogram();
+	public abstract double density (
+		final double[] adblX)
+		throws java.lang.Exception;
 }

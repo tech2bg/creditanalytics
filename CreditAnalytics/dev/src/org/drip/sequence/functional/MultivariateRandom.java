@@ -37,6 +37,11 @@ package org.drip.sequence.functional;
 
 public abstract class MultivariateRandom extends org.drip.function.deterministic.AbstractMultivariate {
 
+	protected MultivariateRandom()
+	{
+		super (null);
+	}
+
 	/**
 	 * Compute the Target Variate Function Metrics conditional on the specified Input Non-Target Variate
 	 *  Parameter Sequence Off of the Target Variate Ghost Sample Sequence

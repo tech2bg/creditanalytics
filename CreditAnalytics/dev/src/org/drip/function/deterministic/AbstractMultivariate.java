@@ -37,6 +37,10 @@ package org.drip.function.deterministic;
  */
 
 public abstract class AbstractMultivariate {
+	private static final int EXTREMA_SAMPLING = 10000;
+	private static final int QUADRATURE_SAMPLING = 10000;
+
+	protected org.drip.quant.calculus.DerivativeControl _dc = null;
 
 	/**
 	 * Validate the Input Double Array
@@ -62,6 +66,12 @@ public abstract class AbstractMultivariate {
 		return true;
 	}
 
+	protected AbstractMultivariate (
+		final org.drip.quant.calculus.DerivativeControl dc)
+	{
+		if (null == (_dc = dc)) _dc = new org.drip.quant.calculus.DerivativeControl();
+	}
+
 	/**
 	 * Evaluate for the given input variate
 	 * 
@@ -75,4 +85,283 @@ public abstract class AbstractMultivariate {
 	public abstract double evaluate (
 		final double[] adblVariate)
 		throws java.lang.Exception;
+
+	/**
+	 * Calculate the Differential
+	 * 
+	 * @param adblVariate Variate Array at which the derivative is to be calculated
+	 * @param dblOFBase Base Value for the Objective Function
+	 * @param iVariateIndex Index of the Variate whose Derivative is to be computed
+	 * @param iOrder Order of the derivative to be computed
+	 * 
+	 * @return The Derivative
+	 */
+
+	public org.drip.quant.calculus.Differential differential (
+		final double[] adblVariate,
+		final double dblOFBase,
+		final int iVariateIndex,
+		final int iOrder)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (adblVariate) || 0 >= iOrder) return null;
+
+		double dblDerivative = 0.;
+		int iNumVariate = adblVariate.length;
+		double dblOrderedVariateInfinitesimal = 1.;
+		double dblVariateInfinitesimal = java.lang.Double.NaN;
+
+		if (iNumVariate <= iVariateIndex) return null;
+
+		try {
+			dblVariateInfinitesimal = _dc.getVariateInfinitesimal (adblVariate[iVariateIndex]);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+
+			return null;
+		}
+
+		for (int i = 0; i <= iOrder; ++i) {
+			if (0 != i) dblOrderedVariateInfinitesimal *= (2. * dblVariateInfinitesimal);
+
+			double[] adblVariateIncremental = new double[iNumVariate];
+
+			for (int j = 0; i < iNumVariate; ++j)
+				adblVariateIncremental[j] = j == iVariateIndex ? adblVariate[j] + dblVariateInfinitesimal *
+					(iOrder - 2. * i) : adblVariate[j];
+
+			try {
+				dblDerivative += (i % 2 == 0 ? 1 : -1) * org.drip.quant.common.NumberUtil.NCK (iOrder, i) *
+					evaluate (adblVariateIncremental);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		try {
+			return new org.drip.quant.calculus.Differential (dblOrderedVariateInfinitesimal, dblDerivative);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Calculate the Differential
+	 * 
+	 * @param adblVariate Variate Array at which the derivative is to be calculated
+	 * @param iVariateIndex Index of the Variate whose Derivative is to be computed
+	 * @param iOrder Order of the derivative to be computed
+	 * 
+	 * @return The Derivative
+	 */
+
+	public org.drip.quant.calculus.Differential differential (
+		final double[] adblVariate,
+		final int iVariateIndex,
+		final int iOrder)
+	{
+		try {
+			return differential (adblVariate, evaluate (adblVariate), iVariateIndex, iOrder);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Calculate the derivative as a double
+	 * 
+	 * @param adblVariate Variate Array at which the derivative is to be calculated
+	 * @param iVariateIndex Index of the Variate whose Derivative is to be computed
+	 * @param iOrder Order of the derivative to be computed
+	 * 
+	 * @return The Derivative
+	 */
+
+	public double derivative (
+		final double[] adblVariate,
+		final int iVariateIndex,
+		final int iOrder)
+		throws java.lang.Exception
+	{
+		return differential (adblVariate, evaluate (adblVariate), iVariateIndex, iOrder).calcSlope (true);
+	}
+
+	/**
+	 * Integrate over the given Input Range Using Uniform Monte-Carlo
+	 * 
+	 * @param adblLeftEdge Array of Input Left Edge
+	 * @param adblRightEdge Array of Input Right Edge
+	 *  
+	 * @return The Result of the Integration over the specified Range
+	 * 
+	 * @throws java.lang.Exception Thrown if the Integration cannot be done
+	 */
+
+	public double integrate (
+		final double[] adblLeftEdge,
+		final double[] adblRightEdge)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (adblLeftEdge) ||
+			!org.drip.quant.common.NumberUtil.IsValid (adblRightEdge))
+			throw new java.lang.Exception ("AbstractMultivariate::integrate => Invalid Inputs");
+
+		double dblIntegrand = 0.;
+		int iNumVariate = adblLeftEdge.length;
+		double[] adblVariate = new double[iNumVariate];
+		double[] adblVariateWidth = new double[iNumVariate];
+
+		if (adblRightEdge.length != iNumVariate)
+			throw new java.lang.Exception ("AbstractMultivariate::integrate => Invalid Inputs");
+
+		for (int j = 0; j < iNumVariate; ++j)
+			adblVariateWidth[j] = adblRightEdge[j] - adblLeftEdge[j];
+
+		for (int i = 0; i < QUADRATURE_SAMPLING; ++i) {
+			for (int j = 0; j < iNumVariate; ++j)
+				adblVariate[j] = adblLeftEdge[j] + java.lang.Math.random() * adblVariateWidth[j];
+
+			dblIntegrand += evaluate (adblVariate);
+		}
+
+		for (int j = 0; j < iNumVariate; ++j)
+			dblIntegrand = dblIntegrand * adblVariateWidth[j];
+
+		return dblIntegrand / QUADRATURE_SAMPLING;
+	}
+
+	/**
+	 * Compute the Maximum VOP within the Variate Array Range Using Uniform Monte-Carlo
+	 * 
+	 * @param adblVariateLeft The Range Left End Array
+	 * @param adblVariateRight The Range Right End Array
+	 * 
+	 * @return The Maximum VOP
+	 */
+
+	public org.drip.function.deterministic.VariateOutputPair maxima (
+		final double[] adblVariateLeft,
+		final double[] adblVariateRight)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (adblVariateLeft) ||
+			!org.drip.quant.common.NumberUtil.IsValid (adblVariateRight))
+			return null;
+
+		double dblValue = java.lang.Double.NaN;
+		double dblMaxima = java.lang.Double.NaN;
+		int iNumVariate = adblVariateLeft.length;
+		double[] adblVariate = new double[iNumVariate];
+		double[] adblVariateWidth = new double[iNumVariate];
+		double[] adblMaximaVariate = new double[iNumVariate];
+
+		if (adblVariateRight.length != iNumVariate) return null;
+
+		for (int j = 0; j < iNumVariate; ++j)
+			adblVariateWidth[j] = adblVariateRight[j] - adblVariateLeft[j];
+
+		for (int i = 0; i < EXTREMA_SAMPLING; ++i) {
+			for (int j = 0; j < iNumVariate; ++j)
+				adblVariate[j] = adblVariateLeft[j] + java.lang.Math.random() * adblVariateWidth[j];
+
+			try {
+				dblValue = evaluate (adblVariate);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblMaxima)) {
+				dblMaxima = dblValue;
+
+				for (int j = 0; j < iNumVariate; ++j)
+					adblMaximaVariate[j] = adblVariate[j];
+			} else {
+				if (dblMaxima < dblValue) {
+					dblMaxima = dblValue;
+
+					for (int j = 0; j < iNumVariate; ++j)
+						adblMaximaVariate[j] = adblVariate[j];
+				}
+			}
+		}
+
+		try {
+			return new org.drip.function.deterministic.VariateOutputPair (adblMaximaVariate, dblMaxima);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Compute the Minimum VOP within the Variate Array Range Using Uniform Monte-Carlo
+	 * 
+	 * @param adblVariateLeft The Range Left End Array
+	 * @param adblVariateRight The Range Right End Array
+	 * 
+	 * @return The Minimum VOP
+	 */
+
+	public org.drip.function.deterministic.VariateOutputPair minima (
+		final double[] adblVariateLeft,
+		final double[] adblVariateRight)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (adblVariateLeft) ||
+			!org.drip.quant.common.NumberUtil.IsValid (adblVariateRight))
+			return null;
+
+		double dblValue = java.lang.Double.NaN;
+		double dblMinima = java.lang.Double.NaN;
+		int iNumVariate = adblVariateLeft.length;
+		double[] adblVariate = new double[iNumVariate];
+		double[] adblVariateWidth = new double[iNumVariate];
+		double[] adblMinimaVariate = new double[iNumVariate];
+
+		if (adblVariateRight.length != iNumVariate) return null;
+
+		for (int j = 0; j < iNumVariate; ++j)
+			adblVariateWidth[j] = adblVariateRight[j] - adblVariateLeft[j];
+
+		for (int i = 0; i < EXTREMA_SAMPLING; ++i) {
+			for (int j = 0; j < iNumVariate; ++j)
+				adblVariate[j] = adblVariateLeft[j] + java.lang.Math.random() * adblVariateWidth[j];
+
+			try {
+				dblValue = evaluate (adblVariate);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblMinima)) {
+				dblMinima = dblValue;
+
+				for (int j = 0; j < iNumVariate; ++j)
+					adblMinimaVariate[j] = adblVariate[j];
+			} else {
+				if (dblMinima > dblValue) {
+					dblMinima = dblValue;
+
+					for (int j = 0; j < iNumVariate; ++j)
+						adblMinimaVariate[j] = adblVariate[j];
+				}
+			}
+		}
+
+		try {
+			return new org.drip.function.deterministic.VariateOutputPair (adblMinimaVariate, dblMinima);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }

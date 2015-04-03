@@ -124,4 +124,38 @@ public class MultidimensionalRealValuedSpace {
 
 		return true;
 	}
+
+	/**
+	 * Retrieve the Array of the Variate Left Edges
+	 * 
+	 * @return The Array of the Variate Left Edges
+	 */
+
+	public double[] leftEdge()
+	{
+		int iDimension = _aURVS.length;
+		double[] adblLeftEdge = new double[iDimension];
+
+		for (int i = 0; i < iDimension; ++i)
+			adblLeftEdge[i] = _aURVS[i].leftEdge();
+
+		return adblLeftEdge;
+	}
+
+	/**
+	 * Retrieve the Array of the Variate Right Edges
+	 * 
+	 * @return The Array of the Variate Right Edges
+	 */
+
+	public double[] rightEdge()
+	{
+		int iDimension = _aURVS.length;
+		double[] adblRightEdge = new double[iDimension];
+
+		for (int i = 0; i < iDimension; ++i)
+			adblRightEdge[i] = _aURVS[i].rightEdge();
+
+		return adblRightEdge;
+	}
 }

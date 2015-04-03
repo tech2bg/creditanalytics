@@ -82,14 +82,25 @@ public class UnidimensionalRealValuedSpace {
 	}
 
 	/**
-	 * Retrieve the Real-Valued Continuous Space Range
+	 * Retrieve the Left Edge
 	 * 
-	 * @return The Real-Valued Continuous Space Range
+	 * @return The Left Edge
 	 */
 
-	public double[] range()
+	public double leftEdge()
 	{
-		return new double[] {_dblLeftEdge, _dblRightEdge};
+		return _dblLeftEdge;
+	}
+
+	/**
+	 * Retrieve the Right Edge
+	 * 
+	 * @return The Right Edge
+	 */
+
+	public double rightEdge()
+	{
+		return _dblRightEdge;
 	}
 
 	/**

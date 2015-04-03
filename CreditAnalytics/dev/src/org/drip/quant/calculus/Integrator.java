@@ -308,4 +308,113 @@ public class Integrator {
 
 		return (dblRight - dblLeft) / 90 * (7 * dblY0 + 32 * dblY1 + 12 * dblY2 + 32 * dblY3 + 7 * dblY4);
 	}
+
+	/**
+	 * Integrate Numerically over [-infinity, +infinity] using a Change of Variables
+	 * 
+	 * @param au The Input Function
+	 * 
+	 * @return The Numerical Integrand
+	 * 
+	 * @throws java.lang.Exception Thrown if the Integral cannot be computed
+	 */
+
+	public static final double LeftInfiniteRightInfinite (
+		final org.drip.function.deterministic.AbstractUnivariate au)
+		throws java.lang.Exception
+	{
+		if (null == au)
+			throw new java.lang.Exception ("Integrator::LeftInfiniteRightInfinite => Invalid Inputs");
+
+		org.drip.function.deterministic.AbstractUnivariate auTransformed = new
+			org.drip.function.deterministic.AbstractUnivariate (null) {
+			@Override public double evaluate (
+				final double dblX)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception
+						("Integrator::LeftInfiniteRightInfinite => Invalid Inputs");
+
+				double dblX2 = dblX * dblX;
+				double dblXTransform = 1. / (1. - dblX2);
+
+				return (1. + dblX2) / (dblXTransform * dblXTransform) * au.evaluate (dblX / dblXTransform);
+			}
+		};
+
+		return auTransformed.integrate (-1., +1.);
+	}
+
+	/**
+	 * Integrate the specified Function Numerically from -infinity to the specified Right Limit
+	 * 
+	 * @param au The Input Univariate Function
+	 * @param dblRight The Right Integration Limit
+	 * 
+	 * @return The Results of the Integration
+	 * 
+	 * @throws java.lang.Exception Thrown if the Integrand cannot be evaluated
+	 */
+
+	public static final double LeftInfinite (
+		final org.drip.function.deterministic.AbstractUnivariate au,
+		final double dblRight)
+		throws java.lang.Exception
+	{
+		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblRight))
+			throw new java.lang.Exception ("Integrator::LeftInfinite => Invalid Inputs");
+
+		org.drip.function.deterministic.AbstractUnivariate auTransformed = new
+			org.drip.function.deterministic.AbstractUnivariate (null) {
+			@Override public double evaluate (
+				final double dblX)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception ("Integrator::LeftInfinite => Invalid Inputs");
+
+				return (au.evaluate (dblRight - ((1. - dblX) / dblX))) / (dblX * dblX);
+			}
+		};
+
+		return auTransformed.integrate (0., +1.);
+	}
+
+	/**
+	 * Integrate the specified Function Numerically from the specified Left Limit to +infinity
+	 * 
+	 * @param au The Input Univariate Function
+	 * @param dblLeft The Left Integration Limit
+	 * 
+	 * @return The Results of the Integration
+	 * 
+	 * @throws java.lang.Exception Thrown if the Integrand cannot be evaluated
+	 */
+
+	public static final double RightInfinite (
+		final org.drip.function.deterministic.AbstractUnivariate au,
+		final double dblLeft)
+		throws java.lang.Exception
+	{
+		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft))
+			throw new java.lang.Exception ("Integrator::RightInfinite => Invalid Inputs");
+
+		org.drip.function.deterministic.AbstractUnivariate auTransformed = new
+			org.drip.function.deterministic.AbstractUnivariate (null) {
+			@Override public double evaluate (
+				final double dblX)
+				throws java.lang.Exception
+			{
+				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
+					throw new java.lang.Exception ("Integrator::RightInfinite => Invalid Inputs");
+
+				double dblXInversion = 1. - dblX;
+
+				return (au.evaluate (dblLeft + (dblX / dblXInversion))) / (dblXInversion * dblXInversion);
+			}
+		};
+
+		return auTransformed.integrate (0., +1.);
+	}
 }

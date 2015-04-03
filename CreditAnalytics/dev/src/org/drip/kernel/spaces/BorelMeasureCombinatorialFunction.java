@@ -29,13 +29,13 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * BorelMeasureFunctionSpace exposes the normed Discrete Functional Spaces containing the Combinatorial
- *  Elements and their associated Probability Measure.
+ * BorelMeasureCombinatorialFunction exposes the normed Discrete Functional Spaces containing the
+ * 	Combinatorial Elements and their associated Probability Measure.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BorelMeasureFunctionSpace {
+public class BorelMeasureCombinatorialFunction {
 	private org.drip.kernel.spaces.BorelMeasureCombinatorialSpace _bmcs = null;
 	private org.drip.function.deterministic.AbstractMultivariate _amFunc = null;
 
@@ -56,7 +56,7 @@ public class BorelMeasureFunctionSpace {
 	}
 
 	/**
-	 * BorelMeasureFunctionSpace Constructor
+	 * BorelMeasureCombinatorialFunction Constructor
 	 * 
 	 * @param amFunc Multivariate Function
 	 * @param bmcs Underlying Borel Measure Combinatorial Space
@@ -64,13 +64,13 @@ public class BorelMeasureFunctionSpace {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public BorelMeasureFunctionSpace (
+	public BorelMeasureCombinatorialFunction (
 		final org.drip.function.deterministic.AbstractMultivariate amFunc,
 		final org.drip.kernel.spaces.BorelMeasureCombinatorialSpace bmcs)
 		throws java.lang.Exception
 	{
 		if (null == (_bmcs = bmcs) || null == (_amFunc = amFunc))
-			throw new java.lang.Exception ("BorelMeasureFunctionSpace Constructor: Invalid Inputs");
+			throw new java.lang.Exception ("BorelMeasureCombinatorialFunction Constructor: Invalid Inputs");
 	}
 
 	/**

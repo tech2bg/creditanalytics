@@ -41,13 +41,7 @@ package org.drip.function.deterministic;
 public abstract class AbstractUnivariate {
 	protected org.drip.quant.calculus.DerivativeControl _dc = null;
 
-	/**
-	 * Objective Function constructor
-	 * 
-	 * @param dc Derivative Control
-	 */
-
-	public AbstractUnivariate (
+	protected AbstractUnivariate (
 		final org.drip.quant.calculus.DerivativeControl dc)
 	{
 		if (null == (_dc = dc)) _dc = new org.drip.quant.calculus.DerivativeControl();
@@ -174,5 +168,177 @@ public abstract class AbstractUnivariate {
 		throws java.lang.Exception
 	{
 		return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+	}
+
+	/**
+	 * Integrate over [-Infinity, +Infinity]
+	 *  
+	 * @return The Integrated Value
+	 * 
+	 * @throws java.lang.Exception Thrown if evaluation cannot be done
+	 */
+
+	public double integrate()
+		throws java.lang.Exception
+	{
+		return org.drip.quant.calculus.Integrator.LeftInfiniteRightInfinite (this);
+	}
+
+	/**
+	 * Compute the Maximal Variate and the Corresponding Function Value
+	 * 
+	 * @return The Maximal Variate and the Corresponding Function Value
+	 */
+
+	public org.drip.function.deterministic.VariateOutputPair maxima()
+	{
+		AbstractUnivariate auDerivative = new AbstractUnivariate (null) {
+			@Override public double evaluate (
+				final double dblX)
+				throws java.lang.Exception
+			{
+				return derivative (dblX, 1);
+			}
+		};
+
+		try {
+			org.drip.function.solver1D.FixedPointFinder fpf = new
+				org.drip.function.solver1D.FixedPointFinderZheng (0., auDerivative, false);
+
+			org.drip.function.solver1D.FixedPointFinderOutput fpfo = fpf.findRoot();
+
+			if (null == fpfo) return null;
+
+			double dblExtrema = fpfo.getRoot();
+
+			if (0. <= derivative (dblExtrema, 2)) return null;
+
+			return new org.drip.function.deterministic.VariateOutputPair (new double[] {dblExtrema}, evaluate
+				(dblExtrema));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Compute the Maximum VOP within the Variate Range
+	 * 
+	 * @param dblVariateLeft The Range Left End
+	 * @param dblVariateRight The Range Right End
+	 * 
+	 * @return The Maximum VOP
+	 */
+
+	public org.drip.function.deterministic.VariateOutputPair maxima (
+		final double dblVariateLeft,
+		final double dblVariateRight)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariateLeft) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblVariateRight) || dblVariateLeft >= dblVariateRight)
+			return null;
+
+		org.drip.function.deterministic.VariateOutputPair vop = maxima();
+
+		if (null != vop) {
+			double dblRoot = vop.variates()[0];
+
+			if (dblVariateLeft <= dblRoot && dblVariateRight >= dblRoot) return vop;
+		}
+
+		try {
+			double dblLeftOutput = evaluate (dblVariateLeft);
+
+			double dblRightOutput = evaluate (dblVariateRight);
+
+			return dblLeftOutput > dblRightOutput ? new org.drip.function.deterministic.VariateOutputPair
+				(new double[] {dblVariateLeft}, dblLeftOutput) : new
+					org.drip.function.deterministic.VariateOutputPair (new double[] {dblVariateRight},
+						dblRightOutput);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Compute the Minimal Variate and the Corresponding Function Value
+	 * 
+	 * @return The Minimal Variate and the Corresponding Function Value
+	 */
+
+	public org.drip.function.deterministic.VariateOutputPair minima()
+	{
+		AbstractUnivariate auDerivative = new AbstractUnivariate (null) {
+			@Override public double evaluate (
+				final double dblX)
+				throws java.lang.Exception
+			{
+				return derivative (dblX, 1);
+			}
+		};
+
+		try {
+			org.drip.function.solver1D.FixedPointFinder fpf = new
+				org.drip.function.solver1D.FixedPointFinderZheng (0., auDerivative, false);
+
+			org.drip.function.solver1D.FixedPointFinderOutput fpfo = fpf.findRoot();
+
+			if (null == fpfo) return null;
+
+			double dblExtrema = fpfo.getRoot();
+
+			if (0. >= derivative (dblExtrema, 2)) return null;
+
+			return new org.drip.function.deterministic.VariateOutputPair (new double[] {dblExtrema}, evaluate
+				(dblExtrema));
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Compute the Minimum VOP within the Variate Range
+	 * 
+	 * @param dblVariateLeft The Range Left End
+	 * @param dblVariateRight The Range Right End
+	 * 
+	 * @return The Minimum VOP
+	 */
+
+	public org.drip.function.deterministic.VariateOutputPair minima (
+		final double dblVariateLeft,
+		final double dblVariateRight)
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblVariateLeft) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblVariateRight) || dblVariateLeft >= dblVariateRight)
+			return null;
+
+		org.drip.function.deterministic.VariateOutputPair vop = minima();
+
+		if (null != vop) {
+			double dblRoot = vop.variates()[0];
+
+			if (dblVariateLeft <= dblRoot && dblVariateRight >= dblRoot) return vop;
+		}
+
+		try {
+			double dblLeftOutput = evaluate (dblVariateLeft);
+
+			double dblRightOutput = evaluate (dblVariateRight);
+
+			return dblLeftOutput < dblRightOutput ? new org.drip.function.deterministic.VariateOutputPair
+				(new double[] {dblVariateLeft}, dblLeftOutput) : new
+					org.drip.function.deterministic.VariateOutputPair (new double[] {dblVariateRight},
+						dblRightOutput);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }

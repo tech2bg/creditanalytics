@@ -55,6 +55,8 @@ public class SupportVectorMachine extends org.drip.function.deterministic.Abstra
 		final org.drip.kernel.spaces.MultidimensionalRealValuedSpace mrvs)
 		throws java.lang.Exception
 	{
+		super (null);
+
 		if (null == (_adblW = adblW) || null == mrvs || mrvs.dimension() != _adblW.length ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblB = dblB))
 			throw new java.lang.Exception ("SupportVectorMachine ctr: Invalid Inputs");
