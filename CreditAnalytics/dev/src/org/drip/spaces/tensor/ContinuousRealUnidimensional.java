@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.tensor;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,7 +29,7 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * UnidimensionalRealValuedSpace exposes the normed/non-normed, bounded/unbounded Continuous 1D Spaces with
+ * ContinuousRealUnidimensional exposes the normed/non-normed, bounded/unbounded Continuous 1D Spaces with
  *  Real-valued Elements.
  * 
  * The Reference we've used is:
@@ -40,7 +40,7 @@ package org.drip.kernel.spaces;
  * @author Lakshmi Krishnamurthy
  */
 
-public class UnidimensionalRealValuedSpace {
+public class ContinuousRealUnidimensional implements org.drip.spaces.tensor.GeneralizedVectorSpace {
 	private double _dblLeftEdge = java.lang.Double.NaN;
 	private double _dblRightEdge = java.lang.Double.NaN;
 
@@ -50,10 +50,10 @@ public class UnidimensionalRealValuedSpace {
 	 * @return The Standard R^1 Real-valued Space
 	 */
 
-	public static final UnidimensionalRealValuedSpace Standard()
+	public static final ContinuousRealUnidimensional Standard()
 	{
 		try {
-			return new UnidimensionalRealValuedSpace (java.lang.Double.NEGATIVE_INFINITY,
+			return new ContinuousRealUnidimensional (java.lang.Double.NEGATIVE_INFINITY,
 				java.lang.Double.POSITIVE_INFINITY);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -63,7 +63,7 @@ public class UnidimensionalRealValuedSpace {
 	}
 
 	/**
-	 * UnidimensionalRealValuedSpace Constructor
+	 * ContinuousRealUnidimensional Constructor
 	 * 
 	 * @param dblLeftEdge The Left Edge
 	 * @param dblRightEdge The Right Edge
@@ -71,14 +71,14 @@ public class UnidimensionalRealValuedSpace {
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public UnidimensionalRealValuedSpace (
+	public ContinuousRealUnidimensional (
 		final double dblLeftEdge,
 		final double dblRightEdge)
 		throws java.lang.Exception
 	{
 		if (!java.lang.Double.isNaN (_dblLeftEdge = dblLeftEdge) || !java.lang.Double.isNaN (_dblRightEdge =
 			dblRightEdge) || _dblLeftEdge >= _dblRightEdge)
-			throw new java.lang.Exception ("UnidimensionalRealValuedSpace ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ContinuousRealUnidimensional ctr: Invalid Inputs");
 	}
 
 	/**
@@ -104,17 +104,22 @@ public class UnidimensionalRealValuedSpace {
 	}
 
 	/**
-	 * Validate the Input Ordinate
+	 * Validate the Input Instance Ordinate
 	 * 
-	 * @param objElem The Input Ordinate
+	 * @param dblInstance The Input Instance Ordinate
 	 * 
-	 * @return TRUE => Ordinate is a Valid Entry in the Space
+	 * @return TRUE => Instance Ordinate is a Valid Entry in the Space
 	 */
 
-	public boolean validate (
-		final double dblOrdinate)
+	public boolean validateInstance (
+		final double dblInstance)
 	{
-		return java.lang.Double.isNaN (dblOrdinate) && dblOrdinate >= _dblLeftEdge && dblOrdinate <=
+		return java.lang.Double.isNaN (dblInstance) && dblInstance >= _dblLeftEdge && dblInstance <=
 			_dblRightEdge;
+	}
+
+	@Override public org.drip.spaces.tensor.Cardinality cardinality()
+	{
+		return org.drip.spaces.tensor.Cardinality.UncountablyInfinite();
 	}
 }

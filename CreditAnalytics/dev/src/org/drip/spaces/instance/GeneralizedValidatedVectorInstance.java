@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.instance;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,11 +29,24 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * GeneralizedMetricSpace exposes the basic Properties of the Metric Space.
+ * GeneralizedValidatedVectorInstance holds the Validated Vector Variate Instance Sequence and the
+ * 	Corresponding Generalized Vector Space Type.
+ * 
+ * The Reference we've used is:
+ * 
+ * 	- Carl, B., and I. Stephani (1990): Entropy, Compactness, and Approximation of Operators, Cambridge
+ * 		University Press, Cambridge UK.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public interface GeneralizedMetricSpace {
+public interface GeneralizedValidatedVectorInstance {
 
+	/**
+	 * Retrieve the Generalized Tensor Space Type
+	 * 
+	 * @return The Generalized Tensor Space Type
+	 */
+
+	public abstract org.drip.spaces.tensor.GeneralizedVectorSpace tensorSpaceType();
 }

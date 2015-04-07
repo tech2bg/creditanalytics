@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.function;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,32 +29,32 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * BorelMeasureRealValuedFunction exposes the normed  Functional Spaces containing the Continuous,
- *  Real-Valued Elements and their associated Probability Measure.
+ * BorelMeasureRealValued exposes the normed Functional Spaces containing the Continuous, Real-Valued
+ *  Elements and their associated Probability Measure.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BorelMeasureRealValuedFunction {
-	private org.drip.kernel.spaces.BorelMeasureRealValuedSpace _bmrvs = null;
+public class BorelMeasureRealValued {
 	private org.drip.function.deterministic.AbstractMultivariate _amFunc = null;
+	private org.drip.spaces.measure.ContinuousRealValuedBorelSigma _crvbs = null;
 
 	/**
-	 * BorelMeasureRealValuedFunction Constructor
+	 * BorelMeasureRealValued Constructor
 	 * 
 	 * @param amFunc Multivariate Function
-	 * @param bmrvs Underlying Borel Measure Real-Valued Space
+	 * @param crvbs Underlying Borel Measure Real-Valued Space
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public BorelMeasureRealValuedFunction (
+	public BorelMeasureRealValued (
 		final org.drip.function.deterministic.AbstractMultivariate amFunc,
-		final org.drip.kernel.spaces.BorelMeasureRealValuedSpace bmrvs)
+		final org.drip.spaces.measure.ContinuousRealValuedBorelSigma crvbs)
 		throws java.lang.Exception
 	{
-		if (null == (_bmrvs = bmrvs) || null == (_amFunc = amFunc))
-			throw new java.lang.Exception ("BorelMeasureRealValuedFunction Constructor: Invalid Inputs");
+		if (null == (_crvbs = crvbs) || null == (_amFunc = amFunc))
+			throw new java.lang.Exception ("BorelMeasureRealValued Constructor: Invalid Inputs");
 	}
 
 	/**
@@ -74,20 +74,20 @@ public class BorelMeasureRealValuedFunction {
 	 * @return The Underlying Borel-Algebra Real-Valued Metric Space
 	 */
 
-	public org.drip.kernel.spaces.BorelMeasureRealValuedSpace metricSpace()
+	public org.drip.spaces.measure.ContinuousRealValuedBorelSigma metricSpace()
 	{
-		return _bmrvs;
+		return _crvbs;
 	}
 
 	/**
-	 * Compute the ESS (i.e., the Essential Spectrum) of the Spanning Space
+	 * Compute the Population ESS (i.e., the Essential Spectrum) of the Spanning Space
 	 * 
-	 * @return The ESS
+	 * @return The Population ESS
 	 * 
 	 * @throws java.lang.Exception Thrown if the ESS cannot be computed
 	 */
 
-	public double ess()
+	public double populationESS()
 		throws java.lang.Exception
 	{
 		org.drip.function.deterministic.AbstractMultivariate amMultiDist = new
@@ -96,33 +96,33 @@ public class BorelMeasureRealValuedFunction {
 				final double[] adblX)
 				throws java.lang.Exception
 			{
-				return _amFunc.evaluate (adblX) * _bmrvs.multivariateDistribution().density (adblX);
+				return _amFunc.evaluate (adblX) * _crvbs.multivariateDistribution().density (adblX);
 			}
 		};
 
-		org.drip.function.deterministic.VariateOutputPair vopMaxima = amMultiDist.maxima (_bmrvs.leftEdge(),
-			_bmrvs.rightEdge());
+		org.drip.function.deterministic.VariateOutputPair vopMaxima = amMultiDist.maxima (_crvbs.leftEdge(),
+			_crvbs.rightEdge());
 
 		if (null == vopMaxima)
-			throw new java.lang.Exception ("BorelMeasureRealValuedFunction::ess => Cannot compute VOP");
+			throw new java.lang.Exception ("BorelMeasureRealValued::populationESS => Cannot compute VOP");
 
 		return _amFunc.evaluate (vopMaxima.variates());
 	}
 
 	/**
-	 * Compute the P-Norm of the Spanning Space
+	 * Compute the Population Metric Norm of the Spanning Space
 	 * 
-	 * @return The P-Norm
+	 * @return The Population Metric Norm
 	 * 
 	 * @throws java.lang.Exception Thrown if the p-Norm cannot be computed
 	 */
 
-	public double norm()
+	public double populationMetricNorm()
 		throws java.lang.Exception
 	{
-		final int iPNorm = _bmrvs.pnorm();
+		final int iPNorm = _crvbs.pnorm();
 
-		if (0 == iPNorm) return ess();
+		if (0 == iPNorm) return populationESS();
 
 		org.drip.function.deterministic.AbstractMultivariate amMultiDistFunctionalPNorm = new
 			org.drip.function.deterministic.AbstractMultivariate (null) {
@@ -130,15 +130,16 @@ public class BorelMeasureRealValuedFunction {
 				final double[] adblX)
 				throws java.lang.Exception
 			{
-				if (!org.drip.quant.common.NumberUtil.IsValid (adblX) || _bmrvs.dimension() != adblX.length)
-					throw new java.lang.Exception ("BorelMeasureRealValuedSpace::norm => Invalid Inputs");
+				if (!org.drip.quant.common.NumberUtil.IsValid (adblX) || _crvbs.dimension() != adblX.length)
+					throw new java.lang.Exception
+						("BorelMeasureRealValued::populationMetricNorm => Invalid Inputs");
 
 				return java.lang.Math.abs (java.lang.Math.pow (_amFunc.evaluate (adblX), iPNorm)) *
-					_bmrvs.multivariateDistribution().density (adblX);
+					_crvbs.multivariateDistribution().density (adblX);
 			}
 		};
 
-		return java.lang.Math.pow (amMultiDistFunctionalPNorm.integrate (_bmrvs.leftEdge(),
-			_bmrvs.rightEdge()), 1. / iPNorm);
+		return java.lang.Math.pow (amMultiDistFunctionalPNorm.integrate (_crvbs.leftEdge(),
+			_crvbs.rightEdge()), 1. / iPNorm);
 	}
 }

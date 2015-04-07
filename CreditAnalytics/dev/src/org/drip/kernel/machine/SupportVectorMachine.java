@@ -37,7 +37,7 @@ package org.drip.kernel.machine;
 public class SupportVectorMachine extends org.drip.function.deterministic.AbstractMultivariate {
 	private double[] _adblW = null;
 	private double _dblB = java.lang.Double.NaN;
-	private org.drip.kernel.spaces.MultidimensionalRealValuedSpace _mrvs = null;
+	private org.drip.spaces.tensor.ContinuousRealMultidimensional _mrvs = null;
 
 	/**
 	 * SupportVectorMachine Constructor
@@ -52,7 +52,7 @@ public class SupportVectorMachine extends org.drip.function.deterministic.Abstra
 	public SupportVectorMachine (
 		final double[] adblW,
 		final double dblB,
-		final org.drip.kernel.spaces.MultidimensionalRealValuedSpace mrvs)
+		final org.drip.spaces.tensor.ContinuousRealMultidimensional mrvs)
 		throws java.lang.Exception
 	{
 		super (null);
@@ -88,7 +88,7 @@ public class SupportVectorMachine extends org.drip.function.deterministic.Abstra
 		final double[] adblX)
 		throws java.lang.Exception
 	{
-		if (!_mrvs.validate (adblX))
+		if (!_mrvs.validateInstance (adblX))
 			throw new java.lang.Exception ("SupportVectorMachine::evaluate => Invalid Inputs");
 
 		double dblDotProduct = 0.;
@@ -114,8 +114,8 @@ public class SupportVectorMachine extends org.drip.function.deterministic.Abstra
 		final double[] adblX)
 		throws java.lang.Exception
 	{
-		return evaluate (adblX) > 0. ? org.drip.kernel.spaces.BooleanSpace.BS_UP :
-			org.drip.kernel.spaces.BooleanSpace.BS_DOWN;
+		return evaluate (adblX) > 0. ? org.drip.spaces.tensor.BinaryBoolean.BS_UP :
+			org.drip.spaces.tensor.BinaryBoolean.BS_DOWN;
 	}
 
 	/**

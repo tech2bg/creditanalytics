@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.instance;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,7 +29,8 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * HilbertSpace implements the normed, bounded/unbounded Continuous Multi-dimensional Real-valued R^2 Spaces.
+ * ValidatedContinuousRealUnidimensional holds the Validated Continuous Uni-dimensional Real-Valued Vector
+ * 	Instance Sequence and the Corresponding Generalized Vector Space Type.
  * 
  * The Reference we've used is:
  * 
@@ -39,60 +40,42 @@ package org.drip.kernel.spaces;
  * @author Lakshmi Krishnamurthy
  */
 
-public class HilbertSpace extends org.drip.kernel.spaces.BanachSpace {
+public class ValidatedContinuousRealUnidimensional implements org.drip.spaces.instance.GeneralizedValidatedVectorInstance 
+{
+	private double[] _adblInstance = null;
+	private org.drip.spaces.tensor.ContinuousRealUnidimensional _cru = null;
 
 	/**
-	 * Construct the Standard R^2 HilbertSpace Instance
+	 * ValidatedContinuousRealUnidimensional Constructor
 	 * 
-	 * @param iDimension The Space Dimension
-	 * 
-	 * @return The Standard R^2 HilbertSpace Instance
-	 */
-
-	public static final HilbertSpace StandardHilbert (
-		final int iDimension)
-	{
-		try {
-			return 0 >= iDimension ? null : new HilbertSpace (new
-				org.drip.kernel.spaces.UnidimensionalRealValuedSpace[iDimension]);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * HilbertSpace Constructor
-	 * 
-	 * @param aURVS Array of the Real Valued Spaces
+	 * @param cru The Continuous Uni-dimensional Real-Valued Tensor Space Type
+	 * @param adblInstance The Data Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public HilbertSpace (
-		final org.drip.kernel.spaces.UnidimensionalRealValuedSpace[] aURVS)
+	public ValidatedContinuousRealUnidimensional (
+		final org.drip.spaces.tensor.ContinuousRealUnidimensional cru,
+		final double[] adblInstance)
 		throws java.lang.Exception
 	{
-		super (aURVS, 2);
+		if (null == (_cru = cru) || null == (_adblInstance = adblInstance) || 0 == _adblInstance.length)
+			throw new java.lang.Exception ("ValidatedContinuousRealUnidimensional ctr: Invalid Inputs");
 	}
 
-	@Override public double norm (
-		final double[] adblX)
-		throws java.lang.Exception
+	@Override public org.drip.spaces.tensor.ContinuousRealUnidimensional tensorSpaceType()
 	{
-		if (!validate (adblX))
-			throw new java.lang.Exception ("HilbertSpace::norm => Cannot Validate Inputs");
+		return _cru;
+	}
 
-		double dblNorm = 0.;
-		int iDimension = adblX.length;
+	/**
+	 * Retrieve the Instance Sequence
+	 * 
+	 * @return The Instance Sequence
+	 */
 
-		for (int i = 0; i < iDimension; ++i) {
-			double dblAbsoluteX = java.lang.Math.abs (adblX[i]);
-
-			dblNorm += dblAbsoluteX * dblAbsoluteX;
-		}
-
-		return dblNorm;
+	public double[] instance()
+	{
+		return _adblInstance;
 	}
 }

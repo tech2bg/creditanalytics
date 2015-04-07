@@ -42,8 +42,8 @@ package org.drip.kernel.machine;
  */
 
 public class BoundedLinearOperatorClass {
-	private org.drip.kernel.spaces.BanachSpace _bsE = null;
-	private org.drip.kernel.spaces.BanachSpace _bsF = null;
+	private org.drip.spaces.metric.ContinuousRealMultidimensionalBanach _bsE = null;
+	private org.drip.spaces.metric.ContinuousRealMultidimensionalBanach _bsF = null;
 
 	/**
 	 * BoundedLinearOperatorClass Constructor
@@ -55,8 +55,8 @@ public class BoundedLinearOperatorClass {
 	 */
 
 	public BoundedLinearOperatorClass (
-		final org.drip.kernel.spaces.BanachSpace bsE,
-		final org.drip.kernel.spaces.BanachSpace bsF)
+		final org.drip.spaces.metric.ContinuousRealMultidimensionalBanach bsE,
+		final org.drip.spaces.metric.ContinuousRealMultidimensionalBanach bsF)
 		throws java.lang.Exception
 	{
 		if (null == (_bsE = bsE) || null == (_bsF = bsF))
@@ -69,7 +69,7 @@ public class BoundedLinearOperatorClass {
 	 * @return The Input Normed Banach Space
 	 */
 
-	public org.drip.kernel.spaces.BanachSpace e()
+	public org.drip.spaces.metric.ContinuousRealMultidimensionalBanach e()
 	{
 		return _bsE;
 	}
@@ -80,7 +80,7 @@ public class BoundedLinearOperatorClass {
 	 * @return The Output Normed Banach Space
 	 */
 
-	public org.drip.kernel.spaces.BanachSpace f()
+	public org.drip.spaces.metric.ContinuousRealMultidimensionalBanach f()
 	{
 		return _bsF;
 	}

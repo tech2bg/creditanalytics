@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.tensor;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,12 +29,12 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * MetricCardinality contains the Type and the Measure of the Metric Cardinality.
+ * Cardinality contains the Type and the Measure of the Cardinality of the given Vector Space.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class MetricCardinality {
+public class Cardinality {
 
 	/**
 	 * Cardinality Type - Countably Finite
@@ -58,18 +58,18 @@ public class MetricCardinality {
 	private double _dblNumber = java.lang.Double.NaN;
 
 	/**
-	 * Countably Finite Metric Cardinality
+	 * Countably Finite Cardinality
 	 * 
 	 * @param dblNumber The Cardinality Number
 	 * 
-	 * @return The Metric Cardinality Instance
+	 * @return The Cardinality Instance
 	 */
 
-	public static final MetricCardinality CountablyFinite (
+	public static final Cardinality CountablyFinite (
 		final double dblNumber)
 	{
 		try {
-			return new MetricCardinality (CARD_COUNTABLY_FINITE, dblNumber);
+			return new Cardinality (CARD_COUNTABLY_FINITE, dblNumber);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -78,15 +78,15 @@ public class MetricCardinality {
 	}
 
 	/**
-	 * Countably Infinite Metric Cardinality
+	 * Countably Infinite Cardinality
 	 * 
-	 * @return The Metric Cardinality Instance
+	 * @return The Cardinality Instance
 	 */
 
-	public static final MetricCardinality CountablyInfinite()
+	public static final Cardinality CountablyInfinite()
 	{
 		try {
-			return new MetricCardinality (CARD_COUNTABLY_INFINITE, java.lang.Double.POSITIVE_INFINITY);
+			return new Cardinality (CARD_COUNTABLY_INFINITE, java.lang.Double.POSITIVE_INFINITY);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -95,15 +95,15 @@ public class MetricCardinality {
 	}
 
 	/**
-	 * Uncountably Infinite Metric Cardinality
+	 * Uncountably Infinite Cardinality
 	 * 
-	 * @return The Metric Cardinality Instance
+	 * @return The Cardinality Instance
 	 */
 
-	public static final MetricCardinality UncountablyInfinite()
+	public static final Cardinality UncountablyInfinite()
 	{
 		try {
-			return new MetricCardinality (CARD_UNCOUNTABLY_INFINITE, java.lang.Double.POSITIVE_INFINITY);
+			return new Cardinality (CARD_UNCOUNTABLY_INFINITE, java.lang.Double.POSITIVE_INFINITY);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -112,7 +112,7 @@ public class MetricCardinality {
 	}
 
 	/**
-	 * MetricCardinality Constructor
+	 * Cardinality Constructor
 	 * 
 	 * @param iType Cardinality Type
 	 * @param dblNumber Cardinality Number
@@ -120,14 +120,14 @@ public class MetricCardinality {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public MetricCardinality (
+	public Cardinality (
 		final int iType,
 		final double dblNumber)
 		throws java.lang.Exception
 	{
 		if ((CARD_COUNTABLY_FINITE != (_iType = iType) && CARD_COUNTABLY_INFINITE != _iType &&
 			CARD_UNCOUNTABLY_INFINITE != _iType) || java.lang.Double.isNaN (_dblNumber = dblNumber))
-			throw new java.lang.Exception ("MetricCardinality ctr => Invalid Inputs");
+			throw new java.lang.Exception ("Cardinality ctr => Invalid Inputs");
 	}
 
 	/**

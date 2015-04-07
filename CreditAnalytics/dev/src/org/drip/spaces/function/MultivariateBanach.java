@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.function;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,8 +29,8 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * MultivariateFunctionBanachSpace implements the normed, bounded/unbounded Continuous Multivariate Functions
- *  on Real-valued R^d Spaces.
+ * MultivariateBanach implements the normed, bounded/unbounded Continuous Multivariate Functions on
+ *  Real-valued R^d Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -40,12 +40,12 @@ package org.drip.kernel.spaces;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultivariateFunctionBanachSpace {
-	private org.drip.kernel.spaces.BanachSpace _bs = null;
+public class MultivariateBanach {
+	private org.drip.spaces.metric.ContinuousRealMultidimensionalBanach _bs = null;
 	private org.drip.function.deterministic.AbstractMultivariate _amFunc = null;
 
 	/**
-	 * MultivariateFunctionBanachSpace Constructor
+	 * MultivariateBanach Constructor
 	 * 
 	 * @param amFunc Multivariate Function
 	 * @param bs Underlying Banach Space
@@ -53,13 +53,13 @@ public class MultivariateFunctionBanachSpace {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public MultivariateFunctionBanachSpace (
+	public MultivariateBanach (
 		final org.drip.function.deterministic.AbstractMultivariate amFunc,
-		final org.drip.kernel.spaces.BanachSpace bs)
+		final org.drip.spaces.metric.ContinuousRealMultidimensionalBanach bs)
 		throws java.lang.Exception
 	{
 		if (null == (_bs = bs) || null == (_amFunc = amFunc))
-			throw new java.lang.Exception ("MultivariateFunctionBanachSpace Constructor: Invalid Inputs");
+			throw new java.lang.Exception ("MultivariateBanach Constructor: Invalid Inputs");
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class MultivariateFunctionBanachSpace {
 	 * @return The Underlying Banach Metric Space
 	 */
 
-	public org.drip.kernel.spaces.BanachSpace metricSpace()
+	public org.drip.spaces.metric.ContinuousRealMultidimensionalBanach metricSpace()
 	{
 		return _bs;
 	}
@@ -94,12 +94,12 @@ public class MultivariateFunctionBanachSpace {
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public double norm (
+	public double sampleMetricNorm (
 		final double[][] aadblX)
 		throws java.lang.Exception
 	{
 		if (null == aadblX)
-			throw new java.lang.Exception ("MultivariateFunctionBanachSpace::norm => Invalid Inputs");
+			throw new java.lang.Exception ("MultivariateBanach::sampleMetricNorm => Invalid Inputs");
 
 		int iNumVector = aadblX.length;
 		double[] adblFunctionValue = new double[iNumVector];
@@ -107,6 +107,6 @@ public class MultivariateFunctionBanachSpace {
 		for (int i = 0; i < iNumVector; ++i)
 			adblFunctionValue[i] = _amFunc.evaluate (aadblX[i]);
 
-		return _bs.norm (adblFunctionValue);
+		return _bs.sampleMetricNorm (adblFunctionValue);
 	}
 }

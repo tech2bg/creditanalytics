@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.tensor;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,12 +29,12 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * BooleanSpace implements the normed/non-normed Boolean Spaces.
+ * BinaryBoolean implements the normed/non-normed Binary/Boolean Combinatorial Vector Spaces.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BooleanSpace extends org.drip.kernel.spaces.CombinatorialSpace {
+public class BinaryBoolean extends org.drip.spaces.tensor.CombinatorialRealUnidimensional {
 
 	/**
 	 * Boolean Space "UP"
@@ -48,16 +48,16 @@ public class BooleanSpace extends org.drip.kernel.spaces.CombinatorialSpace {
 
 	public static final short BS_DOWN = (short) -1;
 
-	public static final BooleanSpace Standard()
+	public static final BinaryBoolean Standard()
 	{
-		java.util.Set<java.lang.Object> setElementSpace = new java.util.HashSet<java.lang.Object>();
+		java.util.Set<java.lang.Double> setElementSpace = new java.util.HashSet<java.lang.Double>();
 
-		setElementSpace.add (BS_UP);
+		setElementSpace.add ((double) BS_UP);
 
-		setElementSpace.add (BS_DOWN);
+		setElementSpace.add ((double) BS_DOWN);
 
 		try {
-			return new BooleanSpace (setElementSpace);
+			return new BinaryBoolean (setElementSpace);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -65,8 +65,8 @@ public class BooleanSpace extends org.drip.kernel.spaces.CombinatorialSpace {
 		return null;
 	}
 
-	private BooleanSpace (
-		final java.util.Set<java.lang.Object> setElementSpace)
+	private BinaryBoolean (
+		final java.util.Set<java.lang.Double> setElementSpace)
 		throws java.lang.Exception
 	{
 		super (setElementSpace);

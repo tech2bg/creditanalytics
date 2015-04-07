@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.metric;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,7 +29,7 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * BanachSpace implements the normed, bounded/unbounded Continuous Multi-dimensional Real-valued R^d Spaces.
+ * ContinuousRealMultidimensionalBanach implements the normed, bounded/unbounded Continuous l^p R^d Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -39,25 +39,27 @@ package org.drip.kernel.spaces;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BanachSpace extends org.drip.kernel.spaces.MultidimensionalRealValuedSpace {
+public class ContinuousRealMultidimensionalBanach extends
+	org.drip.spaces.tensor.ContinuousRealMultidimensional implements
+		org.drip.spaces.metric.GeneralizedMetricSpace {
 	private int _iPNorm = -1;
 
 	/**
-	 * Construct the Standard R^d BanachSpace Instance
+	 * Construct the Standard l^p R^d Continuous Banach Space Instance
 	 * 
 	 * @param iDimension The Space Dimension
 	 * @param iPNorm The p-norm of the Space
 	 * 
-	 * @return The Standard R^d BanachSpace Instance
+	 * @return The Standard l^p R^d Continuous Banach Space Instance
 	 */
 
-	public static final BanachSpace StandardBanach (
+	public static final ContinuousRealMultidimensionalBanach StandardBanach (
 		final int iDimension,
 		final int iPNorm)
 	{
 		try {
-			return 0 >= iDimension ? null : new BanachSpace (new
-				org.drip.kernel.spaces.UnidimensionalRealValuedSpace[iDimension], iPNorm);
+			return 0 >= iDimension ? null : new ContinuousRealMultidimensionalBanach (new
+				org.drip.spaces.tensor.ContinuousRealUnidimensional[iDimension], iPNorm);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -66,51 +68,69 @@ public class BanachSpace extends org.drip.kernel.spaces.MultidimensionalRealValu
 	}
 
 	/**
-	 * BanachSpace Constructor
+	 * Construct the Supremum (i.e., l^Infinity) R^d Continuous Banach Space Instance
 	 * 
-	 * @param aURVS Array of the Real Valued Spaces
+	 * @param iDimension The Space Dimension
+	 * 
+	 * @return The Supremum (i.e., l^Infinity) R^d Continuous Banach Space Instance
+	 */
+
+	public static final ContinuousRealMultidimensionalBanach SupremumBanach (
+		final int iDimension)
+	{
+		try {
+			return 0 >= iDimension ? null : new ContinuousRealMultidimensionalBanach (new
+				org.drip.spaces.tensor.ContinuousRealUnidimensional[iDimension], 0);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * ContinuousRealMultidimensionalBanach Space Constructor
+	 * 
+	 * @param aCURV Array of Continuous Real Valued Vector Spaces
 	 * @param iPNorm The p-norm of the Space
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public BanachSpace (
-		final org.drip.kernel.spaces.UnidimensionalRealValuedSpace[] aURVS,
+	public ContinuousRealMultidimensionalBanach (
+		final org.drip.spaces.tensor.ContinuousRealUnidimensional[] aCURV,
 		final int iPNorm)
 		throws java.lang.Exception
 	{
-		super (aURVS);
+		super (aCURV);
 
 		if (0 > (_iPNorm = iPNorm))
-			throw new java.lang.Exception ("BanachSpace Constructor: Invalid p-norm");
+			throw new java.lang.Exception
+				("ContinuousRealMultidimensionalBanach Constructor: Invalid p-norm");
 	}
 
-	/**
-	 * Retrieve the P-Norm of the Banach Space
-	 * 
-	 * @return The P-Norm of the Banach Space
-	 */
-
-	public int pnorm()
+	@Override public int pNorm()
 	{
 		return _iPNorm;
 	}
 
 	/**
-	 * Compute the P-Norm of the Banach Space Input
+	 * Compute the Metric Norm of the Sample
 	 * 
-	 * @param adblX The Banach Space Input
+	 * @param adblX The Sample
 	 * 
-	 * @return The P-Norm of the Banach Space Input
+	 * @return The Metric Norm of the Sample
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public double norm (
+	public double sampleMetricNorm (
 		final double[] adblX)
 		throws java.lang.Exception
 	{
-		if (!validate (adblX)) throw new java.lang.Exception ("BanachSpace::norm => Cannot Validate Inputs");
+		if (!validateInstance (adblX))
+			throw new java.lang.Exception
+				("ContinuousRealMultidimensionalBanach::sampleMetricNorm => Invalid Inputs");
 
 		int iDimension = adblX.length;
 

@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.metric;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,44 +29,18 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * CombinatorialSpace exposes the normed/non-normed Discrete Spaces with Combinatorial Elements.
+ * GeneralizedMetricSpace exposes the basic Properties of the General Normed Metric Space.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CombinatorialSpace {
-	private java.util.Set<java.lang.Object> _setElementSpace = new java.util.HashSet<java.lang.Object>();
-
-	protected CombinatorialSpace (
-		final java.util.Set<java.lang.Object> setElementSpace)
-		throws java.lang.Exception
-	{
-		if (null == (_setElementSpace = setElementSpace) || 0 == _setElementSpace.size())
-			throw new java.lang.Exception ("CombinatorialSpace ctr: Invalid Inputs");
-	}
+public interface GeneralizedMetricSpace {
 
 	/**
-	 * Retrieve the Full Space of Elements
+	 * Retrieve the P-Norm Index of the Metric Space
 	 * 
-	 * @return The Full Space of Elements
+	 * @return The P-Norm Index of the Metric Space
 	 */
 
-	public java.util.Set<java.lang.Object> elementSpace()
-	{
-		return _setElementSpace;
-	}
-
-	/**
-	 * Validate the Input Element
-	 * 
-	 * @param objElem The Input Element
-	 * 
-	 * @return TRUE => Element is a Valid Entry in the Space
-	 */
-
-	public boolean validateElement (
-		final java.lang.Object objElem)
-	{
-		return null != objElem && _setElementSpace.contains (objElem);
-	}
+	public abstract int pNorm();
 }

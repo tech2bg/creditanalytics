@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.tensor;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,7 +29,7 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * MultidimensionalRealValuedSpace implements the normed/non-normed, bounded/unbounded Continuous
+ * ContinuousRealMultidimensional implements the normed/non-normed, bounded/unbounded Continuous
  * 	Multi-dimensional Real-valued R^d Spaces.
  * 
  * The Reference we've used is:
@@ -40,23 +40,23 @@ package org.drip.kernel.spaces;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultidimensionalRealValuedSpace {
-	private org.drip.kernel.spaces.UnidimensionalRealValuedSpace[] _aURVS = null;
+public class ContinuousRealMultidimensional implements org.drip.spaces.tensor.GeneralizedVectorSpace {
+	private org.drip.spaces.tensor.ContinuousRealUnidimensional[] _aCRU = null;
 
 	/**
-	 * Construct the Standard R^d MultidimensionalRealValuedSpace Instance
+	 * Construct the Standard R^d ContinuousRealMultidimensional Instance
 	 * 
 	 * @param iDimension The Space Dimension
 	 * 
-	 * @return The Standard R^d MultidimensionalRealValuedSpace Instance
+	 * @return The Standard R^d ContinuousRealMultidimensional Instance
 	 */
 
-	public static final MultidimensionalRealValuedSpace Standard (
+	public static final ContinuousRealMultidimensional Standard (
 		final int iDimension)
 	{
 		try {
-			return 0 >= iDimension ? null : new MultidimensionalRealValuedSpace (new
-				org.drip.kernel.spaces.UnidimensionalRealValuedSpace[iDimension]);
+			return 0 >= iDimension ? null : new ContinuousRealMultidimensional (new
+				org.drip.spaces.tensor.ContinuousRealUnidimensional[iDimension]);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -65,28 +65,28 @@ public class MultidimensionalRealValuedSpace {
 	}
 
 	/**
-	 * MultidimensionalRealValuedSpace Constructor
+	 * ContinuousRealMultidimensional Constructor
 	 * 
-	 * @param aURVS Array of the Real Valued Spaces
+	 * @param aCRU Array of the Continuous Uni-dimensional Real Valued Spaces
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public MultidimensionalRealValuedSpace (
-		final org.drip.kernel.spaces.UnidimensionalRealValuedSpace[] aURVS)
+	public ContinuousRealMultidimensional (
+		final org.drip.spaces.tensor.ContinuousRealUnidimensional[] aCRU)
 		throws java.lang.Exception
 	{
-		if (null == (_aURVS = aURVS))
-			throw new java.lang.Exception ("MultidimensionalRealValuedSpace ctr: Invalid Inputs");
+		if (null == (_aCRU = aCRU))
+			throw new java.lang.Exception ("ContinuousRealMultidimensional ctr: Invalid Inputs");
 
-		int iDimension = _aURVS.length;
+		int iDimension = _aCRU.length;
 
 		if (0 == iDimension)
-			throw new java.lang.Exception ("MultidimensionalRealValuedSpace ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ContinuousRealMultidimensional ctr: Invalid Inputs");
 
 		for (int i = 0; i < iDimension; ++i) {
-			if (null == _aURVS[i])
-				throw new java.lang.Exception ("MultidimensionalRealValuedSpace ctr: Invalid Inputs");
+			if (null == _aCRU[i])
+				throw new java.lang.Exception ("ContinuousRealMultidimensional ctr: Invalid Inputs");
 		}
 	}
 
@@ -98,28 +98,28 @@ public class MultidimensionalRealValuedSpace {
 
 	public int dimension()
 	{
-		return _aURVS.length;
+		return _aCRU.length;
 	}
 
 	/**
-	 * Validate the specified R^d Input
+	 * Validate the specified R^d Input Instance
 	 * 
-	 * @param adblX The R^d Input
+	 * @param adblInstance The R^d Input Instance
 	 * 
-	 * @return TRUE => Input Space Valid
+	 * @return TRUE => Input Instance Valid
 	 */
 
-	public boolean validate (
-		final double[] adblX)
+	public boolean validateInstance (
+		final double[] adblInstance)
 	{
-		if (null == adblX) return false;
+		if (null == adblInstance) return false;
 
-		int iDimension = _aURVS.length;
+		int iDimension = _aCRU.length;
 
-		if (adblX.length != iDimension) return false;
+		if (adblInstance.length != iDimension) return false;
 
 		for (int i = 0; i < iDimension; ++i) {
-			if (!_aURVS[i].validate (adblX[i])) return false;
+			if (!_aCRU[i].validateInstance (adblInstance[i])) return false;
 		}
 
 		return true;
@@ -133,11 +133,11 @@ public class MultidimensionalRealValuedSpace {
 
 	public double[] leftEdge()
 	{
-		int iDimension = _aURVS.length;
+		int iDimension = _aCRU.length;
 		double[] adblLeftEdge = new double[iDimension];
 
 		for (int i = 0; i < iDimension; ++i)
-			adblLeftEdge[i] = _aURVS[i].leftEdge();
+			adblLeftEdge[i] = _aCRU[i].leftEdge();
 
 		return adblLeftEdge;
 	}
@@ -150,12 +150,17 @@ public class MultidimensionalRealValuedSpace {
 
 	public double[] rightEdge()
 	{
-		int iDimension = _aURVS.length;
+		int iDimension = _aCRU.length;
 		double[] adblRightEdge = new double[iDimension];
 
 		for (int i = 0; i < iDimension; ++i)
-			adblRightEdge[i] = _aURVS[i].rightEdge();
+			adblRightEdge[i] = _aCRU[i].rightEdge();
 
 		return adblRightEdge;
+	}
+
+	@Override public org.drip.spaces.tensor.Cardinality cardinality()
+	{
+		return org.drip.spaces.tensor.Cardinality.UncountablyInfinite();
 	}
 }

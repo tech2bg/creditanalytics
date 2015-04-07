@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.function;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -36,8 +36,8 @@ package org.drip.kernel.spaces;
  */
 
 public class BorelMeasureCombinatorialFunction {
-	private org.drip.kernel.spaces.BorelMeasureCombinatorialSpace _bmcs = null;
 	private org.drip.function.deterministic.AbstractMultivariate _amFunc = null;
+	private org.drip.spaces.measure.DiscreteCombinatorialBorelSigma _bmcs = null;
 
 	private double[] KeyToDoubleArray (
 		final java.lang.Object objKey)
@@ -66,7 +66,7 @@ public class BorelMeasureCombinatorialFunction {
 
 	public BorelMeasureCombinatorialFunction (
 		final org.drip.function.deterministic.AbstractMultivariate amFunc,
-		final org.drip.kernel.spaces.BorelMeasureCombinatorialSpace bmcs)
+		final org.drip.spaces.measure.DiscreteCombinatorialBorelSigma bmcs)
 		throws java.lang.Exception
 	{
 		if (null == (_bmcs = bmcs) || null == (_amFunc = amFunc))
@@ -90,7 +90,7 @@ public class BorelMeasureCombinatorialFunction {
 	 * @return The Underlying Borel-Algebra Combinatorial Metric Space
 	 */
 
-	public org.drip.kernel.spaces.BorelMeasureCombinatorialSpace metricSpace()
+	public org.drip.spaces.measure.DiscreteCombinatorialBorelSigma metricSpace()
 	{
 		return _bmcs;
 	}
@@ -109,7 +109,7 @@ public class BorelMeasureCombinatorialFunction {
 		double dblESS = java.lang.Double.NaN;
 		double dblESSNorm = java.lang.Double.NaN;
 
-		for (java.util.Map.Entry<java.lang.Object, java.lang.Double> me : _bmcs.sigmaMeasure().entrySet()) {
+		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me : _bmcs.sigmaMeasure().entrySet()) {
 			double dblInstanceFunctionValue = java.lang.Math.abs (_amFunc.evaluate (KeyToDoubleArray
 				(me.getKey())));
 
@@ -139,13 +139,13 @@ public class BorelMeasureCombinatorialFunction {
 	public double norm()
 		throws java.lang.Exception
 	{
-		int iPNorm = _bmcs.pnorm();
+		int iPNorm = _bmcs.pNorm();
 
 		if (0 == iPNorm) return ess();
 
 		double dblNorm = 0.;
 
-		for (java.util.Map.Entry<java.lang.Object, java.lang.Double> me : _bmcs.sigmaMeasure().entrySet())
+		for (java.util.Map.Entry<java.lang.Double, java.lang.Double> me : _bmcs.sigmaMeasure().entrySet())
 			dblNorm += java.lang.Math.pow (java.lang.Math.abs (_amFunc.evaluate (KeyToDoubleArray
 				(me.getKey()))), iPNorm) * me.getValue();
 

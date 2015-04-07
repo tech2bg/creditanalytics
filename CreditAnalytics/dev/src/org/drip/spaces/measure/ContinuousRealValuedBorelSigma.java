@@ -1,5 +1,5 @@
 
-package org.drip.kernel.spaces;
+package org.drip.spaces.measure;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,18 +29,20 @@ package org.drip.kernel.spaces;
  */
 
 /**
- * BorelMeasureRealValuedSpace exposes the normed Continuous Spaces containing the Real-Valued Element Ranges
- * 	and their associated Probability Measure.
+ * ContinuousRealValuedBorelSigma exposes the normed Continuous Vector Spaces containing the Real-Valued
+ *  Element Ranges and their associated Probability Measure.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BorelMeasureRealValuedSpace extends org.drip.kernel.spaces.MultidimensionalRealValuedSpace {
+public class ContinuousRealValuedBorelSigma extends
+	org.drip.spaces.tensor.ContinuousRealMultidimensional implements org.drip.spaces.measure.BorelSigma
+{
 	private int _iPNorm = -1;
 	private org.drip.quant.distribution.Multivariate _multiDist = null;
 
 	/**
-	 * BorelMeasureRealValuedSpace Constructor
+	 * ContinuousRealValuedBorelSigma Constructor
 	 * 
 	 * @param aURVS Array of the Real Valued Spaces
 	 * @param iPNorm p-Norm
@@ -49,8 +51,8 @@ public class BorelMeasureRealValuedSpace extends org.drip.kernel.spaces.Multidim
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public BorelMeasureRealValuedSpace (
-		final org.drip.kernel.spaces.UnidimensionalRealValuedSpace[] aURVS,
+	public ContinuousRealValuedBorelSigma (
+		final org.drip.spaces.tensor.ContinuousRealUnidimensional[] aURVS,
 		final int iPNorm,
 		final org.drip.quant.distribution.Multivariate multiDist)
 		throws java.lang.Exception
@@ -58,7 +60,7 @@ public class BorelMeasureRealValuedSpace extends org.drip.kernel.spaces.Multidim
 		super (aURVS);
 
 		if (0 > (_iPNorm = iPNorm))
-			throw new java.lang.Exception ("BorelMeasureRealValuedSpace ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ContinuousRealValuedBorelSigma ctr: Invalid Inputs");
 
 		_multiDist = multiDist;
 	}
@@ -85,15 +87,7 @@ public class BorelMeasureRealValuedSpace extends org.drip.kernel.spaces.Multidim
 		return _iPNorm;
 	}
 
-	/**
-	 * Compute the ESS (i.e., the Essential Spectrum) of the Spanning Space
-	 * 
-	 * @return The ESS
-	 * 
-	 * @throws java.lang.Exception Thrown if the ESS cannot be computed
-	 */
-
-	public double ess()
+	@Override public double populationESS()
 		throws java.lang.Exception
 	{
 		org.drip.function.deterministic.AbstractMultivariate amMultiDist = new
@@ -110,23 +104,16 @@ public class BorelMeasureRealValuedSpace extends org.drip.kernel.spaces.Multidim
 			rightEdge());
 
 		if (null == vopMaxima)
-			throw new java.lang.Exception ("BorelMeasureRealValuedSpace::ess => Cannot compute VOP");
+			throw new java.lang.Exception
+				("ContinuousRealValuedBorelSigma::populationESS => Cannot compute VOP");
 
 		return vopMaxima.output();
 	}
 
-	/**
-	 * Compute the P-Norm of the Spanning Space
-	 * 
-	 * @return The P-Norm
-	 * 
-	 * @throws java.lang.Exception Thrown if the p-Norm cannot be computed
-	 */
-
-	public double norm()
+	@Override public double populationMetricNorm()
 		throws java.lang.Exception
 	{
-		if (0 == _iPNorm) return ess();
+		if (0 == _iPNorm) return populationESS();
 
 		org.drip.function.deterministic.AbstractMultivariate amMultiDistPNorm = new
 			org.drip.function.deterministic.AbstractMultivariate (null) {
@@ -135,13 +122,15 @@ public class BorelMeasureRealValuedSpace extends org.drip.kernel.spaces.Multidim
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (adblX))
-					throw new java.lang.Exception ("BorelMeasureRealValuedSpace::norm => Invalid Inputs");
+					throw new java.lang.Exception
+						("ContinuousRealValuedBorelSigma::pupulationMetricNorm => Invalid Inputs");
 
 				double dblPNorm = 0.;
 				int iDimension = adblX.length;
 
 				if (dimension() != iDimension)
-					throw new java.lang.Exception ("BorelMeasureRealValuedSpace::norm => Invalid Inputs");
+					throw new java.lang.Exception
+						("ContinuousRealValuedBorelSigma::pupulationMetricNorm => Invalid Inputs");
 
 				for (int i = 0; i < iDimension; ++i)
 					dblPNorm += java.lang.Math.abs (java.lang.Math.pow (adblX[i], _iPNorm));
