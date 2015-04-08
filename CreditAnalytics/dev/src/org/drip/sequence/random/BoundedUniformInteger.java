@@ -88,7 +88,7 @@ public class BoundedUniformInteger extends org.drip.sequence.random.UnivariateSe
 
 	@Override public org.drip.sequence.metrics.SingleSequenceAgnosticMetrics sequence (
 		final int iNumEntry,
-		final org.drip.quant.distribution.Univariate distPopulation)
+		final org.drip.measure.continuous.UnivariateDistribution distPopulation)
 	{
 		double[] adblSequence = new double[iNumEntry];
 

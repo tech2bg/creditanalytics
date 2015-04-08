@@ -1,5 +1,5 @@
 
-package org.drip.quant.distribution;
+package org.drip.measure.continuous;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,13 +29,13 @@ package org.drip.quant.distribution;
  */
 
 /**
- * Multivariate implements the base abstract class behind Multivariate distributions. It exports methods for
- * 	incremental, cumulative, and inverse cumulative distribution densities.
+ * MultivariateDistribution implements the base abstract class behind Multivariate distributions. It exports
+ *  methods for incremental, cumulative, and inverse cumulative distribution densities.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class Multivariate {
+public abstract class MultivariateDistribution {
 
 	/**
 	 * Compute the Cumulative under the Distribution to the given Variaate Array

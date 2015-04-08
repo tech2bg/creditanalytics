@@ -182,19 +182,19 @@ public class FRAStandardCapFloorlet extends org.drip.product.option.FixedIncomeO
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblManifestMeasurePriceTransformer)) return null;
 
 			if (_bIsCaplet) {
-				dblForwardIntrinsic = dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF
-					(dblDPlus) - dblStrike * org.drip.quant.distribution.Gaussian.InverseCDF (dblDMinus);
+				dblForwardIntrinsic = dblATMManifestMeasure * org.drip.measure.continuous.Gaussian.InverseCDF
+					(dblDPlus) - dblStrike * org.drip.measure.continuous.Gaussian.InverseCDF (dblDMinus);
 
 				dblForwardATMIntrinsic = dblATMManifestMeasure *
-					org.drip.quant.distribution.Gaussian.InverseCDF (dblATMDPlus) - dblStrike *
-						org.drip.quant.distribution.Gaussian.InverseCDF (dblATMDMinus);
+					org.drip.measure.continuous.Gaussian.InverseCDF (dblATMDPlus) - dblStrike *
+						org.drip.measure.continuous.Gaussian.InverseCDF (dblATMDMinus);
 			} else {
-				dblForwardIntrinsic = dblStrike * org.drip.quant.distribution.Gaussian.InverseCDF
-					(-dblDMinus) - dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF
+				dblForwardIntrinsic = dblStrike * org.drip.measure.continuous.Gaussian.InverseCDF
+					(-dblDMinus) - dblATMManifestMeasure * org.drip.measure.continuous.Gaussian.InverseCDF
 						(-dblDPlus);
 
-				dblForwardATMIntrinsic = dblStrike * org.drip.quant.distribution.Gaussian.InverseCDF
-					(-dblATMDMinus) - dblATMManifestMeasure * org.drip.quant.distribution.Gaussian.InverseCDF
+				dblForwardATMIntrinsic = dblStrike * org.drip.measure.continuous.Gaussian.InverseCDF
+					(-dblATMDMinus) - dblATMManifestMeasure * org.drip.measure.continuous.Gaussian.InverseCDF
 						(-dblATMDPlus);
 			}
 

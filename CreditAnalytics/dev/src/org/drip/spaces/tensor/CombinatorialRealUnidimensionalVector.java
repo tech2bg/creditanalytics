@@ -29,21 +29,29 @@ package org.drip.spaces.tensor;
  */
 
 /**
- * CombinatorialRealUnidimensional exposes the normed/non-normed Discrete Spaces with Real-valued
- *  Combinatorial Elements.
+ * CombinatorialRealUnidimensionalVector exposes the normed/non-normed Discrete Spaces with Unidimensional
+ * 	Real-valued Combinatorial Vector Elements.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class CombinatorialRealUnidimensional implements org.drip.spaces.tensor.GeneralizedVectorSpace {
+public class CombinatorialRealUnidimensionalVector implements org.drip.spaces.tensor.GeneralizedVectorSpace {
 	private java.util.Set<java.lang.Double> _setElementSpace = new java.util.HashSet<java.lang.Double>();
 
-	protected CombinatorialRealUnidimensional (
+	/**
+	 * CombinatorialRealUnidimensionalVector Constructor
+	 * 
+	 * @param setElementSpace The Set Space of Elements
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public CombinatorialRealUnidimensionalVector (
 		final java.util.Set<java.lang.Double> setElementSpace)
 		throws java.lang.Exception
 	{
 		if (null == (_setElementSpace = setElementSpace) || 0 == _setElementSpace.size())
-			throw new java.lang.Exception ("CombinatorialRealUnidimensional ctr: Invalid Inputs");
+			throw new java.lang.Exception ("CombinatorialRealUnidimensionalVector ctr: Invalid Inputs");
 	}
 
 	/**
@@ -60,19 +68,37 @@ public class CombinatorialRealUnidimensional implements org.drip.spaces.tensor.G
 	/**
 	 * Validate the Input Instance
 	 * 
-	 * @param objInstance The Input Instance
+	 * @param dblXInstance The Input Instance
 	 * 
 	 * @return TRUE => Instance is a Valid Entry in the Space
 	 */
 
 	public boolean validateInstance (
-		final java.lang.Object objInstance)
+		final double dblXInstance)
 	{
-		return _setElementSpace.contains (objInstance);
+		return _setElementSpace.contains (dblXInstance);
 	}
 
 	@Override public org.drip.spaces.tensor.Cardinality cardinality()
 	{
 		return org.drip.spaces.tensor.Cardinality.CountablyFinite (_setElementSpace.size());
+	}
+
+	@Override public boolean match (
+		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther)
+	{
+		if (null == gvsOther || !(gvsOther instanceof CombinatorialRealUnidimensionalVector)) return false;
+
+		CombinatorialRealUnidimensionalVector cruvOther = (CombinatorialRealUnidimensionalVector) gvsOther;
+
+		if (!cardinality().match (cruvOther.cardinality())) return false;
+
+		java.util.Set<java.lang.Double> setElementOther = cruvOther.elementSpace();
+
+		for (double dblElement : _setElementSpace) {
+			if (!setElementOther.contains (dblElement)) return false;
+		}
+
+		return true;
 	}
 }

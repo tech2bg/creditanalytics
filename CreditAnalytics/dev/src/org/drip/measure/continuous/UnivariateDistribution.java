@@ -1,5 +1,5 @@
 
-package org.drip.quant.distribution;
+package org.drip.measure.continuous;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -31,13 +31,13 @@ package org.drip.quant.distribution;
  */
 
 /**
- * Univariate implements the base abstract class behind univariate distributions. It exports methods for
- * 	incremental, cumulative, and inverse cumulative distribution densities.
+ * UnivariateDistribution implements the base abstract class behind univariate distributions. It exports
+ *  methods for incremental, cumulative, and inverse cumulative distribution densities.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class Univariate {
+public abstract class UnivariateDistribution {
 
 	/**
 	 * Compute the cumulative under the distribution to the given value
@@ -80,6 +80,20 @@ public abstract class Univariate {
 	 */
 
 	public abstract double invCumulative (
+		final double dblX)
+		throws java.lang.Exception;
+
+	/**
+	 * Compute the Density under the Distribution at the given Variate
+	 * 
+	 * @param dblX Variate at which the Density needs to be computed
+	 * 
+	 * @return The Density
+	 * 
+	 * @throws java.lang.Exception Thrown if the input is invalid
+	 */
+
+	public abstract double density (
 		final double dblX)
 		throws java.lang.Exception;
 

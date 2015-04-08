@@ -48,17 +48,19 @@ public class ContinuousRealMultidimensionalBall extends
 	 * Construct a ContinuousRealMultidimensionalBall Instance of Unit Radius
 	 * 
 	 * @param aCRU Array of Continuous Real Valued Multidimensional Vector Spaces
+	 * @param multiDist The Multivariate Borel Sigma Measure
 	 * @param iPNorm The p-norm of the Space
 	 * 
 	 * @return ContinuousRealMultidimensionalBall Instance of Unit Radius
 	 */
 
 	public static final ContinuousRealMultidimensionalBall ClosedUnit (
-		final org.drip.spaces.tensor.ContinuousRealUnidimensional[] aCRU,
+		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] aCRU,
+		final org.drip.measure.continuous.MultivariateDistribution multiDist,
 		final int iPNorm)
 	{
 		try {
-			return new ContinuousRealMultidimensionalBall (aCRU, iPNorm, 1.);
+			return new ContinuousRealMultidimensionalBall (aCRU, multiDist, iPNorm, 1.);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -70,6 +72,7 @@ public class ContinuousRealMultidimensionalBall extends
 	 * ContinuousRealMultidimensionalBall Constructor
 	 * 
 	 * @param aCRU Array of Continuous Real Valued Unidimensional Vector Spaces
+	 * @param multiDist The Multivariate Borel Sigma Measure
 	 * @param iPNorm The p-norm of the Space
 	 * @param dblNormRadius Radius Norm of the Unit Ball
 	 * 
@@ -77,12 +80,13 @@ public class ContinuousRealMultidimensionalBall extends
 	 */
 
 	public ContinuousRealMultidimensionalBall (
-		final org.drip.spaces.tensor.ContinuousRealUnidimensional[] aCRU,
+		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] aCRU,
+		final org.drip.measure.continuous.MultivariateDistribution multiDist,
 		final int iPNorm,
 		final double dblNormRadius)
 		throws java.lang.Exception
 	{
-		super (aCRU, iPNorm);
+		super (aCRU, multiDist, iPNorm);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblNormRadius = dblNormRadius) || 0. >=
 			_dblNormRadius)

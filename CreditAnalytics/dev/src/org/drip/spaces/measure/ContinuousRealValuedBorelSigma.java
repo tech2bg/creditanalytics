@@ -36,10 +36,10 @@ package org.drip.spaces.measure;
  */
 
 public class ContinuousRealValuedBorelSigma extends
-	org.drip.spaces.tensor.ContinuousRealMultidimensional implements org.drip.spaces.measure.BorelSigma
+	org.drip.spaces.tensor.ContinuousRealMultidimensionalVector implements org.drip.spaces.measure.BorelSigma
 {
 	private int _iPNorm = -1;
-	private org.drip.quant.distribution.Multivariate _multiDist = null;
+	private org.drip.measure.continuous.MultivariateDistribution _multiDist = null;
 
 	/**
 	 * ContinuousRealValuedBorelSigma Constructor
@@ -52,9 +52,9 @@ public class ContinuousRealValuedBorelSigma extends
 	 */
 
 	public ContinuousRealValuedBorelSigma (
-		final org.drip.spaces.tensor.ContinuousRealUnidimensional[] aURVS,
+		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] aURVS,
 		final int iPNorm,
-		final org.drip.quant.distribution.Multivariate multiDist)
+		final org.drip.measure.continuous.MultivariateDistribution multiDist)
 		throws java.lang.Exception
 	{
 		super (aURVS);
@@ -71,7 +71,7 @@ public class ContinuousRealValuedBorelSigma extends
 	 * @return The Borel Sigma Multivariate Probability Measure
 	 */
 
-	public org.drip.quant.distribution.Multivariate multivariateDistribution()
+	public org.drip.measure.continuous.MultivariateDistribution multivariateDistribution()
 	{
 		return _multiDist;
 	}

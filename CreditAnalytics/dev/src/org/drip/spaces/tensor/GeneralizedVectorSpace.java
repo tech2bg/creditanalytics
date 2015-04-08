@@ -43,4 +43,15 @@ public interface GeneralizedVectorSpace {
 	 */
 
 	public abstract org.drip.spaces.tensor.Cardinality cardinality();
+
+	/**
+	 * Compare against the "Other" Generalized Vector Space
+	 * 
+	 * @param gvsOther The "Other" Generalized Vector Space
+	 * 
+	 * @return TRUE => The "Other" Generalized Vector Space matches this
+	 */
+
+	public abstract boolean match (
+		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther);
 }

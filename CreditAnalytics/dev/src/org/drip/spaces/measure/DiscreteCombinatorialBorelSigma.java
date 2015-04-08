@@ -35,7 +35,7 @@ package org.drip.spaces.measure;
  * @author Lakshmi Krishnamurthy
  */
 
-public class DiscreteCombinatorialBorelSigma extends org.drip.spaces.tensor.CombinatorialRealUnidimensional implements
+public class DiscreteCombinatorialBorelSigma extends org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector implements
 	org.drip.spaces.metric.GeneralizedMetricSpace, org.drip.spaces.measure.BorelSigma {
 	private int _iPNorm = -1;
 	private java.util.Map<java.lang.Double, java.lang.Double> _mapSigmaMeasure = null;

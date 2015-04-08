@@ -47,16 +47,18 @@ public class ContinuousRealUnidimensionalHilbert extends
 	 * 
 	 * @param dblLeftEdge The Left Edge
 	 * @param dblRightEdge The Right Edge
+	 * @param uniDist The Univariate Borel Sigma Measure
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
 	public ContinuousRealUnidimensionalHilbert (
 		final double dblLeftEdge,
-		final double dblRightEdge)
+		final double dblRightEdge,
+		final org.drip.measure.continuous.UnivariateDistribution uniDist)
 		throws java.lang.Exception
 	{
-		super (dblLeftEdge, dblRightEdge, 2);
+		super (dblLeftEdge, dblRightEdge, uniDist, 2);
 	}
 
 	@Override public double sampleMetricNorm (

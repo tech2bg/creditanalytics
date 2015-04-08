@@ -29,8 +29,8 @@ package org.drip.spaces.tensor;
  */
 
 /**
- * ContinuousRealMultidimensional implements the normed/non-normed, bounded/unbounded Continuous
- * 	Multi-dimensional Real-valued R^d Spaces.
+ * ContinuousRealMultidimensionalVector implements the normed/non-normed, bounded/unbounded Continuous
+ * 	Multi-dimensional Real-valued R^d Vector Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -40,23 +40,23 @@ package org.drip.spaces.tensor;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuousRealMultidimensional implements org.drip.spaces.tensor.GeneralizedVectorSpace {
-	private org.drip.spaces.tensor.ContinuousRealUnidimensional[] _aCRU = null;
+public class ContinuousRealMultidimensionalVector implements org.drip.spaces.tensor.GeneralizedVectorSpace {
+	private org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] _aCRUV = null;
 
 	/**
-	 * Construct the Standard R^d ContinuousRealMultidimensional Instance
+	 * Construct the Standard R^d ContinuousRealMultidimensionalVector Instance
 	 * 
 	 * @param iDimension The Space Dimension
 	 * 
-	 * @return The Standard R^d ContinuousRealMultidimensional Instance
+	 * @return The Standard R^d ContinuousRealMultidimensionalVector Instance
 	 */
 
-	public static final ContinuousRealMultidimensional Standard (
+	public static final ContinuousRealMultidimensionalVector Standard (
 		final int iDimension)
 	{
 		try {
-			return 0 >= iDimension ? null : new ContinuousRealMultidimensional (new
-				org.drip.spaces.tensor.ContinuousRealUnidimensional[iDimension]);
+			return 0 >= iDimension ? null : new ContinuousRealMultidimensionalVector (new
+				org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[iDimension]);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -65,28 +65,28 @@ public class ContinuousRealMultidimensional implements org.drip.spaces.tensor.Ge
 	}
 
 	/**
-	 * ContinuousRealMultidimensional Constructor
+	 * ContinuousRealMultidimensionalVector Constructor
 	 * 
-	 * @param aCRU Array of the Continuous Uni-dimensional Real Valued Spaces
+	 * @param aCRUV Array of the Continuous Uni-dimensional Real Valued Vector Spaces
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ContinuousRealMultidimensional (
-		final org.drip.spaces.tensor.ContinuousRealUnidimensional[] aCRU)
+	public ContinuousRealMultidimensionalVector (
+		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] aCRUV)
 		throws java.lang.Exception
 	{
-		if (null == (_aCRU = aCRU))
-			throw new java.lang.Exception ("ContinuousRealMultidimensional ctr: Invalid Inputs");
+		if (null == (_aCRUV = aCRUV))
+			throw new java.lang.Exception ("ContinuousRealMultidimensionalVector ctr: Invalid Inputs");
 
-		int iDimension = _aCRU.length;
+		int iDimension = _aCRUV.length;
 
 		if (0 == iDimension)
-			throw new java.lang.Exception ("ContinuousRealMultidimensional ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ContinuousRealMultidimensionalVector ctr: Invalid Inputs");
 
 		for (int i = 0; i < iDimension; ++i) {
-			if (null == _aCRU[i])
-				throw new java.lang.Exception ("ContinuousRealMultidimensional ctr: Invalid Inputs");
+			if (null == _aCRUV[i])
+				throw new java.lang.Exception ("ContinuousRealMultidimensionalVector ctr: Invalid Inputs");
 		}
 	}
 
@@ -98,7 +98,18 @@ public class ContinuousRealMultidimensional implements org.drip.spaces.tensor.Ge
 
 	public int dimension()
 	{
-		return _aCRU.length;
+		return _aCRUV.length;
+	}
+
+	/**
+	 * Retrieve the Array of the Underlying Continuous Real Unidimensional Vector Spaces
+	 * 
+	 * @return The Array of the Underlying Continuous Real Unidimensional Vector Spaces
+	 */
+
+	public org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] cruv()
+	{
+		return _aCRUV;
 	}
 
 	/**
@@ -114,12 +125,12 @@ public class ContinuousRealMultidimensional implements org.drip.spaces.tensor.Ge
 	{
 		if (null == adblInstance) return false;
 
-		int iDimension = _aCRU.length;
+		int iDimension = _aCRUV.length;
 
 		if (adblInstance.length != iDimension) return false;
 
 		for (int i = 0; i < iDimension; ++i) {
-			if (!_aCRU[i].validateInstance (adblInstance[i])) return false;
+			if (!_aCRUV[i].validateInstance (adblInstance[i])) return false;
 		}
 
 		return true;
@@ -133,11 +144,11 @@ public class ContinuousRealMultidimensional implements org.drip.spaces.tensor.Ge
 
 	public double[] leftEdge()
 	{
-		int iDimension = _aCRU.length;
+		int iDimension = _aCRUV.length;
 		double[] adblLeftEdge = new double[iDimension];
 
 		for (int i = 0; i < iDimension; ++i)
-			adblLeftEdge[i] = _aCRU[i].leftEdge();
+			adblLeftEdge[i] = _aCRUV[i].leftEdge();
 
 		return adblLeftEdge;
 	}
@@ -150,11 +161,11 @@ public class ContinuousRealMultidimensional implements org.drip.spaces.tensor.Ge
 
 	public double[] rightEdge()
 	{
-		int iDimension = _aCRU.length;
+		int iDimension = _aCRUV.length;
 		double[] adblRightEdge = new double[iDimension];
 
 		for (int i = 0; i < iDimension; ++i)
-			adblRightEdge[i] = _aCRU[i].rightEdge();
+			adblRightEdge[i] = _aCRUV[i].rightEdge();
 
 		return adblRightEdge;
 	}
@@ -162,5 +173,25 @@ public class ContinuousRealMultidimensional implements org.drip.spaces.tensor.Ge
 	@Override public org.drip.spaces.tensor.Cardinality cardinality()
 	{
 		return org.drip.spaces.tensor.Cardinality.UncountablyInfinite();
+	}
+
+	@Override public boolean match (
+		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther)
+	{
+		if (null == gvsOther || !(gvsOther instanceof ContinuousRealMultidimensionalVector)) return false;
+
+		ContinuousRealMultidimensionalVector crmvOther = (ContinuousRealMultidimensionalVector) gvsOther;
+
+		int iDimensionOther = crmvOther.dimension();
+
+		if (iDimensionOther != dimension()) return false;
+
+		org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] aCRUVOther = crmvOther.cruv();
+
+		for (int i = 0; i < iDimensionOther; ++i) {
+			if (!aCRUVOther[i].match (_aCRUV[i])) return false;
+		}
+
+		return true;
 	}
 }

@@ -36,7 +36,7 @@ package org.drip.sequence.functional;
  */
 
 public class IdempotentUnivariateRandom extends org.drip.function.deterministic1D.OffsetIdempotent {
-	private org.drip.quant.distribution.Univariate _dist = null;
+	private org.drip.measure.continuous.UnivariateDistribution _dist = null;
 
 	/**
 	 * IdempotentUnivariateRandom Constructor
@@ -49,7 +49,7 @@ public class IdempotentUnivariateRandom extends org.drip.function.deterministic1
 
 	public IdempotentUnivariateRandom (
 		final double dblOffset,
-		final org.drip.quant.distribution.Univariate dist)
+		final org.drip.measure.continuous.UnivariateDistribution dist)
 		throws java.lang.Exception
 	{
 		super (dblOffset);
@@ -132,7 +132,7 @@ public class IdempotentUnivariateRandom extends org.drip.function.deterministic1
 	 * @return The Underlying Distribution
 	 */
 
-	public org.drip.quant.distribution.Univariate underlyingDistribution()
+	public org.drip.measure.continuous.UnivariateDistribution underlyingDistribution()
 	{
 		return _dist;
 	}

@@ -51,7 +51,7 @@ public class BoundedSequenceAgnosticMetrics extends
 
 	public BoundedSequenceAgnosticMetrics (
 		final double[] adblSequence,
-		final org.drip.quant.distribution.Univariate distPopulation,
+		final org.drip.measure.continuous.UnivariateDistribution distPopulation,
 		final double dblSupport)
 		throws java.lang.Exception
 	{

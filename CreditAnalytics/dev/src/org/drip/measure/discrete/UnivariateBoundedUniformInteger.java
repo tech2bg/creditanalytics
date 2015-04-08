@@ -1,5 +1,5 @@
 
-package org.drip.quant.distribution;
+package org.drip.measure.discrete;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,36 +29,54 @@ package org.drip.quant.distribution;
  */
 
 /**
- * BoundedUniform implements the Bounded Uniform Distribution, with a Uniform Distribution between a lower
- *  and an upper Bound.
+ * UnivariateBoundedUniformInteger implements the Univariate Bounded Uniform Integer Distribution, with the
+ *  Integer being generated between a lower and an upper Bound.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class UnivariateBoundedUniform extends org.drip.quant.distribution.Univariate {
-	private static final int GRID_WIDTH = 100;
-
-	private double _dblLowerBound = java.lang.Double.NaN;
-	private double _dblUpperBound = java.lang.Double.NaN;
+public class UnivariateBoundedUniformInteger extends org.drip.measure.continuous.UnivariateDistribution {
+	private int _iStart = -1;
+	private int _iFinish = -1;
 
 	/**
-	 * Construct a univariate Bounded Uniform distribution
+	 * Construct a Univariate Bounded Uniform Integer Distribution
 	 * 
-	 * @param dblLowerBound The Lower Bound
-	 * @param dblUpperBound The Upper Bound
+	 * @param iStart The Starting Integer
+	 * @param iFinish The Finishing Integer
 	 * 
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public UnivariateBoundedUniform (
-		final double dblLowerBound,
-		final double dblUpperBound)
+	public UnivariateBoundedUniformInteger (
+		final int iStart,
+		final int iFinish)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblLowerBound = dblLowerBound) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblUpperBound = dblUpperBound) || dblUpperBound <=
-				dblLowerBound)
-			throw new java.lang.Exception ("UnivariateBoundedUniform constructor: Invalid inputs");
+		if ((_iFinish = iFinish) <= (_iStart = iStart))
+			throw new java.lang.Exception ("UnivariateBoundedUniformInteger constructor: Invalid inputs");
+	}
+
+	/**
+	 * Retrieve the Start
+	 * 
+	 * @return The Start
+	 */
+
+	public int start()
+	{
+		return _iStart;
+	}
+
+	/**
+	 * Retrieve the Finish
+	 * 
+	 * @return The Finish
+	 */
+
+	public int finish()
+	{
+		return _iFinish;
 	}
 
 	@Override public double cumulative (
@@ -66,13 +84,13 @@ public class UnivariateBoundedUniform extends org.drip.quant.distribution.Univar
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
-			throw new java.lang.Exception ("UnivariateBoundedUniform::cumulative => Invalid inputs");
+			throw new java.lang.Exception ("UnivariateBoundedUniformInteger::cumulative => Invalid inputs");
 
-		if (dblX <= _dblLowerBound) return 0.;
+		if (dblX <= _iStart) return 0.;
 
-		if (dblX >= _dblUpperBound) return 1.;
+		if (dblX >= _iFinish) return 1.;
 
-		return (dblX - _dblLowerBound) / (_dblUpperBound - _dblLowerBound);
+		return (dblX - _iStart) / (_iFinish - _iStart);
 	}
 
 	@Override public double incremental (
@@ -88,30 +106,39 @@ public class UnivariateBoundedUniform extends org.drip.quant.distribution.Univar
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblY) || dblY < 0. || dblY > 1.)
-			throw new java.lang.Exception ("UnivariateBoundedUniform::invCumulative => Invalid inputs");
+			throw new java.lang.Exception
+				("UnivariateBoundedUniformInteger::invCumulative => Invalid inputs");
 
-	    return dblY * (_dblUpperBound - _dblLowerBound) + _dblLowerBound;
+	    return dblY * (_iFinish - _iStart) + _iStart;
+	}
+
+	@Override public double density (
+		final double dblX)
+		throws java.lang.Exception
+	{
+		throw new java.lang.Exception
+			("UnivariateBoundedUniformInteger::density => Not available for discrete distributions");
 	}
 
 	@Override public double mean()
 	{
-	    return 0.5 * (_dblUpperBound + _dblLowerBound);
+	    return 0.5 * (_iFinish + _iStart);
 	}
 
 	@Override public double variance()
 	{
-	    return (_dblUpperBound - _dblLowerBound) * (_dblUpperBound - _dblLowerBound) / 12.;
+	    return (_iFinish - _iStart) * (_iFinish - _iStart) / 12.;
 	}
 
 	@Override public org.drip.quant.common.Array2D histogram()
 	{
-		double[] adblX = new double[GRID_WIDTH];
-		double[] adblY = new double[GRID_WIDTH];
-		double dblWidth = (_dblUpperBound - _dblLowerBound) / GRID_WIDTH;
+		int iGridWidth = _iFinish - _iStart;
+		double[] adblX = new double[iGridWidth];
+		double[] adblY = new double[iGridWidth];
 
-		for (int i = 0; i < GRID_WIDTH; ++i) {
-			adblY[i] = 1. / GRID_WIDTH;
-			adblX[i] = _dblLowerBound + (i + 1) * dblWidth;
+		for (int i = 0; i < iGridWidth; ++i) {
+			adblY[i] = 1. / iGridWidth;
+			adblX[i] = _iStart + (i + 1);
 		}
 
 		try {

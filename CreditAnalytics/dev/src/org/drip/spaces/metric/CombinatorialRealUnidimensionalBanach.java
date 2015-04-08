@@ -29,7 +29,8 @@ package org.drip.spaces.metric;
  */
 
 /**
- * ContinuousRealUnidimensionalBanach implements the normed, bounded/unbounded Continuous l^p R^1 Spaces.
+ * CombinatorialRealUnidimensionalBanach implements the normed, bounded/unbounded Combinatorial l^p R^1
+ *  Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -39,31 +40,29 @@ package org.drip.spaces.metric;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuousRealUnidimensionalBanach extends
-	org.drip.spaces.tensor.ContinuousRealUnidimensionalVector implements
+public class CombinatorialRealUnidimensionalBanach extends
+	org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector implements
 		org.drip.spaces.metric.GeneralizedMetricSpace {
 	private int _iPNorm = -1;
 	private org.drip.measure.continuous.UnivariateDistribution _uniDist = null;
 
 	/**
-	 * Construct the Standard l^p R^1 Continuous Banach Space Instance
+	 * Construct the Standard l^p R^1 Combinatorial Banach Space Instance
 	 * 
-	 * @param dblLeftEdge The Left Edge
-	 * @param dblRightEdge The Right Edge
+	 * @param setElementSpace The Set Space of Elements
 	 * @param uniDist The Univariate Borel Sigma Measure
 	 * @param iPNorm The p-norm of the Space
 	 * 
-	 * @return The Standard l^p R^1 Continuous Banach Space Instance
+	 * @return The Standard l^p R^1 Combinatorial Banach Space Instance
 	 */
 
-	public static final ContinuousRealUnidimensionalBanach StandardBanach (
-		final double dblLeftEdge,
-		final double dblRightEdge,
+	public static final CombinatorialRealUnidimensionalBanach StandardBanach (
+		final java.util.Set<java.lang.Double> setElementSpace,
 		final org.drip.measure.continuous.UnivariateDistribution uniDist,
 		final int iPNorm)
 	{
 		try {
-			return new ContinuousRealUnidimensionalBanach (dblLeftEdge, dblRightEdge, uniDist, iPNorm);
+			return new CombinatorialRealUnidimensionalBanach (setElementSpace, uniDist, iPNorm);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -72,22 +71,20 @@ public class ContinuousRealUnidimensionalBanach extends
 	}
 
 	/**
-	 * Construct the Supremum (i.e., l^Infinity) R^1 Continuous Banach Space Instance
+	 * Construct the Supremum (i.e., l^Infinity) R^1 Combinatorial Banach Space Instance
 	 * 
-	 * @param dblLeftEdge The Left Edge
-	 * @param dblRightEdge The Right Edge
+	 * @param setElementSpace The Set Space of Elements
 	 * @param uniDist The Univariate Borel Sigma Measure
 	 * 
-	 * @return The Supremum (i.e., l^Infinity) R^1 Continuous Banach Space Instance
+	 * @return The Supremum (i.e., l^Infinity) R^1 Combinatorial Banach Space Instance
 	 */
 
-	public static final ContinuousRealUnidimensionalBanach SupremumBanach (
-		final double dblLeftEdge,
-		final double dblRightEdge,
+	public static final CombinatorialRealUnidimensionalBanach SupremumBanach (
+		final java.util.Set<java.lang.Double> setElementSpace,
 		final org.drip.measure.continuous.UnivariateDistribution uniDist)
 	{
 		try {
-			return new ContinuousRealUnidimensionalBanach (dblLeftEdge, dblRightEdge, uniDist, 0);
+			return new CombinatorialRealUnidimensionalBanach (setElementSpace, uniDist, 0);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -96,27 +93,26 @@ public class ContinuousRealUnidimensionalBanach extends
 	}
 
 	/**
-	 * ContinuousRealUnidimensionalBanach Space Constructor
+	 * CombinatorialRealUnidimensionalBanach Space Constructor
 	 * 
-	 * @param dblLeftEdge The Left Edge
-	 * @param dblRightEdge The Right Edge
+	 * @param setElementSpace The Set Space of Elements
 	 * @param uniDist The Univariate Borel Sigma Measure
 	 * @param iPNorm The p-norm of the Space
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ContinuousRealUnidimensionalBanach (
-		final double dblLeftEdge,
-		final double dblRightEdge,
+	public CombinatorialRealUnidimensionalBanach (
+		final java.util.Set<java.lang.Double> setElementSpace,
 		final org.drip.measure.continuous.UnivariateDistribution uniDist,
 		final int iPNorm)
 		throws java.lang.Exception
 	{
-		super (dblLeftEdge, dblRightEdge);
+		super (setElementSpace);
 
 		if (0 > (_iPNorm = iPNorm))
-			throw new java.lang.Exception ("ContinuousRealUnidimensionalBanach Constructor: Invalid p-norm");
+			throw new java.lang.Exception
+				("CombinatorialRealUnidimensionalBanach Constructor: Invalid p-norm");
 
 		_uniDist = uniDist;
 	}
@@ -153,7 +149,7 @@ public class ContinuousRealUnidimensionalBanach extends
 	{
 		if (!validateInstance (dblX))
 			throw new java.lang.Exception
-				("ContinuousRealUnidimensionalBanach::sampleMetricNorm => Invalid Inputs");
+				("CombinatorialRealUnidimensionalBanach::sampleMetricNorm => Invalid Inputs");
 
 		return java.lang.Math.abs (dblX);
 	}
@@ -171,25 +167,25 @@ public class ContinuousRealUnidimensionalBanach extends
 	{
 		if (null == _uniDist)
 			throw new java.lang.Exception
-				("ContinuousRealUnidimensionalBanach::populationMode => Invalid Inputs");
+				("CombinatorialRealUnidimensionalBanach::populationMode => Invalid Inputs");
 
-		org.drip.function.deterministic.AbstractUnivariate au = new
-			org.drip.function.deterministic.AbstractUnivariate (null) {
-			@Override public double evaluate (
-				final double dblX)
-				throws java.lang.Exception
-			{
-				return _uniDist.density (dblX);
+		double dblMode = java.lang.Double.NaN;
+		double dblModeProbability = java.lang.Double.NaN;
+
+		for (double dblElement : elementSpace()) {
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblMode))
+				dblModeProbability = _uniDist.density (dblMode = dblElement);
+			else {
+				double dblElementProbability = _uniDist.density (dblElement);
+
+				if (dblElementProbability > dblModeProbability) {
+					dblMode = dblElement;
+					dblModeProbability = dblElementProbability;
+				}
 			}
-		};
+		}
 
-		org.drip.function.deterministic.VariateOutputPair vopMode = au.maxima (leftEdge(), rightEdge());
-
-		if (null == vopMode)
-			throw new java.lang.Exception
-				("ContinuousRealUnidimensionalBanach::populationMode => Cannot compute VOP Mode");
-
-		return vopMode.variates()[0];
+		return dblMode;
 	}
 
 	/**
@@ -205,18 +201,19 @@ public class ContinuousRealUnidimensionalBanach extends
 	{
 		if (null == _uniDist)
 			throw new java.lang.Exception
-				("ContinuousRealUnidimensionalBanach::populationMetricNorm => Invalid Inputs");
+				("CombinatorialRealUnidimensionalBanach::populationMetricNorm => Invalid Inputs");
 
-		org.drip.function.deterministic.AbstractUnivariate au = new
-			org.drip.function.deterministic.AbstractUnivariate (null) {
-			@Override public double evaluate (
-				final double dblX)
-				throws java.lang.Exception
-			{
-				return sampleMetricNorm (dblX) * _uniDist.density (dblX);
-			}
-		};
+		double dblNorm = 0.;
+		double dblNormalizer = 0.;
 
-		return au.integrate (leftEdge(), rightEdge());
+		for (double dblElement : elementSpace()) {
+			double dblElementProbability = _uniDist.density (dblElement);
+
+			dblNormalizer += dblElementProbability;
+
+			dblNorm += sampleMetricNorm (dblElement) * dblElementProbability;
+		}
+
+		return dblNorm / dblNormalizer;
 	}
 }

@@ -29,35 +29,41 @@ package org.drip.spaces.tensor;
  */
 
 /**
- * BinaryBoolean implements the normed/non-normed Binary/Boolean Combinatorial Vector Spaces.
+ * BinaryBooleanVector implements the normed/non-normed Binary/Boolean Combinatorial Vector Spaces.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BinaryBoolean extends org.drip.spaces.tensor.CombinatorialRealUnidimensional {
+public class BinaryBooleanVector extends org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector {
 
 	/**
-	 * Boolean Space "UP"
+	 * Binary/Boolean Space "UP"
 	 */
 
-	public static final short BS_UP = (short) +1;
+	public static final short BBV_UP = (short) +1;
 
 	/**
-	 * Boolean Space "DOWN"
+	 * Binary/Boolean Space "DOWN"
 	 */
 
-	public static final short BS_DOWN = (short) -1;
+	public static final short BBV_DOWN = (short) -1;
 
-	public static final BinaryBoolean Standard()
+	/**
+	 * Construct the Standard Binary Boolean Vector Space
+	 * 
+	 * @return The Standard Binary Boolean Vector Space
+	 */
+
+	public static final BinaryBooleanVector Standard()
 	{
 		java.util.Set<java.lang.Double> setElementSpace = new java.util.HashSet<java.lang.Double>();
 
-		setElementSpace.add ((double) BS_UP);
+		setElementSpace.add ((double) BBV_UP);
 
-		setElementSpace.add ((double) BS_DOWN);
+		setElementSpace.add ((double) BBV_DOWN);
 
 		try {
-			return new BinaryBoolean (setElementSpace);
+			return new BinaryBooleanVector (setElementSpace);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -65,7 +71,7 @@ public class BinaryBoolean extends org.drip.spaces.tensor.CombinatorialRealUnidi
 		return null;
 	}
 
-	private BinaryBoolean (
+	private BinaryBooleanVector (
 		final java.util.Set<java.lang.Double> setElementSpace)
 		throws java.lang.Exception
 	{

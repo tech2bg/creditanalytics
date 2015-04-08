@@ -121,16 +121,16 @@ public class BlackScholesAlgorithm implements org.drip.pricer.option.FokkerPlanc
 		}
 
 		try {
-			_dblCallProb1 = org.drip.quant.distribution.Gaussian.CDF (dblD1);
+			_dblCallProb1 = org.drip.measure.continuous.Gaussian.CDF (dblD1);
 
-			_dblCallProb2 = org.drip.quant.distribution.Gaussian.CDF (dblD2);
+			_dblCallProb2 = org.drip.measure.continuous.Gaussian.CDF (dblD2);
 
-			_dblPutProb1 = org.drip.quant.distribution.Gaussian.CDF (-1. * dblD1);
+			_dblPutProb1 = org.drip.measure.continuous.Gaussian.CDF (-1. * dblD1);
 
-			_dblPutProb2 = org.drip.quant.distribution.Gaussian.CDF (-1. * dblD2);
+			_dblPutProb2 = org.drip.measure.continuous.Gaussian.CDF (-1. * dblD2);
 
 			if (!bCalibMode) {
-				double dblD1Density = org.drip.quant.distribution.Gaussian.Density (dblD1);
+				double dblD1Density = org.drip.measure.continuous.Gaussian.Density (dblD1);
 
 				double dblTimeRoot = java.lang.Math.sqrt (dblTimeToExpiry);
 

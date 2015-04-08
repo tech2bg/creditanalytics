@@ -29,8 +29,8 @@ package org.drip.spaces.tensor;
  */
 
 /**
- * ContinuousRealUnidimensional exposes the normed/non-normed, bounded/unbounded Continuous 1D Spaces with
- *  Real-valued Elements.
+ * ContinuousRealUnidimensionalVector exposes the normed/non-normed, bounded/unbounded Continuous 1D Vector
+ * 	Spaces with Real-valued Elements.
  * 
  * The Reference we've used is:
  * 
@@ -40,7 +40,7 @@ package org.drip.spaces.tensor;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuousRealUnidimensional implements org.drip.spaces.tensor.GeneralizedVectorSpace {
+public class ContinuousRealUnidimensionalVector implements org.drip.spaces.tensor.GeneralizedVectorSpace {
 	private double _dblLeftEdge = java.lang.Double.NaN;
 	private double _dblRightEdge = java.lang.Double.NaN;
 
@@ -50,10 +50,10 @@ public class ContinuousRealUnidimensional implements org.drip.spaces.tensor.Gene
 	 * @return The Standard R^1 Real-valued Space
 	 */
 
-	public static final ContinuousRealUnidimensional Standard()
+	public static final ContinuousRealUnidimensionalVector Standard()
 	{
 		try {
-			return new ContinuousRealUnidimensional (java.lang.Double.NEGATIVE_INFINITY,
+			return new ContinuousRealUnidimensionalVector (java.lang.Double.NEGATIVE_INFINITY,
 				java.lang.Double.POSITIVE_INFINITY);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -63,7 +63,7 @@ public class ContinuousRealUnidimensional implements org.drip.spaces.tensor.Gene
 	}
 
 	/**
-	 * ContinuousRealUnidimensional Constructor
+	 * ContinuousRealUnidimensionalVector Constructor
 	 * 
 	 * @param dblLeftEdge The Left Edge
 	 * @param dblRightEdge The Right Edge
@@ -71,14 +71,14 @@ public class ContinuousRealUnidimensional implements org.drip.spaces.tensor.Gene
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public ContinuousRealUnidimensional (
+	public ContinuousRealUnidimensionalVector (
 		final double dblLeftEdge,
 		final double dblRightEdge)
 		throws java.lang.Exception
 	{
 		if (!java.lang.Double.isNaN (_dblLeftEdge = dblLeftEdge) || !java.lang.Double.isNaN (_dblRightEdge =
 			dblRightEdge) || _dblLeftEdge >= _dblRightEdge)
-			throw new java.lang.Exception ("ContinuousRealUnidimensional ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ContinuousRealUnidimensionalVector ctr: Invalid Inputs");
 	}
 
 	/**
@@ -121,5 +121,15 @@ public class ContinuousRealUnidimensional implements org.drip.spaces.tensor.Gene
 	@Override public org.drip.spaces.tensor.Cardinality cardinality()
 	{
 		return org.drip.spaces.tensor.Cardinality.UncountablyInfinite();
+	}
+
+	@Override public boolean match (
+		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther)
+	{
+		if (null == gvsOther || !(gvsOther instanceof ContinuousRealUnidimensionalVector)) return false;
+
+		ContinuousRealUnidimensionalVector cruvOther = (ContinuousRealUnidimensionalVector) gvsOther;
+
+		return cruvOther.leftEdge() == _dblLeftEdge && cruvOther.rightEdge() == _dblRightEdge;
 	}
 }

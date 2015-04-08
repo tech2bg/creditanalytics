@@ -37,7 +37,7 @@ package org.drip.kernel.machine;
 public class SupportVectorMachine extends org.drip.function.deterministic.AbstractMultivariate {
 	private double[] _adblW = null;
 	private double _dblB = java.lang.Double.NaN;
-	private org.drip.spaces.tensor.ContinuousRealMultidimensional _mrvs = null;
+	private org.drip.spaces.tensor.ContinuousRealMultidimensionalVector _mrvs = null;
 
 	/**
 	 * SupportVectorMachine Constructor
@@ -52,7 +52,7 @@ public class SupportVectorMachine extends org.drip.function.deterministic.Abstra
 	public SupportVectorMachine (
 		final double[] adblW,
 		final double dblB,
-		final org.drip.spaces.tensor.ContinuousRealMultidimensional mrvs)
+		final org.drip.spaces.tensor.ContinuousRealMultidimensionalVector mrvs)
 		throws java.lang.Exception
 	{
 		super (null);
@@ -114,8 +114,8 @@ public class SupportVectorMachine extends org.drip.function.deterministic.Abstra
 		final double[] adblX)
 		throws java.lang.Exception
 	{
-		return evaluate (adblX) > 0. ? org.drip.spaces.tensor.BinaryBoolean.BS_UP :
-			org.drip.spaces.tensor.BinaryBoolean.BS_DOWN;
+		return evaluate (adblX) > 0. ? org.drip.spaces.tensor.BinaryBooleanVector.BBV_UP :
+			org.drip.spaces.tensor.BinaryBooleanVector.BBV_DOWN;
 	}
 
 	/**

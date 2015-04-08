@@ -1,5 +1,5 @@
 
-package org.drip.quant.distribution;
+package org.drip.measure.continuous;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -31,13 +31,13 @@ package org.drip.quant.distribution;
  */
 
 /**
- * UnivariateNormal implements the univariate normal distribution. It implements incremental, cumulative, and
- *  inverse cumulative distribution densities.
+ * UnivariateNormalDistribution implements the univariate normal distribution. It implements the incremental,
+ *  the cumulative, and the inverse cumulative distribution densities.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class UnivariateNormal extends org.drip.quant.distribution.Univariate {
+public class UnivariateNormalDistribution extends org.drip.measure.continuous.UnivariateDistribution {
 	private double _dblMean = java.lang.Double.NaN;
 	private double _dblSigma = java.lang.Double.NaN;
 
@@ -47,10 +47,10 @@ public class UnivariateNormal extends org.drip.quant.distribution.Univariate {
 	 * @return The N (0, 1) distribution
 	 */
 
-	public static final org.drip.quant.distribution.Univariate GenerateStandardNormal()
+	public static final org.drip.measure.continuous.UnivariateDistribution GenerateStandardNormal()
 	{
 		try {
-			return new UnivariateNormal (0., 1.);
+			return new UnivariateNormalDistribution (0., 1.);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -67,21 +67,21 @@ public class UnivariateNormal extends org.drip.quant.distribution.Univariate {
 	 * @throws java.lang.Exception Thrown if the inputs are invalid
 	 */
 
-	public UnivariateNormal (
+	public UnivariateNormalDistribution (
 		final double dblMean,
 		final double dblSigma)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblMean = dblMean) ||
 			!org.drip.quant.common.NumberUtil.IsValid (_dblSigma = dblSigma) || 0. >= _dblSigma)
-			throw new java.lang.Exception ("UnivariateNormal constructor: Invalid inputs");
+			throw new java.lang.Exception ("UnivariateNormalDistribution constructor: Invalid inputs");
 	}
 
 	@Override public double cumulative (
 		final double dblX)
 		throws java.lang.Exception
 	{
-		return org.drip.quant.distribution.Gaussian.CDF ((dblX - _dblMean) / _dblSigma);
+		return org.drip.measure.continuous.Gaussian.CDF ((dblX - _dblMean) / _dblSigma);
 	}
 
 	@Override public double incremental (
@@ -96,7 +96,16 @@ public class UnivariateNormal extends org.drip.quant.distribution.Univariate {
 		final double dblY)
 		throws java.lang.Exception
 	{
-	    return org.drip.quant.distribution.Gaussian.InverseCDF (dblY) * _dblSigma + _dblMean;
+	    return org.drip.measure.continuous.Gaussian.InverseCDF (dblY) * _dblSigma + _dblMean;
+	}
+
+	@Override public double density (
+		final double dblX)
+		throws java.lang.Exception
+	{
+		double dblMeanShift = (dblX - _dblMean) / _dblSigma;
+
+		return java.lang.Math.exp (-0.5 * dblMeanShift * dblMeanShift);
 	}
 
 	@Override public double mean()
@@ -112,22 +121,5 @@ public class UnivariateNormal extends org.drip.quant.distribution.Univariate {
 	@Override public org.drip.quant.common.Array2D histogram()
 	{
 		return null;
-	}
-
-	public static final void main (
-		final java.lang.String[] astrArgs)
-		throws java.lang.Exception
-	{
-		UnivariateNormal nd = new UnivariateNormal (10., 10.);
-
-		double dblX = 1.;
-
-		double dblCumulative = nd.cumulative (dblX);
-
-		System.out.println ("Cumulative: " + dblCumulative);
-
-		System.out.println ("Incremental: " + nd.incremental (-5., 5.));
-
-		System.out.println ("Inverse Cumulative: " + nd.invCumulative (dblCumulative));
 	}
 }

@@ -46,16 +46,18 @@ public class ContinuousRealMultidimensionalHilbert extends
 	 * Construct the Standard l^2 R^d Hilbert Space Instance
 	 * 
 	 * @param iDimension The Space Dimension
+	 * @param multiDist The Multivariate Borel Sigma Measure
 	 * 
 	 * @return The Standard l^2 R^d Hilbert Space Instance
 	 */
 
 	public static final ContinuousRealMultidimensionalHilbert StandardHilbert (
-		final int iDimension)
+		final int iDimension,
+		final org.drip.measure.continuous.MultivariateDistribution multiDist)
 	{
 		try {
 			return 0 >= iDimension ? null : new ContinuousRealMultidimensionalHilbert (new
-				org.drip.spaces.tensor.ContinuousRealUnidimensional[iDimension]);
+				org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[iDimension], multiDist);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -67,15 +69,17 @@ public class ContinuousRealMultidimensionalHilbert extends
 	 * ContinuousRealMultidimensionalHilbert Space Constructor
 	 * 
 	 * @param aCRU Array of Continuous Real Valued Vector Spaces
+	 * @param multiDist The Multivariate Borel Sigma Measure
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
 	public ContinuousRealMultidimensionalHilbert (
-		final org.drip.spaces.tensor.ContinuousRealUnidimensional[] aCRU)
+		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] aCRU,
+		final org.drip.measure.continuous.MultivariateDistribution multiDist)
 		throws java.lang.Exception
 	{
-		super (aCRU, 2);
+		super (aCRU, multiDist, 2);
 	}
 
 	@Override public double sampleMetricNorm (

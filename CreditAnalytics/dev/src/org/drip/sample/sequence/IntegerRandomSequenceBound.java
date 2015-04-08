@@ -1,8 +1,9 @@
 
 package org.drip.sample.sequence;
 
+import org.drip.measure.continuous.UnivariateDistribution;
+import org.drip.measure.discrete.*;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.distribution.*;
 import org.drip.sequence.metrics.*;
 import org.drip.sequence.random.BoundedUniformInteger;
 import org.drip.sequence.random.UnivariateSequenceGenerator;
@@ -46,7 +47,7 @@ public class IntegerRandomSequenceBound {
 
 	private static final void IntegerBounds (
 		final UnivariateSequenceGenerator iidsg,
-		final Univariate dist,
+		final UnivariateDistribution dist,
 		final int[] aiSampleSize)
 		throws Exception
 	{

@@ -151,4 +151,18 @@ public class Cardinality {
 	{
 		return _dblNumber;
 	}
+
+	/**
+	 * Indicate if the Current Instance matches the "Other" Cardinality Instance
+	 * 
+	 * @param cardOther The "Other" Cardinality Instance
+	 * 
+	 * @return TRUE => The Instances Match
+	 */
+
+	public boolean match (
+		final Cardinality cardOther)
+	{
+		return null != cardOther && cardOther.type() == _iType && cardOther.number() == _dblNumber;
+	}
 }

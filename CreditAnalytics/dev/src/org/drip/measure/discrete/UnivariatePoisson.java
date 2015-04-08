@@ -1,5 +1,5 @@
 
-package org.drip.quant.distribution;
+package org.drip.measure.discrete;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -34,7 +34,7 @@ package org.drip.quant.distribution;
  * @author Lakshmi Krishnamurthy
  */
 
-public class UnivariatePoisson extends org.drip.quant.distribution.Univariate {
+public class UnivariatePoisson extends org.drip.measure.continuous.UnivariateDistribution {
 	private double _dblLambda = java.lang.Double.NaN;
 	private double _dblExponentialLambda = java.lang.Double.NaN;
 
@@ -113,6 +113,14 @@ public class UnivariatePoisson extends org.drip.quant.distribution.Univariate {
 		}
 
 		return i - 1;
+	}
+
+	@Override public double density (
+		final double dblX)
+		throws java.lang.Exception
+	{
+		throw new java.lang.Exception
+			("UnivariatePoisson::density => Not available for discrete distributions");
 	}
 
 	@Override public double mean()

@@ -1,8 +1,8 @@
 
 package org.drip.sample.sequence;
 
+import org.drip.measure.continuous.*;
 import org.drip.quant.common.FormatUtil;
-import org.drip.quant.distribution.*;
 import org.drip.sequence.metrics.*;
 import org.drip.sequence.random.*;
 import org.drip.service.api.CreditAnalytics;
@@ -62,7 +62,7 @@ public class IIDSequenceSumBound {
 
 	private static final void WeakLawBounds (
 		final UnivariateSequenceGenerator iidsg,
-		final Univariate dist,
+		final UnivariateDistribution dist,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
 		throws Exception
@@ -84,7 +84,7 @@ public class IIDSequenceSumBound {
 
 	private static final void ChernoffHoeffdingBounds (
 		final UnivariateSequenceGenerator iidsg,
-		final Univariate dist,
+		final UnivariateDistribution dist,
 		final double dblSupport,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
@@ -107,7 +107,7 @@ public class IIDSequenceSumBound {
 
 	private static final void BennettBounds (
 		final UnivariateSequenceGenerator iidsg,
-		final Univariate dist,
+		final UnivariateDistribution dist,
 		final double dblSupport,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
@@ -130,7 +130,7 @@ public class IIDSequenceSumBound {
 
 	private static final void BernsteinBounds (
 		final UnivariateSequenceGenerator iidsg,
-		final Univariate dist,
+		final UnivariateDistribution dist,
 		final double dblSupport,
 		final int[] aiSampleSize,
 		final double[] adblTolerance)
@@ -159,7 +159,7 @@ public class IIDSequenceSumBound {
 
 		BoundedUniform uniformRandom = new BoundedUniform (0., 1.);
 
-		UnivariateBoundedUniform uniformDistribution = new UnivariateBoundedUniform (0., 1.);
+		UnivariateBoundedUniformDistribution uniformDistribution = new UnivariateBoundedUniformDistribution (0., 1.);
 
 		int[] aiSampleSize = new int[] {
 			50, 500, 5000, 50000, 500000, 5000000, 50000000
