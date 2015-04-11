@@ -46,18 +46,18 @@ public class CombinatorialRealUnidimensionalHilbert extends
 	/**
 	 * CombinatorialRealUnidimensionalHilbert Space Constructor
 	 * 
-	 * @param setElementSpace The Set Space of Elements
+	 * @param lsElementSpace The List Space of Elements
 	 * @param uniDist The Univariate Borel Sigma Measure
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
 	public CombinatorialRealUnidimensionalHilbert (
-		final java.util.Set<java.lang.Double> setElementSpace,
+		final java.util.List<java.lang.Double> lsElementSpace,
 		final org.drip.measure.continuous.UnivariateDistribution uniDist)
 		throws java.lang.Exception
 	{
-		super (setElementSpace, uniDist, 2);
+		super (lsElementSpace, uniDist, 2);
 	}
 
 	@Override public double sampleMetricNorm (

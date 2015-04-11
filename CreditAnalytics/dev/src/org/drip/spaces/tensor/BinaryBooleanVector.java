@@ -56,14 +56,14 @@ public class BinaryBooleanVector extends org.drip.spaces.tensor.CombinatorialRea
 
 	public static final BinaryBooleanVector Standard()
 	{
-		java.util.Set<java.lang.Double> setElementSpace = new java.util.HashSet<java.lang.Double>();
+		java.util.List<java.lang.Double> lsElementSpace = new java.util.ArrayList<java.lang.Double>();
 
-		setElementSpace.add ((double) BBV_UP);
+		lsElementSpace.add ((double) BBV_UP);
 
-		setElementSpace.add ((double) BBV_DOWN);
+		lsElementSpace.add ((double) BBV_DOWN);
 
 		try {
-			return new BinaryBooleanVector (setElementSpace);
+			return new BinaryBooleanVector (lsElementSpace);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -72,9 +72,9 @@ public class BinaryBooleanVector extends org.drip.spaces.tensor.CombinatorialRea
 	}
 
 	private BinaryBooleanVector (
-		final java.util.Set<java.lang.Double> setElementSpace)
+		final java.util.List<java.lang.Double> lsElementSpace)
 		throws java.lang.Exception
 	{
-		super (setElementSpace);
+		super (lsElementSpace);
 	}
 }

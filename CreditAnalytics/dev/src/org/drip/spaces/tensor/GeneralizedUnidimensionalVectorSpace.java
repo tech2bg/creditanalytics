@@ -1,5 +1,5 @@
 
-package org.drip.spaces.measure;
+package org.drip.spaces.tensor;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,32 +29,21 @@ package org.drip.spaces.measure;
  */
 
 /**
- * BorelSigma exposes the basic Properties of the Borel Sigma Measure Space.
+ * GeneralizedUnidimensionalVectorSpace exposes the basic Properties of the General R^1 Vector Space.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public interface BorelSigma {
+public interface GeneralizedUnidimensionalVectorSpace extends org.drip.spaces.tensor.GeneralizedVectorSpace {
 
 	/**
-	 * Compute the Population ESS (i.e., the Essential Spectrum) of the Spanning Space
+	 * Validate the Input Instance Ordinate
 	 * 
-	 * @return The Population ESS
+	 * @param dblInstance The Input Instance Ordinate
 	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 * @return TRUE => Instance Ordinate is a Valid Entry in the Space
 	 */
 
-	public abstract double populationESS()
-		throws java.lang.Exception;
-
-	/**
-	 * Compute the P-Norm of the Spanning Population Space
-	 * 
-	 * @return The P-Norm
-	 * 
-	 * @throws java.lang.Exception Thrown if the p-Norm cannot be computed
-	 */
-
-	public abstract double populationMetricNorm()
-		throws java.lang.Exception;
+	public abstract boolean validateInstance (
+		final double dblInstance);
 }

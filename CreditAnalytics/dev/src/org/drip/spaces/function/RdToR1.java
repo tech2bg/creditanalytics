@@ -1,5 +1,5 @@
 
-package org.drip.spaces.instance;
+package org.drip.spaces.function;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,8 +29,7 @@ package org.drip.spaces.instance;
  */
 
 /**
- * ValidatedContinuousRealUnidimensional holds the Validated Continuous Uni-dimensional Real-Valued Vector
- * 	Instance Sequence and the Corresponding Generalized Vector Space Type.
+ * RdToR1 is the abstract class underlying the f : R^d -> R^1 Normed Function Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -40,42 +39,38 @@ package org.drip.spaces.instance;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ValidatedContinuousRealUnidimensional implements
-	org.drip.spaces.instance.GeneralizedValidatedVectorInstance {
-	private double[] _adblInstance = null;
-	private org.drip.spaces.tensor.ContinuousRealUnidimensionalVector _cruv = null;
+public abstract class RdToR1 {
+	private int _iPNorm = -1;
+	private org.drip.function.deterministic.AbstractMultivariate _am = null;
 
-	/**
-	 * ValidatedContinuousRealUnidimensional Constructor
-	 * 
-	 * @param cruv The Continuous Uni-dimensional Real-Valued Tensor Space Type
-	 * @param adblInstance The Data Instance
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
-	 */
-
-	public ValidatedContinuousRealUnidimensional (
-		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector cruv,
-		final double[] adblInstance)
+	protected RdToR1 (
+		final org.drip.function.deterministic.AbstractMultivariate am,
+		final int iPNorm)
 		throws java.lang.Exception
 	{
-		if (null == (_cruv = cruv) || null == (_adblInstance = adblInstance) || 0 == _adblInstance.length)
-			throw new java.lang.Exception ("ValidatedContinuousRealUnidimensional ctr: Invalid Inputs");
-	}
-
-	@Override public org.drip.spaces.tensor.ContinuousRealUnidimensionalVector tensorSpaceType()
-	{
-		return _cruv;
+		if (null == (_am = am) || 0 > (_iPNorm = iPNorm))
+			throw new java.lang.Exception ("RdToR1 ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Retrieve the Instance Sequence
+	 * Retrieve the Underlying Multivariate Function
 	 * 
-	 * @return The Instance Sequence
+	 * @return The Underlying Multivariate Function
 	 */
 
-	public double[] instance()
+	public org.drip.function.deterministic.AbstractMultivariate function()
 	{
-		return _adblInstance;
+		return _am;
+	}
+
+	/**
+	 * Retrieve the P-Norm Index
+	 * 
+	 * @return The P-Norm Index
+	 */
+
+	public int pNorm()
+	{
+		return _iPNorm;
 	}
 }

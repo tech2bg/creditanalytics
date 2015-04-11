@@ -1,5 +1,5 @@
 
-package org.drip.spaces.instance;
+package org.drip.spaces.metric;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,8 +29,8 @@ package org.drip.spaces.instance;
  */
 
 /**
- * ValidatedContinuousRealUnidimensional holds the Validated Continuous Uni-dimensional Real-Valued Vector
- * 	Instance Sequence and the Corresponding Generalized Vector Space Type.
+ * CombinatorialRealMultidimensionalHilbert implements the normed, bounded/unbounded, Combinatorial l^2 R^d
+ *  Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -40,42 +40,43 @@ package org.drip.spaces.instance;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ValidatedContinuousRealUnidimensional implements
-	org.drip.spaces.instance.GeneralizedValidatedVectorInstance {
-	private double[] _adblInstance = null;
-	private org.drip.spaces.tensor.ContinuousRealUnidimensionalVector _cruv = null;
+public class CombinatorialRealMultidimensionalHilbert extends
+	org.drip.spaces.metric.CombinatorialRealMultidimensionalBanach {
 
 	/**
-	 * ValidatedContinuousRealUnidimensional Constructor
+	 * CombinatorialRealMultidimensionalHilbert Space Constructor
 	 * 
-	 * @param cruv The Continuous Uni-dimensional Real-Valued Tensor Space Type
-	 * @param adblInstance The Data Instance
+	 * @param aCRU Array of Combinatorial Real Valued Vector Spaces
+	 * @param multiDist The Multivariate Borel Sigma Measure
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ValidatedContinuousRealUnidimensional (
-		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector cruv,
-		final double[] adblInstance)
+	public CombinatorialRealMultidimensionalHilbert (
+		final org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] aCRU,
+		final org.drip.measure.continuous.MultivariateDistribution multiDist)
 		throws java.lang.Exception
 	{
-		if (null == (_cruv = cruv) || null == (_adblInstance = adblInstance) || 0 == _adblInstance.length)
-			throw new java.lang.Exception ("ValidatedContinuousRealUnidimensional ctr: Invalid Inputs");
+		super (aCRU, multiDist, 2);
 	}
 
-	@Override public org.drip.spaces.tensor.ContinuousRealUnidimensionalVector tensorSpaceType()
+	@Override public double sampleMetricNorm (
+		final double[] adblX)
+		throws java.lang.Exception
 	{
-		return _cruv;
-	}
+		if (!validateInstance (adblX))
+			throw new java.lang.Exception
+				("CombinatorialRealMultidimensionalHilbert::sampleMetricNorm => Invalid Inputs");
 
-	/**
-	 * Retrieve the Instance Sequence
-	 * 
-	 * @return The Instance Sequence
-	 */
+		double dblNorm = 0.;
+		int iDimension = adblX.length;
 
-	public double[] instance()
-	{
-		return _adblInstance;
+		for (int i = 0; i < iDimension; ++i) {
+			double dblAbsoluteX = java.lang.Math.abs (adblX[i]);
+
+			dblNorm += dblAbsoluteX * dblAbsoluteX;
+		}
+
+		return dblNorm;
 	}
 }

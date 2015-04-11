@@ -40,7 +40,8 @@ package org.drip.spaces.tensor;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuousRealUnidimensionalVector implements org.drip.spaces.tensor.GeneralizedVectorSpace {
+public class ContinuousRealUnidimensionalVector implements
+	org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace {
 	private double _dblLeftEdge = java.lang.Double.NaN;
 	private double _dblRightEdge = java.lang.Double.NaN;
 
@@ -103,15 +104,7 @@ public class ContinuousRealUnidimensionalVector implements org.drip.spaces.tenso
 		return _dblRightEdge;
 	}
 
-	/**
-	 * Validate the Input Instance Ordinate
-	 * 
-	 * @param dblInstance The Input Instance Ordinate
-	 * 
-	 * @return TRUE => Instance Ordinate is a Valid Entry in the Space
-	 */
-
-	public boolean validateInstance (
+	@Override public boolean validateInstance (
 		final double dblInstance)
 	{
 		return java.lang.Double.isNaN (dblInstance) && dblInstance >= _dblLeftEdge && dblInstance <=

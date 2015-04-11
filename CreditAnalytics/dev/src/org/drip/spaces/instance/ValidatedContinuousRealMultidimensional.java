@@ -43,29 +43,29 @@ package org.drip.spaces.instance;
 public class ValidatedContinuousRealMultidimensional implements
 	org.drip.spaces.instance.GeneralizedValidatedVectorInstance {
 	private double[][] _aadblInstance = null;
-	private org.drip.spaces.tensor.ContinuousRealMultidimensionalVector _crm = null;
+	private org.drip.spaces.tensor.ContinuousRealMultidimensionalVector _crmv = null;
 
 	/**
 	 * ValidatedMultidimensionalRealValued Constructor
 	 * 
-	 * @param crm The Continuous Multi-dimensional Real-Valued Tensor Space Type
+	 * @param crmv The Continuous Multi-dimensional Real-Valued Tensor Space Type
 	 * @param aadblInstance The Data Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
 	public ValidatedContinuousRealMultidimensional (
-		final org.drip.spaces.tensor.ContinuousRealMultidimensionalVector crm,
+		final org.drip.spaces.tensor.ContinuousRealMultidimensionalVector crmv,
 		final double[][] aadblInstance)
 		throws java.lang.Exception
 	{
-		if (null == (_crm = crm) || null == (_aadblInstance = aadblInstance) || 0 == _aadblInstance.length)
+		if (null == (_crmv = crmv) || null == (_aadblInstance = aadblInstance) || 0 == _aadblInstance.length)
 			throw new java.lang.Exception ("ValidatedContinuousRealMultidimensional ctr: Invalid Inputs");
 	}
 
 	@Override public org.drip.spaces.tensor.ContinuousRealMultidimensionalVector tensorSpaceType()
 	{
-		return _crm;
+		return _crmv;
 	}
 
 	/**

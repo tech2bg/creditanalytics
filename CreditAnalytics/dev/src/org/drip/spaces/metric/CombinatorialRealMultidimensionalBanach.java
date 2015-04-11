@@ -29,7 +29,8 @@ package org.drip.spaces.metric;
  */
 
 /**
- * ContinuousRealMultidimensionalBanach implements the normed, bounded/unbounded Continuous l^p R^d Spaces.
+ * CombinatorialRealMultidimensionalBanach implements the normed, bounded/unbounded Combinatorial l^p R^d
+ *  Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -39,72 +40,24 @@ package org.drip.spaces.metric;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuousRealMultidimensionalBanach extends
-	org.drip.spaces.tensor.ContinuousRealMultidimensionalVector implements
+public class CombinatorialRealMultidimensionalBanach extends
+	org.drip.spaces.tensor.CombinatorialRealMultidimensionalVector implements
 		org.drip.spaces.metric.GeneralizedMetricSpace {
 	private int _iPNorm = -1;
 	private org.drip.measure.continuous.MultivariateDistribution _multiDist = null;
 
 	/**
-	 * Construct the Standard l^p R^d Continuous Banach Space Instance
+	 * CombinatorialRealMultidimensionalBanach Space Constructor
 	 * 
-	 * @param iDimension The Space Dimension
-	 * @param multiDist The Multivariate Borel Sigma Measure
-	 * @param iPNorm The p-norm of the Space
-	 * 
-	 * @return The Standard l^p R^d Continuous Banach Space Instance
-	 */
-
-	public static final ContinuousRealMultidimensionalBanach StandardBanach (
-		final int iDimension,
-		final org.drip.measure.continuous.MultivariateDistribution multiDist,
-		final int iPNorm)
-	{
-		try {
-			return 0 >= iDimension ? null : new ContinuousRealMultidimensionalBanach (new
-				org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[iDimension], multiDist, iPNorm);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Construct the Supremum (i.e., l^Infinity) R^d Continuous Banach Space Instance
-	 * 
-	 * @param iDimension The Space Dimension
-	 * @param multiDist The Multivariate Borel Sigma Measure
-	 * 
-	 * @return The Supremum (i.e., l^Infinity) R^d Continuous Banach Space Instance
-	 */
-
-	public static final ContinuousRealMultidimensionalBanach SupremumBanach (
-		final int iDimension,
-		final org.drip.measure.continuous.MultivariateDistribution multiDist)
-	{
-		try {
-			return 0 >= iDimension ? null : new ContinuousRealMultidimensionalBanach (new
-				org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[iDimension], multiDist, 0);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * ContinuousRealMultidimensionalBanach Space Constructor
-	 * 
-	 * @param aCURV Array of Continuous Real Valued Vector Spaces
+	 * @param aCURV Array of Combinatorial Real Valued Vector Spaces
 	 * @param multiDist The Multivariate Borel Sigma Measure
 	 * @param iPNorm The p-norm of the Space
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ContinuousRealMultidimensionalBanach (
-		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] aCURV,
+	public CombinatorialRealMultidimensionalBanach (
+		final org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] aCURV,
 		final org.drip.measure.continuous.MultivariateDistribution multiDist,
 		final int iPNorm)
 		throws java.lang.Exception
@@ -113,7 +66,7 @@ public class ContinuousRealMultidimensionalBanach extends
 
 		if (0 > (_iPNorm = iPNorm))
 			throw new java.lang.Exception
-				("ContinuousRealMultidimensionalBanach Constructor: Invalid p-norm");
+				("CombinatorialRealMultidimensionalBanach Constructor: Invalid p-norm");
 
 		_multiDist = multiDist;
 	}
@@ -150,7 +103,7 @@ public class ContinuousRealMultidimensionalBanach extends
 	{
 		if (!validateInstance (adblX))
 			throw new java.lang.Exception
-				("ContinuousRealMultidimensionalBanach::sampleSupremumNorm => Invalid Inputs");
+				("CombinatorialRealMultidimensionalBanach::sampleSupremumNorm => Invalid Inputs");
 
 		int iDimension = adblX.length;
 
@@ -181,7 +134,7 @@ public class ContinuousRealMultidimensionalBanach extends
 	{
 		if (!validateInstance (adblX))
 			throw new java.lang.Exception
-				("ContinuousRealMultidimensionalBanach::sampleMetricNorm => Invalid Inputs");
+				("CombinatorialRealMultidimensionalBanach::sampleMetricNorm => Invalid Inputs");
 
 		if (0 == _iPNorm) return sampleSupremumNorm (adblX);
 
@@ -204,19 +157,35 @@ public class ContinuousRealMultidimensionalBanach extends
 	{
 		if (null == _multiDist) return null;
 
-		org.drip.function.deterministic.AbstractMultivariate am = new
-			org.drip.function.deterministic.AbstractMultivariate (null) {
-			@Override public double evaluate (
-				final double[] adblX)
-				throws java.lang.Exception
-			{
-				return _multiDist.density (adblX);
+		org.drip.spaces.tensor.CombinatorialRealMultidimensionalIterator crmi = iterator();
+
+		double[] adblVariate = crmi.cursorVariates();
+
+		int iDimension = adblVariate.length;
+		double dblModeProbabilityDensity = 0.;
+		double[] adblModeVariate = new double[iDimension];
+		double dblProbabilityDensity = java.lang.Double.NaN;
+
+		while (null != adblVariate) {
+			try {
+				dblProbabilityDensity = _multiDist.density (adblVariate);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
 			}
-		};
 
-		org.drip.function.deterministic.VariateOutputPair vopMode = am.maxima (leftEdge(), rightEdge());
+			if (dblProbabilityDensity > dblModeProbabilityDensity) {
+				for (int i = 0; i < iDimension; ++i)
+					adblModeVariate[i] = adblVariate[i];
 
-		return null == vopMode ? null : vopMode.variates();
+				dblModeProbabilityDensity = dblProbabilityDensity;
+			}
+
+			adblVariate = crmi.nextVariates();
+		}
+
+		return adblModeVariate;
 	}
 
 	@Override public double populationMetricNorm()
@@ -224,24 +193,28 @@ public class ContinuousRealMultidimensionalBanach extends
 	{
 		if (null == _multiDist)
 			throw new java.lang.Exception
-				("ContinuousRealMultidimensionalBanach::populationMetricNorm => Invalid Inputs");
+				("CombinatorialRealMultidimensionalBanach::populationMetricNorm => No Multivariate Distribution");
 
-		org.drip.function.deterministic.AbstractMultivariate am = new
-			org.drip.function.deterministic.AbstractMultivariate (null) {
-			@Override public double evaluate (
-				final double[] adblX)
-				throws java.lang.Exception
-			{
-				double dblNorm = 0.;
-				int iDimension = adblX.length;
+		org.drip.spaces.tensor.CombinatorialRealMultidimensionalIterator crmi = iterator();
 
-				for (int i = 0; i < iDimension; ++i)
-					dblNorm += java.lang.Math.pow (java.lang.Math.abs (adblX[i]), _iPNorm);
+		double[] adblVariate = crmi.cursorVariates();
 
-				return dblNorm * _multiDist.density (adblX);
-			}
-		};
+		double dblNormalizer = 0.;
+		double dblPopulationMetricNorm  = 0.;
+		int iDimension = adblVariate.length;
 
-		return java.lang.Math.pow (am.integrate (leftEdge(), rightEdge()), 1. / _iPNorm);
+		while (null != adblVariate) {
+			double dblProbabilityDensity = _multiDist.density (adblVariate);
+
+			dblNormalizer += dblProbabilityDensity;
+
+			for (int i = 0; i < iDimension; ++i)
+				dblPopulationMetricNorm += dblProbabilityDensity * java.lang.Math.pow (java.lang.Math.abs
+					(adblVariate[i]), _iPNorm);
+
+			adblVariate = crmi.nextVariates();
+		}
+
+		return java.lang.Math.pow (dblPopulationMetricNorm / dblNormalizer, 1. / _iPNorm);
 	}
 }

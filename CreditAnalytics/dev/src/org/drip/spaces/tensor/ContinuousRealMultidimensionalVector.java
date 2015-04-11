@@ -40,7 +40,8 @@ package org.drip.spaces.tensor;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuousRealMultidimensionalVector implements org.drip.spaces.tensor.GeneralizedVectorSpace {
+public class ContinuousRealMultidimensionalVector implements
+	org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace {
 	private org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] _aCRUV = null;
 
 	/**
@@ -90,37 +91,17 @@ public class ContinuousRealMultidimensionalVector implements org.drip.spaces.ten
 		}
 	}
 
-	/**
-	 * Retrieve the Dimension of the Space
-	 *  
-	 * @return The Dimension of the Space
-	 */
-
-	public int dimension()
+	@Override public int dimension()
 	{
 		return _aCRUV.length;
 	}
 
-	/**
-	 * Retrieve the Array of the Underlying Continuous Real Unidimensional Vector Spaces
-	 * 
-	 * @return The Array of the Underlying Continuous Real Unidimensional Vector Spaces
-	 */
-
-	public org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] cruv()
+	@Override public org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] vectorSpaces()
 	{
 		return _aCRUV;
 	}
 
-	/**
-	 * Validate the specified R^d Input Instance
-	 * 
-	 * @param adblInstance The R^d Input Instance
-	 * 
-	 * @return TRUE => Input Instance Valid
-	 */
-
-	public boolean validateInstance (
+	@Override public boolean validateInstance (
 		final double[] adblInstance)
 	{
 		if (null == adblInstance) return false;
@@ -186,7 +167,7 @@ public class ContinuousRealMultidimensionalVector implements org.drip.spaces.ten
 
 		if (iDimensionOther != dimension()) return false;
 
-		org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] aCRUVOther = crmvOther.cruv();
+		org.drip.spaces.tensor.ContinuousRealUnidimensionalVector[] aCRUVOther = crmvOther.vectorSpaces();
 
 		for (int i = 0; i < iDimensionOther; ++i) {
 			if (!aCRUVOther[i].match (_aCRUV[i])) return false;

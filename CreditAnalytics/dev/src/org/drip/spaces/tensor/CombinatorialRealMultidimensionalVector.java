@@ -35,8 +35,8 @@ package org.drip.spaces.tensor;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CombinatorialRealMultidimensionalVector implements org.drip.spaces.tensor.GeneralizedVectorSpace
-{
+public class CombinatorialRealMultidimensionalVector implements
+	org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace {
 	private org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] _aCRUV = null;
 
 	/**
@@ -55,37 +55,17 @@ public class CombinatorialRealMultidimensionalVector implements org.drip.spaces.
 			throw new java.lang.Exception ("CombinatorialRealUnidimensionalVector ctr: Invalid Inputs");
 	}
 
-	/**
-	 * Retrieve the Dimension of the Space
-	 *  
-	 * @return The Dimension of the Space
-	 */
-
-	public int dimension()
+	@Override public int dimension()
 	{
 		return _aCRUV.length;
 	}
 
-	/**
-	 * Retrieve the Array of the Underlying Combinatorial Real Unidimensional Vector Spaces
-	 * 
-	 * @return The Array of the Underlying Combinatorial Real Unidimensional Vector Spaces
-	 */
-
-	public org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] cruv()
+	@Override public org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] vectorSpaces()
 	{
 		return _aCRUV;
 	}
 
-	/**
-	 * Validate the Input Instance
-	 * 
-	 * @param adblInstance The Input Instance
-	 * 
-	 * @return TRUE => Instance is a Valid Entry in the Space
-	 */
-
-	public boolean validateInstance (
+	@Override public boolean validateInstance (
 		final double[] adblInstance)
 	{
 		if (null == adblInstance) return false;
@@ -124,12 +104,23 @@ public class CombinatorialRealMultidimensionalVector implements org.drip.spaces.
 
 		if (iDimensionOther != dimension()) return false;
 
-		org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] aCRUVOther = crmvOther.cruv();
+		org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] aCRUVOther = crmvOther.vectorSpaces();
 
 		for (int i = 0; i < iDimensionOther; ++i) {
 			if (!aCRUVOther[i].match (_aCRUV[i])) return false;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Retrieve the Multidimensional Iterator associated with the Underlying Vector Space
+	 * 
+	 * @return The Multidimensional Iterator associated with the Underlying Vector Space
+	 */
+
+	public org.drip.spaces.tensor.CombinatorialRealMultidimensionalIterator iterator()
+	{
+		return org.drip.spaces.tensor.CombinatorialRealMultidimensionalIterator.Standard (_aCRUV);
 	}
 }

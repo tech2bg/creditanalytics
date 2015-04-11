@@ -1,5 +1,5 @@
 
-package org.drip.spaces.metric;
+package org.drip.spaces.tensor;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,29 +29,38 @@ package org.drip.spaces.metric;
  */
 
 /**
- * GeneralizedMetricSpace exposes the basic Properties of the General Normed Metric Space.
+ * GeneralizedMultidimensionalVectorSpace exposes the basic Properties of the General R^d Vector Space.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public interface GeneralizedMetricSpace {
+public interface GeneralizedMultidimensionalVectorSpace extends org.drip.spaces.tensor.GeneralizedVectorSpace
+{
 
 	/**
-	 * Retrieve the P-Norm Index of the Metric Space
-	 * 
-	 * @return The P-Norm Index of the Metric Space
+	 * Retrieve the Dimension of the Space
+	 *  
+	 * @return The Dimension of the Space
 	 */
 
-	public abstract int pNorm();
+	public int dimension();
 
 	/**
-	 * Retrieve the Population Metric Norm
+	 * Retrieve the Array of the Underlying Unidimensional Vector Spaces
 	 * 
-	 * @return The Population Metric Norm
-	 * 
-	 * @throws java.lang.Exception The Population Metric Norm cannot be computed
+	 * @return The Array of the Underlying Unidimensional Vector Spaces
 	 */
 
-	public abstract double populationMetricNorm()
-		throws java.lang.Exception;
+	public org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace[] vectorSpaces();
+
+	/**
+	 * Validate the Input Instance
+	 * 
+	 * @param adblInstance The Input Instance
+	 * 
+	 * @return TRUE => Instance is a Valid Entry in the Space
+	 */
+
+	public boolean validateInstance (
+		final double[] adblInstance);
 }

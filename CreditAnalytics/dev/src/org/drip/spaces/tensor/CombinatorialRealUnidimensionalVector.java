@@ -35,53 +35,46 @@ package org.drip.spaces.tensor;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CombinatorialRealUnidimensionalVector implements org.drip.spaces.tensor.GeneralizedVectorSpace {
-	private java.util.Set<java.lang.Double> _setElementSpace = new java.util.HashSet<java.lang.Double>();
+public class CombinatorialRealUnidimensionalVector implements
+	org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace {
+	private java.util.List<java.lang.Double> _lsElementSpace = new java.util.ArrayList<java.lang.Double>();
 
 	/**
 	 * CombinatorialRealUnidimensionalVector Constructor
 	 * 
-	 * @param setElementSpace The Set Space of Elements
+	 * @param lsElementSpace The List Space of Elements
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
 	public CombinatorialRealUnidimensionalVector (
-		final java.util.Set<java.lang.Double> setElementSpace)
+		final java.util.List<java.lang.Double> lsElementSpace)
 		throws java.lang.Exception
 	{
-		if (null == (_setElementSpace = setElementSpace) || 0 == _setElementSpace.size())
+		if (null == (_lsElementSpace = lsElementSpace) || 0 == _lsElementSpace.size())
 			throw new java.lang.Exception ("CombinatorialRealUnidimensionalVector ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Retrieve the Full Candidate Set of Elements
+	 * Retrieve the Full Candidate List of Elements
 	 * 
-	 * @return The Full Candidate Set of Elements
+	 * @return The Full Candidate List of Elements
 	 */
 
-	public java.util.Set<java.lang.Double> elementSpace()
+	public java.util.List<java.lang.Double> elementSpace()
 	{
-		return _setElementSpace;
+		return _lsElementSpace;
 	}
 
-	/**
-	 * Validate the Input Instance
-	 * 
-	 * @param dblXInstance The Input Instance
-	 * 
-	 * @return TRUE => Instance is a Valid Entry in the Space
-	 */
-
-	public boolean validateInstance (
+	@Override public boolean validateInstance (
 		final double dblXInstance)
 	{
-		return _setElementSpace.contains (dblXInstance);
+		return _lsElementSpace.contains (dblXInstance);
 	}
 
 	@Override public org.drip.spaces.tensor.Cardinality cardinality()
 	{
-		return org.drip.spaces.tensor.Cardinality.CountablyFinite (_setElementSpace.size());
+		return org.drip.spaces.tensor.Cardinality.CountablyFinite (_lsElementSpace.size());
 	}
 
 	@Override public boolean match (
@@ -93,9 +86,9 @@ public class CombinatorialRealUnidimensionalVector implements org.drip.spaces.te
 
 		if (!cardinality().match (cruvOther.cardinality())) return false;
 
-		java.util.Set<java.lang.Double> setElementOther = cruvOther.elementSpace();
+		java.util.List<java.lang.Double> setElementOther = cruvOther.elementSpace();
 
-		for (double dblElement : _setElementSpace) {
+		for (double dblElement : _lsElementSpace) {
 			if (!setElementOther.contains (dblElement)) return false;
 		}
 

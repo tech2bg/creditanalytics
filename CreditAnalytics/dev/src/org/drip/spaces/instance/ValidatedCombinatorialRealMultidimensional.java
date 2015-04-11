@@ -29,8 +29,8 @@ package org.drip.spaces.instance;
  */
 
 /**
- * ValidatedContinuousRealUnidimensional holds the Validated Continuous Uni-dimensional Real-Valued Vector
- * 	Instance Sequence and the Corresponding Generalized Vector Space Type.
+ * ValidatedCombinatorialRealMultidimensional holds the Combinatorial Multi-dimensional Real-Valued Vector
+ *  Instance Sequence and the Corresponding Generalized Vector Space Type.
  * 
  * The Reference we've used is:
  * 
@@ -40,32 +40,32 @@ package org.drip.spaces.instance;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ValidatedContinuousRealUnidimensional implements
+public class ValidatedCombinatorialRealMultidimensional implements
 	org.drip.spaces.instance.GeneralizedValidatedVectorInstance {
-	private double[] _adblInstance = null;
-	private org.drip.spaces.tensor.ContinuousRealUnidimensionalVector _cruv = null;
+	private double[][] _aadblInstance = null;
+	private org.drip.spaces.tensor.CombinatorialRealMultidimensionalVector _crmv = null;
 
 	/**
-	 * ValidatedContinuousRealUnidimensional Constructor
+	 * ValidatedCombinatorialRealMultidimensional Constructor
 	 * 
-	 * @param cruv The Continuous Uni-dimensional Real-Valued Tensor Space Type
-	 * @param adblInstance The Data Instance
+	 * @param crmv The Combinatorial Multi-dimensional Real-Valued Tensor Space Type
+	 * @param aadblInstance The Data Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ValidatedContinuousRealUnidimensional (
-		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector cruv,
-		final double[] adblInstance)
+	public ValidatedCombinatorialRealMultidimensional (
+		final org.drip.spaces.tensor.CombinatorialRealMultidimensionalVector crmv,
+		final double[][] aadblInstance)
 		throws java.lang.Exception
 	{
-		if (null == (_cruv = cruv) || null == (_adblInstance = adblInstance) || 0 == _adblInstance.length)
-			throw new java.lang.Exception ("ValidatedContinuousRealUnidimensional ctr: Invalid Inputs");
+		if (null == (_crmv = crmv) || null == (_aadblInstance = aadblInstance) || 0 == _aadblInstance.length)
+			throw new java.lang.Exception ("ValidatedCombinatorialRealMultidimensional ctr: Invalid Inputs");
 	}
 
-	@Override public org.drip.spaces.tensor.ContinuousRealUnidimensionalVector tensorSpaceType()
+	@Override public org.drip.spaces.tensor.CombinatorialRealMultidimensionalVector tensorSpaceType()
 	{
-		return _cruv;
+		return _crmv;
 	}
 
 	/**
@@ -74,8 +74,8 @@ public class ValidatedContinuousRealUnidimensional implements
 	 * @return The Instance Sequence
 	 */
 
-	public double[] instance()
+	public double[][] instance()
 	{
-		return _adblInstance;
+		return _aadblInstance;
 	}
 }

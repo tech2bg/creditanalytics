@@ -29,7 +29,7 @@ package org.drip.spaces.function;
  */
 
 /**
- * RealMultidimensionalRealUnidimensional implements the f : R^d -> R^1 Function-level Normed Function Space.
+ * RdContinuousToR1Continuous implements the f : R^d Continuous -> R^1 Continuous Normed Function Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -39,44 +39,32 @@ package org.drip.spaces.function;
  * @author Lakshmi Krishnamurthy
  */
 
-public class RealMultidimensionalRealUnidimensional {
-	private int _iPNorm = -1;
-	private org.drip.function.deterministic.AbstractMultivariate _am = null;
-	private org.drip.spaces.tensor.ContinuousRealUnidimensionalVector _cruOutput = null;
-	private org.drip.spaces.tensor.ContinuousRealMultidimensionalVector _crmInput = null;
+public class RdContinuousToR1Continuous extends org.drip.spaces.function.RdToR1 {
+	private org.drip.spaces.tensor.ContinuousRealUnidimensionalVector _cruvOutput = null;
+	private org.drip.spaces.tensor.ContinuousRealMultidimensionalVector _crmvInput = null;
 
 	/**
-	 * RealMultidimensionalRealUnidimensional Function Space Constructor
+	 * RdContinuousToR1Continuous Function Space Constructor
 	 * 
 	 * @param am The Multivariate Function
-	 * @param crmInput The R^d Input Vector Space (may/may not be Normed)
-	 * @param cruOutput The R^1 Output Vector Space (may/may not be Normed)
+	 * @param crmvInput The R^d Input Vector Space (may/may not be Normed)
+	 * @param cruvOutput The R^1 Output Vector Space (may/may not be Normed)
 	 * @param iPNorm The Function-level Norm
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public RealMultidimensionalRealUnidimensional (
+	public RdContinuousToR1Continuous (
 		final org.drip.function.deterministic.AbstractMultivariate am,
-		final org.drip.spaces.tensor.ContinuousRealMultidimensionalVector crmInput,
-		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector cruOutput,
+		final org.drip.spaces.tensor.ContinuousRealMultidimensionalVector crmvInput,
+		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector cruvOutput,
 		final int iPNorm)
 		throws java.lang.Exception
 	{
-		if (null == (_am = am) || null == (_crmInput = crmInput) || null == (_cruOutput = cruOutput) || 0 >
-			(_iPNorm = iPNorm))
-			throw new java.lang.Exception ("RealMultidimensionalRealUnidimensional ctr: Invalid Inputs");
-	}
+		super (am, iPNorm);
 
-	/**
-	 * Retrieve the Underlying Multivariate Function
-	 * 
-	 * @return The Underlying Multivariate Function
-	 */
-
-	public org.drip.function.deterministic.AbstractMultivariate function()
-	{
-		return _am;
+		if (null == (_crmvInput = crmvInput) || null == (_cruvOutput = cruvOutput))
+			throw new java.lang.Exception ("RdContinuousToR1Continuous ctr: Invalid Inputs");
 	}
 
 	/**
@@ -87,7 +75,7 @@ public class RealMultidimensionalRealUnidimensional {
 
 	public org.drip.spaces.tensor.ContinuousRealMultidimensionalVector input()
 	{
-		return _crmInput;
+		return _crmvInput;
 	}
 
 	/**
@@ -98,18 +86,7 @@ public class RealMultidimensionalRealUnidimensional {
 
 	public org.drip.spaces.tensor.ContinuousRealUnidimensionalVector output()
 	{
-		return _cruOutput;
-	}
-
-	/**
-	 * Retrieve the P-Norm Index
-	 * 
-	 * @return The P-Norm Index
-	 */
-
-	public int pNorm()
-	{
-		return _iPNorm;
+		return _cruvOutput;
 	}
 
 	/**
@@ -126,18 +103,20 @@ public class RealMultidimensionalRealUnidimensional {
 		final org.drip.spaces.instance.ValidatedContinuousRealMultidimensional vcrmInstance)
 		throws java.lang.Exception
 	{
-		if (null == vcrmInstance || !vcrmInstance.tensorSpaceType().match (_crmInput))
+		if (null == vcrmInstance || !vcrmInstance.tensorSpaceType().match (_crmvInput))
 			throw new java.lang.Exception
-				("RealMultidimensionalRealUnidimensional::sampleSupremumNorm => Invalid Input");
+				("RdContinuousToR1Continuous::sampleSupremumNorm => Invalid Input");
 
 		double[][] aadblInstance = vcrmInstance.instance();
 
 		int iNumSample = aadblInstance.length;
 
-		double dblSupremumNorm = java.lang.Math.abs (_am.evaluate (aadblInstance[0]));
+		org.drip.function.deterministic.AbstractMultivariate am = function();
+
+		double dblSupremumNorm = java.lang.Math.abs (am.evaluate (aadblInstance[0]));
 
 		for (int i = 1; i < iNumSample; ++i) {
-			double dblResponse = java.lang.Math.abs (_am.evaluate (aadblInstance[i]));
+			double dblResponse = java.lang.Math.abs (am.evaluate (aadblInstance[i]));
 
 			if (dblResponse > dblSupremumNorm) dblSupremumNorm = dblResponse;
 		}
@@ -159,19 +138,22 @@ public class RealMultidimensionalRealUnidimensional {
 		final org.drip.spaces.instance.ValidatedContinuousRealMultidimensional vcrmInstance)
 		throws java.lang.Exception
 	{
-		if (null == vcrmInstance || !vcrmInstance.tensorSpaceType().match (_crmInput))
-			throw new java.lang.Exception
-				("RealMultidimensionalRealUnidimensional::sampleMetricNorm => Invalid Input");
+		if (null == vcrmInstance || !vcrmInstance.tensorSpaceType().match (_crmvInput))
+			throw new java.lang.Exception ("RdContinuousToR1Continuous::sampleMetricNorm => Invalid Input");
+
+		org.drip.function.deterministic.AbstractMultivariate am = function();
 
 		double[][] aadblInstance = vcrmInstance.instance();
 
 		int iNumSample = aadblInstance.length;
 		double dblNorm = java.lang.Double.NaN;
 
-		for (int i = 0; i < iNumSample; ++i)
-			dblNorm += java.lang.Math.pow (java.lang.Math.abs (_am.evaluate (aadblInstance[i])), _iPNorm);
+		int iPNorm = pNorm();
 
-		return java.lang.Math.pow (dblNorm, 1. / _iPNorm);
+		for (int i = 0; i < iNumSample; ++i)
+			dblNorm += java.lang.Math.pow (java.lang.Math.abs (am.evaluate (aadblInstance[i])), iPNorm);
+
+		return java.lang.Math.pow (dblNorm, 1. / iPNorm);
 	}
 
 	/**
@@ -185,31 +167,12 @@ public class RealMultidimensionalRealUnidimensional {
 	public double populationESS()
 		throws java.lang.Exception
 	{
-		if (!(_crmInput instanceof org.drip.spaces.metric.ContinuousRealMultidimensionalBanach))
+		if (!(_crmvInput instanceof org.drip.spaces.metric.ContinuousRealMultidimensionalBanach))
 			throw new java.lang.Exception
-				("RealMultidimensionalRealUnidimensional::populationESS => Invalid Input Vector Space");
+				("RdContinuousToR1Continuous::populationESS => Incomptabile Input Vector Space");
 
-		final org.drip.measure.continuous.MultivariateDistribution multiDist =
-			((org.drip.spaces.metric.ContinuousRealMultidimensionalBanach) _crmInput).borelSigmaMeasure();
-
-		if (null == multiDist)
-			throw new java.lang.Exception
-				("RealMultidimensionalRealUnidimensional::populationESS => Measure not specified");
-
-		org.drip.function.deterministic.AbstractMultivariate am = new
-			org.drip.function.deterministic.AbstractMultivariate (null) {
-			@Override public double evaluate (
-				final double[] adblX)
-				throws java.lang.Exception
-			{
-				return multiDist.density (adblX) * _am.evaluate (adblX);
-			}
-		};
-
-		org.drip.function.deterministic.VariateOutputPair vopMode = am.maxima (_crmInput.leftEdge(),
-			_crmInput.rightEdge());
-
-		return null == vopMode ? null : vopMode.output() / multiDist.density (vopMode.variates());
+		return function().evaluate (((org.drip.spaces.metric.ContinuousRealMultidimensionalBanach)
+			_crmvInput).populationMode());
 	}
 
 	/**
@@ -223,16 +186,20 @@ public class RealMultidimensionalRealUnidimensional {
 	public double populationMetricNorm()
 		throws java.lang.Exception
 	{
-		if (!(_crmInput instanceof org.drip.spaces.metric.ContinuousRealMultidimensionalBanach))
+		if (!(_crmvInput instanceof org.drip.spaces.metric.ContinuousRealMultidimensionalBanach))
 			throw new java.lang.Exception
-				("RealMultidimensionalRealUnidimensional::populationMetricNorm => Invalid Input Vector Space");
+				("RdContinuousToR1Continuous::populationMetricNorm => Invalid Input Vector Space");
 
 		final org.drip.measure.continuous.MultivariateDistribution multiDist =
-			((org.drip.spaces.metric.ContinuousRealMultidimensionalBanach) _crmInput).borelSigmaMeasure();
+			((org.drip.spaces.metric.ContinuousRealMultidimensionalBanach) _crmvInput).borelSigmaMeasure();
 
 		if (null == multiDist)
 			throw new java.lang.Exception
-				("RealMultidimensionalRealUnidimensional::populationMetricNorm => Measure not specified");
+				("RdContinuousToR1Continuous::populationMetricNorm => Measure not specified");
+
+		final org.drip.function.deterministic.AbstractMultivariate amBase = function();
+
+		final int iPNorm = pNorm();
 
 		org.drip.function.deterministic.AbstractMultivariate am = new
 			org.drip.function.deterministic.AbstractMultivariate (null) {
@@ -244,12 +211,13 @@ public class RealMultidimensionalRealUnidimensional {
 				int iDimension = adblX.length;
 
 				for (int i = 0; i < iDimension; ++i)
-					dblNorm += java.lang.Math.pow (java.lang.Math.abs (adblX[i]), _iPNorm);
+					dblNorm += java.lang.Math.pow (java.lang.Math.abs (adblX[i]), iPNorm);
 
-				return dblNorm * multiDist.density (adblX) * _am.evaluate (adblX);
+				return dblNorm * multiDist.density (adblX) * amBase.evaluate (adblX);
 			}
 		};
 
-		return java.lang.Math.pow (am.integrate (_crmInput.leftEdge(), _crmInput.rightEdge()), 1. / _iPNorm);
+		return java.lang.Math.pow (am.integrate (_crmvInput.leftEdge(), _crmvInput.rightEdge()), 1. /
+			iPNorm);
 	}
 }

@@ -29,8 +29,8 @@ package org.drip.spaces.instance;
  */
 
 /**
- * ValidatedContinuousRealUnidimensional holds the Validated Continuous Uni-dimensional Real-Valued Vector
- * 	Instance Sequence and the Corresponding Generalized Vector Space Type.
+ * ValidatedCombinatorialRealUnidimensional holds the Validated Cobinatorial Uni-dimensional Real-Valued
+ *  Vector Instance Sequence and the Corresponding Generalized Vector Space Type.
  * 
  * The Reference we've used is:
  * 
@@ -40,22 +40,22 @@ package org.drip.spaces.instance;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ValidatedContinuousRealUnidimensional implements
+public class ValidatedCombinatorialRealUnidimensional implements
 	org.drip.spaces.instance.GeneralizedValidatedVectorInstance {
 	private double[] _adblInstance = null;
-	private org.drip.spaces.tensor.ContinuousRealUnidimensionalVector _cruv = null;
+	private org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector _cruv = null;
 
 	/**
-	 * ValidatedContinuousRealUnidimensional Constructor
+	 * ValidatedCombinatorialRealUnidimensional Constructor
 	 * 
-	 * @param cruv The Continuous Uni-dimensional Real-Valued Tensor Space Type
+	 * @param cruv The Combinatorial Uni-dimensional Real-Valued Tensor Space Type
 	 * @param adblInstance The Data Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ValidatedContinuousRealUnidimensional (
-		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector cruv,
+	public ValidatedCombinatorialRealUnidimensional (
+		final org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector cruv,
 		final double[] adblInstance)
 		throws java.lang.Exception
 	{
@@ -63,7 +63,7 @@ public class ValidatedContinuousRealUnidimensional implements
 			throw new java.lang.Exception ("ValidatedContinuousRealUnidimensional ctr: Invalid Inputs");
 	}
 
-	@Override public org.drip.spaces.tensor.ContinuousRealUnidimensionalVector tensorSpaceType()
+	@Override public org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector tensorSpaceType()
 	{
 		return _cruv;
 	}

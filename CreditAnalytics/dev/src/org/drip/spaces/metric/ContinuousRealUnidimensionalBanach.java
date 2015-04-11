@@ -192,15 +192,7 @@ public class ContinuousRealUnidimensionalBanach extends
 		return vopMode.variates()[0];
 	}
 
-	/**
-	 * Retrieve the Population Metric Norm
-	 * 
-	 * @return The Population Metric Norm
-	 * 
-	 * @throws java.lang.Exception The Population Metric Norm cannot be computed
-	 */
-
-	public double populationMetricNorm()
+	@Override public double populationMetricNorm()
 		throws java.lang.Exception
 	{
 		if (null == _uniDist)
