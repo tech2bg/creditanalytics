@@ -60,11 +60,11 @@ public abstract class FixedPointFinder {
 	protected boolean _bWhine = false;
 	protected double _dblOFGoal = java.lang.Double.NaN;
 	protected org.drip.function.solver1D.ExecutionControl _ec = null;
-	protected org.drip.function.deterministic.AbstractUnivariate _of = null;
+	protected org.drip.function.deterministic.R1ToR1 _of = null;
 
 	protected FixedPointFinder (
 		final double dblOFGoal,
-		final org.drip.function.deterministic.AbstractUnivariate of,
+		final org.drip.function.deterministic.R1ToR1 of,
 		final org.drip.function.solver1D.ExecutionControl ec,
 		final boolean bWhine)
 		throws java.lang.Exception

@@ -41,7 +41,7 @@ package org.drip.spaces.metric;
 
 public class ContinuousRealMultidimensionalBanach extends
 	org.drip.spaces.tensor.ContinuousRealMultidimensionalVector implements
-		org.drip.spaces.metric.GeneralizedMetricSpace {
+		org.drip.spaces.metric.RealMultidimensionalNormedSpace {
 	private int _iPNorm = -1;
 	private org.drip.measure.continuous.MultivariateDistribution _multiDist = null;
 
@@ -123,28 +123,12 @@ public class ContinuousRealMultidimensionalBanach extends
 		return _iPNorm;
 	}
 
-	/**
-	 * Retrieve the Borel Sigma Multivariate Probability Measure
-	 * 
-	 * @return The Borel Sigma Multivariate Probability Measure
-	 */
-
-	public org.drip.measure.continuous.MultivariateDistribution borelSigmaMeasure()
+	@Override public org.drip.measure.continuous.MultivariateDistribution borelSigmaMeasure()
 	{
 		return _multiDist;
 	}
 
-	/**
-	 * Compute the Supremum Norm of the Sample
-	 * 
-	 * @param adblX The Sample
-	 * 
-	 * @return The Supremum Norm of the Sample
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
-	 */
-
-	public double sampleSupremumNorm (
+	@Override public double sampleSupremumNorm (
 		final double[] adblX)
 		throws java.lang.Exception
 	{
@@ -165,17 +149,7 @@ public class ContinuousRealMultidimensionalBanach extends
 		return dblNorm;
 	}
 
-	/**
-	 * Compute the Metric Norm of the Sample
-	 * 
-	 * @param adblX The Sample
-	 * 
-	 * @return The Metric Norm of the Sample
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
-	 */
-
-	public double sampleMetricNorm (
+	@Override public double sampleMetricNorm (
 		final double[] adblX)
 		throws java.lang.Exception
 	{
@@ -194,18 +168,12 @@ public class ContinuousRealMultidimensionalBanach extends
 		return java.lang.Math.pow (dblNorm, 1. / _iPNorm);
 	}
 
-	/**
-	 * Retrieve the Population Mode
-	 * 
-	 * @return The Population Mode
-	 */
-
-	public double[] populationMode()
+	@Override public double[] populationMode()
 	{
 		if (null == _multiDist) return null;
 
-		org.drip.function.deterministic.AbstractMultivariate am = new
-			org.drip.function.deterministic.AbstractMultivariate (null) {
+		org.drip.function.deterministic.RdToR1 am = new
+			org.drip.function.deterministic.RdToR1 (null) {
 			@Override public double evaluate (
 				final double[] adblX)
 				throws java.lang.Exception
@@ -226,8 +194,8 @@ public class ContinuousRealMultidimensionalBanach extends
 			throw new java.lang.Exception
 				("ContinuousRealMultidimensionalBanach::populationMetricNorm => Invalid Inputs");
 
-		org.drip.function.deterministic.AbstractMultivariate am = new
-			org.drip.function.deterministic.AbstractMultivariate (null) {
+		org.drip.function.deterministic.RdToR1 am = new
+			org.drip.function.deterministic.RdToR1 (null) {
 			@Override public double evaluate (
 				final double[] adblX)
 				throws java.lang.Exception

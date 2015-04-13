@@ -40,8 +40,7 @@ package org.drip.spaces.metric;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuousRealUnidimensionalBall extends
-	org.drip.spaces.metric.ContinuousRealUnidimensionalBanach {
+public class ContinuousRealUnidimensionalBall extends org.drip.spaces.metric.ContinuousRealUnidimensional {
 	private double _dblNormRadius = java.lang.Double.NaN;
 
 	/**

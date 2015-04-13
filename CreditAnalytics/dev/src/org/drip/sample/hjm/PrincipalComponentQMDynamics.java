@@ -5,7 +5,7 @@ import org.drip.analytics.date.*;
 import org.drip.analytics.definition.MarketSurface;
 import org.drip.analytics.support.AnalyticsHelper;
 import org.drip.dynamics.hjm.*;
-import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic.R1ToR1;
 import org.drip.function.deterministic1D.FlatUnivariate;
 import org.drip.param.creator.ScenarioMarketSurfaceBuilder;
 import org.drip.quant.common.FormatUtil;
@@ -114,7 +114,7 @@ public class PrincipalComponentQMDynamics {
 		final MarketSurface mktSurfFlatVol1,
 		final MarketSurface mktSurfFlatVol2,
 		final MarketSurface mktSurfFlatVol3,
-		final AbstractUnivariate auForwardRate,
+		final R1ToR1 auForwardRate,
 		final int iNumFactor)
 		throws Exception
 	{

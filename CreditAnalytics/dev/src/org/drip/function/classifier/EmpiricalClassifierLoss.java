@@ -35,7 +35,7 @@ package org.drip.function.classifier;
  * @author Lakshmi Krishnamurthy
  */
 
-public class EmpiricalClassifierLoss extends org.drip.function.deterministic.AbstractUnivariate {
+public class EmpiricalClassifierLoss extends org.drip.function.deterministic.R1ToR1 {
 	private short _sEmpiricalOutcome = -1;
 	private org.drip.function.classifier.AbstractBinaryClassifier _abe = null;
 

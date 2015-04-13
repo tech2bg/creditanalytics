@@ -35,7 +35,7 @@ package org.drip.function.deterministic1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class Bennett extends org.drip.function.deterministic.AbstractUnivariate {
+public class Bennett extends org.drip.function.deterministic.R1ToR1 {
 
 	/**
 	 * Bennett constructor

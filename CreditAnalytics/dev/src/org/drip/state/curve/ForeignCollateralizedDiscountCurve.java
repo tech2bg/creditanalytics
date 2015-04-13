@@ -38,11 +38,11 @@ package org.drip.state.curve;
 
 public class ForeignCollateralizedDiscountCurve extends org.drip.analytics.rates.ExplicitBootDiscountCurve {
 	private java.lang.String _strCurrency = null;
-	private org.drip.function.deterministic.AbstractUnivariate _auFX = null;
-	private org.drip.function.deterministic.AbstractUnivariate _auFXVolSurface = null;
+	private org.drip.function.deterministic.R1ToR1 _auFX = null;
+	private org.drip.function.deterministic.R1ToR1 _auFXVolSurface = null;
 	private org.drip.analytics.rates.DiscountCurve _dcForeignCollateralized = null;
-	private org.drip.function.deterministic.AbstractUnivariate _auForeignRatesVolSurface = null;
-	private org.drip.function.deterministic.AbstractUnivariate _auFXForeignRatesCorrSurface = null;
+	private org.drip.function.deterministic.R1ToR1 _auForeignRatesVolSurface = null;
+	private org.drip.function.deterministic.R1ToR1 _auFXForeignRatesCorrSurface = null;
 
 	/**
 	 * ForeignCollateralizedDiscountCurve constructor
@@ -60,10 +60,10 @@ public class ForeignCollateralizedDiscountCurve extends org.drip.analytics.rates
 	public ForeignCollateralizedDiscountCurve (
 		final java.lang.String strCurrency,
 		final org.drip.analytics.rates.DiscountCurve dcForeignCollateralized,
-		final org.drip.function.deterministic.AbstractUnivariate auFX,
-		final org.drip.function.deterministic.AbstractUnivariate auForeignRatesVolSurface,
-		final org.drip.function.deterministic.AbstractUnivariate auFXVolSurface,
-		final org.drip.function.deterministic.AbstractUnivariate auFXForeignRatesCorrSurface)
+		final org.drip.function.deterministic.R1ToR1 auFX,
+		final org.drip.function.deterministic.R1ToR1 auForeignRatesVolSurface,
+		final org.drip.function.deterministic.R1ToR1 auFXVolSurface,
+		final org.drip.function.deterministic.R1ToR1 auFXForeignRatesCorrSurface)
 		throws java.lang.Exception
 	{
 		super (dcForeignCollateralized.epoch().julian(), strCurrency,

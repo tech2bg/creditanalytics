@@ -100,7 +100,7 @@ public class FixedPointFinderNewton extends org.drip.function.solver1D.FixedPoin
 
 	public FixedPointFinderNewton (
 		final double dblOFGoal,
-		final org.drip.function.deterministic.AbstractUnivariate of,
+		final org.drip.function.deterministic.R1ToR1 of,
 		final boolean bWhine)
 		throws java.lang.Exception
 	{

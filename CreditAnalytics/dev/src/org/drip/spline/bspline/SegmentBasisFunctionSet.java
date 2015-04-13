@@ -40,15 +40,15 @@ package org.drip.spline.bspline;
 public class SegmentBasisFunctionSet extends org.drip.spline.basis.FunctionSet {
 	protected double _dblTension = java.lang.Double.NaN;
 
-	private static final org.drip.function.deterministic.AbstractUnivariate[] responseBasis (
+	private static final org.drip.function.deterministic.R1ToR1[] responseBasis (
 		final int iNumBasisToUse,
-		final org.drip.function.deterministic.AbstractUnivariate[] aAUHat)
+		final org.drip.function.deterministic.R1ToR1[] aAUHat)
 	{
 		if (null == aAUHat || iNumBasisToUse > aAUHat.length) return null;
 
 		try {
-			org.drip.function.deterministic.AbstractUnivariate[] aAU = new
-				org.drip.function.deterministic.AbstractUnivariate[iNumBasisToUse + 2];
+			org.drip.function.deterministic.R1ToR1[] aAU = new
+				org.drip.function.deterministic.R1ToR1[iNumBasisToUse + 2];
 
 			aAU[0] = new org.drip.function.deterministic1D.Polynomial (0);
 
@@ -79,7 +79,7 @@ public class SegmentBasisFunctionSet extends org.drip.spline.basis.FunctionSet {
 	public SegmentBasisFunctionSet (
 		final int iNumBasisToUse,
 		final double dblTension,
-		final org.drip.function.deterministic.AbstractUnivariate[] aAUHat)
+		final org.drip.function.deterministic.R1ToR1[] aAUHat)
 		throws java.lang.Exception
 	{
 		super (responseBasis (iNumBasisToUse, aAUHat));

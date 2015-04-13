@@ -1,7 +1,7 @@
 
 package org.drip.sample.coveringNumber;
 
-import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic.R1ToR1;
 import org.drip.quant.common.FormatUtil;
 import org.drip.sequence.cover.ScaleSensitiveCoveringNumber;
 import org.drip.service.api.CreditAnalytics;
@@ -50,7 +50,7 @@ public class ScaleSensitiveFunction {
 
 		final int iSampleSize = 10;
 
-		AbstractUnivariate auFatShatter = new AbstractUnivariate (null) {
+		R1ToR1 auFatShatter = new R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws Exception

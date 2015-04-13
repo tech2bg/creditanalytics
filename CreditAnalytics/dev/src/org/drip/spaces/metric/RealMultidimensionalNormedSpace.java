@@ -29,7 +29,8 @@ package org.drip.spaces.metric;
  */
 
 /**
- * ContinuousRealUnidimensionalHilbert implements the normed, bounded/unbounded, Continuous l^2 R^1 Spaces.
+ * RealMultidimensionalNormedSpace abstract Class implements the normed, bounded/unbounded
+ *  Continuous/Combinatorial l^p R^d Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -39,38 +40,49 @@ package org.drip.spaces.metric;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuousRealUnidimensionalHilbert extends
-	org.drip.spaces.metric.ContinuousRealUnidimensionalBanach {
+public interface RealMultidimensionalNormedSpace extends org.drip.spaces.metric.GeneralizedMetricSpace {
 
 	/**
-	 * ContinuousRealUnidimensionalHilbert Space Constructor
+	 * Retrieve the Borel Sigma Multivariate Probability Measure
 	 * 
-	 * @param dblLeftEdge The Left Edge
-	 * @param dblRightEdge The Right Edge
-	 * @param uniDist The Univariate Borel Sigma Measure
+	 * @return The Borel Sigma Multivariate Probability Measure
+	 */
+
+	public abstract org.drip.measure.continuous.MultivariateDistribution borelSigmaMeasure();
+
+	/**
+	 * Compute the Supremum Norm of the Sample
+	 * 
+	 * @param adblX The Sample
+	 * 
+	 * @return The Supremum Norm of the Sample
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ContinuousRealUnidimensionalHilbert (
-		final double dblLeftEdge,
-		final double dblRightEdge,
-		final org.drip.measure.continuous.UnivariateDistribution uniDist)
-		throws java.lang.Exception
-	{
-		super (dblLeftEdge, dblRightEdge, uniDist, 2);
-	}
+	public abstract double sampleSupremumNorm (
+		final double[] adblX)
+		throws java.lang.Exception;
 
-	@Override public double sampleMetricNorm (
-		final double dblX)
-		throws java.lang.Exception
-	{
-		if (!validateInstance (dblX))
-			throw new java.lang.Exception
-				("ContinuousRealUnidimensionalHilbert::sampleMetricNorm => Invalid Inputs");
+	/**
+	 * Compute the Metric Norm of the Sample
+	 * 
+	 * @param adblX The Sample
+	 * 
+	 * @return The Metric Norm of the Sample
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
 
-		double dblAbsoluteX = java.lang.Math.abs (dblX);
+	public abstract double sampleMetricNorm (
+		final double[] adblX)
+		throws java.lang.Exception;
 
-		return dblAbsoluteX * dblAbsoluteX;
-	}
+	/**
+	 * Retrieve the Population Mode
+	 * 
+	 * @return The Population Mode
+	 */
+
+	public abstract double[] populationMode();
 }

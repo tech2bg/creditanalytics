@@ -1,7 +1,7 @@
 
 package org.drip.sample.efronstein;
 
-import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic.R1ToR1;
 import org.drip.function.deterministic1D.OffsetIdempotent;
 import org.drip.quant.common.FormatUtil;
 import org.drip.sequence.custom.GlivenkoCantelliFunctionSupremum;
@@ -67,7 +67,7 @@ public class GlivenkoCantelliSupremumBound {
 	{
 		return GlivenkoCantelliFunctionSupremum.Create (
 			new FunctionSupremumUnivariateRandom (
-				new AbstractUnivariate[] {
+				new R1ToR1[] {
 					new OffsetIdempotent (0.),
 					new OffsetIdempotent (2. * bsg.positiveProbability())
 				},

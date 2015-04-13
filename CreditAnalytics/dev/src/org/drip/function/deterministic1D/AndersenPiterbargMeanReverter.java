@@ -37,9 +37,9 @@ package org.drip.function.deterministic1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class AndersenPiterbargMeanReverter extends org.drip.function.deterministic.AbstractUnivariate {
+public class AndersenPiterbargMeanReverter extends org.drip.function.deterministic.R1ToR1 {
 	private org.drip.function.deterministic1D.ExponentialDecay _auExpDecay = null;
-	private org.drip.function.deterministic.AbstractUnivariate _auSteadyState = null;
+	private org.drip.function.deterministic.R1ToR1 _auSteadyState = null;
 
 	/**
 	 * AndersenPiterbargMeanReverter constructor
@@ -52,7 +52,7 @@ public class AndersenPiterbargMeanReverter extends org.drip.function.determinist
 
 	public AndersenPiterbargMeanReverter (
 		final org.drip.function.deterministic1D.ExponentialDecay auExpDecay,
-		final org.drip.function.deterministic.AbstractUnivariate auSteadyState)
+		final org.drip.function.deterministic.R1ToR1 auSteadyState)
 		throws java.lang.Exception
 	{
 		super (null);

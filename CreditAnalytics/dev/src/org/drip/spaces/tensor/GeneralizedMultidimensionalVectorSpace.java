@@ -34,8 +34,28 @@ package org.drip.spaces.tensor;
  * @author Lakshmi Krishnamurthy
  */
 
-public interface GeneralizedMultidimensionalVectorSpace extends org.drip.spaces.tensor.GeneralizedVectorSpace
+public abstract class GeneralizedMultidimensionalVectorSpace implements
+	org.drip.spaces.tensor.GeneralizedVectorSpace
 {
+	private org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace[] _aGUVS = null;
+
+	protected GeneralizedMultidimensionalVectorSpace (
+		final org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace[] aGUVS)
+		throws java.lang.Exception
+	{
+		if (null == (_aGUVS = aGUVS))
+			throw new java.lang.Exception ("GeneralizedMultidimensionalVectorSpace ctr: Invalid Inputs");
+
+		int iDimension = _aGUVS.length;
+
+		if (0 == iDimension)
+			throw new java.lang.Exception ("GeneralizedMultidimensionalVectorSpace ctr: Invalid Inputs");
+
+		for (int i = 0; i < iDimension; ++i) {
+			if (null == _aGUVS[i])
+				throw new java.lang.Exception ("GeneralizedMultidimensionalVectorSpace ctr: Invalid Inputs");
+		}
+	}
 
 	/**
 	 * Retrieve the Dimension of the Space
@@ -43,7 +63,10 @@ public interface GeneralizedMultidimensionalVectorSpace extends org.drip.spaces.
 	 * @return The Dimension of the Space
 	 */
 
-	public int dimension();
+	public int dimension()
+	{
+		return _aGUVS.length;
+	}
 
 	/**
 	 * Retrieve the Array of the Underlying Unidimensional Vector Spaces
@@ -51,7 +74,10 @@ public interface GeneralizedMultidimensionalVectorSpace extends org.drip.spaces.
 	 * @return The Array of the Underlying Unidimensional Vector Spaces
 	 */
 
-	public org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace[] vectorSpaces();
+	public org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace[] vectorSpaces()
+	{
+		return _aGUVS;
+	}
 
 	/**
 	 * Validate the Input Instance
@@ -62,5 +88,38 @@ public interface GeneralizedMultidimensionalVectorSpace extends org.drip.spaces.
 	 */
 
 	public boolean validateInstance (
-		final double[] adblInstance);
+		final double[] adblInstance)
+	{
+		if (null == adblInstance) return false;
+
+		int iDimension = _aGUVS.length;
+
+		if (adblInstance.length != iDimension) return false;
+
+		for (int i = 0; i < iDimension; ++i) {
+			if (!_aGUVS[i].validateInstance (adblInstance[i])) return false;
+		}
+
+		return true;
+	}
+
+	@Override public boolean match (
+		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther)
+	{
+		if (null == gvsOther || !(gvsOther instanceof GeneralizedMultidimensionalVectorSpace)) return false;
+
+		GeneralizedMultidimensionalVectorSpace gmvsOther = (GeneralizedMultidimensionalVectorSpace) gvsOther;
+
+		int iDimensionOther = gmvsOther.dimension();
+
+		if (iDimensionOther != dimension()) return false;
+
+		org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace[] aGUVSOther = gmvsOther.vectorSpaces();
+
+		for (int i = 0; i < iDimensionOther; ++i) {
+			if (!aGUVSOther[i].match (_aGUVS[i])) return false;
+		}
+
+		return true;
+	}
 }

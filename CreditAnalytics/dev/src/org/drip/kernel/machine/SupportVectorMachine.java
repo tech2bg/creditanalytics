@@ -34,7 +34,7 @@ package org.drip.kernel.machine;
  * @author Lakshmi Krishnamurthy
  */
 
-public class SupportVectorMachine extends org.drip.function.deterministic.AbstractMultivariate {
+public class SupportVectorMachine extends org.drip.function.deterministic.RdToR1 {
 	private double[] _adblW = null;
 	private double _dblB = java.lang.Double.NaN;
 	private org.drip.spaces.tensor.ContinuousRealMultidimensionalVector _mrvs = null;

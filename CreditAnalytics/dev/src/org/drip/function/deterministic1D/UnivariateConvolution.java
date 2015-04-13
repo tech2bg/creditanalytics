@@ -37,9 +37,9 @@ package org.drip.function.deterministic1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class UnivariateConvolution extends org.drip.function.deterministic.AbstractUnivariate {
-	private org.drip.function.deterministic.AbstractUnivariate _au1 = null;
-	private org.drip.function.deterministic.AbstractUnivariate _au2 = null;
+public class UnivariateConvolution extends org.drip.function.deterministic.R1ToR1 {
+	private org.drip.function.deterministic.R1ToR1 _au1 = null;
+	private org.drip.function.deterministic.R1ToR1 _au2 = null;
 
 	/**
 	 * Construct a PolynomialMirrorCross instance
@@ -51,8 +51,8 @@ public class UnivariateConvolution extends org.drip.function.deterministic.Abstr
 	 */
 
 	public UnivariateConvolution (
-		final org.drip.function.deterministic.AbstractUnivariate au1,
-		final org.drip.function.deterministic.AbstractUnivariate au2)
+		final org.drip.function.deterministic.R1ToR1 au1,
+		final org.drip.function.deterministic.R1ToR1 au2)
 		throws java.lang.Exception
 	{
 		super (null);

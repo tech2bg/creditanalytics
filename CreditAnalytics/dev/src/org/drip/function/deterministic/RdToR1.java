@@ -29,14 +29,14 @@ package org.drip.function.deterministic;
  */
 
 /**
- * AbstractMultivariate provides the evaluation of the objective function and its derivatives for a specified
- * 	set of variates. Default implementation of the derivatives are for non-analytical black box objective
+ * RdToR1 provides the evaluation of the R^d -> R^1 objective function and its derivatives for a specified
+ * 	set of R^d variates. Default implementation of the derivatives are for non-analytical black box objective
  * 	functions.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class AbstractMultivariate {
+public abstract class RdToR1 {
 	private static final int EXTREMA_SAMPLING = 10000;
 	private static final int QUADRATURE_SAMPLING = 10000;
 
@@ -66,7 +66,7 @@ public abstract class AbstractMultivariate {
 		return true;
 	}
 
-	protected AbstractMultivariate (
+	protected RdToR1 (
 		final org.drip.quant.calculus.DerivativeControl dc)
 	{
 		if (null == (_dc = dc)) _dc = new org.drip.quant.calculus.DerivativeControl();
@@ -209,7 +209,7 @@ public abstract class AbstractMultivariate {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (adblLeftEdge) ||
 			!org.drip.quant.common.NumberUtil.IsValid (adblRightEdge))
-			throw new java.lang.Exception ("AbstractMultivariate::integrate => Invalid Inputs");
+			throw new java.lang.Exception ("RdToR1::integrate => Invalid Inputs");
 
 		double dblIntegrand = 0.;
 		int iNumVariate = adblLeftEdge.length;
@@ -217,7 +217,7 @@ public abstract class AbstractMultivariate {
 		double[] adblVariateWidth = new double[iNumVariate];
 
 		if (adblRightEdge.length != iNumVariate)
-			throw new java.lang.Exception ("AbstractMultivariate::integrate => Invalid Inputs");
+			throw new java.lang.Exception ("RdToR1::integrate => Invalid Inputs");
 
 		for (int j = 0; j < iNumVariate; ++j)
 			adblVariateWidth[j] = adblRightEdge[j] - adblLeftEdge[j];

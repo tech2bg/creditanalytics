@@ -35,9 +35,8 @@ package org.drip.spaces.tensor;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CombinatorialRealMultidimensionalVector implements
+public class CombinatorialRealMultidimensionalVector extends
 	org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace {
-	private org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] _aCRUV = null;
 
 	/**
 	 * CombinatorialRealMultidimensionalVector Constructor
@@ -51,66 +50,21 @@ public class CombinatorialRealMultidimensionalVector implements
 		final org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] aCRUV)
 		throws java.lang.Exception
 	{
-		if (null == (_aCRUV = aCRUV) || 0 == _aCRUV.length)
-			throw new java.lang.Exception ("CombinatorialRealUnidimensionalVector ctr: Invalid Inputs");
-	}
-
-	@Override public int dimension()
-	{
-		return _aCRUV.length;
-	}
-
-	@Override public org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] vectorSpaces()
-	{
-		return _aCRUV;
-	}
-
-	@Override public boolean validateInstance (
-		final double[] adblInstance)
-	{
-		if (null == adblInstance) return false;
-
-		int iDimension = _aCRUV.length;
-
-		if (adblInstance.length != iDimension) return false;
-
-		for (int i = 0; i < iDimension; ++i) {
-			if (!_aCRUV[i].validateInstance (adblInstance[i])) return false;
-		}
-
-		return true;
+		super (aCRUV);
 	}
 
 	@Override public org.drip.spaces.tensor.Cardinality cardinality()
 	{
+		org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace[] aGUVS = vectorSpaces();
+
+		int iDimension = aGUVS.length;
 		double dblCardinalNumber = 1.;
-		int iDimension = _aCRUV.length;
 
 		for (int i = 0; i < iDimension; ++i)
-			dblCardinalNumber *= _aCRUV[i].cardinality().number();
+			dblCardinalNumber *= ((org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector)
+				aGUVS[i]).cardinality().number();
 
 		return org.drip.spaces.tensor.Cardinality.CountablyFinite (dblCardinalNumber);
-	}
-
-	@Override public boolean match (
-		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther)
-	{
-		if (null == gvsOther || !(gvsOther instanceof CombinatorialRealMultidimensionalVector)) return false;
-
-		CombinatorialRealMultidimensionalVector crmvOther = (CombinatorialRealMultidimensionalVector)
-			gvsOther;
-
-		int iDimensionOther = crmvOther.dimension();
-
-		if (iDimensionOther != dimension()) return false;
-
-		org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] aCRUVOther = crmvOther.vectorSpaces();
-
-		for (int i = 0; i < iDimensionOther; ++i) {
-			if (!aCRUVOther[i].match (_aCRUV[i])) return false;
-		}
-
-		return true;
 	}
 
 	/**
@@ -121,6 +75,15 @@ public class CombinatorialRealMultidimensionalVector implements
 
 	public org.drip.spaces.tensor.CombinatorialRealMultidimensionalIterator iterator()
 	{
-		return org.drip.spaces.tensor.CombinatorialRealMultidimensionalIterator.Standard (_aCRUV);
+		org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace[] aGUVS = vectorSpaces();
+
+		int iDimension = aGUVS.length;
+		org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[] aCRUV = new
+			org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector[iDimension];
+
+		for (int i = 0; i < iDimension; ++i)
+			aCRUV[i] = (org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector) aGUVS[i];
+
+		return org.drip.spaces.tensor.CombinatorialRealMultidimensionalIterator.Standard (aCRUV);
 	}
 }

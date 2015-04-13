@@ -38,8 +38,8 @@ package org.drip.sequence.custom;
 public class KernelDensityEstimationL1 extends org.drip.sequence.functional.BoundedMultivariateRandom {
 	private int _iSampleSize = -1;
 	private double _dblSmoothingParameter = java.lang.Double.NaN;
-	private org.drip.function.deterministic.AbstractUnivariate _auKernel = null;
-	private org.drip.function.deterministic.AbstractUnivariate _auResponse = null;
+	private org.drip.function.deterministic.R1ToR1 _auKernel = null;
+	private org.drip.function.deterministic.R1ToR1 _auResponse = null;
 
 	/**
 	 * KernelDensityEstimationL1 Constructor
@@ -53,10 +53,10 @@ public class KernelDensityEstimationL1 extends org.drip.sequence.functional.Boun
 	 */
 
 	public KernelDensityEstimationL1 (
-		final org.drip.function.deterministic.AbstractUnivariate auKernel,
+		final org.drip.function.deterministic.R1ToR1 auKernel,
 		final double dblSmoothingParameter,
 		final int iSampleSize,
-		final org.drip.function.deterministic.AbstractUnivariate auResponse)
+		final org.drip.function.deterministic.R1ToR1 auResponse)
 		throws java.lang.Exception
 	{
 		if (null == (_auKernel = auKernel) || !org.drip.quant.common.NumberUtil.IsValid
@@ -71,7 +71,7 @@ public class KernelDensityEstimationL1 extends org.drip.sequence.functional.Boun
 	 * @return The Kernel Function
 	 */
 
-	public org.drip.function.deterministic.AbstractUnivariate kernelFunction()
+	public org.drip.function.deterministic.R1ToR1 kernelFunction()
 	{
 		return _auKernel;
 	}
@@ -104,7 +104,7 @@ public class KernelDensityEstimationL1 extends org.drip.sequence.functional.Boun
 	 * @return The Response Function
 	 */
 
-	public org.drip.function.deterministic.AbstractUnivariate responseFunction()
+	public org.drip.function.deterministic.R1ToR1 responseFunction()
 	{
 		return _auResponse;
 	}

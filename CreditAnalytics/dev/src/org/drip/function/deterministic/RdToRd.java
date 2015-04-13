@@ -1,5 +1,5 @@
 
-package org.drip.spaces.function;
+package org.drip.function.deterministic;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,48 +29,23 @@ package org.drip.spaces.function;
  */
 
 /**
- * RdToR1 is the abstract class underlying the f : R^d -> R^1 Normed Function Spaces.
- * 
- * The Reference we've used is:
- * 
- * 	- Carl, B., and I. Stephani (1990): Entropy, Compactness, and Approximation of Operators, Cambridge
- * 		University Press, Cambridge UK.
+ * RdToRd provides the evaluation of the R^d -> R^d objective function and its derivatives for a specified
+ * 	set of R^d variates. Default implementation of the derivatives are for non-analytical black box objective
+ * 	functions.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class RdToR1 {
-	private int _iPNorm = -1;
-	private org.drip.function.deterministic.AbstractMultivariate _am = null;
-
-	protected RdToR1 (
-		final org.drip.function.deterministic.AbstractMultivariate am,
-		final int iPNorm)
-		throws java.lang.Exception
-	{
-		if (null == (_am = am) || 0 > (_iPNorm = iPNorm))
-			throw new java.lang.Exception ("RdToR1 ctr: Invalid Inputs");
-	}
+public abstract class RdToRd {
 
 	/**
-	 * Retrieve the Underlying Multivariate Function
+	 * Evaluate for the given Input R^d Variates
 	 * 
-	 * @return The Underlying Multivariate Function
+	 * @param adblVariate Array of Input R^d Variates
+	 *  
+	 * @return The Output R^d Variates
 	 */
 
-	public org.drip.function.deterministic.AbstractMultivariate function()
-	{
-		return _am;
-	}
-
-	/**
-	 * Retrieve the P-Norm Index
-	 * 
-	 * @return The P-Norm Index
-	 */
-
-	public int pNorm()
-	{
-		return _iPNorm;
-	}
+	public abstract double[] evaluate (
+		final double[] adblVariate);
 }

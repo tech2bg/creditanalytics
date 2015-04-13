@@ -50,7 +50,7 @@ package org.drip.state.estimator;
  */
 
 public class NonlinearCurveCalibrator {
-	class CreditCurveCalibrator extends org.drip.function.deterministic.AbstractUnivariate {
+	class CreditCurveCalibrator extends org.drip.function.deterministic.R1ToR1 {
 		private int _iInstr = -1;
 		private boolean _bFlat = false;
 		private java.lang.String _strMeasure = "";
@@ -176,8 +176,8 @@ public class NonlinearCurveCalibrator {
 		final org.drip.param.valuation.ValuationCustomizationParams quotingParams)
 		throws java.lang.Exception
 	{
-		org.drip.function.deterministic.AbstractUnivariate ofIROuter = new
-			org.drip.function.deterministic.AbstractUnivariate (null) {
+		org.drip.function.deterministic.R1ToR1 ofIROuter = new
+			org.drip.function.deterministic.R1ToR1 (null) {
 			public double evaluate (
 				final double dblShiftedLeftSlope)
 				throws java.lang.Exception
@@ -308,8 +308,8 @@ public class NonlinearCurveCalibrator {
 			!org.drip.quant.common.NumberUtil.IsValid (dblCalibValue))
 			throw new java.lang.Exception ("NonlinearCurveCalibrator::calibrateIRNode => Invalid inputs!");
 
-		org.drip.function.deterministic.AbstractUnivariate ofIRNode = new
-			org.drip.function.deterministic.AbstractUnivariate (null) {
+		org.drip.function.deterministic.R1ToR1 ofIRNode = new
+			org.drip.function.deterministic.R1ToR1 (null) {
 			public double evaluate (
 				final double dblValue)
 				throws java.lang.Exception

@@ -35,7 +35,7 @@ package org.drip.function.deterministic1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FlatUnivariate extends org.drip.function.deterministic.AbstractUnivariate {
+public class FlatUnivariate extends org.drip.function.deterministic.R1ToR1 {
 	private double _dblLevel = java.lang.Double.NaN;
 
 	/**

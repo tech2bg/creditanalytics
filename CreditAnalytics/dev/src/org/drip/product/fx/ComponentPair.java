@@ -276,7 +276,7 @@ public class ComponentPair extends org.drip.product.definition.BasketProduct {
 
 			if (null != _fxFixingSetting && org.drip.param.period.FixingSetting.FIXING_PRESET_STATIC ==
 				_fxFixingSetting.type()) {
-				org.drip.function.deterministic.AbstractUnivariate auFX = mktParams.fxCurve (fxLabel()[0]);
+				org.drip.function.deterministic.R1ToR1 auFX = mktParams.fxCurve (fxLabel()[0]);
 
 				if (null == auFX) return null;
 

@@ -92,7 +92,7 @@ public class EfronSteinMetrics {
 	 * @return The Multivariate Objective Function Instance
 	 */
 
-	public org.drip.function.deterministic.AbstractMultivariate function()
+	public org.drip.function.deterministic.RdToR1 function()
 	{
 		return _func;
 	}

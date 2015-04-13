@@ -41,7 +41,7 @@ package org.drip.spaces.metric;
  */
 
 public class CombinatorialRealUnidimensionalBall extends
-	org.drip.spaces.metric.CombinatorialRealUnidimensionalBanach {
+	org.drip.spaces.metric.CombinatorialRealUnidimensional {
 	private double _dblNormRadius = java.lang.Double.NaN;
 
 	/**

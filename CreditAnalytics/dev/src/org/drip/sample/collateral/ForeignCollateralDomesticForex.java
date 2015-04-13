@@ -7,7 +7,7 @@ import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
 import org.drip.analytics.support.CaseInsensitiveTreeMap;
-import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic.R1ToR1;
 import org.drip.function.deterministic1D.*;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
@@ -86,7 +86,7 @@ public class ForeignCollateralDomesticForex {
 			dblForeignCollateralRate
 		);
 
-		AbstractUnivariate auFX = new ExponentialDecay (
+		R1ToR1 auFX = new ExponentialDecay (
 			dtToday.julian(),
 			dblCollateralizedFXRate / 365.25
 		);

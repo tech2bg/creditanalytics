@@ -29,8 +29,7 @@ package org.drip.spaces.metric;
  */
 
 /**
- * CombinatorialRealUnidimensionalBanach implements the normed, bounded/unbounded Combinatorial l^p R^1
- *  Spaces.
+ * CombinatorialRealUnidimensional implements the normed, bounded/unbounded Combinatorial l^p R^1 Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -40,29 +39,29 @@ package org.drip.spaces.metric;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CombinatorialRealUnidimensionalBanach extends
+public class CombinatorialRealUnidimensional extends
 	org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector implements
-		org.drip.spaces.metric.GeneralizedMetricSpace {
+		org.drip.spaces.metric.RealUnidimensionalNormedSpace {
 	private int _iPNorm = -1;
 	private org.drip.measure.continuous.UnivariateDistribution _uniDist = null;
 
 	/**
-	 * Construct the Standard l^p R^1 Combinatorial Banach Space Instance
+	 * Construct the Standard l^p R^1 Combinatorial Space Instance
 	 * 
 	 * @param lsElementSpace The List Space of Elements
 	 * @param uniDist The Univariate Borel Sigma Measure
 	 * @param iPNorm The p-norm of the Space
 	 * 
-	 * @return The Standard l^p R^1 Combinatorial Banach Space Instance
+	 * @return The Standard l^p R^1 Combinatorial Space Instance
 	 */
 
-	public static final CombinatorialRealUnidimensionalBanach StandardBanach (
+	public static final CombinatorialRealUnidimensional Standard (
 		final java.util.List<java.lang.Double> lsElementSpace,
 		final org.drip.measure.continuous.UnivariateDistribution uniDist,
 		final int iPNorm)
 	{
 		try {
-			return new CombinatorialRealUnidimensionalBanach (lsElementSpace, uniDist, iPNorm);
+			return new CombinatorialRealUnidimensional (lsElementSpace, uniDist, iPNorm);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -71,20 +70,20 @@ public class CombinatorialRealUnidimensionalBanach extends
 	}
 
 	/**
-	 * Construct the Supremum (i.e., l^Infinity) R^1 Combinatorial Banach Space Instance
+	 * Construct the Supremum (i.e., l^Infinity) R^1 Combinatorial Space Instance
 	 * 
 	 * @param lsElementSpace The List Space of Elements
 	 * @param uniDist The Univariate Borel Sigma Measure
 	 * 
-	 * @return The Supremum (i.e., l^Infinity) R^1 Combinatorial Banach Space Instance
+	 * @return The Supremum (i.e., l^Infinity) R^1 Combinatorial Space Instance
 	 */
 
-	public static final CombinatorialRealUnidimensionalBanach SupremumBanach (
+	public static final CombinatorialRealUnidimensional Supremum (
 		final java.util.List<java.lang.Double> lsElementSpace,
 		final org.drip.measure.continuous.UnivariateDistribution uniDist)
 	{
 		try {
-			return new CombinatorialRealUnidimensionalBanach (lsElementSpace, uniDist, 0);
+			return new CombinatorialRealUnidimensional (lsElementSpace, uniDist, 0);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -93,7 +92,7 @@ public class CombinatorialRealUnidimensionalBanach extends
 	}
 
 	/**
-	 * CombinatorialRealUnidimensionalBanach Space Constructor
+	 * CombinatorialRealUnidimensional Space Constructor
 	 * 
 	 * @param lsElementSpace The List Space of Elements
 	 * @param uniDist The Univariate Borel Sigma Measure
@@ -102,7 +101,7 @@ public class CombinatorialRealUnidimensionalBanach extends
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public CombinatorialRealUnidimensionalBanach (
+	public CombinatorialRealUnidimensional (
 		final java.util.List<java.lang.Double> lsElementSpace,
 		final org.drip.measure.continuous.UnivariateDistribution uniDist,
 		final int iPNorm)
@@ -111,8 +110,7 @@ public class CombinatorialRealUnidimensionalBanach extends
 		super (lsElementSpace);
 
 		if (0 > (_iPNorm = iPNorm))
-			throw new java.lang.Exception
-				("CombinatorialRealUnidimensionalBanach Constructor: Invalid p-norm");
+			throw new java.lang.Exception ("CombinatorialRealUnidimensional Constructor: Invalid p-norm");
 
 		_uniDist = uniDist;
 	}
@@ -122,52 +120,28 @@ public class CombinatorialRealUnidimensionalBanach extends
 		return _iPNorm;
 	}
 
-	/**
-	 * Retrieve the Borel Sigma Univariate Probability Measure
-	 * 
-	 * @return The Borel Sigma Univariate Probability Measure
-	 */
-
-	public org.drip.measure.continuous.UnivariateDistribution borelSigmaMeasure()
+	@Override public org.drip.measure.continuous.UnivariateDistribution borelSigmaMeasure()
 	{
 		return _uniDist;
 	}
 
-	/**
-	 * Compute the Metric Norm of the Sample
-	 * 
-	 * @param dblX The Sample
-	 * 
-	 * @return The Metric Norm of the Sample
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
-	 */
-
-	public double sampleMetricNorm (
+	@Override public double sampleMetricNorm (
 		final double dblX)
 		throws java.lang.Exception
 	{
 		if (!validateInstance (dblX))
 			throw new java.lang.Exception
-				("CombinatorialRealUnidimensionalBanach::sampleMetricNorm => Invalid Inputs");
+				("CombinatorialRealUnidimensional::sampleMetricNorm => Invalid Inputs");
 
 		return java.lang.Math.abs (dblX);
 	}
 
-	/**
-	 * Retrieve the Population Mode
-	 * 
-	 * @return The Population Mode
-	 * 
-	 * @throws java.lang.Exception Thrown if the Population Mode cannot be calculated
-	 */
-
-	public double populationMode()
+	@Override public double populationMode()
 		throws java.lang.Exception
 	{
 		if (null == _uniDist)
 			throw new java.lang.Exception
-				("CombinatorialRealUnidimensionalBanach::populationMode => Invalid Inputs");
+				("CombinatorialRealUnidimensional::populationMode => Invalid Inputs");
 
 		double dblMode = java.lang.Double.NaN;
 		double dblModeProbability = java.lang.Double.NaN;
@@ -193,7 +167,7 @@ public class CombinatorialRealUnidimensionalBanach extends
 	{
 		if (null == _uniDist)
 			throw new java.lang.Exception
-				("CombinatorialRealUnidimensionalBanach::populationMetricNorm => Invalid Inputs");
+				("CombinatorialRealUnidimensional::populationMetricNorm => Invalid Inputs");
 
 		double dblNorm = 0.;
 		double dblNormalizer = 0.;

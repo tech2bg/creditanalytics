@@ -221,5 +221,5 @@ public interface SingleSegmentSequence {
 	 * @return The AbstractUnivariate Instance
 	 */
 
-	public abstract org.drip.function.deterministic.AbstractUnivariate toAU();
+	public abstract org.drip.function.deterministic.R1ToR1 toAU();
 }

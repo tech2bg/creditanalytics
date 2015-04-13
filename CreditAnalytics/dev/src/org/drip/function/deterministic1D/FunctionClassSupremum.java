@@ -35,7 +35,7 @@ package org.drip.function.deterministic1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class FunctionClassSupremum extends org.drip.function.deterministic.AbstractUnivariate {
+public class FunctionClassSupremum extends org.drip.function.deterministic.R1ToR1 {
 	class IndexSupremum {
 		int _iIndex = -1;
 		double _dblSupremum = java.lang.Double.NaN;
@@ -49,7 +49,7 @@ public class FunctionClassSupremum extends org.drip.function.deterministic.Abstr
 		}
 	};
 
-	private org.drip.function.deterministic.AbstractUnivariate[] _aAUClass = null;
+	private org.drip.function.deterministic.R1ToR1[] _aAUClass = null;
 
 	private IndexSupremum supremum (
 		final double dblVariate)
@@ -86,7 +86,7 @@ public class FunctionClassSupremum extends org.drip.function.deterministic.Abstr
 	 */
 
 	public FunctionClassSupremum (
-		final org.drip.function.deterministic.AbstractUnivariate[] aAUClass)
+		final org.drip.function.deterministic.R1ToR1[] aAUClass)
 		throws java.lang.Exception
 	{
 		super (null);
@@ -101,7 +101,7 @@ public class FunctionClassSupremum extends org.drip.function.deterministic.Abstr
 	 * @return The Class of Functions
 	 */
 
-	public org.drip.function.deterministic.AbstractUnivariate[] functionClass()
+	public org.drip.function.deterministic.R1ToR1[] functionClass()
 	{
 		return _aAUClass;
 	}
@@ -114,7 +114,7 @@ public class FunctionClassSupremum extends org.drip.function.deterministic.Abstr
 	 * @return The Supremum Function corresponding to the specified Variate
 	 */
 
-	public org.drip.function.deterministic.AbstractUnivariate supremumFunction (
+	public org.drip.function.deterministic.R1ToR1 supremumFunction (
 		final double dblVariate)
 	{
 		IndexSupremum is = supremum (dblVariate);

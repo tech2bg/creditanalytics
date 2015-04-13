@@ -32,16 +32,16 @@ package org.drip.function.deterministic;
  */
 
 /**
- * AbstractUnivariate provides the evaluation of the objective function and its derivatives for a specified
- * 	variate. Default implementation of the derivatives are for non-analytical black box objective functions.
+ * R1ToR1 provides the evaluation of the objective function and its derivatives for a specified variate.
+ *  Default implementation of the derivatives are for non-analytical black box objective functions.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class AbstractUnivariate {
+public abstract class R1ToR1 {
 	protected org.drip.quant.calculus.DerivativeControl _dc = null;
 
-	protected AbstractUnivariate (
+	protected R1ToR1 (
 		final org.drip.quant.calculus.DerivativeControl dc)
 	{
 		if (null == (_dc = dc)) _dc = new org.drip.quant.calculus.DerivativeControl();
@@ -192,7 +192,7 @@ public abstract class AbstractUnivariate {
 
 	public org.drip.function.deterministic.VariateOutputPair maxima()
 	{
-		AbstractUnivariate auDerivative = new AbstractUnivariate (null) {
+		R1ToR1 auDerivative = new R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws java.lang.Exception
@@ -271,7 +271,7 @@ public abstract class AbstractUnivariate {
 
 	public org.drip.function.deterministic.VariateOutputPair minima()
 	{
-		AbstractUnivariate auDerivative = new AbstractUnivariate (null) {
+		R1ToR1 auDerivative = new R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws java.lang.Exception

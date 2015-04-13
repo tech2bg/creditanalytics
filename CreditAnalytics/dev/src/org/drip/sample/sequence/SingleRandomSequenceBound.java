@@ -1,7 +1,7 @@
 
 package org.drip.sample.sequence;
 
-import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic.R1ToR1;
 import org.drip.function.deterministic1D.*;
 import org.drip.quant.common.FormatUtil;
 import org.drip.sequence.metrics.*;
@@ -48,7 +48,7 @@ public class SingleRandomSequenceBound {
 	private static final void MarkovBound (
 		final SingleSequenceAgnosticMetrics sm,
 		final double dblLevel,
-		final AbstractUnivariate au)
+		final R1ToR1 au)
 		throws Exception
 	{
 		System.out.println (
@@ -104,7 +104,7 @@ public class SingleRandomSequenceBound {
 
 	private static final void MarkovBound (
 		final SingleSequenceAgnosticMetrics sm,
-		final AbstractUnivariate au)
+		final R1ToR1 au)
 		throws Exception
 	{
 		MarkovBound (sm, 0.20, au);

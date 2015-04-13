@@ -45,7 +45,7 @@ package org.drip.function.solver1D;
 public class ExecutionControl {
 	private org.drip.function.solver1D.ExecutionControlParams _ecp = null;
 
-	protected org.drip.function.deterministic.AbstractUnivariate _of = null;
+	protected org.drip.function.deterministic.R1ToR1 _of = null;
 
 	/**
 	 * ExecutionControl constructor
@@ -57,7 +57,7 @@ public class ExecutionControl {
 	 */
 
 	public ExecutionControl (
-		final org.drip.function.deterministic.AbstractUnivariate of,
+		final org.drip.function.deterministic.R1ToR1 of,
 		final org.drip.function.solver1D.ExecutionControlParams ecp)
 		throws java.lang.Exception
 	{

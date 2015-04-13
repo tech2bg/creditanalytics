@@ -37,7 +37,7 @@ package org.drip.spline.basis;
  */
 
 public class FunctionSet {
-	private org.drip.function.deterministic.AbstractUnivariate[] _aAUResponseBasis = null;
+	private org.drip.function.deterministic.R1ToR1[] _aAUResponseBasis = null;
 
 	/**
 	 * @param aAUResponseBasis Array of the Basis Function Set
@@ -46,7 +46,7 @@ public class FunctionSet {
 	 */
 
 	public FunctionSet (
-		final org.drip.function.deterministic.AbstractUnivariate[] aAUResponseBasis)
+		final org.drip.function.deterministic.R1ToR1[] aAUResponseBasis)
 		throws java.lang.Exception
 	{
 		if (null == (_aAUResponseBasis = aAUResponseBasis) || 0 == _aAUResponseBasis.length)
@@ -72,7 +72,7 @@ public class FunctionSet {
 	 * @return The Basis Function identified by the specified Index
 	 */
 
-	public org.drip.function.deterministic.AbstractUnivariate indexedBasisFunction (
+	public org.drip.function.deterministic.R1ToR1 indexedBasisFunction (
 		final int iBasisIndex)
 	{
 		if (iBasisIndex >= numBasis()) return null;

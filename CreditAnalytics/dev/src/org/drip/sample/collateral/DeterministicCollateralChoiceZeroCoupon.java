@@ -4,7 +4,7 @@ package org.drip.sample.collateral;
 import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic.R1ToR1;
 import org.drip.function.deterministic1D.*;
 import org.drip.param.valuation.CollateralizationParams;
 import org.drip.quant.common.FormatUtil;
@@ -85,7 +85,7 @@ public class DeterministicCollateralChoiceZeroCoupon {
 			dblForeignCollateralRate
 		);
 
-		AbstractUnivariate auFX = new ExponentialDecay (dtToday.julian(), dblCollateralizedFXRate / 365.25);
+		R1ToR1 auFX = new ExponentialDecay (dtToday.julian(), dblCollateralizedFXRate / 365.25);
 
 		ForeignCollateralizedDiscountCurve dcCcyDomesticCollatForeign = new ForeignCollateralizedDiscountCurve (
 			strDomesticCurrency,

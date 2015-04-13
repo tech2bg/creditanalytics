@@ -4,7 +4,7 @@ package org.drip.sample.collateral;
 import org.drip.analytics.date.DateUtil;
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.rates.DiscountCurve;
-import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic.R1ToR1;
 import org.drip.function.deterministic1D.*;
 import org.drip.param.valuation.CollateralizationParams;
 import org.drip.service.api.CreditAnalytics;
@@ -50,7 +50,7 @@ public class ForeignCollateralizedZeroCoupon {
 	private static final double ZeroCouponVolCorr (
 		final String strDomesticCurrency,
 		final DiscountCurve dcCcyForeignCollatForeign,
-		final AbstractUnivariate auFX,
+		final R1ToR1 auFX,
 		final double dblForeignRatesVolatility,
 		final double dblFXVolatility,
 		final double dblFXForeignRatesCorrelation,
@@ -107,7 +107,7 @@ public class ForeignCollateralizedZeroCoupon {
 			dblForeignCollateralRate
 		);
 
-		AbstractUnivariate auFX = new ExponentialDecay (
+		R1ToR1 auFX = new ExponentialDecay (
 			dtToday.julian(),
 			dblCollateralizedFXRate / 365.25
 		);

@@ -35,8 +35,8 @@ package org.drip.function.deterministic1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class UnivariateReciprocal extends org.drip.function.deterministic.AbstractUnivariate {
-	private org.drip.function.deterministic.AbstractUnivariate _au = null;
+public class UnivariateReciprocal extends org.drip.function.deterministic.R1ToR1 {
+	private org.drip.function.deterministic.R1ToR1 _au = null;
 
 	/**
 	 * UnivariateReciprocal constructor
@@ -47,7 +47,7 @@ public class UnivariateReciprocal extends org.drip.function.deterministic.Abstra
 	 */
 
 	public UnivariateReciprocal (
-		final org.drip.function.deterministic.AbstractUnivariate au)
+		final org.drip.function.deterministic.R1ToR1 au)
 		throws java.lang.Exception
 	{
 		super (null);

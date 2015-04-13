@@ -37,7 +37,7 @@ package org.drip.function.deterministic1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ExponentialTension extends org.drip.function.deterministic.AbstractUnivariate {
+public class ExponentialTension extends org.drip.function.deterministic.R1ToR1 {
 	private boolean _bIsBaseNatural = false;
 	private double _dblBase = java.lang.Double.NaN;
 	private double _dblTension = java.lang.Double.NaN;

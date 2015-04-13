@@ -38,7 +38,7 @@ package org.drip.function.deterministic1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class SABRLIBORCapVolatility extends org.drip.function.deterministic.AbstractUnivariate {
+public class SABRLIBORCapVolatility extends org.drip.function.deterministic.R1ToR1 {
 	private double _dblA = java.lang.Double.NaN;
 	private double _dblB = java.lang.Double.NaN;
 	private double _dblC = java.lang.Double.NaN;

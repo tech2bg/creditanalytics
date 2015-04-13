@@ -35,7 +35,7 @@ package org.drip.function.classifier;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class AbstractBinaryClassifier extends org.drip.function.deterministic.AbstractUnivariate {
+public abstract class AbstractBinaryClassifier extends org.drip.function.deterministic.R1ToR1 {
 
 	/**
 	 * AbstractBinaryClassifier Constructor

@@ -243,10 +243,10 @@ public abstract class TermStructure implements org.drip.analytics.definition.Cur
 	 * @return The Univariate Function Instance
 	 */
 
-	public org.drip.function.deterministic.AbstractUnivariate function()
+	public org.drip.function.deterministic.R1ToR1 function()
 	{
-		org.drip.function.deterministic.AbstractUnivariate auTS = new
-			org.drip.function.deterministic.AbstractUnivariate (null) {
+		org.drip.function.deterministic.R1ToR1 auTS = new
+			org.drip.function.deterministic.R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws java.lang.Exception

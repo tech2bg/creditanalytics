@@ -192,7 +192,7 @@ public class SingleSequenceAgnosticMetrics {
 	 */
 
 	public SingleSequenceAgnosticMetrics functionSequenceMetrics (
-		final org.drip.function.deterministic.AbstractUnivariate au)
+		final org.drip.function.deterministic.R1ToR1 au)
 	{
 		if (null == au) return null;
 
@@ -302,7 +302,7 @@ public class SingleSequenceAgnosticMetrics {
 
 	public double markovUpperProbabilityBound (
 		final double dblLevel,
-		final org.drip.function.deterministic.AbstractUnivariate auNonDecreasing)
+		final org.drip.function.deterministic.R1ToR1 auNonDecreasing)
 		throws java.lang.Exception
 	{
 		if (!isPositive() || !org.drip.quant.common.NumberUtil.IsValid (dblLevel) || dblLevel <= 0.)
@@ -432,9 +432,9 @@ public class SingleSequenceAgnosticMetrics {
 	 */
 
 	public org.drip.sequence.metrics.PivotedDepartureBounds chebyshevAssociationBound (
-		final org.drip.function.deterministic.AbstractUnivariate au1,
+		final org.drip.function.deterministic.R1ToR1 au1,
 		final boolean bNonDecreasing1,
-		final org.drip.function.deterministic.AbstractUnivariate au2,
+		final org.drip.function.deterministic.R1ToR1 au2,
 		final boolean bNonDecreasing2)
 	{
 		if (null == au1 || null == au2) return null;

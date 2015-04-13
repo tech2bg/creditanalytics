@@ -48,7 +48,7 @@ package org.drip.sequence.cover;
 
 public class ScaleSensitiveCoveringNumber implements org.drip.sequence.cover.CoveringNumber {
 	private int _iSampleSize = -1;
-	private org.drip.function.deterministic.AbstractUnivariate _auFatShatter = null;
+	private org.drip.function.deterministic.R1ToR1 _auFatShatter = null;
 
 	/**
 	 * ScaleSensitiveCoveringNumber Constructor
@@ -60,7 +60,7 @@ public class ScaleSensitiveCoveringNumber implements org.drip.sequence.cover.Cov
 	 */
 
 	public ScaleSensitiveCoveringNumber (
-		final org.drip.function.deterministic.AbstractUnivariate auFatShatter,
+		final org.drip.function.deterministic.R1ToR1 auFatShatter,
 		final int iSampleSize)
 		throws java.lang.Exception
 	{
@@ -74,7 +74,7 @@ public class ScaleSensitiveCoveringNumber implements org.drip.sequence.cover.Cov
 	 * @return The Fat Shattering Coefficient Function
 	 */
 
-	public org.drip.function.deterministic.AbstractUnivariate fatShatteringFunction()
+	public org.drip.function.deterministic.R1ToR1 fatShatteringFunction()
 	{
 		return _auFatShatter;
 	}

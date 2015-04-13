@@ -117,7 +117,7 @@ public class FixedPointFinderBrent extends org.drip.function.solver1D.FixedPoint
 
 	public FixedPointFinderBrent (
 		final double dblOFGoal,
-		final org.drip.function.deterministic.AbstractUnivariate of,
+		final org.drip.function.deterministic.R1ToR1 of,
 		final boolean bWhine)
 		throws java.lang.Exception
 	{

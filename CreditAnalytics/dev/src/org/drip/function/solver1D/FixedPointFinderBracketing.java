@@ -189,7 +189,7 @@ public class FixedPointFinderBracketing extends org.drip.function.solver1D.Fixed
 
 	public FixedPointFinderBracketing (
 		final double dblOFGoal,
-		final org.drip.function.deterministic.AbstractUnivariate of,
+		final org.drip.function.deterministic.R1ToR1 of,
 		final org.drip.function.solver1D.ExecutionControl ec,
 		final int iIteratorPrimitive,
 		final boolean bWhine)

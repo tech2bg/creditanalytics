@@ -195,7 +195,7 @@ public class Bullet {
 
 		if (!isFXMTM()) return csqs.fixing (_dblFXFixingDate, fxLabel);
 
-		org.drip.function.deterministic.AbstractUnivariate auFX = csqs.fxCurve (fxLabel);
+		org.drip.function.deterministic.R1ToR1 auFX = csqs.fxCurve (fxLabel);
 
 		if (null == auFX)
 			throw new java.lang.Exception ("Bullet::fx => No Curve for " + fxLabel.fullyQualifiedName());

@@ -29,8 +29,8 @@ package org.drip.spaces.metric;
  */
 
 /**
- * CombinatorialRealUnidimensionalHilbert implements the normed, bounded/unbounded, Combinatorial l^2 R^1
- * 	Spaces.
+ * RealUnidimensionalNormedSpace abstract Class implements the normed, bounded/unbounded
+ *  Continuous/Combinatorial l^p R^1 Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -40,36 +40,38 @@ package org.drip.spaces.metric;
  * @author Lakshmi Krishnamurthy
  */
 
-public class CombinatorialRealUnidimensionalHilbert extends
-	org.drip.spaces.metric.CombinatorialRealUnidimensionalBanach {
+public interface RealUnidimensionalNormedSpace extends org.drip.spaces.metric.GeneralizedMetricSpace {
 
 	/**
-	 * CombinatorialRealUnidimensionalHilbert Space Constructor
+	 * Retrieve the Borel Sigma Univariate Probability Measure
 	 * 
-	 * @param lsElementSpace The List Space of Elements
-	 * @param uniDist The Univariate Borel Sigma Measure
+	 * @return The Borel Sigma Univariate Probability Measure
+	 */
+
+	public abstract org.drip.measure.continuous.UnivariateDistribution borelSigmaMeasure();
+
+	/**
+	 * Compute the Metric Norm of the Sample
+	 * 
+	 * @param dblX The Sample
+	 * 
+	 * @return The Metric Norm of the Sample
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public CombinatorialRealUnidimensionalHilbert (
-		final java.util.List<java.lang.Double> lsElementSpace,
-		final org.drip.measure.continuous.UnivariateDistribution uniDist)
-		throws java.lang.Exception
-	{
-		super (lsElementSpace, uniDist, 2);
-	}
-
-	@Override public double sampleMetricNorm (
+	public abstract double sampleMetricNorm (
 		final double dblX)
-		throws java.lang.Exception
-	{
-		if (!validateInstance (dblX))
-			throw new java.lang.Exception
-				("CombinatorialRealUnidimensionalHilbert::sampleMetricNorm => Invalid Inputs");
+		throws java.lang.Exception;
 
-		double dblAbsoluteX = java.lang.Math.abs (dblX);
+	/**
+	 * Retrieve the Population Mode
+	 * 
+	 * @return The Population Mode
+	 * 
+	 * @throws java.lang.Exception Thrown if the Population Mode cannot be calculated
+	 */
 
-		return dblAbsoluteX * dblAbsoluteX;
-	}
+	public double populationMode()
+		throws java.lang.Exception;
 }

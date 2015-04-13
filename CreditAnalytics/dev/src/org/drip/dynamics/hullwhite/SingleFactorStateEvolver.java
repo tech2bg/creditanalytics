@@ -40,7 +40,7 @@ public class SingleFactorStateEvolver implements org.drip.dynamics.evolution.Sta
 	private double _dblSigma = java.lang.Double.NaN;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
 	private org.drip.sequence.random.UnivariateSequenceGenerator _usg = null;
-	private org.drip.function.deterministic.AbstractUnivariate _auIFRInitial = null;
+	private org.drip.function.deterministic.R1ToR1 _auIFRInitial = null;
 
 	/**
 	 * SingleFactorStateEvolver Constructor
@@ -58,7 +58,7 @@ public class SingleFactorStateEvolver implements org.drip.dynamics.evolution.Sta
 		final org.drip.state.identifier.FundingLabel lslFunding,
 		final double dblSigma,
 		final double dblA,
-		final org.drip.function.deterministic.AbstractUnivariate auIFRInitial,
+		final org.drip.function.deterministic.R1ToR1 auIFRInitial,
 		final org.drip.sequence.random.UnivariateSequenceGenerator usg)
 		throws java.lang.Exception
 	{
@@ -107,7 +107,7 @@ public class SingleFactorStateEvolver implements org.drip.dynamics.evolution.Sta
 	 * @return The Initial Instantaneous Forward Rate Term Structure
 	 */
 
-	public org.drip.function.deterministic.AbstractUnivariate ifrInitialTermStructure()
+	public org.drip.function.deterministic.R1ToR1 ifrInitialTermStructure()
 	{
 		return _auIFRInitial;
 	}

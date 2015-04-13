@@ -1,7 +1,7 @@
 
 package org.drip.sample.quant;
 
-import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic.R1ToR1;
 import org.drip.function.deterministic1D.*;
 import org.drip.quant.calculus.Integrator;
 import org.drip.quant.common.*;
@@ -54,7 +54,7 @@ public class IntegrandQuadrature {
 	 */
 
 	private static void ComputeQuadrature (
-		final AbstractUnivariate au,
+		final R1ToR1 au,
 		final double dblActual,
 		final double dblStart,
 		final double dblEnd)
@@ -103,7 +103,7 @@ public class IntegrandQuadrature {
 		double dblStart = 0.;
 		double dblEnd = 1.;
 
-		AbstractUnivariate auExp = new ExponentialTension (Math.E, 1.);
+		R1ToR1 auExp = new ExponentialTension (Math.E, 1.);
 
 		System.out.println ("\n\t-------------------------------------\n");
 
@@ -115,7 +115,7 @@ public class IntegrandQuadrature {
 
 		System.out.println ("\n\t-------------------------------------\n");
 
-		AbstractUnivariate au1 = new AbstractUnivariate (null) {
+		R1ToR1 au1 = new R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblVariate)
 				throws Exception
@@ -132,7 +132,7 @@ public class IntegrandQuadrature {
 
 		System.out.println ("\n\t-------------------------------------\n");
 
-		AbstractUnivariate au2 = new AbstractUnivariate (null) {
+		R1ToR1 au2 = new R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblVariate)
 				throws Exception

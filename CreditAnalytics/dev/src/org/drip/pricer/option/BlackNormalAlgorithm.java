@@ -284,7 +284,7 @@ public class BlackNormalAlgorithm implements org.drip.pricer.option.FokkerPlanck
 		final double dblCallPrice)
 		throws java.lang.Exception
 	{
-		org.drip.function.deterministic.AbstractUnivariate au = new org.drip.function.deterministic.AbstractUnivariate
+		org.drip.function.deterministic.R1ToR1 au = new org.drip.function.deterministic.R1ToR1
 			(null)
 		{
 			@Override public double evaluate (

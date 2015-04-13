@@ -57,7 +57,7 @@ public class Integrator {
 	 */
 
 	public static final double LinearQuadrature (
-		final org.drip.function.deterministic.AbstractUnivariate au,
+		final org.drip.function.deterministic.R1ToR1 au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -99,7 +99,7 @@ public class Integrator {
 	 */
 
 	public static final double MidPoint (
-		final org.drip.function.deterministic.AbstractUnivariate au,
+		final org.drip.function.deterministic.R1ToR1 au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -132,7 +132,7 @@ public class Integrator {
 	 */
 
 	public static final double Trapezoidal (
-		final org.drip.function.deterministic.AbstractUnivariate au,
+		final org.drip.function.deterministic.R1ToR1 au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -169,7 +169,7 @@ public class Integrator {
 	 */
 
 	public static final double Simpson (
-		final org.drip.function.deterministic.AbstractUnivariate au,
+		final org.drip.function.deterministic.R1ToR1 au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -213,7 +213,7 @@ public class Integrator {
 	 */
 
 	public static final double Simpson38 (
-		final org.drip.function.deterministic.AbstractUnivariate au,
+		final org.drip.function.deterministic.R1ToR1 au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -264,7 +264,7 @@ public class Integrator {
 	 */
 
 	public static final double Boole (
-		final org.drip.function.deterministic.AbstractUnivariate au,
+		final org.drip.function.deterministic.R1ToR1 au,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
@@ -320,14 +320,14 @@ public class Integrator {
 	 */
 
 	public static final double LeftInfiniteRightInfinite (
-		final org.drip.function.deterministic.AbstractUnivariate au)
+		final org.drip.function.deterministic.R1ToR1 au)
 		throws java.lang.Exception
 	{
 		if (null == au)
 			throw new java.lang.Exception ("Integrator::LeftInfiniteRightInfinite => Invalid Inputs");
 
-		org.drip.function.deterministic.AbstractUnivariate auTransformed = new
-			org.drip.function.deterministic.AbstractUnivariate (null) {
+		org.drip.function.deterministic.R1ToR1 auTransformed = new
+			org.drip.function.deterministic.R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws java.lang.Exception
@@ -358,15 +358,15 @@ public class Integrator {
 	 */
 
 	public static final double LeftInfinite (
-		final org.drip.function.deterministic.AbstractUnivariate au,
+		final org.drip.function.deterministic.R1ToR1 au,
 		final double dblRight)
 		throws java.lang.Exception
 	{
 		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblRight))
 			throw new java.lang.Exception ("Integrator::LeftInfinite => Invalid Inputs");
 
-		org.drip.function.deterministic.AbstractUnivariate auTransformed = new
-			org.drip.function.deterministic.AbstractUnivariate (null) {
+		org.drip.function.deterministic.R1ToR1 auTransformed = new
+			org.drip.function.deterministic.R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws java.lang.Exception
@@ -393,15 +393,15 @@ public class Integrator {
 	 */
 
 	public static final double RightInfinite (
-		final org.drip.function.deterministic.AbstractUnivariate au,
+		final org.drip.function.deterministic.R1ToR1 au,
 		final double dblLeft)
 		throws java.lang.Exception
 	{
 		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft))
 			throw new java.lang.Exception ("Integrator::RightInfinite => Invalid Inputs");
 
-		org.drip.function.deterministic.AbstractUnivariate auTransformed = new
-			org.drip.function.deterministic.AbstractUnivariate (null) {
+		org.drip.function.deterministic.R1ToR1 auTransformed = new
+			org.drip.function.deterministic.R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws java.lang.Exception

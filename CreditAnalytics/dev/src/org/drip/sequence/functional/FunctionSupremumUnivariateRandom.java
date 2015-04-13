@@ -49,7 +49,7 @@ public class FunctionSupremumUnivariateRandom extends org.drip.function.determin
 	 */
 
 	public FunctionSupremumUnivariateRandom (
-		final org.drip.function.deterministic.AbstractUnivariate[] aAUClass,
+		final org.drip.function.deterministic.R1ToR1[] aAUClass,
 		final org.drip.measure.continuous.UnivariateDistribution dist)
 		throws java.lang.Exception
 	{

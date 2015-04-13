@@ -1,7 +1,7 @@
 
 package org.drip.sample.quant;
 
-import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic.R1ToR1;
 import org.drip.function.solver1D.*;
 import org.drip.quant.calculus.*;
 import org.drip.quant.common.*;
@@ -60,7 +60,7 @@ public class FixedPointSearch {
 	 */
 
 	private static final void InvokeNewton (
-		final AbstractUnivariate func)
+		final R1ToR1 func)
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderNewton (0., func, true).findRoot();
@@ -87,7 +87,7 @@ public class FixedPointSearch {
 	 */
 
 	private static final void InvokeBisection (
-		final AbstractUnivariate func)
+		final R1ToR1 func)
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBracketing (0., func, null,
@@ -115,7 +115,7 @@ public class FixedPointSearch {
 	 */
 
 	private static final void InvokeFalsePosition (
-		final AbstractUnivariate func)
+		final R1ToR1 func)
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBracketing (0., func, null,
@@ -143,7 +143,7 @@ public class FixedPointSearch {
 	 */
 
 	private static final void InvokeQuadraticInterpolation (
-		final AbstractUnivariate func)
+		final R1ToR1 func)
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBracketing (0., func, null,
@@ -171,7 +171,7 @@ public class FixedPointSearch {
 	 */
 
 	private static final void InvokeInverseQuadraticInterpolation (
-		final AbstractUnivariate func)
+		final R1ToR1 func)
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBracketing (0., func, null,
@@ -199,7 +199,7 @@ public class FixedPointSearch {
 	 */
 
 	private static final void InvokeRidder (
-		final AbstractUnivariate func)
+		final R1ToR1 func)
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBracketing (0., func, null,
@@ -227,7 +227,7 @@ public class FixedPointSearch {
 	 */
 
 	private static final void InvokeBrent (
-		final AbstractUnivariate func)
+		final R1ToR1 func)
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderBrent (0., func, true).findRoot();
@@ -254,7 +254,7 @@ public class FixedPointSearch {
 	 */
 
 	private static final void InvokeZheng (
-		final AbstractUnivariate func)
+		final R1ToR1 func)
 	{
 		try {
 			FixedPointFinderOutput fpop = new FixedPointFinderZheng (0., func, true).findRoot();
@@ -281,7 +281,7 @@ public class FixedPointSearch {
 		 * Define and implement the objective function
 		 */
 
-		AbstractUnivariate func = new AbstractUnivariate (null) {
+		R1ToR1 func = new R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblVariate)
 				throws Exception

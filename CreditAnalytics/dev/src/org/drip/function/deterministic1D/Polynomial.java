@@ -37,7 +37,7 @@ package org.drip.function.deterministic1D;
  * @author Lakshmi Krishnamurthy
  */
 
-public class Polynomial extends org.drip.function.deterministic.AbstractUnivariate {
+public class Polynomial extends org.drip.function.deterministic.R1ToR1 {
 	private int _iDegree = -1;
 
 	/**

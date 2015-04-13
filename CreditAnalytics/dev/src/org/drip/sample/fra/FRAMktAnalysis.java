@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.drip.analytics.date.*;
 import org.drip.analytics.rates.*;
-import org.drip.function.deterministic.AbstractUnivariate;
+import org.drip.function.deterministic.R1ToR1;
 import org.drip.function.deterministic1D.*;
 import org.drip.param.creator.MarketParamsBuilder;
 import org.drip.param.market.CurveSurfaceQuoteSet;
@@ -71,7 +71,7 @@ public class FRAMktAnalysis {
 		}
 	}
 
-	private static final AbstractUnivariate ATMLogNormalVolTermStructure (
+	private static final R1ToR1 ATMLogNormalVolTermStructure (
 		final JulianDate dtEpoch,
 		final String[] astrTenor,
 		final double[] adblATMLogNormalVolTSIn)
@@ -113,8 +113,8 @@ public class FRAMktAnalysis {
 		final DiscountCurve dcEONIA,
 		final ForwardCurve fcEURIBOR6M,
 		final String strForwardStartTenor,
-		final AbstractUnivariate auEONIAVolTS,
-		final AbstractUnivariate auEURIBOR6MVolTS,
+		final R1ToR1 auEONIAVolTS,
+		final R1ToR1 auEURIBOR6MVolTS,
 		final double dblEONIAEURIBOR6MCorrelation)
 		throws Exception
 	{
@@ -195,7 +195,7 @@ public class FRAMktAnalysis {
 
 		double dblEONIAEURIBOR6MCorrelation = 0.8;
 
-		AbstractUnivariate auATMVolTS = ATMLogNormalVolTermStructure (
+		R1ToR1 auATMVolTS = ATMLogNormalVolTermStructure (
 			dtToday,
 			astrForwardStartTenor,
 			new double[] {
@@ -212,8 +212,8 @@ public class FRAMktAnalysis {
 			}
 		);
 
-		AbstractUnivariate auEONIAVolTS = auATMVolTS;
-		AbstractUnivariate auEURIBOR6MVolTS = auATMVolTS;
+		R1ToR1 auEONIAVolTS = auATMVolTS;
+		R1ToR1 auEURIBOR6MVolTS = auATMVolTS;
 
 		System.out.println ("\t---------------------------------");
 

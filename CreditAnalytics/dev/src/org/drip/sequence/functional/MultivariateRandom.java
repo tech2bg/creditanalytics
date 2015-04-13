@@ -35,7 +35,7 @@ package org.drip.sequence.functional;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class MultivariateRandom extends org.drip.function.deterministic.AbstractMultivariate {
+public abstract class MultivariateRandom extends org.drip.function.deterministic.RdToR1 {
 
 	protected MultivariateRandom()
 	{
@@ -58,7 +58,7 @@ public abstract class MultivariateRandom extends org.drip.function.deterministic
 		final int iTargetVariateIndex,
 		final double[] adblTargetVariateGhostSample)
 	{
-		if (!org.drip.function.deterministic.AbstractMultivariate.ValidateInput (adblNonTargetVariate) ||
+		if (!org.drip.function.deterministic.RdToR1.ValidateInput (adblNonTargetVariate) ||
 			null == adblTargetVariateGhostSample)
 			return null;
 

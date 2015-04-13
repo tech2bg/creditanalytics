@@ -192,7 +192,7 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 			throw new java.lang.Exception
 				("SingleSegmentLagrangePolynomial::responseValueDerivative => Invalid inputs!");
 
-		org.drip.function.deterministic.AbstractUnivariate au = new org.drip.function.deterministic.AbstractUnivariate
+		org.drip.function.deterministic.R1ToR1 au = new org.drip.function.deterministic.R1ToR1
 			(null) {
 			@Override public double evaluate (
 				double dblX)
@@ -293,8 +293,8 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 			}
 		}
 
-		org.drip.function.deterministic.AbstractUnivariate auDeriv = new
-			org.drip.function.deterministic.AbstractUnivariate (null) {
+		org.drip.function.deterministic.R1ToR1 auDeriv = new
+			org.drip.function.deterministic.R1ToR1 (null) {
 			@Override public double evaluate (
 				final double dblX)
 				throws java.lang.Exception
@@ -456,10 +456,10 @@ public class SingleSegmentLagrangePolynomial implements org.drip.spline.stretch.
 		return false;
 	}
 
-	@Override public org.drip.function.deterministic.AbstractUnivariate toAU()
+	@Override public org.drip.function.deterministic.R1ToR1 toAU()
 	{
-		org.drip.function.deterministic.AbstractUnivariate au = new
-			org.drip.function.deterministic.AbstractUnivariate (null)
+		org.drip.function.deterministic.R1ToR1 au = new
+			org.drip.function.deterministic.R1ToR1 (null)
 		{
 			@Override public double evaluate (
 				final double dblVariate)
