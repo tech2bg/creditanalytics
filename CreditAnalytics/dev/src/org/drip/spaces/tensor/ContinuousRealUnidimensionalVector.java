@@ -125,4 +125,14 @@ public class ContinuousRealUnidimensionalVector implements
 
 		return cruvOther.leftEdge() == _dblLeftEdge && cruvOther.rightEdge() == _dblRightEdge;
 	}
+
+	@Override public boolean subset (
+		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther)
+	{
+		if (null == gvsOther || !(gvsOther instanceof ContinuousRealUnidimensionalVector)) return false;
+
+		ContinuousRealUnidimensionalVector cruvOther = (ContinuousRealUnidimensionalVector) gvsOther;
+
+		return cruvOther.leftEdge() >= _dblLeftEdge && cruvOther.rightEdge() <= _dblRightEdge;
+	}
 }

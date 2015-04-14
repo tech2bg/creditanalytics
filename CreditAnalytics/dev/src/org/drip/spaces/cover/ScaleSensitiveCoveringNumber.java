@@ -1,5 +1,5 @@
 
-package org.drip.sequence.cover;
+package org.drip.spaces.cover;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -46,7 +46,7 @@ package org.drip.sequence.cover;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ScaleSensitiveCoveringNumber implements org.drip.sequence.cover.CoveringNumber {
+public class ScaleSensitiveCoveringNumber implements org.drip.spaces.cover.CoveringNumber {
 	private int _iSampleSize = -1;
 	private org.drip.function.deterministic.R1ToR1 _auFatShatter = null;
 
@@ -175,6 +175,11 @@ public class ScaleSensitiveCoveringNumber implements org.drip.sequence.cover.Cov
 				("ScaleSensitiveCoveringNumber::upperProbabilityBoundWeight => Invalid Inputs");
 
 		return java.lang.Math.log (4.) - (dblCover * dblCover * _iSampleSize / 128.);
+	}
+
+	@Override public org.drip.spaces.function.GeneralizedNormedFunctionSpace functionSpace()
+	{
+		return null;
 	}
 
 	@Override public double logLowerBound (

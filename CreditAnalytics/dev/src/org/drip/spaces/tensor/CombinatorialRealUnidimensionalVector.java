@@ -94,4 +94,22 @@ public class CombinatorialRealUnidimensionalVector implements
 
 		return true;
 	}
+
+	@Override public boolean subset (
+		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther)
+	{
+		if (null == gvsOther || !(gvsOther instanceof CombinatorialRealUnidimensionalVector)) return false;
+
+		CombinatorialRealUnidimensionalVector cruvOther = (CombinatorialRealUnidimensionalVector) gvsOther;
+
+		if (cardinality().number() < cruvOther.cardinality().number()) return false;
+
+		java.util.List<java.lang.Double> setElementOther = cruvOther.elementSpace();
+
+		for (double dblElement : _lsElementSpace) {
+			if (!setElementOther.contains (dblElement)) return false;
+		}
+
+		return true;
+	}
 }

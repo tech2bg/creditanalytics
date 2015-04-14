@@ -29,8 +29,8 @@ package org.drip.spaces.function;
  */
 
 /**
- * NormedRdSpaceToRdSpace is the abstract class underlying the f : Post-Validated R^d -> Post-Validated R^d
- *  Normed Function Spaces.
+ * NormedRdToRd is the abstract class underlying the f : Post-Validated R^d -> Post-Validated R^d Normed
+ *  Function Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -40,11 +40,11 @@ package org.drip.spaces.function;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class NormedRdSpaceToRdSpace extends org.drip.spaces.function.NormedRdInputSpace {
+public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInput {
 	private org.drip.function.deterministic.RdToRd _funcRdToRd = null;
 	private org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace _gmvsOutput = null;
 
-	protected NormedRdSpaceToRdSpace (
+	protected NormedRdToRd (
 		final org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsInput,
 		final org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsOutput,
 		final org.drip.function.deterministic.RdToRd funcRdToRd,
@@ -54,7 +54,7 @@ public abstract class NormedRdSpaceToRdSpace extends org.drip.spaces.function.No
 		super (gmvsInput, iPNorm);
 
 		if (null == (_gmvsOutput = gmvsOutput) || null == (_funcRdToRd = funcRdToRd))
-			throw new java.lang.Exception ("NormedRdSpaceToRdSpace ctr: Invalid Inputs");
+			throw new java.lang.Exception ("NormedRdToRd ctr: Invalid Inputs");
 	}
 
 	/**
@@ -170,11 +170,6 @@ public abstract class NormedRdSpaceToRdSpace extends org.drip.spaces.function.No
 				gmvsInput).populationMode()) : null;
 	}
 
-	@Override public org.drip.spaces.tensor.GeneralizedVectorSpace output()
-	{
-		return _gmvsOutput;
-	}
-
 	/**
 	 * Retrieve the Population R^d Metric Norm Array
 	 * 
@@ -182,4 +177,115 @@ public abstract class NormedRdSpaceToRdSpace extends org.drip.spaces.function.No
 	 */
 
 	public abstract double[] populationRdMetricNorm();
+
+	@Override public org.drip.spaces.tensor.GeneralizedVectorSpace output()
+	{
+		return _gmvsOutput;
+	}
+
+	@Override public double sampleSupremumNorm (
+		final org.drip.spaces.instance.ValidatedCombinatorialRealMultidimensional vcrmInstance)
+		throws java.lang.Exception
+	{
+		double[] adblSampleSupremumNorm = sampleRdSupremumNorm (vcrmInstance);
+
+		if (null == adblSampleSupremumNorm)
+			throw new java.lang.Exception
+				("NormedRdToRd::sampleSupremumNorm => Cannot compute Sample Supremum Array");
+
+		double dblSampleSupremumNorm = java.lang.Double.NaN;
+		int iOutputDimension = adblSampleSupremumNorm.length;
+
+		if (0 == iOutputDimension)
+			throw new java.lang.Exception
+				("NormedRdToRd::sampleSupremumNorm => Cannot compute Sample Supremum Array");
+
+		for (int i = 0; i < iOutputDimension; ++i) {
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblSampleSupremumNorm))
+				dblSampleSupremumNorm = adblSampleSupremumNorm[i];
+			else {
+				if (dblSampleSupremumNorm < adblSampleSupremumNorm[i])
+					dblSampleSupremumNorm = adblSampleSupremumNorm[i];
+			}
+		}
+
+		return dblSampleSupremumNorm;
+	}
+
+	@Override public double sampleMetricNorm (
+		final org.drip.spaces.instance.ValidatedCombinatorialRealMultidimensional vcrmInstance)
+		throws java.lang.Exception
+	{
+		double[] adblSampleMetricNorm = sampleRdMetricNorm (vcrmInstance);
+
+		if (null == adblSampleMetricNorm)
+			throw new java.lang.Exception
+				("NormedRdToRd::sampleMetricNorm => Cannot compute Sample Metric Array");
+
+		int iOutputDimension = adblSampleMetricNorm.length;
+		double dblSampleMetricNorm = 0.;
+
+		int iPNorm = pNorm();
+
+		if (0 == iOutputDimension)
+			throw new java.lang.Exception
+				("NormedRdToRd::sampleMetricNorm => Cannot compute Sample Metric Array");
+
+		for (int i = 0; i < iOutputDimension; ++i)
+			dblSampleMetricNorm += java.lang.Math.pow (java.lang.Math.abs (adblSampleMetricNorm[i]), iPNorm);
+
+		return java.lang.Math.pow (dblSampleMetricNorm, 1. / iPNorm);
+	}
+
+	@Override public double populationESS()
+		throws java.lang.Exception
+	{
+		double[] adblPopulationRdESS = populationRdESS();
+
+		if (null == adblPopulationRdESS)
+			throw new java.lang.Exception
+				("NormedRdToRd::populationRdESS => Cannot compute Population Rd ESS Array");
+
+		double dblPopulationESS = java.lang.Double.NaN;
+		int iOutputDimension = adblPopulationRdESS.length;
+
+		if (0 == iOutputDimension)
+			throw new java.lang.Exception
+				("NormedRdToRd::populationRdESS => Cannot compute Population Rd ESS Array");
+
+		for (int i = 0; i < iOutputDimension; ++i) {
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblPopulationESS ))
+				dblPopulationESS = adblPopulationRdESS[i];
+			else {
+				if (dblPopulationESS < adblPopulationRdESS[i]) dblPopulationESS = adblPopulationRdESS[i];
+			}
+		}
+
+		return dblPopulationESS;
+	}
+
+	@Override public double populationMetricNorm()
+		throws java.lang.Exception
+	{
+		double[] adblPopulationMetricNorm = populationRdMetricNorm();
+
+		if (null == adblPopulationMetricNorm)
+			throw new java.lang.Exception
+				("NormedRdToRd::populationMetricNorm => Cannot compute Population Metric Array");
+
+		int iOutputDimension = adblPopulationMetricNorm.length;
+		double dblPopulationMetricNorm = 0.;
+
+		int iPNorm = pNorm();
+
+		if (0 == iOutputDimension)
+			throw new java.lang.Exception
+				("NormedRdToRd::populationMetricNorm => Cannot compute Population Metric Array");
+
+		for (int i = 0; i < iOutputDimension; ++i)
+			dblPopulationMetricNorm += java.lang.Math.pow (java.lang.Math.abs (adblPopulationMetricNorm[i]),
+				iPNorm);
+
+		return java.lang.Math.pow (dblPopulationMetricNorm, 1. / iPNorm);
+	}
 }

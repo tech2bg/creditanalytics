@@ -1,5 +1,5 @@
 
-package org.drip.sequence.cover;
+package org.drip.spaces.cover;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -66,4 +66,12 @@ public interface CoveringNumber {
 	public abstract double logUpperBound (
 		final double dblCover)
 		throws java.lang.Exception;
+
+	/**
+	 * Retrieve the Underlying Normed Function Space
+	 * 
+	 * @return The Underlying Normed Function Space
+	 */
+
+	public abstract org.drip.spaces.function.GeneralizedNormedFunctionSpace functionSpace();
 }

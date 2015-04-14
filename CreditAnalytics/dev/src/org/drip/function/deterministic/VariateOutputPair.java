@@ -35,25 +35,24 @@ package org.drip.function.deterministic;
  */
 
 public class VariateOutputPair {
+	private double[] _adblOutput = null;
 	private double[] _adblVariate = null;
-	private double _dblOutput = java.lang.Double.NaN;
 
 	/**
 	 * VariateOutputPair Constructor
 	 * 
 	 * @param adblVariate Array of Variates
-	 * @param dblOutput The Function Output
+	 * @param adblOutput Array of Output
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
 	public VariateOutputPair (
 		final double[] adblVariate,
-		final double dblOutput)
+		final double[] adblOutput)
 		throws java.lang.Exception
 	{
-		if (null == (_adblVariate = adblVariate) || !org.drip.quant.common.NumberUtil.IsValid (_dblOutput =
-			dblOutput))
+		if (null == (_adblVariate = adblVariate) || null == (_adblOutput = adblOutput))
 			throw new java.lang.Exception ("VariateOutputPair ctr: Invalid Inputs");
 
 		int iNumVariate = _adblVariate.length;
@@ -78,13 +77,13 @@ public class VariateOutputPair {
 	}
 
 	/**
-	 * Retrieve the Function Output Value
+	 * Retrieve the Function Output Value Array
 	 * 
-	 * @return The Function Output Value
+	 * @return The Function Output Value Array
 	 */
 
-	public double output()
+	public double[] output()
 	{
-		return _dblOutput;
+		return _adblOutput;
 	}
 }

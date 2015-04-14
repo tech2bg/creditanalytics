@@ -54,4 +54,15 @@ public interface GeneralizedVectorSpace {
 
 	public abstract boolean match (
 		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther);
+
+	/**
+	 * Indicate if the "Other" Generalized Vector Space is a Subset of "this"
+	 * 
+	 * @param gvsOther The "Other" Generalized Vector Space
+	 * 
+	 * @return TRUE => The "Other" Generalized Vector Space is a Subset of this
+	 */
+
+	public abstract boolean subset (
+		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther);
 }

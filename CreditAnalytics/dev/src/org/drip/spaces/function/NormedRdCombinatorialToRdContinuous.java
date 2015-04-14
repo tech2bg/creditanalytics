@@ -29,7 +29,7 @@ package org.drip.spaces.function;
  */
 
 /**
- * NormedRdCombinatorialToR1Continuous implements the f : Validated R^d Combinatorial -> Validated R^1
+ * NormedRdCombinatorialToRdContinuous implements the f : Validated R^d Combinatorial -> Validated R^d
  *  Continuous Normed Function Spaces.
  * 
  * The Reference we've used is:
@@ -40,69 +40,89 @@ package org.drip.spaces.function;
  * @author Lakshmi Krishnamurthy
  */
 
-public class NormedRdCombinatorialToR1Continuous extends org.drip.spaces.function.NormedRdToR1 {
+public class NormedRdCombinatorialToRdContinuous extends org.drip.spaces.function.NormedRdToRd {
 
 	/**
-	 * NormedRdCombinatorialToR1Continuous Function Space Constructor
+	 * NormedRdCombinatorialToRdContinuous Function Space Constructor
 	 * 
-	 * @param am The Multivariate Function
+	 * @param funcRdToRd The RdToRd Function
 	 * @param crmvInput The Combinatorial R^d Input Vector Space (may/may not be Normed)
-	 * @param cruvOutput The Continuous R^1 Output Vector Space (may/may not be Normed)
+	 * @param crmvOutput The Continuous R^d Output Vector Space (may/may not be Normed)
 	 * @param iPNorm The Function-level Norm
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public NormedRdCombinatorialToR1Continuous (
-		final org.drip.function.deterministic.RdToR1 am,
+	public NormedRdCombinatorialToRdContinuous (
+		final org.drip.function.deterministic.RdToRd funcRdToRd,
 		final org.drip.spaces.tensor.CombinatorialRealMultidimensionalVector crmvInput,
-		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector cruvOutput,
+		final org.drip.spaces.tensor.ContinuousRealMultidimensionalVector crmvOutput,
 		final int iPNorm)
 		throws java.lang.Exception
 	{
-		super (crmvInput, cruvOutput, am, iPNorm);
+		super (crmvInput, crmvOutput, funcRdToRd, iPNorm);
 	}
 
-	@Override public double populationMetricNorm()
-		throws java.lang.Exception
+	@Override public double[] populationRdMetricNorm()
 	{
 		org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsInput = input();
 
 		if (!(gmvsInput instanceof org.drip.spaces.metric.CombinatorialRealMultidimensionalBanach))
-			throw new java.lang.Exception
-				("NormedRdCombinatorialToR1Continuous::populationMetricNorm => Incomptabile Input Vector Space");
+			return null;
 
 		org.drip.spaces.metric.CombinatorialRealMultidimensionalBanach crmb =
 			(org.drip.spaces.metric.CombinatorialRealMultidimensionalBanach) gmvsInput;
 
 		org.drip.measure.continuous.MultivariateDistribution multiDist = crmb.borelSigmaMeasure();
 
-		if (null == multiDist)
-			throw new java.lang.Exception
-				("NormedRdCombinatorialToR1Continuous::populationMetricNorm => No Multivariate Distribution");
+		if (null == multiDist) return null;
 
 		org.drip.spaces.tensor.CombinatorialRealMultidimensionalIterator crmi = crmb.iterator();
 
-		org.drip.function.deterministic.RdToR1 am = function();
+		org.drip.function.deterministic.RdToRd funcRdToRd = function();
 
 		double[] adblVariate = crmi.cursorVariates();
 
-		double dblPopulationMetricNorm  = 0.;
+		double dblProbabilityDensity = java.lang.Double.NaN;
+		double[] adblPopulationMetricNorm = null;
+		int iOutputDimension = -1;
 		double dblNormalizer = 0.;
 
 		int iPNorm = pNorm();
 
 		while (null != adblVariate) {
-			double dblProbabilityDensity = multiDist.density (adblVariate);
+			try {
+				dblProbabilityDensity = multiDist.density (adblVariate);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+
+			double[] adblValue = funcRdToRd.evaluate (adblVariate);
+
+			if (null == adblValue || 0 == (iOutputDimension = adblValue.length)) return null;
 
 			dblNormalizer += dblProbabilityDensity;
 
-			dblPopulationMetricNorm += dblProbabilityDensity * java.lang.Math.pow (java.lang.Math.abs
-				(am.evaluate (adblVariate)), iPNorm);
+			if (null == adblPopulationMetricNorm) {
+				adblPopulationMetricNorm = new double[iOutputDimension];
+
+				for (int i = 0; i < iOutputDimension; ++i)
+					adblPopulationMetricNorm[i] = 0;
+			}
+
+			for (int i = 0; i < iOutputDimension; ++i)
+				adblPopulationMetricNorm[i] += dblProbabilityDensity * java.lang.Math.pow (java.lang.Math.abs
+					(adblValue[i]), iPNorm);
 
 			adblVariate = crmi.nextVariates();
 		}
 
-		return java.lang.Math.pow (dblPopulationMetricNorm / dblNormalizer, 1. / iPNorm);
+		for (int i = 0; i < iOutputDimension; ++i)
+			adblPopulationMetricNorm[i] += java.lang.Math.pow (adblPopulationMetricNorm[i] / dblNormalizer,
+				1. / iPNorm);
+
+		return adblPopulationMetricNorm;
 	}
 }

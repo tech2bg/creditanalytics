@@ -213,8 +213,8 @@ public abstract class R1ToR1 {
 
 			if (0. <= derivative (dblExtrema, 2)) return null;
 
-			return new org.drip.function.deterministic.VariateOutputPair (new double[] {dblExtrema}, evaluate
-				(dblExtrema));
+			return new org.drip.function.deterministic.VariateOutputPair (new double[] {dblExtrema}, new
+				double[] {evaluate (dblExtrema)});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -253,9 +253,9 @@ public abstract class R1ToR1 {
 			double dblRightOutput = evaluate (dblVariateRight);
 
 			return dblLeftOutput > dblRightOutput ? new org.drip.function.deterministic.VariateOutputPair
-				(new double[] {dblVariateLeft}, dblLeftOutput) : new
-					org.drip.function.deterministic.VariateOutputPair (new double[] {dblVariateRight},
-						dblRightOutput);
+				(new double[] {dblVariateLeft}, new double[] {dblLeftOutput}) : new
+					org.drip.function.deterministic.VariateOutputPair (new double[] {dblVariateRight}, new
+						double[] {dblRightOutput});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -292,8 +292,8 @@ public abstract class R1ToR1 {
 
 			if (0. >= derivative (dblExtrema, 2)) return null;
 
-			return new org.drip.function.deterministic.VariateOutputPair (new double[] {dblExtrema}, evaluate
-				(dblExtrema));
+			return new org.drip.function.deterministic.VariateOutputPair (new double[] {dblExtrema}, new
+				double[] {evaluate (dblExtrema)});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -332,9 +332,9 @@ public abstract class R1ToR1 {
 			double dblRightOutput = evaluate (dblVariateRight);
 
 			return dblLeftOutput < dblRightOutput ? new org.drip.function.deterministic.VariateOutputPair
-				(new double[] {dblVariateLeft}, dblLeftOutput) : new
-					org.drip.function.deterministic.VariateOutputPair (new double[] {dblVariateRight},
-						dblRightOutput);
+				(new double[] {dblVariateLeft}, new double[] {dblLeftOutput}) : new
+					org.drip.function.deterministic.VariateOutputPair (new double[] {dblVariateRight}, new
+						double[] {dblRightOutput});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

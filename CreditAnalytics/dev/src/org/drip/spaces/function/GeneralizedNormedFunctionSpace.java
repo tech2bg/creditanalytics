@@ -29,8 +29,8 @@ package org.drip.spaces.function;
  */
 
 /**
- * NormedRdInputSpace is the abstract class underlying the Normed Function Space f that takes as Input
- *  Validated R^d Spaces.
+ * GeneralizedNormedFunctionSpace is the abstract Class that exposes f : R^d -> R^d along with the Function
+ *  Space Level P-Norm.
  * 
  * The Reference we've used is:
  * 
@@ -40,17 +40,15 @@ package org.drip.spaces.function;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class NormedRdInputSpace {
+public abstract class GeneralizedNormedFunctionSpace {
 	private int _iPNorm = -1;
-	private org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace _gmvsInput = null;
 
-	protected NormedRdInputSpace (
-		final org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsInput,
+	protected GeneralizedNormedFunctionSpace (
 		final int iPNorm)
 		throws java.lang.Exception
 	{
-		if (null == (_gmvsInput = gmvsInput) || 0 > (_iPNorm = iPNorm))
-			throw new java.lang.Exception ("NormedRdInputSpace ctr: Invalid Inputs");
+		if (0 > (_iPNorm = iPNorm))
+			throw new java.lang.Exception ("GeneralizedNormedFunctionSpace ctr: Invalid Inputs");
 	}
 
 	/**
@@ -59,10 +57,15 @@ public abstract class NormedRdInputSpace {
 	 * @return The R^d Input Vector Space
 	 */
 
-	public org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace input()
-	{
-		return _gmvsInput;
-	}
+	public abstract org.drip.spaces.tensor.GeneralizedVectorSpace input();
+
+	/**
+	 * Retrieve the Output Vector Space
+	 * 
+	 * @return The Output Vector Space
+	 */
+
+	public abstract org.drip.spaces.tensor.GeneralizedVectorSpace output();
 
 	/**
 	 * Retrieve the P-Norm Index
@@ -74,12 +77,4 @@ public abstract class NormedRdInputSpace {
 	{
 		return _iPNorm;
 	}
-
-	/**
-	 * Retrieve the Output Vector Space
-	 * 
-	 * @return The Output Vector Space
-	 */
-
-	public abstract org.drip.spaces.tensor.GeneralizedVectorSpace output();
 }

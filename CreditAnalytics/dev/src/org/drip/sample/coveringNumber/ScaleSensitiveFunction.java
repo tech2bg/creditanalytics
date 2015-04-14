@@ -3,8 +3,8 @@ package org.drip.sample.coveringNumber;
 
 import org.drip.function.deterministic.R1ToR1;
 import org.drip.quant.common.FormatUtil;
-import org.drip.sequence.cover.ScaleSensitiveCoveringNumber;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.spaces.cover.ScaleSensitiveCoveringNumber;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

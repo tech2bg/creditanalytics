@@ -90,7 +90,6 @@ public abstract class RdToR1 {
 	 * Calculate the Differential
 	 * 
 	 * @param adblVariate Variate Array at which the derivative is to be calculated
-	 * @param dblOFBase Base Value for the Objective Function
 	 * @param iVariateIndex Index of the Variate whose Derivative is to be computed
 	 * @param iOrder Order of the derivative to be computed
 	 * 
@@ -99,7 +98,6 @@ public abstract class RdToR1 {
 
 	public org.drip.quant.calculus.Differential differential (
 		final double[] adblVariate,
-		final double dblOFBase,
 		final int iVariateIndex,
 		final int iOrder)
 	{
@@ -149,30 +147,6 @@ public abstract class RdToR1 {
 	}
 
 	/**
-	 * Calculate the Differential
-	 * 
-	 * @param adblVariate Variate Array at which the derivative is to be calculated
-	 * @param iVariateIndex Index of the Variate whose Derivative is to be computed
-	 * @param iOrder Order of the derivative to be computed
-	 * 
-	 * @return The Derivative
-	 */
-
-	public org.drip.quant.calculus.Differential differential (
-		final double[] adblVariate,
-		final int iVariateIndex,
-		final int iOrder)
-	{
-		try {
-			return differential (adblVariate, evaluate (adblVariate), iVariateIndex, iOrder);
-		} catch (java.lang.Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
 	 * Calculate the derivative as a double
 	 * 
 	 * @param adblVariate Variate Array at which the derivative is to be calculated
@@ -188,7 +162,7 @@ public abstract class RdToR1 {
 		final int iOrder)
 		throws java.lang.Exception
 	{
-		return differential (adblVariate, evaluate (adblVariate), iVariateIndex, iOrder).calcSlope (true);
+		return differential (adblVariate, iVariateIndex, iOrder).calcSlope (true);
 	}
 
 	/**
@@ -292,7 +266,8 @@ public abstract class RdToR1 {
 		}
 
 		try {
-			return new org.drip.function.deterministic.VariateOutputPair (adblMaximaVariate, dblMaxima);
+			return new org.drip.function.deterministic.VariateOutputPair (adblMaximaVariate, new double[]
+				{dblMaxima});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -357,7 +332,8 @@ public abstract class RdToR1 {
 		}
 
 		try {
-			return new org.drip.function.deterministic.VariateOutputPair (adblMinimaVariate, dblMinima);
+			return new org.drip.function.deterministic.VariateOutputPair (adblMinimaVariate, new double[]
+				{dblMinima});
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

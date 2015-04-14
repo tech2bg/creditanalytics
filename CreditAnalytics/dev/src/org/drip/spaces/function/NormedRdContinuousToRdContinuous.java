@@ -29,7 +29,7 @@ package org.drip.spaces.function;
  */
 
 /**
- * NormedRdContinuousToR1Continuous implements the f : Validated R^d Continuous -> Validated R^1 Continuous
+ * NormedRdContinuousToRdContinuous implements the f : Validated R^d Continuous -> Validated R^d Continuous
  *  Normed Function Spaces.
  * 
  * The Reference we've used is:
@@ -40,62 +40,88 @@ package org.drip.spaces.function;
  * @author Lakshmi Krishnamurthy
  */
 
-public class NormedRdContinuousToR1Continuous extends org.drip.spaces.function.NormedRdToR1 {
+public class NormedRdContinuousToRdContinuous extends org.drip.spaces.function.NormedRdToRd {
 
 	/**
-	 * NormedRdContinuousToR1Continuous Function Space Constructor
+	 * NormedRdContinuousToRdContinuous Function Space Constructor
 	 * 
-	 * @param am The Multivariate Function
+	 * @param funcRdToRd The RdToRd Function
 	 * @param crmvInput The R^d Input Vector Space (may/may not be Normed)
-	 * @param cruvOutput The R^1 Output Vector Space (may/may not be Normed)
+	 * @param crmvOutput The R^d Output Vector Space (may/may not be Normed)
 	 * @param iPNorm The Function-level Norm
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public NormedRdContinuousToR1Continuous (
-		final org.drip.function.deterministic.RdToR1 am,
+	public NormedRdContinuousToRdContinuous (
+		final org.drip.function.deterministic.RdToRd funcRdToRd,
 		final org.drip.spaces.tensor.ContinuousRealMultidimensionalVector crmvInput,
-		final org.drip.spaces.tensor.ContinuousRealUnidimensionalVector cruvOutput,
+		final org.drip.spaces.tensor.ContinuousRealMultidimensionalVector crmvOutput,
 		final int iPNorm)
 		throws java.lang.Exception
 	{
-		super (crmvInput, cruvOutput, am, iPNorm);
+		super (crmvInput, crmvOutput, funcRdToRd, iPNorm);
 	}
 
-	@Override public double populationMetricNorm()
-		throws java.lang.Exception
+	@Override public double[] populationRdMetricNorm()
 	{
 		org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsInput = input();
 
-		if (!(gmvsInput instanceof org.drip.spaces.metric.ContinuousRealMultidimensionalBanach))
-			throw new java.lang.Exception
-				("NormedRdContinuousToR1Continuous::populationMetricNorm => Invalid Input Vector Space");
+		if (!(gmvsInput instanceof org.drip.spaces.metric.ContinuousRealMultidimensionalBanach)) return null;
 
 		org.drip.spaces.metric.ContinuousRealMultidimensionalBanach crmb =
 			(org.drip.spaces.metric.ContinuousRealMultidimensionalBanach) gmvsInput;
 
 		final org.drip.measure.continuous.MultivariateDistribution multiDist = crmb.borelSigmaMeasure();
 
-		if (null == multiDist)
-			throw new java.lang.Exception
-				("NormedRdContinuousToR1Continuous::populationMetricNorm => Measure not specified");
+		final org.drip.function.deterministic.RdToRd amBase = function();
 
-		final org.drip.function.deterministic.RdToR1 amBase = function();
+		if (null == multiDist) return null;
 
 		final int iPNorm = pNorm();
 
-		org.drip.function.deterministic.RdToR1 am = new
-			org.drip.function.deterministic.RdToR1 (null) {
-			@Override public double evaluate (
+		org.drip.function.deterministic.RdToRd funcRdToRdPointNorm = new
+			org.drip.function.deterministic.RdToRd (null) {
+			@Override public double[] evaluate (
 				final double[] adblX)
-				throws java.lang.Exception
 			{
-				return java.lang.Math.pow (java.lang.Math.abs (amBase.evaluate (adblX)), iPNorm) *
-					multiDist.density (adblX);
+				double[] adblNorm = amBase.evaluate (adblX);
+
+				if (null == adblNorm) return null;
+
+				int iOutputDimension = adblNorm.length;
+				double dblProbabilityDensity = java.lang.Double.NaN;
+
+				if (0 == iOutputDimension) return null;
+
+				try {
+					dblProbabilityDensity = multiDist.density (adblX);
+				} catch (java.lang.Exception e) {
+					e.printStackTrace();
+
+					return null;
+				}
+
+				for (int j = 0; j < iOutputDimension; ++j)
+					adblNorm[j] = dblProbabilityDensity * java.lang.Math.pow (java.lang.Math.abs
+						(adblNorm[j]), iPNorm);
+
+				return adblNorm;
 			}
 		};
 
-		return java.lang.Math.pow (am.integrate (crmb.leftEdge(), crmb.rightEdge()), 1. / iPNorm);
+		double[] adblPopulationRdMetricNorm = funcRdToRdPointNorm.integrate (crmb.leftEdge(),
+			crmb.rightEdge());
+
+		if (null == adblPopulationRdMetricNorm) return null;
+
+		int iOutputDimension = adblPopulationRdMetricNorm.length;
+
+		if (0 == iOutputDimension) return null;
+
+		for (int i = 0; i < iOutputDimension; ++i)
+			adblPopulationRdMetricNorm[i] = java.lang.Math.pow (adblPopulationRdMetricNorm[i], 1. / iPNorm);
+
+		return adblPopulationRdMetricNorm;
 	}
 }

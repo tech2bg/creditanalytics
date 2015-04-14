@@ -2,8 +2,8 @@
 package org.drip.sample.coveringNumber;
 
 import org.drip.quant.common.FormatUtil;
-import org.drip.sequence.cover.BoundedFunctionCoveringNumber;
 import org.drip.service.api.CreditAnalytics;
+import org.drip.spaces.cover.BoundedFunctionCoveringNumber;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-

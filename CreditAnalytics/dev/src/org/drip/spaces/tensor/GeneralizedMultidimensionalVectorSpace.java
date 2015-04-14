@@ -122,4 +122,22 @@ public abstract class GeneralizedMultidimensionalVectorSpace implements
 
 		return true;
 	}
+
+	@Override public boolean subset (
+		final org.drip.spaces.tensor.GeneralizedVectorSpace gvsOther)
+	{
+		if (null == gvsOther || !(gvsOther instanceof GeneralizedMultidimensionalVectorSpace)) return false;
+
+		GeneralizedMultidimensionalVectorSpace gmvsOther = (GeneralizedMultidimensionalVectorSpace) gvsOther;
+
+		org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace[] aGUVSOther = gmvsOther.vectorSpaces();
+
+		int iDimensionOther = _aGUVS.length;
+
+		for (int i = 0; i < iDimensionOther; ++i) {
+			if (!aGUVSOther[i].match (_aGUVS[i])) return false;
+		}
+
+		return true;
+	}
 }

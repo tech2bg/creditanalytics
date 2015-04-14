@@ -29,8 +29,8 @@ package org.drip.spaces.function;
  */
 
 /**
- * NormedRdSpaceToR1Space is the abstract class underlying the f : Post-Validated R^d -> Post-Validated R^1
- *  Normed Function Spaces.
+ * NormedRdToR1 is the abstract class underlying the f : Post-Validated R^d -> Post-Validated R^1 Normed
+ *  Function Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -40,11 +40,11 @@ package org.drip.spaces.function;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class NormedRdSpaceToR1Space extends org.drip.spaces.function.NormedRdInputSpace {
+public abstract class NormedRdToR1 extends org.drip.spaces.function.NormedRdInput {
 	private org.drip.function.deterministic.RdToR1 _funcRdToR1 = null;
 	private org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace _guvsOutput = null;
 
-	protected NormedRdSpaceToR1Space (
+	protected NormedRdToR1 (
 		final org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsInput,
 		final org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace guvsOutput,
 		final org.drip.function.deterministic.RdToR1 funcRdToR1,
@@ -54,7 +54,7 @@ public abstract class NormedRdSpaceToR1Space extends org.drip.spaces.function.No
 		super (gmvsInput, iPNorm);
 
 		if (null == (_guvsOutput = guvsOutput) || null == (_funcRdToR1 = funcRdToR1))
-			throw new java.lang.Exception ("NormedRdSpaceToR1Space ctr: Invalid Inputs");
+			throw new java.lang.Exception ("NormedRdToR1 ctr: Invalid Inputs");
 	}
 
 	/**
@@ -68,22 +68,12 @@ public abstract class NormedRdSpaceToR1Space extends org.drip.spaces.function.No
 		return _funcRdToR1;
 	}
 
-	/**
-	 * Retrieve the Sample Supremum Norm
-	 * 
-	 * @param vcrmInstance The Validated Combinatorial Real Valued Multidimensional Instance
-	 * 
-	 * @return The Sample Supremum Norm
-	 * 
-	 * @throws java.lang.Exception Thrown if the ESS cannot be computed
-	 */
-
-	public double sampleSupremumNorm (
+	@Override public double sampleSupremumNorm (
 		final org.drip.spaces.instance.ValidatedCombinatorialRealMultidimensional vcrmInstance)
 		throws java.lang.Exception
 	{
 		if (null == vcrmInstance || !vcrmInstance.tensorSpaceType().match (input()))
-			throw new java.lang.Exception ("NormedRdSpaceToR1Space::sampleSupremumNorm => Invalid Input");
+			throw new java.lang.Exception ("NormedRdToR1::sampleSupremumNorm => Invalid Input");
 
 		double[][] aadblInstance = vcrmInstance.instance();
 
@@ -100,22 +90,12 @@ public abstract class NormedRdSpaceToR1Space extends org.drip.spaces.function.No
 		return dblSupremumNorm;
 	}
 
-	/**
-	 * Retrieve the Sample Metric Norm
-	 * 
-	 * @param vcrmInstance The Validated Combinatorial Real Valued Multidimensional Instance
-	 * 
-	 * @return The Sample Metric Norm
-	 * 
-	 * @throws java.lang.Exception Thrown if the Sample Metric Norm cannot be computed
-	 */
-
-	public double sampleMetricNorm (
+	@Override public double sampleMetricNorm (
 		final org.drip.spaces.instance.ValidatedCombinatorialRealMultidimensional vcrmInstance)
 		throws java.lang.Exception
 	{
 		if (null == vcrmInstance || !vcrmInstance.tensorSpaceType().match (input()))
-			throw new java.lang.Exception ("NormedRdSpaceToR1Space::sampleMetricNorm => Invalid Input");
+			throw new java.lang.Exception ("NormedRdToR1::sampleMetricNorm => Invalid Input");
 
 		double[][] aadblInstance = vcrmInstance.instance();
 
@@ -131,22 +111,13 @@ public abstract class NormedRdSpaceToR1Space extends org.drip.spaces.function.No
 		return java.lang.Math.pow (dblNorm, 1. / iPNorm);
 	}
 
-	/**
-	 * Retrieve the Population ESS (Essential Spectrum)
-	 * 
-	 * @return The Population ESS (Essential Spectrum)
-	 * 
-	 * @throws java.lang.Exception Thrown if the Population ESS (Essential Spectrum) cannot be computed
-	 */
-
-	public double populationESS()
+	@Override public double populationESS()
 		throws java.lang.Exception
 	{
 		org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsInput = input();
 
 		if (!(gmvsInput instanceof org.drip.spaces.metric.ContinuousRealMultidimensionalBanach))
-			throw new java.lang.Exception
-				("NormedRdSpaceToR1Space::populationESS => Incomptabile Input Vector Space");
+			throw new java.lang.Exception ("NormedRdToR1::populationESS => Incomptabile Input Vector Space");
 
 		return _funcRdToR1.evaluate (((org.drip.spaces.metric.ContinuousRealMultidimensionalBanach)
 			gmvsInput).populationMode());
@@ -156,15 +127,4 @@ public abstract class NormedRdSpaceToR1Space extends org.drip.spaces.function.No
 	{
 		return _guvsOutput;
 	}
-
-	/**
-	 * Retrieve the Population Metric Norm
-	 * 
-	 * @return The Population Metric Norm
-	 * 
-	 * @throws java.lang.Exception Thrown if the Population Metric Norm cannot be computed
-	 */
-
-	public abstract double populationMetricNorm()
-		throws java.lang.Exception;
 }

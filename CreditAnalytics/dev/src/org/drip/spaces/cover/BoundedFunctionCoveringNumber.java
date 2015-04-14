@@ -1,5 +1,5 @@
 
-package org.drip.sequence.cover;
+package org.drip.spaces.cover;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -45,7 +45,7 @@ package org.drip.sequence.cover;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BoundedFunctionCoveringNumber implements org.drip.sequence.cover.CoveringNumber {
+public class BoundedFunctionCoveringNumber implements org.drip.spaces.cover.CoveringNumber {
 	private double _dblBound = java.lang.Double.NaN;
 	private double _dblSupport = java.lang.Double.NaN;
 	private double _dblVariation = java.lang.Double.NaN;
@@ -106,6 +106,11 @@ public class BoundedFunctionCoveringNumber implements org.drip.sequence.cover.Co
 	public double bound()
 	{
 		return _dblBound;
+	}
+
+	@Override public org.drip.spaces.function.GeneralizedNormedFunctionSpace functionSpace()
+	{
+		return null;
 	}
 
 	@Override public double logLowerBound (
