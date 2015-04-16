@@ -52,9 +52,9 @@ public abstract class GeneralizedNormedFunctionSpace {
 	}
 
 	/**
-	 * Retrieve the R^d Input Vector Space
+	 * Retrieve the Input Vector Space
 	 * 
-	 * @return The R^d Input Vector Space
+	 * @return The Input Vector Space
 	 */
 
 	public abstract org.drip.spaces.tensor.GeneralizedVectorSpace input();
@@ -77,4 +77,54 @@ public abstract class GeneralizedNormedFunctionSpace {
 	{
 		return _iPNorm;
 	}
+
+	/**
+	 * Retrieve the Sample Supremum Norm
+	 * 
+	 * @param gvviInstance The Validated Vector Space Instance
+	 * 
+	 * @return The Sample Supremum Norm
+	 * 
+	 * @throws java.lang.Exception Thrown if the Supremum Norm cannot be computed
+	 */
+
+	public abstract double sampleSupremumNorm (
+		final org.drip.spaces.instance.GeneralizedValidatedVectorInstance gvviInstance)
+		throws java.lang.Exception;
+
+	/**
+	 * Retrieve the Sample Metric Norm
+	 * 
+	 * @param gvviInstance The Validated Vector Space Instance
+	 * 
+	 * @return The Sample Metric Norm
+	 * 
+	 * @throws java.lang.Exception Thrown if the Sample Metric Norm cannot be computed
+	 */
+
+	public abstract double sampleMetricNorm (
+		final org.drip.spaces.instance.GeneralizedValidatedVectorInstance gvviInstance)
+		throws java.lang.Exception;
+
+	/**
+	 * Retrieve the Population ESS (Essential Spectrum)
+	 * 
+	 * @return The Population ESS (Essential Spectrum)
+	 * 
+	 * @throws java.lang.Exception Thrown if the Population ESS (Essential Spectrum) cannot be computed
+	 */
+
+	public abstract double populationESS()
+		throws java.lang.Exception;
+
+	/**
+	 * Retrieve the Population Metric Norm
+	 * 
+	 * @return The Population Metric Norm
+	 * 
+	 * @throws java.lang.Exception Thrown if the Population Metric Norm cannot be computed
+	 */
+
+	public abstract double populationMetricNorm()
+		throws java.lang.Exception;
 }

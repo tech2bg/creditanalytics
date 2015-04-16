@@ -40,10 +40,8 @@ package org.drip.spaces.instance;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ValidatedCombinatorialRealMultidimensional implements
-	org.drip.spaces.instance.GeneralizedValidatedVectorInstance {
-	private double[][] _aadblInstance = null;
-	private org.drip.spaces.tensor.CombinatorialRealMultidimensionalVector _crmv = null;
+public class ValidatedCombinatorialRealMultidimensional extends
+	org.drip.spaces.instance.ValidatedRealMultidimensional {
 
 	/**
 	 * ValidatedCombinatorialRealMultidimensional Constructor
@@ -59,23 +57,11 @@ public class ValidatedCombinatorialRealMultidimensional implements
 		final double[][] aadblInstance)
 		throws java.lang.Exception
 	{
-		if (null == (_crmv = crmv) || null == (_aadblInstance = aadblInstance) || 0 == _aadblInstance.length)
-			throw new java.lang.Exception ("ValidatedCombinatorialRealMultidimensional ctr: Invalid Inputs");
+		super (crmv, aadblInstance);
 	}
 
 	@Override public org.drip.spaces.tensor.CombinatorialRealMultidimensionalVector tensorSpaceType()
 	{
-		return _crmv;
-	}
-
-	/**
-	 * Retrieve the Instance Sequence
-	 * 
-	 * @return The Instance Sequence
-	 */
-
-	public double[][] instance()
-	{
-		return _aadblInstance;
+		return (org.drip.spaces.tensor.CombinatorialRealMultidimensionalVector) super.tensorSpaceType();
 	}
 }

@@ -3,7 +3,7 @@ package org.drip.sample.quant;
 
 import org.drip.function.deterministic.R1ToR1;
 import org.drip.function.deterministic1D.*;
-import org.drip.quant.calculus.Integrator;
+import org.drip.quant.calculus.R1ToR1Integrator;
 import org.drip.quant.common.*;
 
 /*
@@ -67,27 +67,27 @@ public class IntegrandQuadrature {
 			1, iRightDecimal, 1.));
 
 		System.out.println ("\t\tLinear      : " +
-			FormatUtil.FormatDouble (Integrator.LinearQuadrature (au, dblStart, dblEnd),
+			FormatUtil.FormatDouble (R1ToR1Integrator.LinearQuadrature (au, dblStart, dblEnd),
 			1, iRightDecimal, 1.));
 
 		System.out.println ("\t\tMidPoint    : " +
-			FormatUtil.FormatDouble (Integrator.MidPoint (au, dblStart, dblEnd),
+			FormatUtil.FormatDouble (R1ToR1Integrator.MidPoint (au, dblStart, dblEnd),
 			1, iRightDecimal, 1.));
 
 		System.out.println ("\t\tTrapezoidal : " +
-			FormatUtil.FormatDouble (Integrator.Trapezoidal (au, dblStart, dblEnd),
+			FormatUtil.FormatDouble (R1ToR1Integrator.Trapezoidal (au, dblStart, dblEnd),
 			1, iRightDecimal, 1.));
 
 		System.out.println ("\t\tSimpson     : " +
-			FormatUtil.FormatDouble (Integrator.Simpson (au, dblStart, dblEnd),
+			FormatUtil.FormatDouble (R1ToR1Integrator.Simpson (au, dblStart, dblEnd),
 			1, iRightDecimal, 1.));
 
 		System.out.println ("\t\tSimpson 38  : " +
-			FormatUtil.FormatDouble (Integrator.Simpson (au, dblStart, dblEnd),
+			FormatUtil.FormatDouble (R1ToR1Integrator.Simpson (au, dblStart, dblEnd),
 			1, iRightDecimal, 1.));
 
 		System.out.println ("\t\tBoole       : " +
-			FormatUtil.FormatDouble (Integrator.Boole (au, dblStart, dblEnd),
+			FormatUtil.FormatDouble (R1ToR1Integrator.Boole (au, dblStart, dblEnd),
 			1, iRightDecimal, 1.));
 	}
 

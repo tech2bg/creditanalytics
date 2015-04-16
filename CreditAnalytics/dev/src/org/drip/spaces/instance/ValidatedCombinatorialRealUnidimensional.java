@@ -40,10 +40,8 @@ package org.drip.spaces.instance;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ValidatedCombinatorialRealUnidimensional implements
-	org.drip.spaces.instance.GeneralizedValidatedVectorInstance {
-	private double[] _adblInstance = null;
-	private org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector _cruv = null;
+public class ValidatedCombinatorialRealUnidimensional extends
+	org.drip.spaces.instance.ValidatedRealUnidimensional {
 
 	/**
 	 * ValidatedCombinatorialRealUnidimensional Constructor
@@ -59,23 +57,11 @@ public class ValidatedCombinatorialRealUnidimensional implements
 		final double[] adblInstance)
 		throws java.lang.Exception
 	{
-		if (null == (_cruv = cruv) || null == (_adblInstance = adblInstance) || 0 == _adblInstance.length)
-			throw new java.lang.Exception ("ValidatedContinuousRealUnidimensional ctr: Invalid Inputs");
+		super (cruv, adblInstance);
 	}
 
 	@Override public org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector tensorSpaceType()
 	{
-		return _cruv;
-	}
-
-	/**
-	 * Retrieve the Instance Sequence
-	 * 
-	 * @return The Instance Sequence
-	 */
-
-	public double[] instance()
-	{
-		return _adblInstance;
+		return (org.drip.spaces.tensor.CombinatorialRealUnidimensionalVector) super.tensorSpaceType();
 	}
 }

@@ -1514,7 +1514,7 @@ public class LatentStateResponseModel extends org.drip.spline.segment.LatentStat
 				final double dblEnd)
 				throws java.lang.Exception
 			{
-				return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+				return org.drip.quant.calculus.R1ToR1Integrator.Boole (this, dblBegin, dblEnd);
 			}
 		};
 

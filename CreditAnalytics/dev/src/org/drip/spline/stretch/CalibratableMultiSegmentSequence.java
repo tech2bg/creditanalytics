@@ -373,7 +373,7 @@ public class CalibratableMultiSegmentSequence extends org.drip.function.determin
 			(dblEnd))
 			throw new java.lang.Exception ("CalibratableMultiSegmentSequence::integrate => Invalid Inputs");
 
-		return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+		return org.drip.quant.calculus.R1ToR1Integrator.Boole (this, dblBegin, dblEnd);
 	}
 
 	@Override public boolean setLeftNode (

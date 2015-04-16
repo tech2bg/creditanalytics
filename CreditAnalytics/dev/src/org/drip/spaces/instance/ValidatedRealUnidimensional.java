@@ -1,5 +1,5 @@
 
-package org.drip.spaces.function;
+package org.drip.spaces.instance;
 
 /*
  * -*- mode: java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
@@ -29,8 +29,8 @@ package org.drip.spaces.function;
  */
 
 /**
- * NormedRdInput is the abstract class underlying the Normed Function Space f that takes as Input Validated
- *  R^d Spaces.
+ * ValidatedRealUnidimensional holds the Validated Uni-dimensional Real-Valued Vector Instance Sequence and
+ *  the Corresponding Generalized Vector Space Type.
  * 
  * The Reference we've used is:
  * 
@@ -40,22 +40,42 @@ package org.drip.spaces.function;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class NormedRdInput extends org.drip.spaces.function.GeneralizedNormedFunctionSpace {
-	private org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace _gmvsInput = null;
+public class ValidatedRealUnidimensional implements
+	org.drip.spaces.instance.GeneralizedValidatedVectorInstance {
+	private double[] _adblInstance = null;
+	private org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace _guvs = null;
 
-	protected NormedRdInput (
-		final org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsInput,
-		final int iPNorm)
+	/**
+	 * ValidatedRealUnidimensional Constructor
+	 * 
+	 * @param guvs The Uni-dimensional Real-Valued Tensor Space Type
+	 * @param adblInstance The Data Instance
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public ValidatedRealUnidimensional (
+		final org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace guvs,
+		final double[] adblInstance)
 		throws java.lang.Exception
 	{
-		super (iPNorm);
-
-		if (null == (_gmvsInput = gmvsInput))
-			throw new java.lang.Exception ("NormedRdInput ctr: Invalid Inputs");
+		if (null == (_guvs = guvs) || null == (_adblInstance = adblInstance) || 0 == _adblInstance.length)
+			throw new java.lang.Exception ("ValidatedRealUnidimensional ctr: Invalid Inputs");
 	}
 
-	@Override public org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace input()
+	@Override public org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace tensorSpaceType()
 	{
-		return _gmvsInput;
+		return _guvs;
+	}
+
+	/**
+	 * Retrieve the Instance Sequence
+	 * 
+	 * @return The Instance Sequence
+	 */
+
+	public double[] instance()
+	{
+		return _adblInstance;
 	}
 }

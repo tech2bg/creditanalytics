@@ -31,7 +31,7 @@ package org.drip.quant.calculus;
  */
 
 /**
- * Integrator implements the following routines for integrating the objective function:
+ * R1ToR1Integrator implements the following routines for integrating the R^1 -> R^1 objective Function:
  * 	- Linear Quadrature
  * 	- Mid-Point Scheme
  * 	- Trapezoidal Scheme
@@ -41,13 +41,13 @@ package org.drip.quant.calculus;
  * @author Lakshmi Krishnamurthy
  */
 
-public class Integrator {
+public class R1ToR1Integrator {
 	private final static int NUM_QUAD = 10000;
 
 	/**
 	 * Compute the function's integral within the specified limits using the LinearQuadrature technique.
 	 * 
-	 * @param au Univariate Function
+	 * @param funcR1ToR1 R1ToR1 Function
 	 * @param dblLeft Left Variate
 	 * @param dblRight Right Variate
 	 * 
@@ -57,14 +57,14 @@ public class Integrator {
 	 */
 
 	public static final double LinearQuadrature (
-		final org.drip.function.deterministic.R1ToR1 au,
+		final org.drip.function.deterministic.R1ToR1 funcR1ToR1,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
 	{
-		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
+		if (null == funcR1ToR1 || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
-			throw new java.lang.Exception ("Integrator::LinearQuadrature => Invalid Inputs");
+			throw new java.lang.Exception ("R1ToR1Integrator::LinearQuadrature => Invalid Inputs");
 
 		if (dblLeft == dblRight) return 0.;
 
@@ -73,11 +73,11 @@ public class Integrator {
 		double dblAUArea = 0.;
 
 		while (dblX <= dblRight) {
-			double dblY = au.evaluate (dblX - 0.5 * dblWidth);
+			double dblY = funcR1ToR1.evaluate (dblX - 0.5 * dblWidth);
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblLeft))
 				throw new java.lang.Exception
-					("Integrator::LinearQuadrature => Cannot calculate an intermediate Y");
+					("R1ToR1Integrator::LinearQuadrature => Cannot calculate an intermediate Y");
 
 			dblAUArea += dblY * dblWidth;
 			dblX += dblWidth;
@@ -89,7 +89,7 @@ public class Integrator {
 	/**
 	 * Compute the function's integral within the specified limits using the Mid-point rule.
 	 * 
-	 * @param au Univariate Function
+	 * @param funcR1ToR1 R1ToR1 Function
 	 * @param dblLeft Left Variate
 	 * @param dblRight Right Variate
 	 * 
@@ -99,22 +99,22 @@ public class Integrator {
 	 */
 
 	public static final double MidPoint (
-		final org.drip.function.deterministic.R1ToR1 au,
+		final org.drip.function.deterministic.R1ToR1 funcR1ToR1,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
 	{
-		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
+		if (null == funcR1ToR1 || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
-			throw new java.lang.Exception ("Integrator::MidPoint => Invalid Inputs");
+			throw new java.lang.Exception ("R1ToR1Integrator::MidPoint => Invalid Inputs");
 
 		if (dblLeft == dblRight) return 0.;
 
-		double dblYMid = au.evaluate (0.5 * (dblLeft + dblRight));
+		double dblYMid = funcR1ToR1.evaluate (0.5 * (dblLeft + dblRight));
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblYMid))
-			throw new java.lang.Exception ("Integrator::MidPoint => Cannot calculate Y at " + 0.5 * (dblLeft
-				+ dblRight));
+			throw new java.lang.Exception ("R1ToR1Integrator::MidPoint => Cannot calculate Y at " + 0.5 *
+				(dblLeft + dblRight));
 
 		return (dblRight - dblLeft) * dblYMid;
 	}
@@ -122,7 +122,7 @@ public class Integrator {
 	/**
 	 * Compute the function's integral within the specified limits using the Trapezoidal rule.
 	 * 
-	 * @param au Univariate Function
+	 * @param funcR1ToR1 R1ToR1 Function
 	 * @param dblLeft Left Variate
 	 * @param dblRight Right Variate
 	 * 
@@ -132,26 +132,28 @@ public class Integrator {
 	 */
 
 	public static final double Trapezoidal (
-		final org.drip.function.deterministic.R1ToR1 au,
+		final org.drip.function.deterministic.R1ToR1 funcR1ToR1,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
 	{
-		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
+		if (null == funcR1ToR1 || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
-			throw new java.lang.Exception ("Integrator::Trapezoidal => Invalid Inputs");
+			throw new java.lang.Exception ("R1ToR1Integrator::Trapezoidal => Invalid Inputs");
 
 		if (dblLeft == dblRight) return 0.;
 
-		double dblYLeft = au.evaluate (dblLeft);
+		double dblYLeft = funcR1ToR1.evaluate (dblLeft);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblYLeft))
-			throw new java.lang.Exception ("Integrator::Trapezoidal => Cannot calculate Y at " + dblLeft);
+			throw new java.lang.Exception ("R1ToR1Integrator::Trapezoidal => Cannot calculate Y at " +
+				dblLeft);
 
-		double dblYRight = au.evaluate (dblRight);
+		double dblYRight = funcR1ToR1.evaluate (dblRight);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblYLeft))
-			throw new java.lang.Exception ("Integrator::Trapezoidal => Cannot calculate Y at " + dblRight);
+			throw new java.lang.Exception ("R1ToR1Integrator::Trapezoidal => Cannot calculate Y at " +
+				dblRight);
 
 		return 0.5 * (dblRight - dblLeft) * (dblYLeft + dblYRight);
 	}
@@ -159,7 +161,7 @@ public class Integrator {
 	/**
 	 * Compute the function's integral within the specified limits using the Simpson rule.
 	 * 
-	 * @param au Univariate Function
+	 * @param funcR1ToR1 R1ToR1 Function
 	 * @param dblLeft Left Variate
 	 * @param dblRight Right Variate
 	 * 
@@ -169,33 +171,33 @@ public class Integrator {
 	 */
 
 	public static final double Simpson (
-		final org.drip.function.deterministic.R1ToR1 au,
+		final org.drip.function.deterministic.R1ToR1 funcR1ToR1,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
 	{
-		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
+		if (null == funcR1ToR1 || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
-			throw new java.lang.Exception ("Integrator::Simpson => Invalid Inputs");
+			throw new java.lang.Exception ("R1ToR1Integrator::Simpson => Invalid Inputs");
 
 		if (dblLeft == dblRight) return 0.;
 
-		double dblYLeft = au.evaluate (dblLeft);
+		double dblYLeft = funcR1ToR1.evaluate (dblLeft);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblYLeft))
-			throw new java.lang.Exception ("Integrator::Simpson => Cannot calculate Y at " + dblLeft);
+			throw new java.lang.Exception ("R1ToR1Integrator::Simpson => Cannot calculate Y at " + dblLeft);
 
 		double dblXMid = 0.5 * (dblLeft + dblRight);
 
-		double dblYMid = au.evaluate (dblXMid);
+		double dblYMid = funcR1ToR1.evaluate (dblXMid);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblYMid))
-			throw new java.lang.Exception ("Integrator::Simpson => Cannot calculate Y at " + dblXMid);
+			throw new java.lang.Exception ("R1ToR1Integrator::Simpson => Cannot calculate Y at " + dblXMid);
 
-		double dblYRight = au.evaluate (dblRight);
+		double dblYRight = funcR1ToR1.evaluate (dblRight);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblYRight))
-			throw new java.lang.Exception ("Integrator::Simpson => Cannot calculate Y at " + dblRight);
+			throw new java.lang.Exception ("R1ToR1Integrator::Simpson => Cannot calculate Y at " + dblRight);
 
 		return (dblRight - dblLeft) / 6. * (dblYLeft + 4. * dblYMid + dblYRight);
 	}
@@ -203,7 +205,7 @@ public class Integrator {
 	/**
 	 * Compute the function's integral within the specified limits using the Simpson 3/8 rule.
 	 * 
-	 * @param au Univariate Function
+	 * @param funcR1ToR1 R1ToR1 Function
 	 * @param dblLeft Left Variate
 	 * @param dblRight Right Variate
 	 * 
@@ -213,40 +215,42 @@ public class Integrator {
 	 */
 
 	public static final double Simpson38 (
-		final org.drip.function.deterministic.R1ToR1 au,
+		final org.drip.function.deterministic.R1ToR1 funcR1ToR1,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
 	{
-		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
+		if (null == funcR1ToR1 || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
-			throw new java.lang.Exception ("Integrator::Simpson38 => Invalid Inputs");
+			throw new java.lang.Exception ("R1ToR1Integrator::Simpson38 => Invalid Inputs");
 
 		if (dblLeft == dblRight) return 0.;
 
-		double dblY0 = au.evaluate (dblLeft);
+		double dblY0 = funcR1ToR1.evaluate (dblLeft);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblY0))
-			throw new java.lang.Exception ("Integrator::Simpson38 => Cannot calculate Y at " + dblLeft);
+			throw new java.lang.Exception ("R1ToR1Integrator::Simpson38 => Cannot calculate Y at " +
+				dblLeft);
 
 		double dblX1 = (2. * dblLeft + dblRight) / 3.;
 
-		double dblY1 = au.evaluate (dblX1);
+		double dblY1 = funcR1ToR1.evaluate (dblX1);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblY1))
-			throw new java.lang.Exception ("Integrator::Simpson38 => Cannot calculate Y at " + dblX1);
+			throw new java.lang.Exception ("R1ToR1Integrator::Simpson38 => Cannot calculate Y at " + dblX1);
 
 		double dblX2 = (dblLeft + 2. * dblRight) / 3.;
 
-		double dblY2 = au.evaluate (dblX2);
+		double dblY2 = funcR1ToR1.evaluate (dblX2);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblY2))
-			throw new java.lang.Exception ("Integrator::Simpson38 => Cannot calculate Y at " + dblX2);
+			throw new java.lang.Exception ("R1ToR1Integrator::Simpson38 => Cannot calculate Y at " + dblX2);
 
-		double dblY3 = au.evaluate (dblRight);
+		double dblY3 = funcR1ToR1.evaluate (dblRight);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblY3))
-			throw new java.lang.Exception ("Integrator::Simpson38 => Cannot calculate Y at " + dblRight);
+			throw new java.lang.Exception ("R1ToR1Integrator::Simpson38 => Cannot calculate Y at " +
+				dblRight);
 
 		return (dblRight - dblLeft) * (0.125 * dblY0 + 0.375 * dblY1 + 0.375 * dblY2 + 0.125 * dblY3);
 	}
@@ -254,7 +258,7 @@ public class Integrator {
 	/**
 	 * Compute the function's integral within the specified limits using the Boole rule.
 	 * 
-	 * @param au Univariate Function
+	 * @param funcR1ToR1 R1ToR1 Function
 	 * @param dblLeft Left Variate
 	 * @param dblRight Right Variate
 	 * 
@@ -264,47 +268,47 @@ public class Integrator {
 	 */
 
 	public static final double Boole (
-		final org.drip.function.deterministic.R1ToR1 au,
+		final org.drip.function.deterministic.R1ToR1 funcR1ToR1,
 		final double dblLeft,
 		final double dblRight)
 		throws java.lang.Exception
 	{
-		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
+		if (null == funcR1ToR1 || !org.drip.quant.common.NumberUtil.IsValid (dblLeft) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblRight) || dblLeft > dblRight)
-			throw new java.lang.Exception ("Integrator::Boole => Invalid Inputs");
+			throw new java.lang.Exception ("R1ToR1Integrator::Boole => Invalid Inputs");
 
 		if (dblLeft == dblRight) return 0.;
 
-		double dblY0 = au.evaluate (dblLeft);
+		double dblY0 = funcR1ToR1.evaluate (dblLeft);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblY0))
-			throw new java.lang.Exception ("Integrator::Boole => Cannot calculate Y at " + dblLeft);
+			throw new java.lang.Exception ("R1ToR1Integrator::Boole => Cannot calculate Y at " + dblLeft);
 
 		double dblX1 = 0.25 * dblLeft + 0.75 * dblRight;
 
-		double dblY1 = au.evaluate (dblX1);
+		double dblY1 = funcR1ToR1.evaluate (dblX1);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblY1))
-			throw new java.lang.Exception ("Integrator::Boole => Cannot calculate Y at " + dblX1);
+			throw new java.lang.Exception ("R1ToR1Integrator::Boole => Cannot calculate Y at " + dblX1);
 
 		double dblX2 = 0.5 * (dblLeft + dblRight);
 
-		double dblY2 = au.evaluate (dblX2);
+		double dblY2 = funcR1ToR1.evaluate (dblX2);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblY2))
-			throw new java.lang.Exception ("Integrator::Boole => Cannot calculate Y at " + dblX2);
+			throw new java.lang.Exception ("R1ToR1Integrator::Boole => Cannot calculate Y at " + dblX2);
 
 		double dblX3 = 0.75 * dblLeft + 0.25 * dblRight;
 
-		double dblY3 = au.evaluate (dblX3);
+		double dblY3 = funcR1ToR1.evaluate (dblX3);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblY3))
-			throw new java.lang.Exception ("Integrator::Boole => Cannot calculate Y at " + dblX3);
+			throw new java.lang.Exception ("R1ToR1Integrator::Boole => Cannot calculate Y at " + dblX3);
 
-		double dblY4 = au.evaluate (dblRight);
+		double dblY4 = funcR1ToR1.evaluate (dblRight);
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblY4))
-			throw new java.lang.Exception ("Integrator::Boole => Cannot calculate Y at " + dblRight);
+			throw new java.lang.Exception ("R1ToR1Integrator::Boole => Cannot calculate Y at " + dblRight);
 
 		return (dblRight - dblLeft) / 90 * (7 * dblY0 + 32 * dblY1 + 12 * dblY2 + 32 * dblY3 + 7 * dblY4);
 	}
@@ -312,7 +316,7 @@ public class Integrator {
 	/**
 	 * Integrate Numerically over [-infinity, +infinity] using a Change of Variables
 	 * 
-	 * @param au The Input Function
+	 * @param funcR1ToR1 The R1ToR1 Function
 	 * 
 	 * @return The Numerical Integrand
 	 * 
@@ -320,11 +324,11 @@ public class Integrator {
 	 */
 
 	public static final double LeftInfiniteRightInfinite (
-		final org.drip.function.deterministic.R1ToR1 au)
+		final org.drip.function.deterministic.R1ToR1 funcR1ToR1)
 		throws java.lang.Exception
 	{
-		if (null == au)
-			throw new java.lang.Exception ("Integrator::LeftInfiniteRightInfinite => Invalid Inputs");
+		if (null == funcR1ToR1)
+			throw new java.lang.Exception ("IntegratorR1ToR1::LeftInfiniteRightInfinite => Invalid Inputs");
 
 		org.drip.function.deterministic.R1ToR1 auTransformed = new
 			org.drip.function.deterministic.R1ToR1 (null) {
@@ -334,12 +338,13 @@ public class Integrator {
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
 					throw new java.lang.Exception
-						("Integrator::LeftInfiniteRightInfinite => Invalid Inputs");
+						("IntegratorR1ToR1::LeftInfiniteRightInfinite => Invalid Inputs");
 
 				double dblX2 = dblX * dblX;
 				double dblXTransform = 1. / (1. - dblX2);
 
-				return (1. + dblX2) / (dblXTransform * dblXTransform) * au.evaluate (dblX / dblXTransform);
+				return (1. + dblX2) / (dblXTransform * dblXTransform) * funcR1ToR1.evaluate (dblX /
+					dblXTransform);
 			}
 		};
 
@@ -349,7 +354,7 @@ public class Integrator {
 	/**
 	 * Integrate the specified Function Numerically from -infinity to the specified Right Limit
 	 * 
-	 * @param au The Input Univariate Function
+	 * @param funcR1ToR1 The Input R1ToR1 Function
 	 * @param dblRight The Right Integration Limit
 	 * 
 	 * @return The Results of the Integration
@@ -358,12 +363,12 @@ public class Integrator {
 	 */
 
 	public static final double LeftInfinite (
-		final org.drip.function.deterministic.R1ToR1 au,
+		final org.drip.function.deterministic.R1ToR1 funcR1ToR1,
 		final double dblRight)
 		throws java.lang.Exception
 	{
-		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblRight))
-			throw new java.lang.Exception ("Integrator::LeftInfinite => Invalid Inputs");
+		if (null == funcR1ToR1 || !org.drip.quant.common.NumberUtil.IsValid (dblRight))
+			throw new java.lang.Exception ("IntegratorR1ToR1::LeftInfinite => Invalid Inputs");
 
 		org.drip.function.deterministic.R1ToR1 auTransformed = new
 			org.drip.function.deterministic.R1ToR1 (null) {
@@ -372,9 +377,9 @@ public class Integrator {
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
-					throw new java.lang.Exception ("Integrator::LeftInfinite => Invalid Inputs");
+					throw new java.lang.Exception ("IntegratorR1ToR1::LeftInfinite => Invalid Inputs");
 
-				return (au.evaluate (dblRight - ((1. - dblX) / dblX))) / (dblX * dblX);
+				return (funcR1ToR1.evaluate (dblRight - ((1. - dblX) / dblX))) / (dblX * dblX);
 			}
 		};
 
@@ -384,7 +389,7 @@ public class Integrator {
 	/**
 	 * Integrate the specified Function Numerically from the specified Left Limit to +infinity
 	 * 
-	 * @param au The Input Univariate Function
+	 * @param funcR1ToR1 The Input R1ToR1 Function
 	 * @param dblLeft The Left Integration Limit
 	 * 
 	 * @return The Results of the Integration
@@ -393,12 +398,12 @@ public class Integrator {
 	 */
 
 	public static final double RightInfinite (
-		final org.drip.function.deterministic.R1ToR1 au,
+		final org.drip.function.deterministic.R1ToR1 funcR1ToR1,
 		final double dblLeft)
 		throws java.lang.Exception
 	{
-		if (null == au || !org.drip.quant.common.NumberUtil.IsValid (dblLeft))
-			throw new java.lang.Exception ("Integrator::RightInfinite => Invalid Inputs");
+		if (null == funcR1ToR1 || !org.drip.quant.common.NumberUtil.IsValid (dblLeft))
+			throw new java.lang.Exception ("IntegratorR1ToR1::RightInfinite => Invalid Inputs");
 
 		org.drip.function.deterministic.R1ToR1 auTransformed = new
 			org.drip.function.deterministic.R1ToR1 (null) {
@@ -407,11 +412,12 @@ public class Integrator {
 				throws java.lang.Exception
 			{
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblX))
-					throw new java.lang.Exception ("Integrator::RightInfinite => Invalid Inputs");
+					throw new java.lang.Exception ("IntegratorR1ToR1::RightInfinite => Invalid Inputs");
 
 				double dblXInversion = 1. - dblX;
 
-				return (au.evaluate (dblLeft + (dblX / dblXInversion))) / (dblXInversion * dblXInversion);
+				return (funcR1ToR1.evaluate (dblLeft + (dblX / dblXInversion))) / (dblXInversion *
+					dblXInversion);
 			}
 		};
 

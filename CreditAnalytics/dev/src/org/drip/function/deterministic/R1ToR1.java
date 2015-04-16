@@ -167,21 +167,7 @@ public abstract class R1ToR1 {
 		final double dblEnd)
 		throws java.lang.Exception
 	{
-		return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
-	}
-
-	/**
-	 * Integrate over [-Infinity, +Infinity]
-	 *  
-	 * @return The Integrated Value
-	 * 
-	 * @throws java.lang.Exception Thrown if evaluation cannot be done
-	 */
-
-	public double integrate()
-		throws java.lang.Exception
-	{
-		return org.drip.quant.calculus.Integrator.LeftInfiniteRightInfinite (this);
+		return org.drip.quant.calculus.R1ToR1Integrator.Boole (this, dblBegin, dblEnd);
 	}
 
 	/**

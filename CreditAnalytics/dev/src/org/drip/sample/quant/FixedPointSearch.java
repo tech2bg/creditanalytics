@@ -362,7 +362,7 @@ public class FixedPointSearch {
 				final double dblEnd)
 				throws Exception
 			{
-				return Integrator.Boole (this, dblBegin, dblEnd);
+				return R1ToR1Integrator.Boole (this, dblBegin, dblEnd);
 			}
 		};
 

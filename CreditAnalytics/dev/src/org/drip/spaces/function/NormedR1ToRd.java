@@ -29,7 +29,7 @@ package org.drip.spaces.function;
  */
 
 /**
- * NormedRdToRd is the abstract class underlying the f : Post-Validated R^d -> Post-Validated R^d Normed
+ * NormedR1ToRd is the abstract class underlying the f : Post-Validated R^1 -> Post-Validated R^d Normed
  *  Function Spaces.
  * 
  * The Reference we've used is:
@@ -40,55 +40,55 @@ package org.drip.spaces.function;
  * @author Lakshmi Krishnamurthy
  */
 
-public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInput {
-	private org.drip.function.deterministic.RdToRd _funcRdToRd = null;
+public abstract class NormedR1ToRd extends org.drip.spaces.function.NormedR1Input {
+	private org.drip.function.deterministic.R1ToRd _funcR1ToRd = null;
 	private org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace _gmvsOutput = null;
 
-	protected NormedRdToRd (
-		final org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsInput,
+	protected NormedR1ToRd (
+		final org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace guvsInput,
 		final org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsOutput,
-		final org.drip.function.deterministic.RdToRd funcRdToRd,
+		final org.drip.function.deterministic.R1ToRd funcR1ToRd,
 		final int iPNorm)
 		throws java.lang.Exception
 	{
-		super (gmvsInput, iPNorm);
+		super (guvsInput, iPNorm);
 
-		if (null == (_gmvsOutput = gmvsOutput) || null == (_funcRdToRd = funcRdToRd))
-			throw new java.lang.Exception ("NormedRdToRd ctr: Invalid Inputs");
+		if (null == (_gmvsOutput = gmvsOutput) || null == (_funcR1ToRd = funcR1ToRd))
+			throw new java.lang.Exception ("NormedR1ToRd ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Retrieve the Underlying RdToRd Function
+	 * Retrieve the Underlying R1ToRd Function
 	 * 
-	 * @return The Underlying RdToRd Function
+	 * @return The Underlying R1ToR1 Function
 	 */
 
-	public org.drip.function.deterministic.RdToRd function()
+	public org.drip.function.deterministic.R1ToRd function()
 	{
-		return _funcRdToRd;
+		return _funcR1ToRd;
 	}
 
 	/**
 	 * Retrieve the Sample Supremum R^d Norm Array
 	 * 
-	 * @param vrmInstance The Validated Real Valued Multidimensional Instance
+	 * @param vruInstance The Validated Real Valued Unidimensional Instance
 	 * 
 	 * @return The Sample Supremum R^d Norm Array
 	 */
 
 	public double[] sampleRdSupremumNorm (
-		final org.drip.spaces.instance.ValidatedRealMultidimensional vrmInstance)
+		final org.drip.spaces.instance.ValidatedRealUnidimensional vruInstance)
 		throws java.lang.Exception
 	{
-		if (null == vrmInstance || !vrmInstance.tensorSpaceType().match (input())) return null;
+		if (null == vruInstance || !vruInstance.tensorSpaceType().match (input())) return null;
 
-		double[][] aadblInstance = vrmInstance.instance();
+		double[] adblInstance = vruInstance.instance();
 
-		int iNumSample = aadblInstance.length;
+		int iNumSample = adblInstance.length;
 
 		int iOutputDimension = _gmvsOutput.dimension();
 
-		double[] adblSupremumNorm = _funcRdToRd.evaluate (aadblInstance[0]);
+		double[] adblSupremumNorm = _funcR1ToRd.evaluate (adblInstance[0]);
 
 		if (null == adblSupremumNorm || iOutputDimension != adblSupremumNorm.length ||
 			!org.drip.quant.common.NumberUtil.IsValid (adblSupremumNorm))
@@ -98,7 +98,7 @@ public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInpu
 			adblSupremumNorm[i] = java.lang.Math.abs (adblSupremumNorm[i]);
 
 		for (int i = 1; i < iNumSample; ++i) {
-			double[] adblSampleNorm = _funcRdToRd.evaluate (aadblInstance[i]);
+			double[] adblSampleNorm = _funcR1ToRd.evaluate (adblInstance[i]);
 
 			if (null == adblSampleNorm || iOutputDimension != adblSampleNorm.length) return null;
 
@@ -115,22 +115,22 @@ public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInpu
 	/**
 	 * Retrieve the Sample R^d Metric Norm Array
 	 * 
-	 * @param vrmInstance The Validated Real Valued Multidimensional Instance
+	 * @param vruInstance The Validated Real Valued Unidimensional Instance
 	 * 
 	 * @return The Sample R^d Metric Norm Array
 	 */
 
 	public double[] sampleRdMetricNorm (
-		final org.drip.spaces.instance.ValidatedRealMultidimensional vrmInstance)
+		final org.drip.spaces.instance.ValidatedRealUnidimensional vruInstance)
 	{
-		if (null == vrmInstance || !vrmInstance.tensorSpaceType().match (input())) return null;
+		if (null == vruInstance || !vruInstance.tensorSpaceType().match (input())) return null;
 
-		double[][] aadblInstance = vrmInstance.instance();
+		double[] adblInstance = vruInstance.instance();
 
 		int iOutputDimension = _gmvsOutput.dimension();
 
 		double[] adblMetricNorm = new double[iOutputDimension];
-		int iNumSample = aadblInstance.length;
+		int iNumSample = adblInstance.length;
 
 		int iPNorm = pNorm();
 
@@ -138,7 +138,7 @@ public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInpu
 			adblMetricNorm[i] = 0.;
 
 		for (int i = 0; i < iNumSample; ++i) {
-			double[] adblPointValue = _funcRdToRd.evaluate (aadblInstance[i]);
+			double[] adblPointValue = _funcR1ToRd.evaluate (adblInstance[i]);
 
 			if (null == adblPointValue || iOutputDimension != adblPointValue.length) return null;
 
@@ -163,11 +163,17 @@ public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInpu
 
 	public double[] populationRdESS()
 	{
-		org.drip.spaces.tensor.GeneralizedMultidimensionalVectorSpace gmvsInput = input();
+		org.drip.spaces.tensor.GeneralizedUnidimensionalVectorSpace guvsInput = input();
 
-		return gmvsInput instanceof org.drip.spaces.metric.ContinuousRealMultidimensionalBanach ?
-			_funcRdToRd.evaluate (((org.drip.spaces.metric.ContinuousRealMultidimensionalBanach)
-				gmvsInput).populationMode()) : null;
+		try {
+			return guvsInput instanceof org.drip.spaces.metric.ContinuousRealUnidimensional ?
+				_funcR1ToRd.evaluate (((org.drip.spaces.metric.ContinuousRealUnidimensional)
+					guvsInput).populationMode()) : null;
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	/**
@@ -187,19 +193,22 @@ public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInpu
 		final org.drip.spaces.instance.GeneralizedValidatedVectorInstance gvviInstance)
 		throws java.lang.Exception
 	{
+		if (null == gvviInstance || !gvviInstance.tensorSpaceType().match (input()))
+			throw new java.lang.Exception ("NormedR1ToRd::sampleSupremumNorm => Invalid Input");
+
 		double[] adblSampleSupremumNorm = sampleRdSupremumNorm
-			((org.drip.spaces.instance.ValidatedRealMultidimensional) gvviInstance);
+			((org.drip.spaces.instance.ValidatedRealUnidimensional) gvviInstance);
 
 		if (null == adblSampleSupremumNorm)
 			throw new java.lang.Exception
-				("NormedRdToRd::sampleSupremumNorm => Cannot compute Sample Supremum Array");
+				("NormedR1ToRd::sampleSupremumNorm => Cannot compute Sample Supremum Array");
 
 		double dblSampleSupremumNorm = java.lang.Double.NaN;
 		int iOutputDimension = adblSampleSupremumNorm.length;
 
 		if (0 == iOutputDimension)
 			throw new java.lang.Exception
-				("NormedRdToRd::sampleSupremumNorm => Cannot compute Sample Supremum Array");
+				("NormedR1ToRd::sampleSupremumNorm => Cannot compute Sample Supremum Array");
 
 		for (int i = 0; i < iOutputDimension; ++i) {
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblSampleSupremumNorm))
@@ -217,12 +226,15 @@ public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInpu
 		final org.drip.spaces.instance.GeneralizedValidatedVectorInstance gvviInstance)
 		throws java.lang.Exception
 	{
+		if (null == gvviInstance || !gvviInstance.tensorSpaceType().match (input()))
+			throw new java.lang.Exception ("NormedR1ToRd::sampleSupremumNorm => Invalid Input");
+
 		double[] adblSampleMetricNorm = sampleRdMetricNorm
-			((org.drip.spaces.instance.ValidatedRealMultidimensional) gvviInstance);
+			((org.drip.spaces.instance.ValidatedRealUnidimensional) gvviInstance);
 
 		if (null == adblSampleMetricNorm)
 			throw new java.lang.Exception
-				("NormedRdToRd::sampleMetricNorm => Cannot compute Sample Metric Array");
+				("NormedR1ToRd::sampleMetricNorm => Cannot compute Sample Metric Array");
 
 		int iOutputDimension = adblSampleMetricNorm.length;
 		double dblSampleMetricNorm = 0.;
@@ -231,7 +243,7 @@ public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInpu
 
 		if (0 == iOutputDimension)
 			throw new java.lang.Exception
-				("NormedRdToRd::sampleMetricNorm => Cannot compute Sample Metric Array");
+				("NormedR1ToRd::sampleMetricNorm => Cannot compute Sample Metric Array");
 
 		for (int i = 0; i < iOutputDimension; ++i)
 			dblSampleMetricNorm += java.lang.Math.pow (java.lang.Math.abs (adblSampleMetricNorm[i]), iPNorm);
@@ -246,14 +258,14 @@ public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInpu
 
 		if (null == adblPopulationRdESS)
 			throw new java.lang.Exception
-				("NormedRdToRd::populationRdESS => Cannot compute Population Rd ESS Array");
+				("NormedR1ToRd::populationRdESS => Cannot compute Population Rd ESS Array");
 
 		double dblPopulationESS = java.lang.Double.NaN;
 		int iOutputDimension = adblPopulationRdESS.length;
 
 		if (0 == iOutputDimension)
 			throw new java.lang.Exception
-				("NormedRdToRd::populationRdESS => Cannot compute Population Rd ESS Array");
+				("NormedR1ToRd::populationRdESS => Cannot compute Population Rd ESS Array");
 
 		for (int i = 0; i < iOutputDimension; ++i) {
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblPopulationESS ))
@@ -273,16 +285,16 @@ public abstract class NormedRdToRd extends org.drip.spaces.function.NormedRdInpu
 
 		if (null == adblPopulationMetricNorm)
 			throw new java.lang.Exception
-				("NormedRdToRd::populationMetricNorm => Cannot compute Population Metric Array");
-
-		int iOutputDimension = adblPopulationMetricNorm.length;
-		double dblPopulationMetricNorm = 0.;
+				("NormedR1ToRd::populationMetricNorm => Cannot compute Population Metric Array");
 
 		int iPNorm = pNorm();
 
+		double dblPopulationMetricNorm = 0.;
+		int iOutputDimension = adblPopulationMetricNorm.length;
+
 		if (0 == iOutputDimension)
 			throw new java.lang.Exception
-				("NormedRdToRd::populationMetricNorm => Cannot compute Population Metric Array");
+				("NormedR1ToRd::populationMetricNorm => Cannot compute Population Metric Array");
 
 		for (int i = 0; i < iOutputDimension; ++i)
 			dblPopulationMetricNorm += java.lang.Math.pow (java.lang.Math.abs (adblPopulationMetricNorm[i]),

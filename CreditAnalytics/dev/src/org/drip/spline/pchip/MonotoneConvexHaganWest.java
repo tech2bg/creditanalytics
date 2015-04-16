@@ -90,7 +90,7 @@ public class MonotoneConvexHaganWest extends org.drip.function.deterministic.R1T
 			final double dblEnd)
 			throws java.lang.Exception
 		{
-			return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			return org.drip.quant.calculus.R1ToR1Integrator.Boole (this, dblBegin, dblEnd);
 		}
 	}
 
@@ -139,7 +139,7 @@ public class MonotoneConvexHaganWest extends org.drip.function.deterministic.R1T
 			final double dblEnd)
 			throws java.lang.Exception
 		{
-			return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			return org.drip.quant.calculus.R1ToR1Integrator.Boole (this, dblBegin, dblEnd);
 		}
 	}
 
@@ -188,7 +188,7 @@ public class MonotoneConvexHaganWest extends org.drip.function.deterministic.R1T
 			final double dblEnd)
 			throws java.lang.Exception
 		{
-			return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			return org.drip.quant.calculus.R1ToR1Integrator.Boole (this, dblBegin, dblEnd);
 		}
 	}
 
@@ -245,7 +245,7 @@ public class MonotoneConvexHaganWest extends org.drip.function.deterministic.R1T
 			final double dblEnd)
 			throws java.lang.Exception
 		{
-			return org.drip.quant.calculus.Integrator.Boole (this, dblBegin, dblEnd);
+			return org.drip.quant.calculus.R1ToR1Integrator.Boole (this, dblBegin, dblEnd);
 		}
 	}
 
