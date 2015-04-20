@@ -29,7 +29,7 @@ package org.drip.spaces.cover;
  */
 
 /**
- * NormedFunctionClass implements the Class F of f : R^x -> R^x Normed Function Spaces.
+ * GeneralizedNormedFunctionClass implements the Class F of f : R^x -> R^x Normed Function Spaces.
  * 
  * The Reference we've used is:
  * 
@@ -39,22 +39,24 @@ package org.drip.spaces.cover;
  * @author Lakshmi Krishnamurthy
  */
 
-public class NormedFunctionClass {
+public abstract class GeneralizedNormedFunctionClass {
 	private org.drip.spaces.function.GeneralizedNormedFunctionSpace[] _aGNFS = null;
 
-	private NormedFunctionClass (
+	protected GeneralizedNormedFunctionClass (
 		final org.drip.spaces.function.GeneralizedNormedFunctionSpace[] aGNFS)
 		throws java.lang.Exception
 	{
 		if (null == (_aGNFS = aGNFS))
-			throw new java.lang.Exception ("NormedFunctionClass ctr: Invalid Inputs");
+			throw new java.lang.Exception ("GeneralizedNormedFunctionClass ctr: Invalid Inputs");
 
 		int iClassSize = _aGNFS.length;
 
-		if (0 == iClassSize) throw new java.lang.Exception ("NormedFunctionClass ctr: Invalid Inputs");
+		if (0 == iClassSize)
+			throw new java.lang.Exception ("GeneralizedNormedFunctionClass ctr: Invalid Inputs");
 
 		for (int i = 0; i < iClassSize; ++i) {
-			if (null == _aGNFS[i]) throw new java.lang.Exception ("NormedFunctionClass ctr: Invalid Inputs");
+			if (null == _aGNFS[i])
+				throw new java.lang.Exception ("GeneralizedNormedFunctionClass ctr: Invalid Inputs");
 		}
 	}
 
@@ -119,7 +121,7 @@ public class NormedFunctionClass {
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblOperatorPopulationNorm))
 			throw new java.lang.Exception
-				("NormedFunctionClass::operatorPopulationNorm => Cannot compute population Norm for Function "
+				("GeneralizedNormedFunctionClass::operatorPopulationNorm => Cannot compute population Norm for Function "
 					+ "#" + 0);
 
 		for (int i = 1; i < iNumFunction; ++i) {
@@ -127,7 +129,7 @@ public class NormedFunctionClass {
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblPopulationNorm))
 				throw new java.lang.Exception
-					("NormedFunctionClass::operatorPopulationNorm => Cannot compute population Norm for Function "
+					("GeneralizedNormedFunctionClass::operatorPopulationNorm => Cannot compute population Norm for Function "
 						+ "#" + i);
 
 			if (dblOperatorPopulationNorm > dblPopulationNorm) dblOperatorPopulationNorm = dblPopulationNorm;
@@ -156,20 +158,28 @@ public class NormedFunctionClass {
 
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblOperatorSampleNorm))
 			throw new java.lang.Exception
-				("NormedFunctionClass::operatorSampleNorm => Cannot compute Sample Norm for Function " + "#"
-					+ 0);
+				("GeneralizedNormedFunctionClass::operatorSampleNorm => Cannot compute Sample Norm for Function "
+					+ "#" + 0);
 
 		for (int i = 1; i < iNumFunction; ++i) {
 			double dblSampleNorm = _aGNFS[i].populationMetricNorm();
 
 			if (!org.drip.quant.common.NumberUtil.IsValid (dblSampleNorm))
 				throw new java.lang.Exception
-					("NormedFunctionClass::operatorSampleNorm => Cannot compute Sample Norm for Function " +
-						"#" + i);
+					("GeneralizedNormedFunctionClass::operatorSampleNorm => Cannot compute Sample Norm for Function "
+						+ "#" + i);
 
 			if (dblOperatorSampleNorm > dblSampleNorm) dblOperatorSampleNorm = dblSampleNorm;
 		}
 
 		return dblOperatorSampleNorm;
 	}
+
+	/**
+	 * Retrieve the Agnostic Covering Number for the Function Class
+	 * 
+	 * @return The Agnostic Covering Number for the Function Class
+	 */
+
+	public abstract org.drip.spaces.cover.CoveringNumber agnosticCoveringNumber();
 }

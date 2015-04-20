@@ -63,6 +63,13 @@ public class LatentStateStatic {
 		"FORWARD_QM_INSTANTANEOUS_FORWARD_RATE";
 
 	/**
+	 * Forward Latent State Quantification Metric - Continuously Compounded Forward Rate
+	 */
+
+	public static final java.lang.String FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE =
+		"FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE";
+
+	/**
 	 * Funding Latent State
 	 */
 
@@ -100,7 +107,7 @@ public class LatentStateStatic {
 	public static final java.lang.String LATENT_STATE_VOLATILITY = "LATENT_STATE_VOLATILITY";
 
 	/**
-	 * Volatility Latent State Quantification Metric - Discount Factor
+	 * Volatility Latent State Quantification Metric - Volatility
 	 */
 
 	public static final java.lang.String VOLATILITY_QM_VOLATILITY = "VOLATILITY_QM_VOLATILITY";

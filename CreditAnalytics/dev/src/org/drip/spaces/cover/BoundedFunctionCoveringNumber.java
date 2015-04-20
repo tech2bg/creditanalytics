@@ -108,11 +108,6 @@ public class BoundedFunctionCoveringNumber implements org.drip.spaces.cover.Cove
 		return _dblBound;
 	}
 
-	@Override public org.drip.spaces.function.GeneralizedNormedFunctionSpace functionSpace()
-	{
-		return null;
-	}
-
 	@Override public double logLowerBound (
 		final double dblCover)
 		throws java.lang.Exception

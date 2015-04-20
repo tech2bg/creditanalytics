@@ -189,4 +189,68 @@ public class MultiFactorVolatility {
 
 		return _pfsg.factorWeight()[iFactorIndex] * dblFactorPointVolatility;
 	}
+
+	/**
+	 * Compute the Point Volatility Norm
+	 * 
+	 * @param dblXDate The X Date
+	 * @param dblYDate The Y Date
+	 * 
+	 * @return The Point Volatility Norm
+	 * 
+	 * @throws java.lang.Exception Thrown if the Point Volatility Norm cannot be computed
+	 */
+
+	public double pointVolatilityNorm (
+		final double dblXDate,
+		final double dblYDate)
+		throws java.lang.Exception
+	{
+		int iNumFactor = _pfsg.numFactor();
+
+		double dblPointVolatilityNorm = 0.;
+
+		for (int i = 0; i < iNumFactor; ++i) {
+			double dblFactorPointVolatility = factorPointVolatility (i, dblXDate, dblYDate);
+
+			dblPointVolatilityNorm += dblFactorPointVolatility * dblFactorPointVolatility;
+		}
+
+		return dblPointVolatilityNorm;
+	}
+
+	/**
+	 * Compute the Point Volatility Norm Derivative
+	 * 
+	 * @param dblXDate The X Date
+	 * @param dblYDate The Y Date
+	 * @param iOrder The Derivative Order
+	 * @param bTerminal TRUE => Derivative off of the Y Date; FALSE => Derivative off of the X Date
+	 * 
+	 * @return The Point Volatility Norm Derivative
+	 * 
+	 * @throws java.lang.Exception Thrown if the Point Volatility Norm Derivative cannot be computed
+	 */
+
+	public double pointVolatilityNormDerivative (
+		final double dblXDate,
+		final double dblYDate,
+		final int iOrder,
+		final boolean bTerminal)
+		throws java.lang.Exception
+	{
+		org.drip.function.deterministic.R1ToR1 pointVolatilityR1ToR1 = new
+			org.drip.function.deterministic.R1ToR1 (null) {
+			@Override public double evaluate (
+				final double dblVariate)
+				throws java.lang.Exception
+			{
+				return bTerminal ? pointVolatilityNorm (dblXDate, dblVariate) : pointVolatilityNorm
+					(dblVariate, dblYDate);
+			}
+		};
+
+		return bTerminal ? pointVolatilityR1ToR1.derivative (dblYDate, iOrder) :
+			pointVolatilityR1ToR1.derivative (dblXDate, iOrder);
+	}
 }

@@ -82,24 +82,12 @@ public class ContinuousRealUnidimensionalVector implements
 			throw new java.lang.Exception ("ContinuousRealUnidimensionalVector ctr: Invalid Inputs");
 	}
 
-	/**
-	 * Retrieve the Left Edge
-	 * 
-	 * @return The Left Edge
-	 */
-
-	public double leftEdge()
+	@Override public double leftEdge()
 	{
 		return _dblLeftEdge;
 	}
 
-	/**
-	 * Retrieve the Right Edge
-	 * 
-	 * @return The Right Edge
-	 */
-
-	public double rightEdge()
+	@Override public double rightEdge()
 	{
 		return _dblRightEdge;
 	}
@@ -134,5 +122,11 @@ public class ContinuousRealUnidimensionalVector implements
 		ContinuousRealUnidimensionalVector cruvOther = (ContinuousRealUnidimensionalVector) gvsOther;
 
 		return cruvOther.leftEdge() >= _dblLeftEdge && cruvOther.rightEdge() <= _dblRightEdge;
+	}
+
+	@Override public boolean isPredictorBounded()
+	{
+		return leftEdge() != java.lang.Double.NEGATIVE_INFINITY && rightEdge() !=
+			java.lang.Double.POSITIVE_INFINITY;
 	}
 }

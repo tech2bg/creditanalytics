@@ -177,11 +177,6 @@ public class ScaleSensitiveCoveringNumber implements org.drip.spaces.cover.Cover
 		return java.lang.Math.log (4.) - (dblCover * dblCover * _iSampleSize / 128.);
 	}
 
-	@Override public org.drip.spaces.function.GeneralizedNormedFunctionSpace functionSpace()
-	{
-		return null;
-	}
-
 	@Override public double logLowerBound (
 		final double dblCover)
 		throws java.lang.Exception

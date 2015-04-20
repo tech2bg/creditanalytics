@@ -66,12 +66,4 @@ public interface CoveringNumber {
 	public abstract double logUpperBound (
 		final double dblCover)
 		throws java.lang.Exception;
-
-	/**
-	 * Retrieve the Underlying Normed Function Space
-	 * 
-	 * @return The Underlying Normed Function Space
-	 */
-
-	public abstract org.drip.spaces.function.GeneralizedNormedFunctionSpace functionSpace();
 }

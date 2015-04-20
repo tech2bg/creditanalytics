@@ -59,7 +59,7 @@ public class ShortForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpda
 	 * @param dblPrice The Price
 	 * @param dblPriceIncrement The Price Increment
 	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 * @return Instance of ShortForwardRateUpdate
 	 */
 
 	public static final ShortForwardRateUpdate Create (
@@ -79,7 +79,6 @@ public class ShortForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpda
 		final double dblCompoundedShortRateIncrement,
 		final double dblPrice,
 		final double dblPriceIncrement)
-		throws java.lang.Exception
 	{
 		org.drip.dynamics.evolution.LSQMRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMRecord();
 

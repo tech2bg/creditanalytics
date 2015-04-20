@@ -66,6 +66,40 @@ public class CombinatorialRealUnidimensionalVector implements
 		return _lsElementSpace;
 	}
 
+	@Override public double leftEdge()
+	{
+		double dblLeftEdge = java.lang.Double.NaN;
+
+		for (double dblElement : _lsElementSpace) {
+			if (java.lang.Double.NEGATIVE_INFINITY == dblElement) return dblElement;
+
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblLeftEdge))
+				dblLeftEdge = dblElement;
+			else {
+				if (dblLeftEdge > dblElement) dblLeftEdge = dblElement;
+			}
+		}
+
+		return dblLeftEdge;
+	}
+
+	@Override public double rightEdge()
+	{
+		double dblRightEdge = java.lang.Double.NaN;
+
+		for (double dblElement : _lsElementSpace) {
+			if (java.lang.Double.POSITIVE_INFINITY == dblElement) return dblElement;
+
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblRightEdge))
+				dblRightEdge = dblElement;
+			else {
+				if (dblRightEdge < dblElement) dblRightEdge = dblElement;
+			}
+		}
+
+		return dblRightEdge;
+	}
+
 	@Override public boolean validateInstance (
 		final double dblXInstance)
 	{
@@ -111,5 +145,11 @@ public class CombinatorialRealUnidimensionalVector implements
 		}
 
 		return true;
+	}
+
+	@Override public boolean isPredictorBounded()
+	{
+		return leftEdge() != java.lang.Double.NEGATIVE_INFINITY && rightEdge() !=
+			java.lang.Double.POSITIVE_INFINITY;
 	}
 }
