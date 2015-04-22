@@ -29,19 +29,20 @@ package org.drip.dynamics.lmm;
  */
 
 /**
- * BGMUpdate contains the Instantaneous Snapshot of the Evolving Discount Latent State Quantification Metrics
- * 	Updated using the BGM Dynamics.
+ * ContinuousForwardRateUpdate contains the Instantaneous Snapshot of the Evolving Discount Latent State
+ *  Quantification Metrics Updated using the Continuously Compounded Forward Rate Dynamics.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
-	private double _dblDContinuousForwardDX = java.lang.Double.NaN;
+public class ContinuousForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
+	private double _dblDContinuousForwardDXInitial = java.lang.Double.NaN;
+	private double _dblDContinuousForwardDXTerminal = java.lang.Double.NaN;
 
 	/**
-	 * Construct an Instance of BGMUpdate
+	 * Construct an Instance of ContinuousForwardRateUpdate
 	 * 
 	 * @param lslFunding The Funding Latent State Label
 	 * @param lslForward The Forward Latent State Label
@@ -49,25 +50,43 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 	 * @param dblFinalDate The Final Date
 	 * @param dblContinuousForwardRate The Continuously Compounded Forward Rate
 	 * @param dblContinuousForwardRateIncrement The Continuously Compounded Forward Rate Increment
-	 * @param dblDContinuousForwardDX D {Continuously Compounded Forward Rate} / DX
+	 * @param dblSpotRate The Spot Rate
+	 * @param dblSpotRateIncrement The Spot Rate Increment
+	 * @param dblDiscountFactor The Discount Factor
+	 * @param dblDiscountFactorIncrement The Discount Factor Increment
+	 * @param dblDContinuousForwardDXInitial Initial D {Continuously Compounded Forward Rate} / DX
+	 * @param dblDContinuousForwardDXTerminal Terminal D {Continuously Compounded Forward Rate} / DX
 	 * 
-	 * @return Instance of BGMUpdate
+	 * @return Instance of ContinuousForwardRateUpdate
 	 */
 
-	public static final BGMUpdate Create (
+	public static final ContinuousForwardRateUpdate Create (
 		final org.drip.state.identifier.FundingLabel lslFunding,
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblInitialDate,
 		final double dblFinalDate,
 		final double dblContinuousForwardRate,
 		final double dblContinuousForwardRateIncrement,
-		final double dblDContinuousForwardDX)
+		final double dblSpotRate,
+		final double dblSpotRateIncrement,
+		final double dblDiscountFactor,
+		final double dblDiscountFactorIncrement,
+		final double dblDContinuousForwardDXInitial,
+		final double dblDContinuousForwardDXTerminal)
 	{
 		org.drip.dynamics.evolution.LSQMRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMRecord();
 
 		if (!lrSnapshot.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE,
 				dblContinuousForwardRate))
+			return null;
+
+		if (!lrSnapshot.setQM (lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE, dblSpotRate))
+			return null;
+
+		if (!lrSnapshot.setQM (lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR, dblDiscountFactor))
 			return null;
 
 		org.drip.dynamics.evolution.LSQMRecord lrIncrement = new org.drip.dynamics.evolution.LSQMRecord();
@@ -77,9 +96,18 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 				dblContinuousForwardRateIncrement))
 			return null;
 
+		if (!lrIncrement.setQM (lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE, dblSpotRateIncrement))
+			return null;
+
+		if (!lrIncrement.setQM (lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
+				dblDiscountFactorIncrement))
+			return null;
+
 		try {
-			return new BGMUpdate (lslFunding, lslForward, dblInitialDate, dblFinalDate, lrSnapshot,
-				lrIncrement, dblDContinuousForwardDX);
+			return new ContinuousForwardRateUpdate (lslFunding, lslForward, dblInitialDate, dblFinalDate, lrSnapshot,
+				lrIncrement, dblDContinuousForwardDXInitial, dblDContinuousForwardDXTerminal);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -87,21 +115,24 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 		return null;
 	}
 
-	private BGMUpdate (
+	private ContinuousForwardRateUpdate (
 		final org.drip.state.identifier.FundingLabel lslFunding,
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblInitialDate,
 		final double dblFinalDate,
 		final org.drip.dynamics.evolution.LSQMRecord lrSnapshot,
 		final org.drip.dynamics.evolution.LSQMRecord lrIncrement,
-		final double dblDContinuousForwardDX)
+		final double dblDContinuousForwardDXInitial,
+		final double dblDContinuousForwardDXTerminal)
 		throws java.lang.Exception
 	{
 		super (dblInitialDate, dblFinalDate, lrSnapshot, lrIncrement);
 
 		if (null == (_lslFunding = lslFunding) || null == (_lslForward = lslForward) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblDContinuousForwardDX = dblDContinuousForwardDX))
-			throw new java.lang.Exception ("BGMUpdate ctr: Invalid Inputs");
+			!org.drip.quant.common.NumberUtil.IsValid (_dblDContinuousForwardDXTerminal =
+				dblDContinuousForwardDXTerminal) || !org.drip.quant.common.NumberUtil.IsValid
+					(_dblDContinuousForwardDXInitial = dblDContinuousForwardDXInitial))
+			throw new java.lang.Exception ("ContinuousForwardRateUpdate ctr: Invalid Inputs");
 	}
 
 	/**
@@ -165,13 +196,54 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 	}
 
 	/**
-	 * Retrieve D {Continuously Compounded Forward Rate} / DX
+	 * Retrieve the Discount Factor
 	 * 
-	 * @return D {Continuously Compounded Forward Rate} / DX
+	 * @return The Discount Factor
+	 * 
+	 * @throws java.lang.Exception Thrown if the Discount Factor is not available
 	 */
 
-	public double dContinuousForwardDX()
+	public double discountFactor()
+		throws java.lang.Exception
 	{
-		return _dblDContinuousForwardDX;
+		return snapshot().qm (_lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR);
+	}
+
+	/**
+	 * Retrieve the Discount Factor Increment
+	 * 
+	 * @return The Discount Factor Increment
+	 * 
+	 * @throws java.lang.Exception Thrown if the Discount Factor Increment is not available
+	 */
+
+	public double discountFactorIncrement()
+		throws java.lang.Exception
+	{
+		return increment().qm (_lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR);
+	}
+
+	/**
+	 * Retrieve the Initial D {Continuously Compounded Forward Rate} / DX
+	 * 
+	 * @return The Initial D {Continuously Compounded Forward Rate} / DX
+	 */
+
+	public double dContinuousForwardDXInitial()
+	{
+		return _dblDContinuousForwardDXInitial;
+	}
+
+	/**
+	 * Retrieve the Terminal D {Continuously Compounded Forward Rate} / DX
+	 * 
+	 * @return The Terminal D {Continuously Compounded Forward Rate} / DX
+	 */
+
+	public double dContinuousForwardDXTerminal()
+	{
+		return _dblDContinuousForwardDXTerminal;
 	}
 }

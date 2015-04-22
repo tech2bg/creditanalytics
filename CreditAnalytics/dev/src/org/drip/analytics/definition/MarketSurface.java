@@ -206,20 +206,6 @@ public abstract class MarketSurface implements org.drip.analytics.definition.Cur
 		final double dblYAnchor);
 
 	/**
-	 * Extract the Term Structure Constructed at the Maturity Anchor Node
-	 * 
-	 * @param dtMaturityAnchor The Maturity Date Anchor
-	 * 
-	 * @return The Term Structure Constructed at the Maturity Anchor Node
-	 */
-
-	/* public org.drip.analytics.definition.TermStructure maturityAnchorTermStructure (
-		final org.drip.analytics.date.JulianDate dtMaturityAnchor)
-	{
-		return null == dtMaturityAnchor ? null : yAnchorTermStructure (dtMaturityAnchor.julian());
-	} */
-
-	/**
 	 * Extract the Term Structure Constructed at the Maturity Anchor Tenor
 	 * 
 	 * @param strTenorAnchor The Anchor Tenor

@@ -29,8 +29,8 @@ package org.drip.dynamics.lmm;
  */
 
 /**
- * MultiFactorBGMEvolver sets up and implements the Multi-Factor No-arbitrage Dynamics of the Rates State
- *  Quantifiers as formulated in:
+ * ContinuousForwardRateEvolver sets up and implements the Multi-Factor No-arbitrage Dynamics of the Rates
+ *  State Quantifiers traced from the Evolution of the Continuously Compounded Forward Rate as formulated in:
  * 
  * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
  * 		Finance 7 (2), 127-155.
@@ -38,7 +38,7 @@ package org.drip.dynamics.lmm;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultiFactorBGMEvolver implements org.drip.dynamics.evolution.StateEvolver {
+public class ContinuousForwardRateEvolver implements org.drip.dynamics.evolution.StateEvolver {
 	private org.drip.dynamics.hjm.MultiFactorVolatility _mfv = null;
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
@@ -69,7 +69,8 @@ public class MultiFactorBGMEvolver implements org.drip.dynamics.evolution.StateE
 	private double volatilityRandomDotDerivative (
 		final double dblViewDate,
 		final double dblTargetDate,
-		final double dblViewTimeIncrement)
+		final double dblViewTimeIncrement,
+		final boolean bTerminal)
 		throws java.lang.Exception
 	{
 		org.drip.function.deterministic.R1ToR1 pointVolatilityFunctionR1ToR1 = new
@@ -78,15 +79,16 @@ public class MultiFactorBGMEvolver implements org.drip.dynamics.evolution.StateE
 				final double dblX)
 				throws java.lang.Exception
 			{
-				return volatilityRandomDotProduct (dblViewDate, dblX, dblViewTimeIncrement);
+				return bTerminal ? volatilityRandomDotProduct (dblViewDate, dblX, dblViewTimeIncrement) :
+					volatilityRandomDotProduct (dblX, dblTargetDate, dblViewTimeIncrement);
 			}
 		};
 
-		return pointVolatilityFunctionR1ToR1.derivative (dblTargetDate, 1);
+		return pointVolatilityFunctionR1ToR1.derivative (bTerminal ? dblTargetDate : dblViewDate, 1);
 	}
 
 	/**
-	 * MultiFactorBGMEvolver Constructor
+	 * ContinuousForwardRateEvolver Constructor
 	 * 
 	 * @param lslFunding The Funding Latent State Label
 	 * @param lslForward The Forward Latent State Label
@@ -95,7 +97,7 @@ public class MultiFactorBGMEvolver implements org.drip.dynamics.evolution.StateE
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
-	public MultiFactorBGMEvolver (
+	public ContinuousForwardRateEvolver (
 		final org.drip.state.identifier.FundingLabel lslFunding,
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final org.drip.dynamics.hjm.MultiFactorVolatility mfv,
@@ -103,7 +105,7 @@ public class MultiFactorBGMEvolver implements org.drip.dynamics.evolution.StateE
 		throws java.lang.Exception
 	{
 		if (null == (_lslFunding = lslFunding) || null == (_lslForward = lslForward) || null == (_mfv = mfv))
-			throw new java.lang.Exception ("MultiFactorBGMEvolver ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ContinuousForwardRateEvolver ctr: Invalid Inputs");
 	}
 
 	/**
@@ -139,7 +141,7 @@ public class MultiFactorBGMEvolver implements org.drip.dynamics.evolution.StateE
 		return _mfv;
 	}
 
-	@Override public org.drip.dynamics.lmm.BGMUpdate evolve (
+	@Override public org.drip.dynamics.lmm.ContinuousForwardRateUpdate evolve (
 		final double dblSpotDate,
 		final double dblViewDate,
 		final double dblViewTimeIncrement,
@@ -148,23 +150,81 @@ public class MultiFactorBGMEvolver implements org.drip.dynamics.evolution.StateE
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement) || (null != lsqmPrev &&
-					!(lsqmPrev instanceof org.drip.dynamics.lmm.BGMUpdate)))
+					!(lsqmPrev instanceof org.drip.dynamics.lmm.ContinuousForwardRateUpdate)))
 			return null;
 
-		org.drip.dynamics.lmm.BGMUpdate bgmPrev = (org.drip.dynamics.lmm.BGMUpdate) lsqmPrev;
+		org.drip.dynamics.lmm.ContinuousForwardRateUpdate bgmPrev = (org.drip.dynamics.lmm.ContinuousForwardRateUpdate) lsqmPrev;
 
-		double dblDContinuousForwardDX = bgmPrev.dContinuousForwardDX();
+		double dblDContinuousForwardDXTerminalPrev = bgmPrev.dContinuousForwardDXTerminal();
+
+		double dblDContinuousForwardDXInitialPrev = bgmPrev.dContinuousForwardDXInitial();
 
 		try {
-			return org.drip.dynamics.lmm.BGMUpdate.Create (_lslFunding, _lslForward, dblViewDate, dblViewDate
-				+ dblViewTimeIncrement, bgmPrev.continuousForwardRate(), dblDContinuousForwardDX + 0.5 *
-					dblViewTimeIncrement * _mfv.pointVolatilityNormDerivative (dblSpotDate, dblViewDate, 1,
-						true) + volatilityRandomDotDerivative (dblSpotDate, dblViewDate,
-							dblViewTimeIncrement), dblDContinuousForwardDX);
+			double dblDiscountFactorPrev = bgmPrev.discountFactor();
+
+			double dblSpotRateIncrement = dblDContinuousForwardDXInitialPrev * dblViewTimeIncrement +
+				volatilityRandomDotDerivative (dblSpotDate, dblViewDate, dblViewTimeIncrement, false);
+
+			double dblContinuousForwardIncrement = (dblDContinuousForwardDXTerminalPrev + 0.5 *
+				_mfv.pointVolatilityNormDerivative (dblSpotDate, dblViewDate, 1, true)) *
+					dblViewTimeIncrement + volatilityRandomDotDerivative (dblSpotDate, dblViewDate,
+						dblViewTimeIncrement, true);
+
+			double dblContinuousForwardRate = bgmPrev.continuousForwardRate() +
+				dblContinuousForwardIncrement;
+
+			double dblSpotRate = bgmPrev.spotRate() + dblSpotRateIncrement;
+
+			double dblDiscountFactorIncrement = dblDiscountFactorPrev * ((dblSpotRate -
+				dblContinuousForwardRate) * dblViewTimeIncrement - volatilityRandomDotProduct (dblSpotDate,
+					dblViewDate, dblViewTimeIncrement));
+
+			return org.drip.dynamics.lmm.ContinuousForwardRateUpdate.Create (_lslFunding, _lslForward, dblViewDate, dblViewDate
+				+ dblViewTimeIncrement, dblContinuousForwardRate, dblContinuousForwardIncrement, dblSpotRate,
+					dblSpotRateIncrement, dblDiscountFactorPrev + dblDiscountFactorIncrement,
+						dblDiscountFactorIncrement, dblDContinuousForwardDXInitialPrev,
+							dblDContinuousForwardDXTerminalPrev);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 
 		return null;
+	}
+
+	/**
+	 * Compute the Realized Zero Coupon Bond Forward Price
+	 * 
+	 * @param dblSpotDate The Spot Date
+	 * @param dblForwardDate The Forward Date
+	 * @param dblMaturityDate The Maturity Date
+	 * @param dblSpotPrice The Spot Price
+	 * @param dblSpotForwardReinvestmentAccrual The Continuously Re-invested Accruing Bank Account
+	 * 
+	 * @return The Realized Zero Coupon Bond Forward Price
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are invalid
+	 */
+
+	public double zeroCouponForwardPrice (
+		final double dblSpotDate,
+		final double dblForwardDate,
+		final double dblMaturityDate,
+		final double dblSpotPrice,
+		final double dblSpotForwardReinvestmentAccrual)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblForwardDate) || dblSpotDate > dblForwardDate ||
+				!org.drip.quant.common.NumberUtil.IsValid (dblMaturityDate) || dblForwardDate >
+					dblMaturityDate || !org.drip.quant.common.NumberUtil.IsValid (dblSpotPrice) ||
+						!org.drip.quant.common.NumberUtil.IsValid (dblSpotForwardReinvestmentAccrual))
+			throw new java.lang.Exception
+				("ContinuousForwardRateEvolver::zeroCouponForwardPrice => Invalid Inputs");
+
+		double dblPeriodIncrement = (dblForwardDate - dblSpotDate) / 365.25;
+
+		return dblSpotPrice / dblSpotForwardReinvestmentAccrual * java.lang.Math.exp (-1. *
+			(volatilityRandomDotProduct (dblSpotDate, dblForwardDate, dblPeriodIncrement) + 0.5 *
+				dblPeriodIncrement * _mfv.pointVolatilityNorm (dblSpotDate, dblForwardDate)));
 	}
 }

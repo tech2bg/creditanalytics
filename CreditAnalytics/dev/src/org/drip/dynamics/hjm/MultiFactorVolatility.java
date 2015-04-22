@@ -36,43 +36,41 @@ package org.drip.dynamics.hjm;
  */
 
 public class MultiFactorVolatility {
+	private org.drip.analytics.definition.MarketSurface[] _aMSVolatility = null;
 	private org.drip.sequence.random.PrincipalFactorSequenceGenerator _pfsg = null;
-	private org.drip.analytics.definition.MarketSurface[] _aMSInstantaneousForwardRateVolatility = null;
 
 	/**
 	 * MultiFactorVolatility Constructor
 	 * 
-	 * @param aMSInstantaneousForwardRateVolatility Array of the Instantaneous Forward Rate Volatility
-	 * 	Surfaces
+	 * @param aMSVolatility Array of the Multi-Factor Volatility Surfaces
 	 * @param pfsg Principal Factor Sequence Generator
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
 	public MultiFactorVolatility (
-		final org.drip.analytics.definition.MarketSurface[] aMSInstantaneousForwardRateVolatility,
+		final org.drip.analytics.definition.MarketSurface[] aMSVolatility,
 		final org.drip.sequence.random.PrincipalFactorSequenceGenerator pfsg)
 		throws java.lang.Exception
 	{
-		if (null == (_aMSInstantaneousForwardRateVolatility = aMSInstantaneousForwardRateVolatility) || null
-			== (_pfsg = pfsg))
+		if (null == (_aMSVolatility = aMSVolatility) || null == (_pfsg = pfsg))
 			throw new java.lang.Exception ("MultiFactorVolatility ctr: Invalid Inputs");
 
 		int iNumFactor = _pfsg.numFactor();
 
-		if (0 == iNumFactor || _aMSInstantaneousForwardRateVolatility.length < iNumFactor)
+		if (0 == iNumFactor || _aMSVolatility.length < iNumFactor)
 			throw new java.lang.Exception ("MultiFactorVolatility ctr: Invalid Inputs");
 	}
 
 	/**
-	 * Retrieve the Array of Instantaneous Forward Rate Volatility Surfaces
+	 * Retrieve the Array of Volatility Surfaces
 	 * 
-	 * @return The Array of Instantaneous Forward Rate Volatility Surfaces
+	 * @return The Array of Volatility Surfaces
 	 */
 
-	public org.drip.analytics.definition.MarketSurface[] instantaneousForwardVolatilitySurface()
+	public org.drip.analytics.definition.MarketSurface[] volatilitySurface()
 	{
-		return _aMSInstantaneousForwardRateVolatility;
+		return _aMSVolatility;
 	}
 
 	/**
@@ -103,7 +101,7 @@ public class MultiFactorVolatility {
 
 		if (iFactorIndex >= iNumFactor) return null;
 
-		final int iNumVariate = _aMSInstantaneousForwardRateVolatility.length;
+		final int iNumVariate = _aMSVolatility.length;
 
 		return new org.drip.function.deterministic.R1ToR1 (null) {
 			@Override public double evaluate (
@@ -116,7 +114,7 @@ public class MultiFactorVolatility {
 
 				for (int i = 0; i < iNumVariate; ++i) {
 					org.drip.analytics.definition.TermStructure tsVolatilityXDate =
-						_aMSInstantaneousForwardRateVolatility[iFactorIndex].xAnchorTermStructure (dblXDate);
+						_aMSVolatility[iFactorIndex].xAnchorTermStructure (dblXDate);
 
 					dblMultiFactorVol += adblFactor[i] * tsVolatilityXDate.node (dblX);
 				}
@@ -184,8 +182,7 @@ public class MultiFactorVolatility {
 		double dblFactorPointVolatility = 0.;
 
 		for (int i = 0; i < iNumVariate; ++i)
-			dblFactorPointVolatility += adblFactor[i] * _aMSInstantaneousForwardRateVolatility[i].node
-				(dblXDate, dblYDate);
+			dblFactorPointVolatility += adblFactor[i] * _aMSVolatility[i].node (dblXDate, dblYDate);
 
 		return _pfsg.factorWeight()[iFactorIndex] * dblFactorPointVolatility;
 	}

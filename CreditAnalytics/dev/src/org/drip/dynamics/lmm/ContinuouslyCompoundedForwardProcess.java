@@ -29,8 +29,8 @@ package org.drip.dynamics.lmm;
  */
 
 /**
- * ContinuouslyCompoundedForwardRate implements the Continuously Compounded Forward Rate defined in the LIBOR
- *  Market Model. The Reference is:
+ * ContinuouslyCompoundedForwardProcess implements the Continuously Compounded Forward Rate Process defined
+ *  in the LIBOR Market Model. The Reference is:
  * 
  * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
  * 		Finance 7 (2), 127-155.
@@ -38,12 +38,12 @@ package org.drip.dynamics.lmm;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuouslyCompoundedForwardRate {
+public class ContinuouslyCompoundedForwardProcess {
 	private double _dblSpotDate = java.lang.Double.NaN;
 	private org.drip.function.stochastic.R1R1ToR1 _funcR1R1ToR1 = null;
 
 	/**
-	 * ContinuouslyCompoundedForwardRate Constructor
+	 * ContinuouslyCompoundedForwardProcess Constructor
 	 * 
 	 * @param dblSpotDate The Spot Date
 	 * @param funcR1R1ToR1 The Stochastic Forward Rate Function
@@ -51,14 +51,14 @@ public class ContinuouslyCompoundedForwardRate {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public ContinuouslyCompoundedForwardRate (
+	public ContinuouslyCompoundedForwardProcess (
 		final double dblSpotDate,
 		final org.drip.function.stochastic.R1R1ToR1 funcR1R1ToR1)
 		throws java.lang.Exception
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (_dblSpotDate = dblSpotDate) || null == (_funcR1R1ToR1
 			= funcR1R1ToR1))
-			throw new java.lang.Exception ("ContinuouslyCompoundedForwardRate ctr: Invalid Inputs");
+			throw new java.lang.Exception ("ContinuouslyCompoundedForwardProcess ctr: Invalid Inputs");
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class ContinuouslyCompoundedForwardRate {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblMaturityDate) || dblMaturityDate <= _dblSpotDate)
 			throw new java.lang.Exception
-				("ContinuouslyCompoundedForwardRate::realizedZeroCouponPrice => Invalid Maturity Date");
+				("ContinuouslyCompoundedForwardProcess::realizedZeroCouponPrice => Invalid Maturity Date");
 
 		return java.lang.Math.exp (-1. * _funcR1R1ToR1.integralRealization (0., dblMaturityDate -
 			_dblSpotDate));
@@ -124,7 +124,7 @@ public class ContinuouslyCompoundedForwardRate {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblTargetDate <= _dblSpotDate)
 			throw new java.lang.Exception
-				("ContinuouslyCompoundedForwardRate::instantaneousForwardRateIntegral => Invalid Target Date");
+				("ContinuouslyCompoundedForwardProcess::instantaneousForwardRateIntegral => Invalid Target Date");
 
 		return bRealized ? java.lang.Math.exp (-1. * _funcR1R1ToR1.integralRealization (0., dblTargetDate -
 			_dblSpotDate)) : java.lang.Math.exp (-1. * _funcR1R1ToR1.integralExpectation (0., dblTargetDate -
@@ -150,10 +150,37 @@ public class ContinuouslyCompoundedForwardRate {
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblTargetDate <= _dblSpotDate)
 			throw new java.lang.Exception
-				("ContinuouslyCompoundedForwardRate::discountFunctionValue => Invalid Target Date");
+				("ContinuouslyCompoundedForwardProcess::discountFunctionValue => Invalid Target Date");
 
 		return bRealized ? java.lang.Math.exp (-1. * _funcR1R1ToR1.integralRealization (0., dblTargetDate -
 			_dblSpotDate)) : java.lang.Math.exp (-1. * _funcR1R1ToR1.integralExpectation (0., dblTargetDate -
 				_dblSpotDate));
+	}
+
+	/**
+	 * Retrieve a Realized/Expected Value of the LIBOR Rate at the Target Date
+	 * 
+	 * @param dblTargetDate The Target Date
+	 * @param strTenor The LIBOR Tenor
+	 * @param bRealized TRUE => Compute the Realized (TRUE) / Expected (FALSE) LIBOR Rate
+	 * 
+	 * @return The Realized/Expected Value of the LIBOR Rate at the Target Date
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
+	public double liborRate (
+		final double dblTargetDate,
+		final java.lang.String strTenor,
+		final boolean bRealized)
+		throws java.lang.Exception
+	{
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblTargetDate <= _dblSpotDate)
+			throw new java.lang.Exception
+				("ContinuouslyCompoundedForwardProcess::liborRate => Invalid Inputs");
+
+		return (discountFunctionValue (new org.drip.analytics.date.JulianDate (dblTargetDate).addTenor
+			(strTenor).julian(), bRealized) / discountFunctionValue (dblTargetDate, bRealized) - 1.) /
+				org.drip.analytics.support.AnalyticsHelper.TenorToYearFraction (strTenor);
 	}
 }
