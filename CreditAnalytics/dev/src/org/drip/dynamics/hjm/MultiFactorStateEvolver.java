@@ -147,14 +147,15 @@ public class MultiFactorStateEvolver implements org.drip.dynamics.evolution.Stat
 		double dblIntantaneousForwardRateIncrement = 0.;
 
 		for (int i = 0; i < iNumFactor; ++i) {
-			double dblFactorPointVolatility = _mfv.factorPointVolatility (i, dblViewDate, dblTargetDate);
+			double dblWeightedFactorPointVolatility = _mfv.weightedFactorPointVolatility (i, dblViewDate,
+				dblTargetDate);
 
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblFactorPointVolatility))
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblWeightedFactorPointVolatility))
 				throw new java.lang.Exception
 					("MultiFactorStateEvolver::instantaneousForwardRateIncrement => Cannot compute View/Target Date Point Volatility");
 
 			dblIntantaneousForwardRateIncrement += _mfv.volatilityIntegral (i, dblViewDate, dblTargetDate) *
-				dblFactorPointVolatility * dblViewTimeIncrement + dblFactorPointVolatility *
+				dblWeightedFactorPointVolatility * dblViewTimeIncrement + dblWeightedFactorPointVolatility *
 					java.lang.Math.sqrt (dblViewTimeIncrement) * adblMultivariateRandom[i];
 		}
 
@@ -236,14 +237,15 @@ public class MultiFactorStateEvolver implements org.drip.dynamics.evolution.Stat
 		double[] adblMultivariateRandom = pfsg.random();
 
 		for (int i = 0; i < iNumFactor; ++i) {
-			double dblViewDateFactorVolatility = _mfv.factorPointVolatility (i, dblViewDate, dblViewDate);
+			double dblViewWeightedFactorVolatility = _mfv.weightedFactorPointVolatility (i, dblViewDate,
+				dblViewDate);
 
-			if (!org.drip.quant.common.NumberUtil.IsValid (dblViewDateFactorVolatility))
+			if (!org.drip.quant.common.NumberUtil.IsValid (dblViewWeightedFactorVolatility))
 				throw new java.lang.Exception
 					("MultiFactorStateEvolver::shortRateIncrement => Cannot compute View Date Factor Volatility");
 
 			dblShortRateIncrement += _mfv.volatilityIntegral (i, dblSpotDate, dblViewDate) *
-				dblViewDateFactorVolatility * dblViewTimeIncrement + dblViewDateFactorVolatility *
+				dblViewWeightedFactorVolatility * dblViewTimeIncrement + dblViewWeightedFactorVolatility *
 					java.lang.Math.sqrt (dblViewTimeIncrement) * adblMultivariateRandom[i];
 		}
 
@@ -444,12 +446,12 @@ public class MultiFactorStateEvolver implements org.drip.dynamics.evolution.Stat
 				dblViewTimeIncrement;
 
 			for (int i = 0; i < iNumFactor; ++i) {
-				double dblViewDateFactorVolatility = _mfv.factorPointVolatility (i, dblViewDate,
+				double dblViewDateFactorVolatility = _mfv.weightedFactorPointVolatility (i, dblViewDate,
 					dblViewDate);
 
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblViewDateFactorVolatility)) return null;
 
-				double dblViewTargetFactorVolatility = _mfv.factorPointVolatility (i, dblViewDate,
+				double dblViewTargetFactorVolatility = _mfv.weightedFactorPointVolatility (i, dblViewDate,
 					dblTargetDate);
 
 				if (!org.drip.quant.common.NumberUtil.IsValid (dblViewTargetFactorVolatility)) return null;

@@ -60,8 +60,8 @@ public class ContinuousForwardRateEvolver implements org.drip.dynamics.evolution
 		int iNumFactor = pfsg.numFactor();
 
 		for (int i = 0; i < iNumFactor; ++i)
-			dblVolatilityRandomDotProduct += _mfv.factorPointVolatility (i, dblViewDate, dblTargetDate) *
-				adblMultivariateRandom[i] * dblViewTimeIncrementSQRT;
+			dblVolatilityRandomDotProduct += _mfv.weightedFactorPointVolatility (i, dblViewDate,
+				dblTargetDate) * adblMultivariateRandom[i] * dblViewTimeIncrementSQRT;
 
 		return dblVolatilityRandomDotProduct;
 	}
@@ -153,7 +153,8 @@ public class ContinuousForwardRateEvolver implements org.drip.dynamics.evolution
 					!(lsqmPrev instanceof org.drip.dynamics.lmm.ContinuousForwardRateUpdate)))
 			return null;
 
-		org.drip.dynamics.lmm.ContinuousForwardRateUpdate bgmPrev = (org.drip.dynamics.lmm.ContinuousForwardRateUpdate) lsqmPrev;
+		org.drip.dynamics.lmm.ContinuousForwardRateUpdate bgmPrev =
+			(org.drip.dynamics.lmm.ContinuousForwardRateUpdate) lsqmPrev;
 
 		double dblDContinuousForwardDXTerminalPrev = bgmPrev.dContinuousForwardDXTerminal();
 
@@ -166,7 +167,7 @@ public class ContinuousForwardRateEvolver implements org.drip.dynamics.evolution
 				volatilityRandomDotDerivative (dblSpotDate, dblViewDate, dblViewTimeIncrement, false);
 
 			double dblContinuousForwardIncrement = (dblDContinuousForwardDXTerminalPrev + 0.5 *
-				_mfv.pointVolatilityNormDerivative (dblSpotDate, dblViewDate, 1, true)) *
+				_mfv.pointVolatilityModulusDerivative (dblSpotDate, dblViewDate, 1, true)) *
 					dblViewTimeIncrement + volatilityRandomDotDerivative (dblSpotDate, dblViewDate,
 						dblViewTimeIncrement, true);
 
@@ -225,6 +226,6 @@ public class ContinuousForwardRateEvolver implements org.drip.dynamics.evolution
 
 		return dblSpotPrice / dblSpotForwardReinvestmentAccrual * java.lang.Math.exp (-1. *
 			(volatilityRandomDotProduct (dblSpotDate, dblForwardDate, dblPeriodIncrement) + 0.5 *
-				dblPeriodIncrement * _mfv.pointVolatilityNorm (dblSpotDate, dblForwardDate)));
+				dblPeriodIncrement * _mfv.pointVolatilityModulus (dblSpotDate, dblForwardDate)));
 	}
 }

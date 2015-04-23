@@ -141,27 +141,6 @@ public abstract class MarketSurface implements org.drip.analytics.definition.Cur
 		throws java.lang.Exception;
 
 	/**
-	 * Get the Market Node given the Strike and the Maturity
-	 * 
-	 * @param dblStrike The Strike
-	 * @param dt The Julian Maturity Date
-	 * 
-	 * @return The Volatility evaluated from the Volatility Surface
-	 * 
-	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
-	 */
-
-	/* public double node (
-		final double dblStrike,
-		final org.drip.analytics.date.JulianDate dt)
-		throws java.lang.Exception
-	{
-		if (null == dt) throw new java.lang.Exception ("MarketSurface::node => Invalid Inputs");
-
-		return node (dblStrike, dt.julian());
-	} */
-
-	/**
 	 * Get the Market Node given the Strike and the Tenor
 	 * 
 	 * @param dblStrike The Strike

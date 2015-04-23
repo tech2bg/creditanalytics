@@ -50,6 +50,12 @@ public class LatentStateStatic {
 	public static final java.lang.String FORWARD_QM_FORWARD_RATE = "FORWARD_QM_FORWARD_RATE";
 
 	/**
+	 * Forward Latent State Quantification Metric - LIBOR Rate
+	 */
+
+	public static final java.lang.String FORWARD_QM_LIBOR_RATE = "FORWARD_QM_LIBOR_RATE";
+
+	/**
 	 * Forward Latent State Quantification Metric - Shifted Forward Rate
 	 */
 

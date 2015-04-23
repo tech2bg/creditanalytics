@@ -184,52 +184,131 @@ public class MultiFactorVolatility {
 		for (int i = 0; i < iNumVariate; ++i)
 			dblFactorPointVolatility += adblFactor[i] * _aMSVolatility[i].node (dblXDate, dblYDate);
 
-		return _pfsg.factorWeight()[iFactorIndex] * dblFactorPointVolatility;
+		return dblFactorPointVolatility;
 	}
 
 	/**
-	 * Compute the Point Volatility Norm
+	 * Compute the Array of Factor Point Volatilities
 	 * 
 	 * @param dblXDate The X Date
 	 * @param dblYDate The Y Date
 	 * 
-	 * @return The Point Volatility Norm
-	 * 
-	 * @throws java.lang.Exception Thrown if the Point Volatility Norm cannot be computed
+	 * @return The Array of Factor Point Volatilities
 	 */
 
-	public double pointVolatilityNorm (
+	public double[] factorPointVolatility (
+		final double dblXDate,
+		final double dblYDate)
+	{
+		int iNumFactor = _pfsg.numFactor();
+
+		double[][] aadblFactor = _pfsg.factors();
+
+		int iNumVariate = aadblFactor[0].length;
+		double[] adblVariateVolatility = new double[iNumVariate];
+		double[] adblFactorPointVolatility = new double[iNumFactor];
+
+		for (int iVariateIndex = 0; iVariateIndex < iNumVariate; ++iVariateIndex) {
+			try {
+				adblVariateVolatility[iVariateIndex] = _aMSVolatility[iVariateIndex].node (dblXDate,
+					dblYDate);
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		for (int iFactorIndex = 0; iFactorIndex < iNumFactor; ++iFactorIndex) {
+			adblFactorPointVolatility[iFactorIndex] = 0.;
+			double[] adblFactor = aadblFactor[iFactorIndex];
+
+			for (int iVariateIndex = 0; iVariateIndex < iNumVariate; ++iVariateIndex)
+				adblFactorPointVolatility[iFactorIndex] += adblFactor[iVariateIndex] *
+					adblVariateVolatility[iVariateIndex];
+		}
+
+		return adblFactorPointVolatility;
+	}
+
+	/**
+	 * Compute the Weighted Factor Point Volatility
+	 * 
+	 * @param iFactorIndex The Factor Index
+	 * @param dblXDate The X Date
+	 * @param dblYDate The Y Date
+	 * 
+	 * @return The Weighted Factor Point Volatility
+	 * 
+	 * @throws java.lang.Exception Thrown if the Weighted Factor Point Volatility cannot be computed
+	 */
+
+	public double weightedFactorPointVolatility (
+		final int iFactorIndex,
 		final double dblXDate,
 		final double dblYDate)
 		throws java.lang.Exception
 	{
 		int iNumFactor = _pfsg.numFactor();
 
-		double dblPointVolatilityNorm = 0.;
+		if (iFactorIndex >= iNumFactor)
+			throw new java.lang.Exception
+				("MultiFactorVolatility::weightedFactorPointVolatility => Invalid Factor Index");
 
-		for (int i = 0; i < iNumFactor; ++i) {
-			double dblFactorPointVolatility = factorPointVolatility (i, dblXDate, dblYDate);
+		double[] adblFactor = _pfsg.factors()[iFactorIndex];
 
-			dblPointVolatilityNorm += dblFactorPointVolatility * dblFactorPointVolatility;
-		}
+		int iNumVariate = adblFactor.length;
+		double dblFactorPointVolatility = 0.;
 
-		return dblPointVolatilityNorm;
+		for (int i = 0; i < iNumVariate; ++i)
+			dblFactorPointVolatility += adblFactor[i] * _aMSVolatility[i].node (dblXDate, dblYDate);
+
+		return _pfsg.factorWeight()[iFactorIndex] * dblFactorPointVolatility;
 	}
 
 	/**
-	 * Compute the Point Volatility Norm Derivative
+	 * Compute the Point Volatility Modulus
+	 * 
+	 * @param dblXDate The X Date
+	 * @param dblYDate The Y Date
+	 * 
+	 * @return The Point Volatility Modulus
+	 * 
+	 * @throws java.lang.Exception Thrown if the Point Volatility Modulus cannot be computed
+	 */
+
+	public double pointVolatilityModulus (
+		final double dblXDate,
+		final double dblYDate)
+		throws java.lang.Exception
+	{
+		int iNumFactor = _pfsg.numFactor();
+
+		double dblPointVolatilityModulus = 0.;
+
+		for (int i = 0; i < iNumFactor; ++i) {
+			double dblWeightedFactorPointVolatility = weightedFactorPointVolatility (i, dblXDate, dblYDate);
+
+			dblPointVolatilityModulus += dblWeightedFactorPointVolatility * dblWeightedFactorPointVolatility;
+		}
+
+		return dblPointVolatilityModulus;
+	}
+
+	/**
+	 * Compute the Point Volatility Modulus Derivative
 	 * 
 	 * @param dblXDate The X Date
 	 * @param dblYDate The Y Date
 	 * @param iOrder The Derivative Order
 	 * @param bTerminal TRUE => Derivative off of the Y Date; FALSE => Derivative off of the X Date
 	 * 
-	 * @return The Point Volatility Norm Derivative
+	 * @return The Point Volatility Modulus Derivative
 	 * 
-	 * @throws java.lang.Exception Thrown if the Point Volatility Norm Derivative cannot be computed
+	 * @throws java.lang.Exception Thrown if the Point Volatility Modulus Derivative cannot be computed
 	 */
 
-	public double pointVolatilityNormDerivative (
+	public double pointVolatilityModulusDerivative (
 		final double dblXDate,
 		final double dblYDate,
 		final int iOrder,
@@ -242,7 +321,7 @@ public class MultiFactorVolatility {
 				final double dblVariate)
 				throws java.lang.Exception
 			{
-				return bTerminal ? pointVolatilityNorm (dblXDate, dblVariate) : pointVolatilityNorm
+				return bTerminal ? pointVolatilityModulus (dblXDate, dblVariate) : pointVolatilityModulus
 					(dblVariate, dblYDate);
 			}
 		};

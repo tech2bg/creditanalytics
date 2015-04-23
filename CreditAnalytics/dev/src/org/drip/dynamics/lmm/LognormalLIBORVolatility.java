@@ -169,6 +169,8 @@ public class LognormalLIBORVolatility extends org.drip.dynamics.hjm.MultiFactorV
 		for (int i = 0; i < iNumFactor; ++i)
 			adblContinuousForwardVolatility[i] = 0.;
 
+		double[] adblFactorPointVolatility = factorPointVolatility (_dblSpotDate, dblEndDate);
+
 		while (bLoop) {
 			try {
 				if ((dblEndDate = new org.drip.analytics.date.JulianDate (dblEndDate).addTenor
@@ -181,7 +183,7 @@ public class LognormalLIBORVolatility extends org.drip.dynamics.hjm.MultiFactorV
 
 				for (int i = 0; i < iNumFactor; ++i)
 					adblContinuousForwardVolatility[i] += dblLIBORLognormalVolatilityScaler *
-						factorPointVolatility (i, _dblSpotDate, dblEndDate);
+						adblFactorPointVolatility[i];
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 

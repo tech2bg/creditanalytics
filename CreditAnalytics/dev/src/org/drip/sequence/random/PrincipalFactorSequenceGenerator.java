@@ -63,41 +63,31 @@ public class PrincipalFactorSequenceGenerator extends org.drip.sequence.random.M
 		if (0 >= iNumFactor || iNumFactor > iNumVariate)
 			throw new java.lang.Exception ("PrincipalFactorSequenceGenerator ctr: Invalid Inputs");
 
-		if (iNumFactor == iNumVariate) {
-			_adblFactorWeight = new double[iNumVariate];
-			_aadblFactor = new double[iNumVariate][iNumVariate];
+		org.drip.quant.eigen.QREigenComponentExtractor qrece = new
+			org.drip.quant.eigen.QREigenComponentExtractor (80, 0.00001);
 
-			for (int i = 0; i < iNumVariate; ++i) {
-				for (int j = 0; j < iNumVariate; ++j)
-					_aadblFactor[i][j] = i == j ? 1. : 0.;
+		org.drip.quant.eigen.EigenComponent[] aEC = qrece.orderedComponents (aadblCorrelation);
 
-				_adblFactorWeight[i] = java.lang.Math.sqrt (1. / iNumVariate);
-			}
-		} else {
-			org.drip.quant.eigen.QREigenComponentExtractor qrece = new
-				org.drip.quant.eigen.QREigenComponentExtractor (80, 0.00001);
+		if (null == aEC || 0 == aEC.length)
+			throw new java.lang.Exception ("PrincipalFactorSequenceGenerator ctr: Invalid Inputs");
 
-			org.drip.quant.eigen.EigenComponent[] aEC = qrece.orderedComponents (aadblCorrelation);
+		double dblNormalizer = 0.;
+		_adblFactorWeight = new double[iNumFactor];
+		_aadblFactor = new double[iNumFactor][iNumVariate];
 
-			if (null == aEC || 0 == aEC.length)
-				throw new java.lang.Exception ("PrincipalFactorSequenceGenerator ctr: Invalid Inputs");
+		for (int i = 0; i < iNumFactor; ++i) {
+			for (int j = 0; j < iNumVariate; ++j)
+				_aadblFactor[i] = aEC[i].eigenvector();
 
-			double dblNorm = 0.;
-			_adblFactorWeight = new double[iNumFactor];
-			_aadblFactor = new double[iNumFactor][iNumVariate];
+			_adblFactorWeight[i] = aEC[i].eigenvalue();
 
-			for (int i = 0; i < iNumFactor; ++i) {
-				for (int j = 0; j < iNumVariate; ++j)
-					_aadblFactor[i] = aEC[i].eigenvector();
-
-				_adblFactorWeight[i] = aEC[i].eigenvalue();
-
-				dblNorm += _adblFactorWeight[i] * _adblFactorWeight[i];
-			}
-
-			for (int i = 0; i < iNumFactor; ++i)
-				_adblFactorWeight[i] /= dblNorm;
+			dblNormalizer += _adblFactorWeight[i] * _adblFactorWeight[i];
 		}
+
+		dblNormalizer = java.lang.Math.sqrt (dblNormalizer);
+
+		for (int i = 0; i < iNumFactor; ++i)
+			_adblFactorWeight[i] /= dblNormalizer;
 	}
 
 	/**
