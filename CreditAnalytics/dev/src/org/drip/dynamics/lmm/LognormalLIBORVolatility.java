@@ -92,17 +92,17 @@ public class LognormalLIBORVolatility extends org.drip.dynamics.hjm.MultiFactorV
 	 * Compute the Constraint in the Difference in the Volatility of the Continuously Compounded Forward Rate
 	 * 	between the Target Date and the Target Date + Forward Tenor
 	 * 
-	 * @param fre The Forward Rate Estimator/Curve
+	 * @param fc The Forward Curve Instance
 	 * @param dblTargetDate The Target Date
 	 * 
 	 * @return The Constraint in the Difference in the Volatility of the Continuously Compounded Forward Rate
 	 */
 
 	public double[] continuousForwardVolatilityConstraint (
-		final org.drip.analytics.rates.ForwardRateEstimator fre,
+		final org.drip.analytics.rates.ForwardCurve fc,
 		final double dblTargetDate)
 	{
-		if (null == fre || !org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblTargetDate <=
+		if (null == fc || !org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblTargetDate <=
 			_dblSpotDate)
 			return null;
 
@@ -111,7 +111,7 @@ public class LognormalLIBORVolatility extends org.drip.dynamics.hjm.MultiFactorV
 		org.drip.analytics.definition.MarketSurface[] aMS = volatilitySurface();
 
 		try {
-			double dblLIBORDCF = fre.forward (new org.drip.analytics.date.JulianDate (dblTargetDate).addTenor
+			double dblLIBORDCF = fc.forward (new org.drip.analytics.date.JulianDate (dblTargetDate).addTenor
 				(strTenor)) * org.drip.analytics.support.AnalyticsHelper.TenorToYearFraction (strTenor);
 
 			int iNumSurface = aMS.length;
@@ -133,18 +133,18 @@ public class LognormalLIBORVolatility extends org.drip.dynamics.hjm.MultiFactorV
 	/**
 	 * Compute the Volatility of the Continuously Compounded Forward Rate Up to the Target Date
 	 * 
-	 * @param fre The Forward Rate Estimator/Curve
 	 * @param dblTargetDate The Target Date
+	 * @param fc The Forward Curve Instance
 	 * 
 	 * @return The Volatility of the Continuously Compounded Forward Rate Up to the Target Date
 	 */
 
 	public double[] continuousForwardVolatility (
-		final org.drip.analytics.rates.ForwardRateEstimator fre,
-		final double dblTargetDate)
+		final double dblTargetDate,
+		final org.drip.analytics.rates.ForwardCurve fc)
 	{
-		if (null == fre || !org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblTargetDate <=
-			_dblSpotDate)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblTargetDate) || dblTargetDate <= _dblSpotDate ||
+			null == fc)
 			return null;
 
 		org.drip.sequence.random.PrincipalFactorSequenceGenerator pfsg = msg();
@@ -177,7 +177,7 @@ public class LognormalLIBORVolatility extends org.drip.dynamics.hjm.MultiFactorV
 					(strTenor).julian()) > dblTargetDate)
 					bLoop = false;
 
-				double dblLIBORTenorDCF = fre.forward (dblEndDate) * dblTenorDCF;
+				double dblLIBORTenorDCF = fc.forward (dblEndDate) * dblTenorDCF;
 
 				double dblLIBORLognormalVolatilityScaler = dblLIBORTenorDCF / (1. + dblLIBORTenorDCF);
 

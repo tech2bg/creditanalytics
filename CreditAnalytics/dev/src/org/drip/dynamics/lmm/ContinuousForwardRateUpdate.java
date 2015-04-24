@@ -35,7 +35,7 @@ package org.drip.dynamics.lmm;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuousForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
+public class ContinuousForwardRateUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
 	private double _dblDContinuousForwardDXInitial = java.lang.Double.NaN;
@@ -74,7 +74,7 @@ public class ContinuousForwardRateUpdate extends org.drip.dynamics.evolution.LSQ
 		final double dblDContinuousForwardDXInitial,
 		final double dblDContinuousForwardDXTerminal)
 	{
-		org.drip.dynamics.evolution.LSQMRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrSnapshot.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE,
@@ -89,7 +89,7 @@ public class ContinuousForwardRateUpdate extends org.drip.dynamics.evolution.LSQ
 			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR, dblDiscountFactor))
 			return null;
 
-		org.drip.dynamics.evolution.LSQMRecord lrIncrement = new org.drip.dynamics.evolution.LSQMRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrIncrement = new org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrIncrement.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE,
@@ -120,8 +120,8 @@ public class ContinuousForwardRateUpdate extends org.drip.dynamics.evolution.LSQ
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblInitialDate,
 		final double dblFinalDate,
-		final org.drip.dynamics.evolution.LSQMRecord lrSnapshot,
-		final org.drip.dynamics.evolution.LSQMRecord lrIncrement,
+		final org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot,
+		final org.drip.dynamics.evolution.LSQMPointRecord lrIncrement,
 		final double dblDContinuousForwardDXInitial,
 		final double dblDContinuousForwardDXTerminal)
 		throws java.lang.Exception

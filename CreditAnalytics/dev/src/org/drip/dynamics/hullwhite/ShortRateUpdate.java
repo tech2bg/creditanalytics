@@ -35,7 +35,7 @@ package org.drip.dynamics.hullwhite;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ShortRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
+public class ShortRateUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 	private double _dblExpectedFinalShortRate = java.lang.Double.NaN;
 	private double _dblFinalShortRateVariance = java.lang.Double.NaN;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
@@ -66,7 +66,7 @@ public class ShortRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 		final double dblZeroCouponBondPrice)
 		throws java.lang.Exception
 	{
-		org.drip.dynamics.evolution.LSQMRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrSnapshot.setQM (lslFunding,
 			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
@@ -78,7 +78,7 @@ public class ShortRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 				dblZeroCouponBondPrice))
 			return null;
 
-		org.drip.dynamics.evolution.LSQMRecord lrIncrement = new org.drip.dynamics.evolution.LSQMRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrIncrement = new org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrIncrement.setQM (lslFunding,
 			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
@@ -99,8 +99,8 @@ public class ShortRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 		final org.drip.state.identifier.FundingLabel lslFunding,
 		final double dblInitialDate,
 		final double dblFinalDate,
-		final org.drip.dynamics.evolution.LSQMRecord lrSnapshot,
-		final org.drip.dynamics.evolution.LSQMRecord lrIncrement,
+		final org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot,
+		final org.drip.dynamics.evolution.LSQMPointRecord lrIncrement,
 		final double dblExpectedFinalShortRate,
 		final double dblFinalShortRateVariance)
 		throws java.lang.Exception

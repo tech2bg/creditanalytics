@@ -202,8 +202,8 @@ public class ContinuousForwardRateVolatility {
 				DisplayVolArray (
 					strForwardTenor,
 					llv.continuousForwardVolatility (
-						fc,
-						dtSpot.addTenor (strForwardTenor).julian()
+						dtSpot.addTenor (strForwardTenor).julian(),
+						fc
 					)
 				);
 

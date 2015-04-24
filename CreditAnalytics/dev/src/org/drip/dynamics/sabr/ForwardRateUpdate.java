@@ -35,7 +35,7 @@ package org.drip.dynamics.sabr;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
+public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 
 	/**
@@ -61,7 +61,7 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 		final double dblForwardRateVolatility,
 		final double dblForwardRateVolatilityIncrement)
 	{
-		org.drip.dynamics.evolution.LSQMRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrSnapshot.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE, dblForwardRate))
@@ -72,7 +72,7 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 				dblForwardRateVolatility))
 			return null;
 
-		org.drip.dynamics.evolution.LSQMRecord lrIncrement = new org.drip.dynamics.evolution.LSQMRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrIncrement = new org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrIncrement.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
@@ -97,8 +97,8 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblInitialDate,
 		final double dblFinalDate,
-		final org.drip.dynamics.evolution.LSQMRecord lrSnapshot,
-		final org.drip.dynamics.evolution.LSQMRecord lrIncrement)
+		final org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot,
+		final org.drip.dynamics.evolution.LSQMPointRecord lrIncrement)
 		throws java.lang.Exception
 	{
 		super (dblInitialDate, dblFinalDate, lrSnapshot, lrIncrement);

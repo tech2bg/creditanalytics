@@ -35,7 +35,7 @@ package org.drip.dynamics.lmm;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
+public class BGMUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
 	private double _dblLognormalLIBORVolatility = java.lang.Double.NaN;
@@ -50,6 +50,12 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 	 * @param dblFinalDate The Final Date
 	 * @param dblLIBOR The LIBOR Rate
 	 * @param dblLIBORIncrement The LIBOR Rate Increment
+	 * @param dblContinuousForwardRate The Continuously Compounded Forward Rate
+	 * @param dblContinuousForwardRateIncrement The Continuously Compounded Forward Rate Increment
+	 * @param dblSpotRate The Spot Rate
+	 * @param dblSpotRateIncrement The Spot Rate Increment
+	 * @param dblDiscountFactor The Discount Factor
+	 * @param dblDiscountFactorIncrement The Discount Factor Increment
 	 * @param dblLognormalLIBORVolatility The Log-normal LIBOR Rate Volatility
 	 * @param dblContinuouslyCompoundedForwardVolatility The Continuously Compounded Forward Rate Volatility
 	 * 
@@ -63,19 +69,52 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 		final double dblFinalDate,
 		final double dblLIBOR,
 		final double dblLIBORIncrement,
+		final double dblContinuousForwardRate,
+		final double dblContinuousForwardRateIncrement,
+		final double dblSpotRate,
+		final double dblSpotRateIncrement,
+		final double dblDiscountFactor,
+		final double dblDiscountFactorIncrement,
 		final double dblLognormalLIBORVolatility,
 		final double dblContinuouslyCompoundedForwardVolatility)
 	{
-		org.drip.dynamics.evolution.LSQMRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrSnapshot.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_LIBOR_RATE, dblLIBOR))
 			return null;
 
-		org.drip.dynamics.evolution.LSQMRecord lrIncrement = new org.drip.dynamics.evolution.LSQMRecord();
+		if (!lrSnapshot.setQM (lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE,
+				dblContinuousForwardRate))
+			return null;
+
+		if (!lrSnapshot.setQM (lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE, dblSpotRate))
+			return null;
+
+		if (!lrSnapshot.setQM (lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR, dblDiscountFactor))
+			return null;
+
+		org.drip.dynamics.evolution.LSQMPointRecord lrIncrement = new org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrIncrement.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_LIBOR_RATE, dblLIBORIncrement))
+			return null;
+
+		if (!lrIncrement.setQM (lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE,
+				dblContinuousForwardRateIncrement))
+			return null;
+
+		if (!lrIncrement.setQM (lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE, dblSpotRateIncrement))
+			return null;
+
+		if (!lrIncrement.setQM (lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
+				dblDiscountFactorIncrement))
 			return null;
 
 		try {
@@ -93,8 +132,8 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblInitialDate,
 		final double dblFinalDate,
-		final org.drip.dynamics.evolution.LSQMRecord lrSnapshot,
-		final org.drip.dynamics.evolution.LSQMRecord lrIncrement,
+		final org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot,
+		final org.drip.dynamics.evolution.LSQMPointRecord lrIncrement,
 		final double dblLognormalLIBORVolatility,
 		final double dblContinuouslyCompoundedForwardVolatility)
 		throws java.lang.Exception
@@ -151,7 +190,7 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 		throws java.lang.Exception
 	{
 		return snapshot().qm (_lslForward,
-			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_LIBOR_RATE);
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE);
 	}
 
 	/**
@@ -159,15 +198,74 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
 	 * 
 	 * @return The Continuously Compounded Forward Rate Increment
 	 * 
-	 * @throws java.lang.Exception Thrown if the Continuously Compounded Forward Rate Increment is not
-	 *  available
+	 * @throws java.lang.Exception Thrown if the Continuously Compounded Forward Rate Increment is not available
 	 */
 
 	public double continuousForwardRateIncrement()
 		throws java.lang.Exception
 	{
 		return increment().qm (_lslForward,
-			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_LIBOR_RATE);
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE);
+	}
+
+	/**
+	 * Retrieve the Spot Rate
+	 * 
+	 * @return The Spot Rate
+	 * 
+	 * @throws java.lang.Exception Thrown if the Spot Rate is not available
+	 */
+
+	public double spotRate()
+		throws java.lang.Exception
+	{
+		return snapshot().qm (_lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE);
+	}
+
+	/**
+	 * Retrieve the Spot Rate Increment
+	 * 
+	 * @return The Spot Rate Increment
+	 * 
+	 * @throws java.lang.Exception Thrown if the Spot Rate Increment is not available
+	 */
+
+	public double spotRateIncrement()
+		throws java.lang.Exception
+	{
+		return increment().qm (_lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE);
+	}
+
+	/**
+	 * Retrieve the Discount Factor
+	 * 
+	 * @return The Discount Factor
+	 * 
+	 * @throws java.lang.Exception Thrown if the Discount Factor is not available
+	 */
+
+	public double discountFactor()
+		throws java.lang.Exception
+	{
+		return snapshot().qm (_lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR);
+	}
+
+	/**
+	 * Retrieve the Discount Factor Increment
+	 * 
+	 * @return The Discount Factor Increment
+	 * 
+	 * @throws java.lang.Exception Thrown if the Discount Factor Increment is not available
+	 */
+
+	public double discountFactorIncrement()
+		throws java.lang.Exception
+	{
+		return increment().qm (_lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR);
 	}
 
 	/**

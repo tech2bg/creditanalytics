@@ -35,7 +35,7 @@ package org.drip.dynamics.hjm;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ShortForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpdate {
+public class ShortForwardRateUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
 
@@ -80,7 +80,7 @@ public class ShortForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpda
 		final double dblPrice,
 		final double dblPriceIncrement)
 	{
-		org.drip.dynamics.evolution.LSQMRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrSnapshot.setQM (lslFunding,
 			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE, dblShortRate))
@@ -109,7 +109,7 @@ public class ShortForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpda
 				dblInstantaneousForwardRate))
 			return null;
 
-		org.drip.dynamics.evolution.LSQMRecord lrIncrement = new org.drip.dynamics.evolution.LSQMRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrIncrement = new org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrIncrement.setQM (lslFunding,
 			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE, dblShortRateIncrement))
@@ -154,8 +154,8 @@ public class ShortForwardRateUpdate extends org.drip.dynamics.evolution.LSQMUpda
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblInitialDate,
 		final double dblFinalDate,
-		final org.drip.dynamics.evolution.LSQMRecord lrSnapshot,
-		final org.drip.dynamics.evolution.LSQMRecord lrIncrement)
+		final org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot,
+		final org.drip.dynamics.evolution.LSQMPointRecord lrIncrement)
 		throws java.lang.Exception
 	{
 		super (dblInitialDate, dblFinalDate, lrSnapshot, lrIncrement);

@@ -29,28 +29,28 @@ package org.drip.dynamics.evolution;
  */
 
 /**
- * StateEvolver is the Interface on top of which the State Evolution Dynamics is constructed.
+ * PointStateEvolver is the Interface on top of which the Point State Evolution Dynamics is constructed.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public interface StateEvolver {
+public interface PointStateEvolver {
 
 	/**
-	 * Evolve the Latent State and return the LSQM Update
+	 * Evolve the Latent State and return the LSQM Point Update
 	 * 
 	 * @param dblSpotDate The Spot Date
 	 * @param dblViewDate The View Date
 	 * @param dblViewTimeIncrement The View Time Increment
-	 * @param lsqmPrev The Previous LSQM Update
+	 * @param lsqmPrev The Previous LSQM Point Update
 	 * 
-	 * @return The LSQM Update
+	 * @return The LSQM Point Update
 	 */
 
-	public abstract org.drip.dynamics.evolution.LSQMUpdate evolve (
+	public abstract org.drip.dynamics.evolution.LSQMPointUpdate evolve (
 		final double dblSpotDate,
 		final double dblViewDate,
 		final double dblViewTimeIncrement,
-		final org.drip.dynamics.evolution.LSQMUpdate lsqmPrev
+		final org.drip.dynamics.evolution.LSQMPointUpdate lsqmPrev
 	);
 }

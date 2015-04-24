@@ -29,41 +29,42 @@ package org.drip.dynamics.evolution;
  */
 
 /**
- * LSQMUpdate contains the Snapshot and the Increment of the Evolving Latent State Quantification Metrics.
+ * LSQMCurveUpdate contains the Snapshot and the Increment of the Evolving Curve Latent State Quantification
+ *  Metrics.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class LSQMUpdate {
+public class LSQMCurveUpdate {
 	private double _dblFinalDate = java.lang.Double.NaN;
 	private double _dblInitialDate = java.lang.Double.NaN;
-	private org.drip.dynamics.evolution.LSQMRecord _lrSnapshot = null;
-	private org.drip.dynamics.evolution.LSQMRecord _lrIncrement = null;
+	private org.drip.dynamics.evolution.LSQMCurveRecord _lcrSnapshot = null;
+	private org.drip.dynamics.evolution.LSQMCurveRecord _lcrIncrement = null;
 
 	/**
-	 * LSQMUpdate Update Constructor
+	 * LSQMCurveUpdate Constructor
 	 * 
 	 * @param dblInitialDate The Initial Date
 	 * @param dblFinalDate The Final Date
-	 * @param lrSnapshot The LSQM Record Snapshot
-	 * @param lrIncrement The LSQM Record Update
+	 * @param lcrSnapshot The LSQM Curve Record Snapshot
+	 * @param lcrIncrement The LSQM Curve Record Update
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
 
-	public LSQMUpdate (
+	public LSQMCurveUpdate (
 		final double dblInitialDate,
 		final double dblFinalDate,
-		final org.drip.dynamics.evolution.LSQMRecord lrSnapshot,
-		final org.drip.dynamics.evolution.LSQMRecord lrIncrement)
+		final org.drip.dynamics.evolution.LSQMCurveRecord lcrSnapshot,
+		final org.drip.dynamics.evolution.LSQMCurveRecord lcrIncrement)
 		throws java.lang.Exception
 	{
-		if (null == (_lrSnapshot = lrSnapshot) || !org.drip.quant.common.NumberUtil.IsValid (_dblInitialDate
-			= dblInitialDate) || !org.drip.quant.common.NumberUtil.IsValid (_dblFinalDate = dblFinalDate) ||
-				_dblFinalDate < _dblInitialDate)
-			throw new java.lang.Exception ("LSQMUpdate ctr: Invalid Inputs");
+		if (null == (_lcrSnapshot = lcrSnapshot) || !org.drip.quant.common.NumberUtil.IsValid
+			(_dblInitialDate = dblInitialDate) || !org.drip.quant.common.NumberUtil.IsValid (_dblFinalDate =
+				dblFinalDate) || _dblFinalDate < _dblInitialDate)
+			throw new java.lang.Exception ("LSQMCurveUpdate ctr: Invalid Inputs");
 
-		_lrIncrement = lrIncrement;
+		_lcrIncrement = lcrIncrement;
 	}
 
 	/**
@@ -89,24 +90,24 @@ public class LSQMUpdate {
 	}
 
 	/**
-	 * Retrieve the LSQM Snapshot
+	 * Retrieve the LSQM Curve Snapshot
 	 * 
-	 * @return The LSQM Snapshot
+	 * @return The LSQM Curve Snapshot
 	 */
 
-	public org.drip.dynamics.evolution.LSQMRecord snapshot()
+	public org.drip.dynamics.evolution.LSQMCurveRecord snapshot()
 	{
-		return _lrSnapshot;
+		return _lcrSnapshot;
 	}
 
 	/**
-	 * Retrieve the LSQM Increment
+	 * Retrieve the LSQM Curve Increment
 	 * 
-	 * @return The LSQM Increment
+	 * @return The LSQM Curve Increment
 	 */
 
-	public org.drip.dynamics.evolution.LSQMRecord increment()
+	public org.drip.dynamics.evolution.LSQMCurveRecord increment()
 	{
-		return _lrIncrement;
+		return _lcrIncrement;
 	}
 }

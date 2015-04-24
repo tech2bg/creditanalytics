@@ -29,20 +29,20 @@ package org.drip.dynamics.evolution;
  */
 
 /**
- * LSQMRecord contains the Record of the Evolving Latent State Quantification Metrics.
+ * LSQMPointRecord contains the Record of the Evolving Point Latent State Quantification Metrics.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class LSQMRecord {
+public class LSQMPointRecord {
 	private java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>> _mmLSQMValue =
 		new java.util.HashMap<java.lang.String, java.util.Map<java.lang.String, java.lang.Double>>();
 
 	/**
-	 * Empty LSQMRecord Constructor
+	 * Empty LSQMPointRecord Constructor
 	 */
 
-	public LSQMRecord()
+	public LSQMPointRecord()
 	{
 	}
 
@@ -136,13 +136,13 @@ public class LSQMRecord {
 	{
 		if (null == lsl || null == strQM || strQM.isEmpty() || !_mmLSQMValue.containsKey
 			(lsl.fullyQualifiedName()))
-			throw new java.lang.Exception ("LSQMRecord::qm => Invalid Inputs");
+			throw new java.lang.Exception ("LSQMPointRecord::qm => Invalid Inputs");
 
 		java.util.Map<java.lang.String, java.lang.Double> mapLSQM = _mmLSQMValue.get
 			(lsl.fullyQualifiedName());
 
 		if (!mapLSQM.containsKey (strQM))
-			throw new java.lang.Exception ("LSQMRecord::qm => No LSQM Entry");
+			throw new java.lang.Exception ("LSQMPointRecord::qm => No LSQM Entry");
 
 		return mapLSQM.get (strQM);
 	}

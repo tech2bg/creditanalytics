@@ -40,7 +40,7 @@ package org.drip.dynamics.hjm;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultiFactorStateEvolver implements org.drip.dynamics.evolution.StateEvolver {
+public class MultiFactorStateEvolver implements org.drip.dynamics.evolution.PointStateEvolver {
 	private org.drip.dynamics.hjm.MultiFactorVolatility _mfv = null;
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
@@ -403,11 +403,11 @@ public class MultiFactorStateEvolver implements org.drip.dynamics.evolution.Stat
 		return dblShiftedLIBORForwardRate * dblShiftedLIBORVolIncrement;
 	}
 
-	@Override public org.drip.dynamics.evolution.LSQMUpdate evolve (
+	@Override public org.drip.dynamics.evolution.LSQMPointUpdate evolve (
 		final double dblSpotDate,
 		final double dblViewDate,
 		final double dblViewTimeIncrement,
-		final org.drip.dynamics.evolution.LSQMUpdate lsqmPrev)
+		final org.drip.dynamics.evolution.LSQMPointUpdate lsqmPrev)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||

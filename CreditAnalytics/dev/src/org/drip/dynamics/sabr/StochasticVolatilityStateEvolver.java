@@ -34,7 +34,7 @@ package org.drip.dynamics.sabr;
  * @author Lakshmi Krishnamurthy
  */
 
-public class StochasticVolatilityStateEvolver implements org.drip.dynamics.evolution.StateEvolver {
+public class StochasticVolatilityStateEvolver implements org.drip.dynamics.evolution.PointStateEvolver {
 	private double _dblRho = java.lang.Double.NaN;
 	private double _dblBeta = java.lang.Double.NaN;
 	private double _dblIdiosyncraticRho = java.lang.Double.NaN;
@@ -235,11 +235,11 @@ public class StochasticVolatilityStateEvolver implements org.drip.dynamics.evolu
 		return _usgForwardRateVolatilityIdiosyncratic;
 	}
 
-	@Override public org.drip.dynamics.evolution.LSQMUpdate evolve (
+	@Override public org.drip.dynamics.evolution.LSQMPointUpdate evolve (
 		final double dblSpotDate,
 		final double dblViewDate,
 		final double dblViewTimeIncrement,
-		final org.drip.dynamics.evolution.LSQMUpdate lsqmPrev)
+		final org.drip.dynamics.evolution.LSQMPointUpdate lsqmPrev)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblViewDate < dblSpotDate ||

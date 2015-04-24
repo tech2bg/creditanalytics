@@ -38,7 +38,7 @@ package org.drip.dynamics.lmm;
  * @author Lakshmi Krishnamurthy
  */
 
-public class ContinuousForwardRateEvolver implements org.drip.dynamics.evolution.StateEvolver {
+public class ContinuousForwardRateEvolver implements org.drip.dynamics.evolution.PointStateEvolver {
 	private org.drip.dynamics.hjm.MultiFactorVolatility _mfv = null;
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
@@ -145,7 +145,7 @@ public class ContinuousForwardRateEvolver implements org.drip.dynamics.evolution
 		final double dblSpotDate,
 		final double dblViewDate,
 		final double dblViewTimeIncrement,
-		final org.drip.dynamics.evolution.LSQMUpdate lsqmPrev)
+		final org.drip.dynamics.evolution.LSQMPointUpdate lsqmPrev)
 	{
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
