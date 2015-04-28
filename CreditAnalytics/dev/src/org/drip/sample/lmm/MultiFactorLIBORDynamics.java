@@ -133,7 +133,7 @@ public class MultiFactorLIBORDynamics {
 	}
 
 	private static final void DisplayRunSnap (
-		final BGMUpdate bgmRunSnap)
+		final BGMPointUpdate bgmRunSnap)
 		throws Exception
 	{
 		System.out.println (
@@ -262,7 +262,7 @@ public class MultiFactorLIBORDynamics {
 
 			System.out.println ("\t|----------------------------------------------------------------------------------------------------------|");
 
-			LognormalLIBOREvolver lle = new LognormalLIBOREvolver (
+			LognormalLIBORPointEvolver lle = new LognormalLIBORPointEvolver (
 				fundingLabel,
 				forwardLabel,
 				LLVInstance (

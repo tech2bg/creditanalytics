@@ -314,8 +314,8 @@ public class BondBuilder {
 					java.util.ArrayList<org.drip.analytics.cashflow.ComposableUnitPeriod>();
 
 				lsCUP.add (new org.drip.analytics.cashflow.ComposableUnitFixedPeriod (dblPeriodStart,
-					adblDate[i], new org.drip.param.period.UnitCouponAccrualSetting (iFreq, "30/360", false,
-						"30/360", false, strCurrency, true,
+					adblDate[i], new org.drip.param.period.UnitCouponAccrualSetting (iFreq, strDC, false,
+						strDC, false, strCurrency, false,
 							org.drip.analytics.support.CompositePeriodBuilder.ACCRUAL_COMPOUNDING_RULE_GEOMETRIC),
 					new org.drip.param.period.ComposableFixedUnitSetting ((12 / iFreq) + "M",
 						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,

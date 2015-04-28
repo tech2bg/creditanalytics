@@ -38,16 +38,16 @@ package org.drip.dynamics.evolution;
 public class LSQMCurveUpdate {
 	private double _dblFinalDate = java.lang.Double.NaN;
 	private double _dblInitialDate = java.lang.Double.NaN;
-	private org.drip.dynamics.evolution.LSQMCurveRecord _lcrSnapshot = null;
-	private org.drip.dynamics.evolution.LSQMCurveRecord _lcrIncrement = null;
+	private org.drip.dynamics.evolution.LSQMCurveSnapshot _snapshot = null;
+	private org.drip.dynamics.evolution.LSQMCurveIncrement _increment = null;
 
 	/**
 	 * LSQMCurveUpdate Constructor
 	 * 
 	 * @param dblInitialDate The Initial Date
 	 * @param dblFinalDate The Final Date
-	 * @param lcrSnapshot The LSQM Curve Record Snapshot
-	 * @param lcrIncrement The LSQM Curve Record Update
+	 * @param snapshot The LSQM Curve Snapshot
+	 * @param increment The LSQM Curve Increment
 	 * 
 	 * @throws java.lang.Exception Thrown if the Inputs are invalid
 	 */
@@ -55,16 +55,16 @@ public class LSQMCurveUpdate {
 	public LSQMCurveUpdate (
 		final double dblInitialDate,
 		final double dblFinalDate,
-		final org.drip.dynamics.evolution.LSQMCurveRecord lcrSnapshot,
-		final org.drip.dynamics.evolution.LSQMCurveRecord lcrIncrement)
+		final org.drip.dynamics.evolution.LSQMCurveSnapshot snapshot,
+		final org.drip.dynamics.evolution.LSQMCurveIncrement increment)
 		throws java.lang.Exception
 	{
-		if (null == (_lcrSnapshot = lcrSnapshot) || !org.drip.quant.common.NumberUtil.IsValid
+		if (null == (_snapshot = snapshot) || !org.drip.quant.common.NumberUtil.IsValid
 			(_dblInitialDate = dblInitialDate) || !org.drip.quant.common.NumberUtil.IsValid (_dblFinalDate =
 				dblFinalDate) || _dblFinalDate < _dblInitialDate)
 			throw new java.lang.Exception ("LSQMCurveUpdate ctr: Invalid Inputs");
 
-		_lcrIncrement = lcrIncrement;
+		_increment = increment;
 	}
 
 	/**
@@ -95,9 +95,9 @@ public class LSQMCurveUpdate {
 	 * @return The LSQM Curve Snapshot
 	 */
 
-	public org.drip.dynamics.evolution.LSQMCurveRecord snapshot()
+	public org.drip.dynamics.evolution.LSQMCurveSnapshot snapshot()
 	{
-		return _lcrSnapshot;
+		return _snapshot;
 	}
 
 	/**
@@ -106,8 +106,8 @@ public class LSQMCurveUpdate {
 	 * @return The LSQM Curve Increment
 	 */
 
-	public org.drip.dynamics.evolution.LSQMCurveRecord increment()
+	public org.drip.dynamics.evolution.LSQMCurveIncrement increment()
 	{
-		return _lcrIncrement;
+		return _increment;
 	}
 }

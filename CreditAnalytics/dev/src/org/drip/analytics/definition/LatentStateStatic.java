@@ -113,8 +113,15 @@ public class LatentStateStatic {
 	public static final java.lang.String LATENT_STATE_VOLATILITY = "LATENT_STATE_VOLATILITY";
 
 	/**
-	 * Volatility Latent State Quantification Metric - Volatility
+	 * Volatility Latent State Quantification Metric - SABR Volatility
 	 */
 
-	public static final java.lang.String VOLATILITY_QM_VOLATILITY = "VOLATILITY_QM_VOLATILITY";
+	public static final java.lang.String VOLATILITY_QM_SABR_VOLATILITY = "VOLATILITY_QM_SABR_VOLATILITY";
+
+	/**
+	 * Volatility Latent State Quantification Metric - Lognormal Volatility
+	 */
+
+	public static final java.lang.String VOLATILITY_QM_LOGNORMAL_VOLATILITY =
+		"VOLATILITY_QM_LOGNORMAL_VOLATILITY";
 }

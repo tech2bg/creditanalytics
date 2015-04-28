@@ -29,20 +29,20 @@ package org.drip.dynamics.lmm;
  */
 
 /**
- * BGMUpdate contains the Instantaneous Snapshot of the Evolving Discount Latent State Quantification Metrics
- *  Updated using the BGM LIBOR Update Dynamics.
+ * BGMPointUpdate contains the Instantaneous Snapshot of the Evolving Discount Point Latent State
+ *  Quantification Metrics Updated using the BGM LIBOR Update Dynamics.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class BGMUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
+public class BGMPointUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
 	private double _dblLognormalLIBORVolatility = java.lang.Double.NaN;
 	private double _dblContinuouslyCompoundedForwardVolatility = java.lang.Double.NaN;
 
 	/**
-	 * Construct an Instance of ContinuousForwardRateUpdate
+	 * Construct an Instance of BGMPointUpdate
 	 * 
 	 * @param lslFunding The Funding Latent State Label
 	 * @param lslForward The Forward Latent State Label
@@ -59,10 +59,10 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 	 * @param dblLognormalLIBORVolatility The Log-normal LIBOR Rate Volatility
 	 * @param dblContinuouslyCompoundedForwardVolatility The Continuously Compounded Forward Rate Volatility
 	 * 
-	 * @return Instance of BGMUpdate
+	 * @return Instance of BGMPointUpdate
 	 */
 
-	public static final BGMUpdate Create (
+	public static final BGMPointUpdate Create (
 		final org.drip.state.identifier.FundingLabel lslFunding,
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblInitialDate,
@@ -118,7 +118,7 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 			return null;
 
 		try {
-			return new BGMUpdate (lslFunding, lslForward, dblInitialDate, dblFinalDate, lrSnapshot,
+			return new BGMPointUpdate (lslFunding, lslForward, dblInitialDate, dblFinalDate, lrSnapshot,
 				lrIncrement, dblLognormalLIBORVolatility, dblContinuouslyCompoundedForwardVolatility);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
@@ -127,7 +127,7 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 		return null;
 	}
 
-	private BGMUpdate (
+	private BGMPointUpdate (
 		final org.drip.state.identifier.FundingLabel lslFunding,
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final double dblInitialDate,
@@ -145,7 +145,7 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 				dblLognormalLIBORVolatility) || !org.drip.quant.common.NumberUtil.IsValid
 					(_dblContinuouslyCompoundedForwardVolatility =
 						dblContinuouslyCompoundedForwardVolatility))
-			throw new java.lang.Exception ("BGMUpdate ctr: Invalid Inputs");
+			throw new java.lang.Exception ("BGMPointUpdate ctr: Invalid Inputs");
 	}
 
 	/**
@@ -198,7 +198,8 @@ public class BGMUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate {
 	 * 
 	 * @return The Continuously Compounded Forward Rate Increment
 	 * 
-	 * @throws java.lang.Exception Thrown if the Continuously Compounded Forward Rate Increment is not available
+	 * @throws java.lang.Exception Thrown if the Continuously Compounded Forward Rate Increment is not
+	 *  available
 	 */
 
 	public double continuousForwardRateIncrement()

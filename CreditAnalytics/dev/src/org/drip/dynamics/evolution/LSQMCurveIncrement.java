@@ -29,22 +29,22 @@ package org.drip.dynamics.evolution;
  */
 
 /**
- * LSQMCurveRecord contains the Record of the Evolving Term Structure of the Latent State Quantification
- * 	Metrics.
+ * LSQMCurveIncrement contains the Increment of the Evolving Term Structure of the Latent State
+ *  Quantification Metrics.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class LSQMCurveRecord {
-	private java.util.Map<java.lang.String, java.util.Map<java.lang.String,
-		org.drip.analytics.definition.Curve>> _mmCurve = new java.util.HashMap<java.lang.String,
-			java.util.Map<java.lang.String, org.drip.analytics.definition.Curve>>();
+public class LSQMCurveIncrement {
+	private java.util.Map<java.lang.String, java.util.Map<java.lang.String, org.drip.spline.grid.Span>>
+		_mmIncrement = new java.util.HashMap<java.lang.String, java.util.Map<java.lang.String,
+			org.drip.spline.grid.Span>>();
 
 	/**
-	 * Empty LSQMCurveRecord Constructor
+	 * Empty LSQMCurveIncrement Constructor
 	 */
 
-	public LSQMCurveRecord()
+	public LSQMCurveIncrement()
 	{
 	}
 
@@ -56,7 +56,7 @@ public class LSQMCurveRecord {
 
 	public java.util.Set<java.lang.String> latentStateLabel()
 	{
-		return _mmCurve.keySet();
+		return _mmIncrement.keySet();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class LSQMCurveRecord {
 	public boolean containsLatentState (
 		final org.drip.state.identifier.LatentStateLabel lsl)
 	{
-		return null == lsl ? false : _mmCurve.containsKey (lsl.fullyQualifiedName());
+		return null == lsl ? false : _mmIncrement.containsKey (lsl.fullyQualifiedName());
 	}
 
 	/**
@@ -90,47 +90,49 @@ public class LSQMCurveRecord {
 
 		java.lang.String strLabel = lsl.fullyQualifiedName();
 
-		return _mmCurve.containsKey (strLabel) && _mmCurve.get (strLabel).containsKey (strQM);
+		return _mmIncrement.containsKey (strLabel) && _mmIncrement.get (strLabel).containsKey (strQM);
 	}
 
 	/**
-	 * Set the LSQM Curve
+	 * Set the LSQM Increment Span
 	 * 
-	 * @param strLatentState The Quantification Metric
-	 * @param dblValue The QM's Value
+	 * @param lsl The Latent State Label
+	 * @param strQM The Quantification Metric
+	 * @param spanIncrement The Increment Span
 	 * 
-	 * @return TRUE => The QM successfully set
+	 * @return TRUE => The LSQM Increment Span successfully set
 	 */
 
-	public boolean setQMCurve (
+	public boolean setQMSpan (
+		final org.drip.state.identifier.LatentStateLabel lsl,
 		final java.lang.String strQM,
-		final org.drip.analytics.definition.Curve curve)
+		final org.drip.spline.grid.Span spanIncrement)
 	{
-		if (null == strQM || strQM.isEmpty() || null == curve) return false;
+		if (null == lsl || null == strQM || strQM.isEmpty() || null == spanIncrement) return false;
 
-		java.lang.String strLabel = curve.label().fullyQualifiedName();
+		java.lang.String strLabel = lsl.fullyQualifiedName();
 
-		java.util.Map<java.lang.String, org.drip.analytics.definition.Curve> mapCurve = _mmCurve.containsKey
-			(strLabel) ? _mmCurve.get (strLabel) : new java.util.HashMap<java.lang.String,
-				org.drip.analytics.definition.Curve>();
+		java.util.Map<java.lang.String, org.drip.spline.grid.Span> mapSpanIncrement =
+			_mmIncrement.containsKey (strLabel) ? _mmIncrement.get (strLabel) : new
+				java.util.HashMap<java.lang.String, org.drip.spline.grid.Span>();
 
-		mapCurve.put (strQM, curve);
+		mapSpanIncrement.put (strQM, spanIncrement);
 
-		_mmCurve.put (strLabel, mapCurve);
+		_mmIncrement.put (strLabel, mapSpanIncrement);
 
 		return true;
 	}
 
 	/**
-	 * Retrieve the specified Latent State Quantification Metric Curve
+	 * Retrieve the specified Latent State Quantification Metric Span Increment
 	 * 
 	 * @param lsl The Latent State Label
 	 * @param strQM The Quantification Metric
 	 * 
-	 * @return The Latent State Quantification Metric Curve
+	 * @return The Latent State Quantification Metric Span Increment
 	 */
 
-	public org.drip.analytics.definition.Curve qm (
+	public org.drip.spline.grid.Span span (
 		final org.drip.state.identifier.LatentStateLabel lsl,
 		final java.lang.String strQM)
 	{
@@ -138,9 +140,9 @@ public class LSQMCurveRecord {
 
 		java.lang.String strLabel = lsl.fullyQualifiedName();
 
-		java.util.Map<java.lang.String, org.drip.analytics.definition.Curve> mapCurve = _mmCurve.get
+		java.util.Map<java.lang.String, org.drip.spline.grid.Span> mapSpanIncrement = _mmIncrement.get
 			(strLabel);
 
-		return mapCurve.containsKey (strQM) ? mapCurve.get (strQM) : null;
+		return mapSpanIncrement.containsKey (strQM) ? mapSpanIncrement.get (strQM) : null;
 	}
 }

@@ -61,18 +61,20 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMPointUpda
 		final double dblForwardRateVolatility,
 		final double dblForwardRateVolatilityIncrement)
 	{
-		org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMPointRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot = new
+			org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrSnapshot.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE, dblForwardRate))
 			return null;
 
 		if (!lrSnapshot.setQM (org.drip.state.identifier.VolatilityLabel.Standard (lslForward),
-			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_VOLATILITY,
+			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_SABR_VOLATILITY,
 				dblForwardRateVolatility))
 			return null;
 
-		org.drip.dynamics.evolution.LSQMPointRecord lrIncrement = new org.drip.dynamics.evolution.LSQMPointRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrIncrement = new
+			org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrIncrement.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_FORWARD_RATE,
@@ -80,7 +82,7 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMPointUpda
 			return null;
 
 		if (!lrIncrement.setQM (org.drip.state.identifier.VolatilityLabel.Standard (lslForward),
-			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_VOLATILITY,
+			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_SABR_VOLATILITY,
 				dblForwardRateVolatilityIncrement))
 			return null;
 
@@ -149,7 +151,7 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMPointUpda
 		throws java.lang.Exception
 	{
 		return snapshot().qm (org.drip.state.identifier.VolatilityLabel.Standard (_lslForward),
-			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_VOLATILITY);
+			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_SABR_VOLATILITY);
 	}
 
 	/**
@@ -164,6 +166,6 @@ public class ForwardRateUpdate extends org.drip.dynamics.evolution.LSQMPointUpda
 		throws java.lang.Exception
 	{
 		return increment().qm (org.drip.state.identifier.VolatilityLabel.Standard (_lslForward),
-			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_VOLATILITY);
+			org.drip.analytics.definition.LatentStateStatic.VOLATILITY_QM_SABR_VOLATILITY);
 	}
 }

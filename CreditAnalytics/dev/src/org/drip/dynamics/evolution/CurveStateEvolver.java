@@ -41,7 +41,7 @@ public interface CurveStateEvolver {
 	 * 
 	 * @param dblSpotDate The Spot Date
 	 * @param dblViewDate The View Date
-	 * @param dblViewTimeIncrement The View Time Increment
+	 * @param dblViewTimeIncrement The Evolution Increment
 	 * @param lsqmPrev The Previous LSQM Curve Update
 	 * 
 	 * @return The LSQM Curve Update

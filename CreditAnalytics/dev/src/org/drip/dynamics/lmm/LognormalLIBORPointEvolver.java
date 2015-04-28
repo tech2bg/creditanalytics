@@ -29,8 +29,8 @@ package org.drip.dynamics.lmm;
  */
 
 /**
- * LognormalLIBOREvolver sets up and implements the Multi-Factor No-arbitrage Dynamics of the Rates State
- *  Quantifiers traced from the Evolution of the LIBOR Forward Rate as formulated in:
+ * LognormalLIBORPointEvolver sets up and implements the Multi-Factor No-arbitrage Dynamics of the Point
+ * 	Rates State Quantifiers traced from the Evolution of the LIBOR Forward Rate as formulated in:
  * 
  * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
  * 		Finance 7 (2), 127-155.
@@ -38,7 +38,7 @@ package org.drip.dynamics.lmm;
  * @author Lakshmi Krishnamurthy
  */
 
-public class LognormalLIBOREvolver implements org.drip.dynamics.evolution.PointStateEvolver {
+public class LognormalLIBORPointEvolver implements org.drip.dynamics.evolution.PointStateEvolver {
 	private org.drip.analytics.rates.ForwardCurve _fc = null;
 	private org.drip.analytics.rates.DiscountCurve _dc = null;
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
@@ -138,7 +138,7 @@ public class LognormalLIBOREvolver implements org.drip.dynamics.evolution.PointS
 	}
 
 	/**
-	 * LognormalLIBOREvolver Constructor
+	 * LognormalLIBORPointEvolver Constructor
 	 * 
 	 * @param lslFunding The Funding Latent State Label
 	 * @param lslForward The Forward Latent State Label
@@ -149,7 +149,7 @@ public class LognormalLIBOREvolver implements org.drip.dynamics.evolution.PointS
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
 
-	public LognormalLIBOREvolver (
+	public LognormalLIBORPointEvolver (
 		final org.drip.state.identifier.FundingLabel lslFunding,
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final org.drip.dynamics.lmm.LognormalLIBORVolatility llv,
@@ -159,7 +159,7 @@ public class LognormalLIBOREvolver implements org.drip.dynamics.evolution.PointS
 	{
 		if (null == (_lslFunding = lslFunding) || null == (_lslForward = lslForward) || null == (_llv = llv)
 			|| null == (_fc = fc) || null == (_dc = dc))
-			throw new java.lang.Exception ("LognormalLIBOREvolver ctr: Invalid Inputs");
+			throw new java.lang.Exception ("LognormalLIBORPointEvolver ctr: Invalid Inputs");
 	}
 
 	/**
@@ -217,7 +217,7 @@ public class LognormalLIBOREvolver implements org.drip.dynamics.evolution.PointS
 		return _dc;
 	}
 
-	@Override public org.drip.dynamics.lmm.BGMUpdate evolve (
+	@Override public org.drip.dynamics.lmm.BGMPointUpdate evolve (
 		final double dblSpotDate,
 		final double dblViewDate,
 		final double dblViewTimeIncrement,
@@ -226,7 +226,7 @@ public class LognormalLIBOREvolver implements org.drip.dynamics.evolution.PointS
 		if (!org.drip.quant.common.NumberUtil.IsValid (dblSpotDate) ||
 			!org.drip.quant.common.NumberUtil.IsValid (dblViewDate) || dblSpotDate > dblViewDate ||
 				!org.drip.quant.common.NumberUtil.IsValid (dblViewTimeIncrement) || (null != lsqmPrev &&
-					!(lsqmPrev instanceof org.drip.dynamics.lmm.BGMUpdate)))
+					!(lsqmPrev instanceof org.drip.dynamics.lmm.BGMPointUpdate)))
 			return null;
 
 		double dblViewTimeIncrementSQRT = java.lang.Math.sqrt (dblViewTimeIncrement);
@@ -239,7 +239,7 @@ public class LognormalLIBOREvolver implements org.drip.dynamics.evolution.PointS
 		double dblSpotRate = java.lang.Double.NaN;
 		double dblDiscountFactor = java.lang.Double.NaN;
 		double dblContinuouslyCompoundedForwardRate = java.lang.Double.NaN;
-		org.drip.dynamics.lmm.BGMUpdate bgmPrev = null == lsqmPrev ? null : (org.drip.dynamics.lmm.BGMUpdate)
+		org.drip.dynamics.lmm.BGMPointUpdate bgmPrev = null == lsqmPrev ? null : (org.drip.dynamics.lmm.BGMPointUpdate)
 			lsqmPrev;
 
 		try {
@@ -306,7 +306,7 @@ public class LognormalLIBOREvolver implements org.drip.dynamics.evolution.PointS
 				dblContinuouslyCompoundedForwardRate) * dblViewTimeIncrement -
 					dblForwardVolatilityMultiFactorRandom;
 
-			return org.drip.dynamics.lmm.BGMUpdate.Create (_lslFunding, _lslForward, dblViewDate, dblViewDate
+			return org.drip.dynamics.lmm.BGMPointUpdate.Create (_lslFunding, _lslForward, dblViewDate, dblViewDate
 				+ dblViewTimeIncrement * 365.25, dblLIBOR + dblLIBORIncrement, dblLIBORIncrement,
 					dblContinuouslyCompoundedForwardRate + dblContinuousForwardRateIncrement,
 						dblContinuousForwardRateIncrement, dblSpotRate + dblSpotRateIncrement,
