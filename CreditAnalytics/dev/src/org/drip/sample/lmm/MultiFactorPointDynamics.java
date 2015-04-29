@@ -44,7 +44,7 @@ import org.drip.state.identifier.*;
  */
 
 /**
- * MultiFactorLIBORDynamics demonstrates the Construction and Usage of the LIBOR State Evolver, and the
+ * MultiFactorPointDynamics demonstrates the Construction and Usage of the Point LIBOR State Evolver, and the
  *  eventual Evolution of the related Discount/Forward Latent State Quantification Metrics. The Reference is:
  * 
  * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
@@ -53,7 +53,7 @@ import org.drip.state.identifier.*;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultiFactorLIBORDynamics {
+public class MultiFactorPointDynamics {
 
 	private static final MarketSurface FlatVolatilitySurface (
 		final JulianDate dtStart,

@@ -38,8 +38,94 @@ package org.drip.dynamics.lmm;
 public class BGMCurveUpdate extends org.drip.dynamics.evolution.LSQMCurveUpdate {
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
-	private org.drip.dynamics.hjm.MultiFactorVolatility _mfvLognormalLIBOR = null;
-	private org.drip.dynamics.hjm.MultiFactorVolatility _mfvContinuouslyCompoundedForward = null;
+	private org.drip.dynamics.lmm.LognormalLIBORVolatility _llv = null;
+
+	/**
+	 * Construct an Instance of BGMCurveUpdate
+	 * 
+	 * @param lslFunding The Funding Latent State Label
+	 * @param lslForward The Forward Latent State Label
+	 * @param dblInitialDate The Initial Date
+	 * @param dblFinalDate The Final Date
+	 * @param fcLIBOR The LIBOR Forward Curve Snapshot
+	 * @param spanLIBORIncrement The LIBOR Forward Curve Span Increment
+	 * @param fcContinuousForwardRate The Instantaneous Continuously Compounded Forward Rate Curve Snapshot
+	 * @param spanContinuousForwardRateIncrement The Instantaneous Continuously Compounded Forward Rate Curve
+	 * 			Span Increment
+	 * @param dcSpotRate The Spot Rate Discount Curve Snapshot
+	 * @param spanSpotRateIncrement The Spot Rate Discount Curve Span Increment
+	 * @param dcDiscountFactor The Discount Factor Discount Curve
+	 * @param spanDiscountFactorIncrement The Discount Factor Discount Curve Span Increment
+	 * @param llv The Log-normal LIBOR Rate Volatility
+	 * 
+	 * @return Instance of BGMCurveUpdate
+	 */
+
+	public static final BGMCurveUpdate Create (
+		final org.drip.state.identifier.FundingLabel lslFunding,
+		final org.drip.state.identifier.ForwardLabel lslForward,
+		final double dblInitialDate,
+		final double dblFinalDate,
+		final org.drip.analytics.rates.ForwardCurve fcLIBOR,
+		final org.drip.spline.grid.Span spanLIBORIncrement,
+		final org.drip.analytics.rates.ForwardCurve fcContinuousForwardRate,
+		final org.drip.spline.grid.Span spanContinuousForwardRateIncrement,
+		final org.drip.analytics.rates.DiscountCurve dcSpotRate,
+		final org.drip.spline.grid.Span spanSpotRateIncrement,
+		final org.drip.analytics.rates.DiscountCurve dcDiscountFactor,
+		final org.drip.spline.grid.Span spanDiscountFactorIncrement,
+		final org.drip.dynamics.lmm.LognormalLIBORVolatility llv)
+	{
+		org.drip.dynamics.evolution.LSQMCurveSnapshot snapshot = new
+			org.drip.dynamics.evolution.LSQMCurveSnapshot();
+
+		if (!snapshot.setQMCurve (org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_LIBOR_RATE,
+			fcLIBOR))
+			return null;
+
+		if (!snapshot.setQMCurve
+			(org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE,
+				fcContinuousForwardRate))
+			return null;
+
+		if (!snapshot.setQMCurve (org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE,
+			dcSpotRate))
+			return null;
+
+		if (!snapshot.setQMCurve
+			(org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR, dcDiscountFactor))
+			return null;
+
+		org.drip.dynamics.evolution.LSQMCurveIncrement increment = new
+			org.drip.dynamics.evolution.LSQMCurveIncrement();
+
+		if (null != spanLIBORIncrement && !increment.setQMSpan (lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_LIBOR_RATE, spanLIBORIncrement))
+			return null;
+
+		if (null != spanContinuousForwardRateIncrement && !increment.setQMSpan (lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE,
+				spanContinuousForwardRateIncrement))
+			return null;
+
+		if (null != spanSpotRateIncrement && !increment.setQMSpan (lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE, spanSpotRateIncrement))
+			return null;
+
+		if (null != spanDiscountFactorIncrement && !increment.setQMSpan (lslFunding,
+			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR,
+				spanDiscountFactorIncrement))
+			return null;
+
+		try {
+			return new BGMCurveUpdate (lslFunding, lslForward, dblInitialDate, dblFinalDate, snapshot,
+				increment, llv);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	private BGMCurveUpdate (
 		final org.drip.state.identifier.FundingLabel lslFunding,
@@ -48,15 +134,12 @@ public class BGMCurveUpdate extends org.drip.dynamics.evolution.LSQMCurveUpdate 
 		final double dblFinalDate,
 		final org.drip.dynamics.evolution.LSQMCurveSnapshot snapshot,
 		final org.drip.dynamics.evolution.LSQMCurveIncrement increment,
-		final org.drip.dynamics.hjm.MultiFactorVolatility mfvLognormalLIBOR,
-		final org.drip.dynamics.hjm.MultiFactorVolatility mfvContinuouslyCompoundedForward)
+		final org.drip.dynamics.lmm.LognormalLIBORVolatility llv)
 		throws java.lang.Exception
 	{
 		super (dblInitialDate, dblFinalDate, snapshot, increment);
 
-		if (null == (_lslFunding = lslFunding) || null == (_lslForward = lslForward) || null ==
-			(_mfvLognormalLIBOR = mfvLognormalLIBOR) || null == (_mfvContinuouslyCompoundedForward =
-				mfvContinuouslyCompoundedForward))
+		if (null == (_lslFunding = lslFunding) || null == (_lslForward = lslForward) || null == (_llv = llv))
 			throw new java.lang.Exception ("BGMCurveUpdate ctr: Invalid Inputs");
 	}
 
@@ -166,19 +249,8 @@ public class BGMCurveUpdate extends org.drip.dynamics.evolution.LSQMCurveUpdate 
 	 * @return The Log-normal LIBOR Volatility Instance
 	 */
 
-	public org.drip.dynamics.hjm.MultiFactorVolatility lognormalLIBORVolatility()
+	public org.drip.dynamics.lmm.LognormalLIBORVolatility lognormalLIBORVolatility()
 	{
-		return _mfvLognormalLIBOR;
-	}
-
-	/**
-	 * Retrieve the Continuously Compounded Forward Rate Volatility Instance
-	 * 
-	 * @return The Continuously Compounded Forward Rate Volatility Instance
-	 */
-
-	public org.drip.dynamics.hjm.MultiFactorVolatility continuouslyCompoundedForwardVolatility()
-	{
-		return _mfvContinuouslyCompoundedForward;
+		return _llv;
 	}
 }

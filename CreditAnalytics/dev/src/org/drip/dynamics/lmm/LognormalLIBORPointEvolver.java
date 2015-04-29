@@ -69,7 +69,6 @@ public class LognormalLIBORPointEvolver implements org.drip.dynamics.evolution.P
 		throws java.lang.Exception
 	{
 		final int iNumFactor = adblMultivariateRandom.length;
-		final org.drip.analytics.rates.DiscountCurve dc = _dc;
 
 		final double dblViewTimeIncrementSQRT = java.lang.Math.sqrt (dblViewTimeIncrement);
 
@@ -93,7 +92,7 @@ public class LognormalLIBORPointEvolver implements org.drip.dynamics.evolution.P
 					}
 				}
 
-				return (dc.forward (dblDate, dblDate + 1.) + 0.5 * dblForwardPointVolatilityModulus) *
+				return (_fc.forward (dblDate) + 0.5 * dblForwardPointVolatilityModulus) *
 					dblViewTimeIncrement + dblPointVolatilityMultifactorRandom * dblViewTimeIncrementSQRT;
 			}
 		};
@@ -109,7 +108,6 @@ public class LognormalLIBORPointEvolver implements org.drip.dynamics.evolution.P
 		throws java.lang.Exception
 	{
 		final int iNumFactor = adblMultivariateRandom.length;
-		final org.drip.analytics.rates.DiscountCurve dc = _dc;
 
 		final double dblViewTimeIncrementSQRT = java.lang.Math.sqrt (dblViewTimeIncrement);
 
@@ -129,8 +127,8 @@ public class LognormalLIBORPointEvolver implements org.drip.dynamics.evolution.P
 							adblMultivariateRandom[i];
 				}
 
-				return dc.forward (dblDate, dblDate + 1.) * dblViewTimeIncrement +
-					dblPointVolatilityMultifactorRandom * dblViewTimeIncrementSQRT;
+				return _fc.forward (dblDate) * dblViewTimeIncrement + dblPointVolatilityMultifactorRandom *
+					dblViewTimeIncrementSQRT;
 			}
 		};
 
