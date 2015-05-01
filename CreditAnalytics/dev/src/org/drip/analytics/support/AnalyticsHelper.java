@@ -1090,4 +1090,34 @@ public class AnalyticsHelper {
 
 		return adblEqualWeighted;
 	}
+
+	/**
+	 * Aggregate the Base and the Roll Tenors onto a Composite Tenor
+	 * 
+	 * @param strBaseTenor The Base Tenor
+	 * @param strRollTenor The Roll Tenor
+	 * 
+	 * @return The Agrregated Composite Tenor
+	 */
+
+	public static final java.lang.String AggregateTenor (
+		final java.lang.String strBaseTenor,
+		final java.lang.String strRollTenor)
+	{
+		if (null == strBaseTenor || strBaseTenor.isEmpty()) return strRollTenor;
+
+		char chBaseTenor = strBaseTenor.charAt (strBaseTenor.length() - 1);
+
+		char chRollTenor = strRollTenor.charAt (strRollTenor.length() - 1);
+
+		if (chRollTenor != chBaseTenor) return null;
+
+		int iBaseTimeUnit = (int) new java.lang.Double (strBaseTenor.substring (0, strBaseTenor.length() -
+			1)).doubleValue();
+
+		int iRollTimeUnit = (int) new java.lang.Double (strRollTenor.substring (0, strRollTenor.length() -
+			1)).doubleValue();
+
+		return "" + (iBaseTimeUnit + iRollTimeUnit) + chBaseTenor;
+	}
 }

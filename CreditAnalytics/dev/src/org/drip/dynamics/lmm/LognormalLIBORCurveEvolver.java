@@ -61,98 +61,20 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 		return freR1ToR1.derivative (dblTargetPointDate, 1);
 	}
 
-	private double continuousForwardRateIncrement (
-		final double dblTargetPointDate,
-		final double dblViewTimeIncrement,
-		final double dblViewTimeIncrementSQRT,
-		final double[] adblMultivariateRandom,
-		final org.drip.analytics.rates.ForwardCurve fc,
-		final org.drip.dynamics.lmm.LognormalLIBORVolatility llv)
-		throws java.lang.Exception
-	{
-		final int iNumFactor = adblMultivariateRandom.length;
-
-		org.drip.function.deterministic.R1ToR1 continuousForwardRateR1ToR1 = new
-			org.drip.function.deterministic.R1ToR1 (null) {
-			@Override public double evaluate (
-				final double dblDate)
-				throws java.lang.Exception
-			{
-				double dblForwardPointVolatilityModulus = 0.;
-				double dblPointVolatilityMultifactorRandom = 0.;
-
-				double[] adblContinuousForwardVolatility = llv.continuousForwardVolatility (dblDate, fc);
-
-				if (null != adblContinuousForwardVolatility) {
-					for (int i = 0; i < iNumFactor; ++i) {
-						dblForwardPointVolatilityModulus += adblContinuousForwardVolatility[i] *
-							adblContinuousForwardVolatility[i];
-						dblPointVolatilityMultifactorRandom += adblContinuousForwardVolatility[i] *
-							adblMultivariateRandom[i];
-					}
-				}
-
-				return (fc.forward (dblDate) + 0.5 * dblForwardPointVolatilityModulus) * dblViewTimeIncrement
-					+ dblPointVolatilityMultifactorRandom * dblViewTimeIncrementSQRT;
-			}
-		};
-
-		return continuousForwardRateR1ToR1.derivative (dblTargetPointDate, 1);
-	}
-
-	private double spotRateIncrement (
-		final double dblSpotDate,
-		final double dblTargetPointDate,
-		final double dblViewTimeIncrement,
-		final double dblViewTimeIncrementSQRT,
-		final double[] adblMultivariateRandom,
-		final org.drip.analytics.rates.ForwardCurve fc,
-		final org.drip.dynamics.lmm.LognormalLIBORVolatility llv)
-		throws java.lang.Exception
-	{
-		final int iNumFactor = adblMultivariateRandom.length;
-
-		org.drip.function.deterministic.R1ToR1 spotRateR1ToR1 = new org.drip.function.deterministic.R1ToR1
-			(null) {
-			@Override public double evaluate (
-				final double dblDate)
-				throws java.lang.Exception
-			{
-				double dblPointVolatilityMultifactorRandom = 0.;
-
-				double[] adblContinuousForwardVolatility = llv.continuousForwardVolatility (dblDate, fc);
-
-				if (null != adblContinuousForwardVolatility) {
-					for (int i = 0; i < iNumFactor; ++i)
-						dblPointVolatilityMultifactorRandom += adblContinuousForwardVolatility[i] *
-							adblMultivariateRandom[i];
-				}
-
-				return fc.forward (dblDate) * dblViewTimeIncrement + dblPointVolatilityMultifactorRandom *
-					dblViewTimeIncrementSQRT;
-			}
-		};
-
-		return spotRateR1ToR1.derivative (dblSpotDate, 1);
-	}
-
-	private org.drip.dynamics.lmm.BGMForwardTimeSnap timeSnap (
+	private org.drip.dynamics.lmm.BGMForwardTenorSnap timeSnap (
 		final double dblSpotDate,
 		final double dblTargetPointDate,
 		final double dblViewTimeIncrement,
 		final double dblViewTimeIncrementSQRT,
 		final java.lang.String strForwardTenor,
-		final org.drip.analytics.rates.ForwardCurve fcLIBOR,
-		final org.drip.analytics.rates.ForwardCurve fcContinuouslyCompounded,
-		final org.drip.analytics.rates.DiscountCurve dcSpotRate,
-		final org.drip.analytics.rates.DiscountCurve dcDiscountFactor,
+		final org.drip.analytics.rates.ForwardCurve fc,
+		final org.drip.analytics.rates.DiscountCurve dc,
 		final org.drip.dynamics.lmm.LognormalLIBORVolatility llv)
 	{
 		double[] adblLognormalFactorPointVolatility = llv.factorPointVolatility (dblSpotDate,
 			dblTargetPointDate);
 
-		double[] adblContinuousForwardVolatility = llv.continuousForwardVolatility (dblTargetPointDate,
-			fcContinuouslyCompounded);
+		double[] adblContinuousForwardVolatility = llv.continuousForwardVolatility (dblTargetPointDate, fc);
 
 		double[] adblMultivariateRandom = llv.msg().random();
 
@@ -177,40 +99,28 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 		}
 
 		try {
-			double dblLIBOR = fcLIBOR.forward (dblTargetPointDate);
+			double dblLIBOR = fc.forward (dblTargetPointDate);
 
-			double dblDiscountFactor = dcDiscountFactor.df (dblTargetPointDate);
+			double dblDiscountFactor = dc.df (dblTargetPointDate);
 
-			double dblSpotRate = dcSpotRate.forward (dblSpotDate, dblSpotDate + 1.);
+			double dblSpotRate = dc.forward (dblSpotDate, dblSpotDate + 1.);
 
-			double dblContinuousForwardRate = fcContinuouslyCompounded.forward (dblTargetPointDate);
+			double dblContinuousForwardRate = fc.forward (dblTargetPointDate);
 
 			double dblLIBORDCF = org.drip.analytics.support.AnalyticsHelper.TenorToYearFraction
 				(strForwardTenor) * dblLIBOR;
 
-			double dblLIBORIncrement = dblViewTimeIncrement * (forwardDerivative (fcLIBOR,
-				dblTargetPointDate) + dblLIBOR * dblCrossVolatilityDotProduct +
-					(dblLognormalPointVolatilityModulus * dblLIBOR * dblLIBORDCF / (1. + dblLIBORDCF))) +
-						dblLIBOR * dblLIBORVolatilityMultiFactorRandom;
-
-			double dblContinuousForwardRateIncrement = continuousForwardRateIncrement (dblTargetPointDate,
-				dblViewTimeIncrement, dblViewTimeIncrementSQRT, adblMultivariateRandom,
-					fcContinuouslyCompounded, llv);
-
-			double dblSpotRateIncrement = spotRateIncrement (dblSpotDate, dblTargetPointDate,
-				dblViewTimeIncrement, dblViewTimeIncrementSQRT, adblMultivariateRandom,
-					fcContinuouslyCompounded, llv);
+			double dblLIBORIncrement = dblViewTimeIncrement * (forwardDerivative (fc, dblTargetPointDate) +
+				dblLIBOR * dblCrossVolatilityDotProduct + (dblLognormalPointVolatilityModulus * dblLIBOR *
+					dblLIBORDCF / (1. + dblLIBORDCF))) + dblLIBOR * dblLIBORVolatilityMultiFactorRandom;
 
 			double dblDiscountFactorIncrement = dblDiscountFactor * (dblSpotRate - dblContinuousForwardRate)
 				* dblViewTimeIncrement - dblForwardVolatilityMultiFactorRandom;
 
-			return new org.drip.dynamics.lmm.BGMForwardTimeSnap (dblLIBOR + dblLIBORIncrement,
-				dblLIBORIncrement, dblContinuousForwardRate + dblContinuousForwardRateIncrement,
-					dblContinuousForwardRateIncrement, dblSpotRate + dblSpotRateIncrement,
-						dblSpotRateIncrement, dblDiscountFactor + dblDiscountFactorIncrement,
-							dblDiscountFactorIncrement, java.lang.Math.sqrt
-								(dblLognormalPointVolatilityModulus), java.lang.Math.sqrt
-									(dblContinuousForwardVolatilityModulus));
+			return new org.drip.dynamics.lmm.BGMForwardTenorSnap (dblTargetPointDate, dblLIBOR +
+				dblLIBORIncrement, dblLIBORIncrement, dblDiscountFactor + dblDiscountFactorIncrement,
+					dblDiscountFactorIncrement, java.lang.Math.sqrt (dblLognormalPointVolatilityModulus),
+						java.lang.Math.sqrt (dblContinuousForwardVolatilityModulus));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -286,18 +196,14 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 
 		org.drip.analytics.date.JulianDate dtTargetPoint = null;
 		org.drip.dynamics.lmm.BGMCurveUpdate bgmPrev = (org.drip.dynamics.lmm.BGMCurveUpdate) lsqmPrev;
-		org.drip.dynamics.lmm.BGMForwardTimeSnap[] aBGMTS = new
-			org.drip.dynamics.lmm.BGMForwardTimeSnap[_iNumForwardTenor + 1];
+		org.drip.dynamics.lmm.BGMForwardTenorSnap[] aBGMTS = new
+			org.drip.dynamics.lmm.BGMForwardTenorSnap[_iNumForwardTenor + 1];
 
 		double dblViewTimeIncrementSQRT = java.lang.Math.sqrt (dblViewTimeIncrement);
 
-		org.drip.analytics.rates.ForwardCurve fcLIBOR = bgmPrev.libor();
+		org.drip.analytics.rates.ForwardCurve fc = bgmPrev.forwardCurve();
 
-		org.drip.analytics.rates.ForwardCurve fcContinuouslyCompounded = bgmPrev.continuousForwardRate();
-
-		org.drip.analytics.rates.DiscountCurve dcSpotRate = bgmPrev.spotRate();
-
-		org.drip.analytics.rates.DiscountCurve dcDiscountFactor = bgmPrev.discountFactor();
+		org.drip.analytics.rates.DiscountCurve dc = bgmPrev.discountCurve();
 
 		org.drip.dynamics.lmm.LognormalLIBORVolatility llv = bgmPrev.lognormalLIBORVolatility();
 
@@ -313,12 +219,9 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 
 		for (int i = 0; i <= _iNumForwardTenor; ++i) {
 			if (null == (aBGMTS[i] = timeSnap (dblSpotDate, dtTargetPoint.julian(), dblViewTimeIncrement,
-				dblViewTimeIncrementSQRT, strForwardTenor, fcLIBOR, fcContinuouslyCompounded, dcSpotRate,
-					dcDiscountFactor, llv)) || null == (dtTargetPoint = dtTargetPoint.addTenor
-						(strForwardTenor)))
+				dblViewTimeIncrementSQRT, strForwardTenor, fc, dc, llv)) || null == (dtTargetPoint =
+					dtTargetPoint.addTenor (strForwardTenor)))
 				return null;
-
-			System.out.println ("\t" + aBGMTS[i]);
 		}
 
 		return null;

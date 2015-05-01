@@ -100,4 +100,15 @@ public class ActActDCParams {
 	{
 		return _dblEnd;
 	}
+
+	/**
+	 * Number of Days in the Act/Act Period
+	 * 
+	 * @return The Number of Days in the Act/Act Period
+	 */
+
+	public double days()
+	{
+		return _dblEnd - _dblStart;
+	}
 }

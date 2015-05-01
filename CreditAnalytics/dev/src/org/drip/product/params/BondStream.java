@@ -135,15 +135,15 @@ public class BondStream extends org.drip.product.rates.Stream {
 
 			java.util.List<java.lang.Double> lsStreamEdgeDate = bPeriodsFromForward ?
 				org.drip.analytics.support.CompositePeriodBuilder.ForwardEdgeDates (dtEffective, dtMaturity,
-					strTenor, dapAccrualEnd, org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB) :
+					strTenor, dapAccrualEnd, org.drip.analytics.support.CompositePeriodBuilder.LONG_STUB) :
 						org.drip.analytics.support.CompositePeriodBuilder.BackwardEdgeDates (dtEffective,
 							dtMaturity, strTenor, dapAccrualEnd,
-								org.drip.analytics.support.CompositePeriodBuilder.SHORT_STUB);
+								org.drip.analytics.support.CompositePeriodBuilder.LONG_STUB);
 
 			if (null == forwardLabel) {
 				org.drip.param.period.ComposableFixedUnitSetting cfus = new
 					org.drip.param.period.ComposableFixedUnitSetting (strTenor,
-						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
+						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
 							dblCoupon, 0., strCurrency);
 
 				lsCouponPeriod = org.drip.analytics.support.CompositePeriodBuilder.FixedCompositeUnit
@@ -151,7 +151,7 @@ public class BondStream extends org.drip.product.rates.Stream {
 			} else {
 				org.drip.param.period.ComposableFloatingUnitSetting cfus = new
 					org.drip.param.period.ComposableFloatingUnitSetting (strTenor,
-						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_REGULAR, null,
+						org.drip.analytics.support.CompositePeriodBuilder.EDGE_DATE_SEQUENCE_SINGLE, null,
 							forwardLabel,
 								org.drip.analytics.support.CompositePeriodBuilder.REFERENCE_PERIOD_IN_ADVANCE,
 					dblCoupon);

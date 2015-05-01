@@ -161,6 +161,7 @@ public class CompositePeriodBuilder {
 	{
 		if (null == dtEffective || null == dtMaturity || null == strTenor || strTenor.isEmpty()) return null;
 
+		java.lang.String strPeriodRollTenor = "";
 		org.drip.analytics.date.JulianDate dtEdge = dtEffective;
 
 		double dblMaturityDate = dtMaturity.julian();
@@ -174,7 +175,12 @@ public class CompositePeriodBuilder {
 		while (dblEdgeDate < dblMaturityDate) {
 			lsEdgeDate.add (dblEdgeDate);
 
-			if (null == (dtEdge = dtEdge.addTenor (strTenor))) return null;
+			strPeriodRollTenor = org.drip.analytics.support.AnalyticsHelper.AggregateTenor
+				(strPeriodRollTenor, strTenor);
+
+			if (null == (dtEdge = dtMaturity.addTenor (strPeriodRollTenor))) return null;
+
+			// if (null == (dtEdge = dtEdge.addTenor (strTenor))) return null;
 
 			dblEdgeDate = dtEdge.julian();
 		}
@@ -229,6 +235,7 @@ public class CompositePeriodBuilder {
 
 		double dblEffectiveDate = dtEffective.julian();
 
+		java.lang.String strPeriodRollTenor = "";
 		org.drip.analytics.date.JulianDate dtEdge = dtMaturity;
 
 		double dblEdgeDate = dtEdge.julian();
@@ -240,7 +247,10 @@ public class CompositePeriodBuilder {
 		while (dblEdgeDate > dblEffectiveDate) {
 			lsEdgeDate.add (0, dblEdgeDate);
 
-			if (null == (dtEdge = dtEdge.subtractTenor (strTenor))) return null;
+			strPeriodRollTenor = org.drip.analytics.support.AnalyticsHelper.AggregateTenor
+				(strPeriodRollTenor, strTenor);
+
+			if (null == (dtEdge = dtMaturity.subtractTenor (strPeriodRollTenor))) return null;
 
 			dblEdgeDate = dtEdge.julian();
 		}

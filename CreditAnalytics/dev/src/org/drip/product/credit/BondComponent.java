@@ -1626,7 +1626,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || null == csqs)
+		if (!org.drip.quant.common.NumberUtil.IsValid (dblDate) || (isFloater() && null == csqs))
 			throw new java.lang.Exception ("BondComponent::accrued => Invalid inputs");
 
 		org.drip.analytics.date.JulianDate dt = new org.drip.analytics.date.JulianDate (dblDate);

@@ -144,9 +144,11 @@ public class Convention {
 
 		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DCAct_365L())) return false;
 
+		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DCAct_Act())) return false;
+
 		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DCAct_Act_ISDA())) return false;
 
-		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DCAct_Act())) return false;
+		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DCAct_Act_UST())) return false;
 
 		if (!UpdateDCCalcMap (new org.drip.analytics.daycount.DCNL_360())) return false;
 

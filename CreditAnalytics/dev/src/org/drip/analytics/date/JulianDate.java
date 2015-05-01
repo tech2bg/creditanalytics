@@ -270,7 +270,9 @@ public class JulianDate implements java.lang.Comparable<JulianDate> {
 				++iYear;
 				iMonth -= 12;
 			}
-		} else if (0 >= iMonth) {
+		}
+
+		while (0 >= iMonth) {
 			--iYear;
 			iMonth += 12;
 		}

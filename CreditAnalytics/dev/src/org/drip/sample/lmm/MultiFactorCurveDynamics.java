@@ -216,10 +216,6 @@ public class MultiFactorCurveDynamics {
 				dblSpotDate,
 				fc,
 				null,
-				fc,
-				null,
-				dc,
-				null,
 				dc,
 				null,
 				LLVInstance (

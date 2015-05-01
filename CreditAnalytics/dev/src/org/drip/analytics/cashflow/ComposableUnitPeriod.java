@@ -258,10 +258,13 @@ public abstract class ComposableUnitPeriod {
 			throw new java.lang.Exception
 				("ComposableUnitPeriod::accrualDCF => Invalid in-period accrual date!");
 
+		org.drip.analytics.daycount.ActActDCParams aap = new org.drip.analytics.daycount.ActActDCParams
+			(_iFreq, _dblStartDate, _dblEndDate);
+
 		return org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate, dblAccrualEnd,
-			accrualDC(), accrualEOMAdjustment(), null, calendar()) /
+			accrualDC(), accrualEOMAdjustment(), aap, calendar()) /
 				org.drip.analytics.daycount.Convention.YearFraction (_dblStartDate, _dblEndDate,
-					accrualDC(), accrualEOMAdjustment(), null, calendar()) * _dblFullCouponDCF;
+					accrualDC(), accrualEOMAdjustment(), aap, calendar()) * _dblFullCouponDCF;
 	}
 
 	/**

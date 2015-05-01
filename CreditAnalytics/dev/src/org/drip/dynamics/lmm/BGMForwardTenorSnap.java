@@ -29,8 +29,8 @@ package org.drip.dynamics.lmm;
  */
 
 /**
- * BGMForwardTimeSnap contains the Forward Curve Rates Latent State Quantifiers traced from the Evolution
- *  Increment of the LIBOR Forward Rate as formulated in:
+ * BGMForwardTenorSnap contains the Absolute and the Incremental Latent State Quantifier Snapshot traced from
+ *  the Evolution of the LIBOR Forward Rate as formulated in:
  * 
  * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
  * 		Finance 7 (2), 127-155.
@@ -38,27 +38,21 @@ package org.drip.dynamics.lmm;
  * @author Lakshmi Krishnamurthy
  */
 
-public class BGMForwardTimeSnap {
+public class BGMForwardTenorSnap {
+	private double _dblDate = java.lang.Double.NaN;
 	private double _dblLIBOR = java.lang.Double.NaN;
-	private double _dblSpotRate = java.lang.Double.NaN;
 	private double _dblDiscountFactor = java.lang.Double.NaN;
 	private double _dblLIBORIncrement = java.lang.Double.NaN;
-	private double _dblSpotRateIncrement = java.lang.Double.NaN;
-	private double _dblContinuousForwardRate = java.lang.Double.NaN;
 	private double _dblDiscountFactorIncrement = java.lang.Double.NaN;
 	private double _dblLognormalLIBORVolatility = java.lang.Double.NaN;
-	private double _dblContinuousForwardRateIncrement = java.lang.Double.NaN;
 	private double _dblContinuouslyCompoundedForwardVolatility = java.lang.Double.NaN;
 
 	/**
-	 * BGMForwardTimeSnap Constructor
+	 * BGMForwardTenorSnap Constructor
 	 * 
+	 * @param dblDate The Date corresponding to the Tenor
 	 * @param dblLIBOR The LIBOR Rate
 	 * @param dblLIBORIncrement The LIBOR Rate Increment
-	 * @param dblContinuousForwardRate The Continuously Compounded Forward Rate
-	 * @param dblContinuousForwardRateIncrement The Continuously Compounded Forward Rate Increment
-	 * @param dblSpotRate The Spot Rate
-	 * @param dblSpotRateIncrement The Spot Rate Increment
 	 * @param dblDiscountFactor The Discount Factor
 	 * @param dblDiscountFactorIncrement The Discount Factor Increment
 	 * @param dblLognormalLIBORVolatility The Log-normal LIBOR Rate Volatility
@@ -67,37 +61,38 @@ public class BGMForwardTimeSnap {
 	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
 	 */
 
-	public BGMForwardTimeSnap (
+	public BGMForwardTenorSnap (
+		final double dblDate,
 		final double dblLIBOR,
 		final double dblLIBORIncrement,
-		final double dblContinuousForwardRate,
-		final double dblContinuousForwardRateIncrement,
-		final double dblSpotRate,
-		final double dblSpotRateIncrement,
 		final double dblDiscountFactor,
 		final double dblDiscountFactorIncrement,
 		final double dblLognormalLIBORVolatility,
 		final double dblContinuouslyCompoundedForwardVolatility)
 		throws java.lang.Exception
 	{
-		if (!org.drip.quant.common.NumberUtil.IsValid (_dblLIBOR = dblLIBOR) ||
-			!org.drip.quant.common.NumberUtil.IsValid (_dblLIBORIncrement = dblLIBORIncrement) ||
-				!org.drip.quant.common.NumberUtil.IsValid (_dblContinuousForwardRate =
-					dblContinuousForwardRate) || !org.drip.quant.common.NumberUtil.IsValid
-						(_dblContinuousForwardRateIncrement = dblContinuousForwardRateIncrement) ||
-							!org.drip.quant.common.NumberUtil.IsValid (_dblSpotRate = dblSpotRate) ||
-								!org.drip.quant.common.NumberUtil.IsValid (_dblSpotRateIncrement =
-									dblSpotRateIncrement) || !org.drip.quant.common.NumberUtil.IsValid
-										(_dblDiscountFactor = dblDiscountFactor) ||
-											!org.drip.quant.common.NumberUtil.IsValid
-												(_dblDiscountFactorIncrement = dblDiscountFactorIncrement) ||
-													!org.drip.quant.common.NumberUtil.IsValid
-														(_dblLognormalLIBORVolatility =
-															dblLognormalLIBORVolatility) ||
-																!org.drip.quant.common.NumberUtil.IsValid
-																	(_dblContinuouslyCompoundedForwardVolatility
-			= dblContinuouslyCompoundedForwardVolatility))
-			throw new java.lang.Exception ("BGMForwardTimeSnap ctr: Invalid Inputs");
+		if (!org.drip.quant.common.NumberUtil.IsValid (_dblDate = dblDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (_dblLIBOR = dblLIBOR) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblLIBORIncrement = dblLIBORIncrement) ||
+					!org.drip.quant.common.NumberUtil.IsValid (_dblDiscountFactor = dblDiscountFactor) ||
+						!org.drip.quant.common.NumberUtil.IsValid (_dblDiscountFactorIncrement =
+							dblDiscountFactorIncrement) || !org.drip.quant.common.NumberUtil.IsValid
+								(_dblLognormalLIBORVolatility = dblLognormalLIBORVolatility) ||
+									!org.drip.quant.common.NumberUtil.IsValid
+										(_dblContinuouslyCompoundedForwardVolatility =
+											dblContinuouslyCompoundedForwardVolatility))
+			throw new java.lang.Exception ("BGMForwardTenorSnap ctr: Invalid Inputs");
+	}
+
+	/**
+	 * Retrieve the Tenor Date
+	 * 
+	 * @return The Tenor Date
+	 */
+
+	public double date()
+	{
+		return _dblDate;
 	}
 
 	/**
@@ -120,50 +115,6 @@ public class BGMForwardTimeSnap {
 	public double liborIncrement()
 	{
 		return _dblLIBORIncrement;
-	}
-
-	/**
-	 * Retrieve the Continuously Compounded Forward Rate
-	 * 
-	 * @return The Continuously Compounded Forward Rate
-	 */
-
-	public double continuousForwardRate()
-	{
-		return _dblContinuousForwardRate;
-	}
-
-	/**
-	 * Retrieve the Continuously Compounded Forward Rate Increment
-	 * 
-	 * @return The Continuously Compounded Forward Rate Increment
-	 */
-
-	public double continuousForwardRateIncrement()
-	{
-		return _dblContinuousForwardRateIncrement;
-	}
-
-	/**
-	 * Retrieve the Spot Rate
-	 * 
-	 * @return The Spot Rate
-	 */
-
-	public double spotRate()
-	{
-		return _dblSpotRate;
-	}
-
-	/**
-	 * Retrieve the Spot Rate Increment
-	 * 
-	 * @return The Spot Rate Increment
-	 */
-
-	public double spotRateIncrement()
-	{
-		return _dblSpotRateIncrement;
 	}
 
 	/**
@@ -214,14 +165,8 @@ public class BGMForwardTimeSnap {
 	{
 		return org.drip.quant.common.FormatUtil.FormatDouble (_dblLIBOR, 1, 2, 100.) + "% | " +
 			org.drip.quant.common.FormatUtil.FormatDouble (_dblLIBORIncrement, 2, 2, 10000.) + " | " +
-				org.drip.quant.common.FormatUtil.FormatDouble (_dblContinuousForwardRate, 1, 2, 100.) +
-					"% | " + org.drip.quant.common.FormatUtil.FormatDouble
-						(_dblContinuousForwardRateIncrement, 2, 2, 10000.) + " | " +
-							org.drip.quant.common.FormatUtil.FormatDouble (_dblSpotRate, 1, 2, 100.) +
-								" % | " + org.drip.quant.common.FormatUtil.FormatDouble
-									(_dblSpotRateIncrement, 2, 2, 10000.) + " | " +
-										org.drip.quant.common.FormatUtil.FormatDouble (_dblDiscountFactor, 1,
-											4, 1.) + " | " + org.drip.quant.common.FormatUtil.FormatDouble
-												(_dblDiscountFactorIncrement, 2, 2, 10000.) + " ||";
+				org.drip.quant.common.FormatUtil.FormatDouble (_dblDiscountFactor, 1, 4, 1.) + " | " +
+					org.drip.quant.common.FormatUtil.FormatDouble (_dblDiscountFactorIncrement, 2, 2, 10000.)
+						+ " ||";
 	}
 }
