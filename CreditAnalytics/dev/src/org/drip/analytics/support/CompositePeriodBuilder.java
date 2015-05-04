@@ -180,8 +180,6 @@ public class CompositePeriodBuilder {
 
 			if (null == (dtEdge = dtMaturity.addTenor (strPeriodRollTenor))) return null;
 
-			// if (null == (dtEdge = dtEdge.addTenor (strTenor))) return null;
-
 			dblEdgeDate = dtEdge.julian();
 		}
 

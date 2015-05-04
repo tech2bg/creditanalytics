@@ -45,6 +45,14 @@ public class BGMTenorNodeSequence {
 	private double[] _adblDiscountFactor = null;
 	private double[] _adblDiscountFactorIncrement = null;
 
+	/**
+	 * BGMTenorNodeSequence Constructor
+	 * 
+	 * @param aBFTS Array of the BGM Forward Tenor Snap Instances
+	 * 
+	 * @throws java.lang.Exception Thrown if the Inputs are Invalid
+	 */
+
 	public BGMTenorNodeSequence (
 		final org.drip.dynamics.lmm.BGMForwardTenorSnap[] aBFTS)
 		throws java.lang.Exception
@@ -126,5 +134,44 @@ public class BGMTenorNodeSequence {
 	public double[] discountFactorIncrements()
 	{
 		return _adblDiscountFactorIncrement;
+	}
+
+	@Override public java.lang.String toString()
+	{
+		int iNumTenor = _adblDate.length;
+		java.lang.String strDateDump = "\t |";
+		java.lang.String strPartition = "\t |";
+		java.lang.String strLIBORDump = "\t |";
+		java.lang.String strLIBORIncrementDump = "\t |";
+		java.lang.String strDiscountFactorDump = "\t |";
+		java.lang.String strDiscountFactorIncrementDump = "\t |";
+
+		for (int i = 0; i < iNumTenor; ++i) {
+			try {
+				strPartition += "-------------";
+
+				strDateDump += " " + new org.drip.analytics.date.JulianDate (_adblDate[i]) + " |";
+
+				strLIBORDump += "  " + org.drip.quant.common.FormatUtil.FormatDouble (_adblLIBOR[i], 1, 3,
+					100.) + "%   |";
+
+				strLIBORIncrementDump += "    " + org.drip.quant.common.FormatUtil.FormatDouble
+					(_adblLIBORIncrement[i], 2, 0, 10000.) + "     |";
+
+				strDiscountFactorDump += "  " + org.drip.quant.common.FormatUtil.FormatDouble
+					(_adblDiscountFactor[i], 2, 3, 100.) + "   |";
+
+				strDiscountFactorIncrementDump += "    " + org.drip.quant.common.FormatUtil.FormatDouble
+					(_adblDiscountFactorIncrement[i], 2, 0, 10000.) + "     |";
+			} catch (java.lang.Exception e) {
+				e.printStackTrace();
+
+				return null;
+			}
+		}
+
+		return "\n" + strPartition + "|\n" + strDateDump + "|\n" + strPartition + "|\n" + strLIBORDump +
+			"|\n" + strLIBORIncrementDump + "|\n" + strDiscountFactorDump + "|\n" +
+				strDiscountFactorIncrementDump + "|\n" + strPartition + "|\n";
 	}
 }

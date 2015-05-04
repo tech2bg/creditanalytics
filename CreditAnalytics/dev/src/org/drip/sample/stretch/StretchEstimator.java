@@ -640,7 +640,7 @@ public class StretchEstimator {
 		 */
 
 		int iK = 2;
-		int iRoughnessPenaltyDerivativeOrder= 2;
+		int iRoughnessPenaltyDerivativeOrder = 2;
 
 		SegmentInelasticDesignControl sdic = SegmentInelasticDesignControl.Create (iK, iRoughnessPenaltyDerivativeOrder);
 

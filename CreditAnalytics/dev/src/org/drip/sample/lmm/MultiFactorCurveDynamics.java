@@ -5,6 +5,7 @@ import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.MarketSurface;
 import org.drip.analytics.rates.*;
 import org.drip.dynamics.lmm.*;
+import org.drip.function.deterministic1D.QuadraticRationalShapeControl;
 import org.drip.param.creator.*;
 import org.drip.sequence.random.*;
 import org.drip.service.api.CreditAnalytics;
@@ -143,7 +144,7 @@ public class MultiFactorCurveDynamics {
 		double dblFlatVol3 = 0.27;
 		double dblZeroRate = 0.02;
 		double dblFlatForwardRate = 0.02;
-		int iNumRun = 20;
+		int iNumRun = 1;
 
 		int[] aiNumFactor = {1, 2, 3};
 
@@ -202,11 +203,26 @@ public class MultiFactorCurveDynamics {
 
 		double dblViewTimeIncrement = 1. / 365.;
 
-		for (int iNumFactor : aiNumFactor) {
+		SegmentCustomBuilderControl scbc = new SegmentCustomBuilderControl (
+			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
+			new PolynomialFunctionSetParams (4),
+			SegmentInelasticDesignControl.Create (
+				2,
+				2
+			),
+			new ResponseScalingShapeControl (
+				true,
+				new QuadraticRationalShapeControl (1.)
+			),
+			null
+		);
+
+		 for (int iNumFactor : aiNumFactor) {
 			LognormalLIBORCurveEvolver llce = new LognormalLIBORCurveEvolver (
 				fundingLabel,
 				forwardLabel,
-				5
+				5,
+				scbc
 			);
 
 			BGMCurveUpdate bgmcu = BGMCurveUpdate.Create (

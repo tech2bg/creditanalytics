@@ -1434,7 +1434,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		try {
 			int iIndex = _stream.periodIndex (dt.julian());
 
-			if (0 == iIndex) return null;
+			if (0 == iIndex) return new org.drip.analytics.date.JulianDate (_stream.period (0).startDate());
 			
 			org.drip.analytics.cashflow.CompositePeriod period = _stream.period (iIndex - 1);
 
@@ -1452,7 +1452,7 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final org.drip.param.market.CurveSurfaceQuoteSet csqs)
 		throws java.lang.Exception
 	{
-		if (null == dt || null == csqs)
+		if (null == dt)
 			throw new java.lang.Exception ("BondComponent::previousCouponRate => Invalid Inputs");
 
 		int iIndex = _stream.periodIndex (dt.julian());

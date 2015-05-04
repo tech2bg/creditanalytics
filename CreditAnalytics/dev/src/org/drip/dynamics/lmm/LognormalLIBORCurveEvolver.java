@@ -42,6 +42,7 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 	private int _iNumForwardTenor = -1;
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
+	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBC = null;
 
 	private double forwardDerivative (
 		final org.drip.analytics.rates.ForwardCurve fc,
@@ -134,6 +135,7 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 	 * @param lslFunding The Funding Latent State Label
 	 * @param lslForward The Forward Latent State Label
 	 * @param iNumForwardTenor Number of Forward Tenors to Build the Span
+	 * @param scbc Segment Custom Builder Control Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
@@ -141,12 +143,18 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 	public LognormalLIBORCurveEvolver (
 		final org.drip.state.identifier.FundingLabel lslFunding,
 		final org.drip.state.identifier.ForwardLabel lslForward,
-		final int iNumForwardTenor)
+		final int iNumForwardTenor,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbc)
 		throws java.lang.Exception
 	{
-		if (null == (_lslFunding = lslFunding) || null == (_lslForward = lslForward) || 0 >=
-			(_iNumForwardTenor = iNumForwardTenor))
+		if (null == (_lslFunding = lslFunding) || null == (_lslForward = lslForward) || 1 >=
+			(_iNumForwardTenor = iNumForwardTenor) || null == scbc)
 			throw new java.lang.Exception ("LognormalLIBORCurveEvolver ctr: Invalid Inputs");
+
+		_aSCBC = new org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
+
+		for (int i = 0; i < iNumForwardTenor; ++i)
+			_aSCBC[i] = scbc;
 	}
 
 	/**
@@ -182,6 +190,17 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 		return _iNumForwardTenor;
 	}
 
+	/**
+	 * Retrieve the Segment Custom Builder Control Instance
+	 * 
+	 * @return The Segment Custom Builder Control Instance
+	 */
+
+	public org.drip.spline.params.SegmentCustomBuilderControl scbc()
+	{
+		return _aSCBC[0];
+	}
+
 	@Override public org.drip.dynamics.lmm.BGMCurveUpdate evolve (
 		final double dblSpotDate,
 		final double dblViewDate,
@@ -194,7 +213,6 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 					!(lsqmPrev instanceof org.drip.dynamics.lmm.BGMCurveUpdate))
 			return null;
 
-		org.drip.analytics.date.JulianDate dtTargetPoint = null;
 		org.drip.dynamics.lmm.BGMCurveUpdate bgmPrev = (org.drip.dynamics.lmm.BGMCurveUpdate) lsqmPrev;
 		org.drip.dynamics.lmm.BGMForwardTenorSnap[] aBGMTS = new
 			org.drip.dynamics.lmm.BGMForwardTenorSnap[_iNumForwardTenor + 1];
@@ -207,21 +225,37 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 
 		org.drip.dynamics.lmm.LognormalLIBORVolatility llv = bgmPrev.lognormalLIBORVolatility();
 
+		java.lang.String strForwardTenor = _lslForward.tenor();
+
 		try {
-			dtTargetPoint = new org.drip.analytics.date.JulianDate (dblViewDate);
+			org.drip.analytics.date.JulianDate dtTargetPoint = new org.drip.analytics.date.JulianDate
+				(dblViewDate);
+
+			for (int i = 0; i <= _iNumForwardTenor; ++i) {
+				if (null == (aBGMTS[i] = timeSnap (dblSpotDate, dtTargetPoint.julian(), dblViewTimeIncrement,
+					dblViewTimeIncrementSQRT, strForwardTenor, fc, dc, llv)) || null == (dtTargetPoint =
+						dtTargetPoint.addTenor (strForwardTenor)))
+					return null;
+
+				dtTargetPoint = dtTargetPoint.addTenor (strForwardTenor);
+			}
+
+			org.drip.dynamics.lmm.BGMTenorNodeSequence btns = new org.drip.dynamics.lmm.BGMTenorNodeSequence
+				(aBGMTS);
+
+			System.out.println (btns);
+
+			org.drip.spline.stretch.MultiSegmentSequence mss =
+				org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+					(_lslForward.fullyQualifiedName() + "_QM_LIBOR", btns.dates(), btns.liborRates(), _aSCBC,
+						null, org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+							org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
+
+			System.out.println (mss);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 
 			return null;
-		}
-
-		java.lang.String strForwardTenor = _lslForward.tenor();
-
-		for (int i = 0; i <= _iNumForwardTenor; ++i) {
-			if (null == (aBGMTS[i] = timeSnap (dblSpotDate, dtTargetPoint.julian(), dblViewTimeIncrement,
-				dblViewTimeIncrementSQRT, strForwardTenor, fc, dc, llv)) || null == (dtTargetPoint =
-					dtTargetPoint.addTenor (strForwardTenor)))
-				return null;
 		}
 
 		return null;

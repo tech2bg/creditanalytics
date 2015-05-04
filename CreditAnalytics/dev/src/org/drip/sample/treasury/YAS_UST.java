@@ -1,5 +1,5 @@
 
-package org.drip.sample.bloomberg;
+package org.drip.sample.treasury;
 
 import org.drip.analytics.cashflow.CompositePeriod;
 import org.drip.analytics.date.*;
@@ -41,12 +41,12 @@ import org.drip.state.identifier.ForwardLabel;
  */
 
 /**
- * YAS_TSY contains the sample demonstrating the replication of Bloomberg's Treasury YAS functionality.
+ * YAS_UST contains the sample demonstrating the replication of Bloomberg's UST YAS functionality.
  * 
  * @author Lakshmi Krishnamurthy
  */
 
-public class YAS_TSY {
+public class YAS_UST {
 
 	private static BondComponent TSYBond (
 		final JulianDate dtEffective,
@@ -56,7 +56,7 @@ public class YAS_TSY {
 		throws Exception
 	{
 		return BondBuilder.CreateSimpleFixed (
-			"TSY_" + strMaturityTenor,
+			"UST_" + strMaturityTenor,
 			strCurrency,
 			"",
 			dblCoupon,
@@ -261,7 +261,7 @@ public class YAS_TSY {
 
 		JulianDate dtSpot = DateUtil.CreateFromYMD (
 			2015,
-			DateUtil.MAY,
+			DateUtil.JULY,
 			1
 		);
 
