@@ -132,7 +132,7 @@ public class LognormalLIBORPointEvolver implements org.drip.dynamics.evolution.P
 			}
 		};
 
-		return spotRateR1ToR1.derivative (dblSpotDate, 1);
+		return spotRateR1ToR1.derivative (dblViewDate, 1);
 	}
 
 	/**
@@ -237,8 +237,8 @@ public class LognormalLIBORPointEvolver implements org.drip.dynamics.evolution.P
 		double dblSpotRate = java.lang.Double.NaN;
 		double dblDiscountFactor = java.lang.Double.NaN;
 		double dblContinuouslyCompoundedForwardRate = java.lang.Double.NaN;
-		org.drip.dynamics.lmm.BGMPointUpdate bgmPrev = null == lsqmPrev ? null : (org.drip.dynamics.lmm.BGMPointUpdate)
-			lsqmPrev;
+		org.drip.dynamics.lmm.BGMPointUpdate bgmPrev = null == lsqmPrev ? null :
+			(org.drip.dynamics.lmm.BGMPointUpdate) lsqmPrev;
 
 		try {
 			double dblForwardDate = new org.drip.analytics.date.JulianDate (dblViewDate).addTenor
@@ -304,8 +304,8 @@ public class LognormalLIBORPointEvolver implements org.drip.dynamics.evolution.P
 				dblContinuouslyCompoundedForwardRate) * dblViewTimeIncrement -
 					dblForwardVolatilityMultiFactorRandom;
 
-			return org.drip.dynamics.lmm.BGMPointUpdate.Create (_lslFunding, _lslForward, dblViewDate, dblViewDate
-				+ dblViewTimeIncrement * 365.25, dblLIBOR + dblLIBORIncrement, dblLIBORIncrement,
+			return org.drip.dynamics.lmm.BGMPointUpdate.Create (_lslFunding, _lslForward, dblViewDate,
+				dblViewDate + dblViewTimeIncrement * 365.25, dblLIBOR + dblLIBORIncrement, dblLIBORIncrement,
 					dblContinuouslyCompoundedForwardRate + dblContinuousForwardRateIncrement,
 						dblContinuousForwardRateIncrement, dblSpotRate + dblSpotRateIncrement,
 							dblSpotRateIncrement, dblDiscountFactor + dblDiscountFactorIncrement,

@@ -43,7 +43,9 @@ public class BGMTenorNodeSequence {
 	private double[] _adblLIBOR = null;
 	private double[] _adblLIBORIncrement = null;
 	private double[] _adblDiscountFactor = null;
+	private double[] _adblSpotRateIncrement = null;
 	private double[] _adblDiscountFactorIncrement = null;
+	private double[] _adblContinuousForwardRateIncrement = null;
 
 	/**
 	 * BGMTenorNodeSequence Constructor
@@ -64,7 +66,9 @@ public class BGMTenorNodeSequence {
 		_adblLIBOR = new double[iNumSnap];
 		_adblLIBORIncrement = new double[iNumSnap];
 		_adblDiscountFactor = new double[iNumSnap];
+		_adblSpotRateIncrement = new double[iNumSnap];
 		_adblDiscountFactorIncrement = new double[iNumSnap];
+		_adblContinuousForwardRateIncrement = new double[iNumSnap];
 
 		if (0 == iNumSnap) throw new java.lang.Exception ("BGMTenorNodeSequence ctr: Invalid Inputs!");
 
@@ -77,7 +81,11 @@ public class BGMTenorNodeSequence {
 
 			_adblDiscountFactor[i] = aBFTS[i].discountFactor();
 
+			_adblSpotRateIncrement[i] = aBFTS[i].spotRateIncrement();
+
 			_adblDiscountFactorIncrement[i] = aBFTS[i].discountFactorIncrement();
+
+			_adblContinuousForwardRateIncrement[i] = aBFTS[i].continuouslyCompoundedForwardIncrement();
 		}
 	}
 
@@ -136,6 +144,28 @@ public class BGMTenorNodeSequence {
 		return _adblDiscountFactorIncrement;
 	}
 
+	/**
+	 * Retrieve the Array of Tenor Instantaneous Continuously Compounded Forward Rate Increments
+	 * 
+	 * @return The Array of Tenor Instantaneous Continuously Compounded Forward Rate Increments
+	 */
+
+	public double[] continuousForwardRateIncrements()
+	{
+		return _adblContinuousForwardRateIncrement;
+	}
+
+	/**
+	 * Retrieve the Array of Tenor Spot Rate Increments
+	 * 
+	 * @return The Array of Tenor Spot Rate Increments
+	 */
+
+	public double[] spotRateIncrements()
+	{
+		return _adblSpotRateIncrement;
+	}
+
 	@Override public java.lang.String toString()
 	{
 		int iNumTenor = _adblDate.length;
@@ -144,7 +174,9 @@ public class BGMTenorNodeSequence {
 		java.lang.String strLIBORDump = "\t |";
 		java.lang.String strLIBORIncrementDump = "\t |";
 		java.lang.String strDiscountFactorDump = "\t |";
+		java.lang.String strSpotRateIncrementDump = "\t |";
 		java.lang.String strDiscountFactorIncrementDump = "\t |";
+		java.lang.String strContinuousForwardIncrementDump = "\t |";
 
 		for (int i = 0; i < iNumTenor; ++i) {
 			try {
@@ -163,6 +195,12 @@ public class BGMTenorNodeSequence {
 
 				strDiscountFactorIncrementDump += "    " + org.drip.quant.common.FormatUtil.FormatDouble
 					(_adblDiscountFactorIncrement[i], 2, 0, 10000.) + "     |";
+
+				strContinuousForwardIncrementDump += "    " + org.drip.quant.common.FormatUtil.FormatDouble
+					(_adblContinuousForwardRateIncrement[i], 2, 0, 10000.) + "     |";
+
+				strSpotRateIncrementDump += "    " + org.drip.quant.common.FormatUtil.FormatDouble
+					(_adblSpotRateIncrement[i], 2, 0, 10000.) + "     |";
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -172,6 +210,7 @@ public class BGMTenorNodeSequence {
 
 		return "\n" + strPartition + "|\n" + strDateDump + "|\n" + strPartition + "|\n" + strLIBORDump +
 			"|\n" + strLIBORIncrementDump + "|\n" + strDiscountFactorDump + "|\n" +
-				strDiscountFactorIncrementDump + "|\n" + strPartition + "|\n";
+				strDiscountFactorIncrementDump + "|\n" + strContinuousForwardIncrementDump + "|\n" +
+					strSpotRateIncrementDump + "|\n" + strPartition + "|\n";
 	}
 }

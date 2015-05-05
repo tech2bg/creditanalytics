@@ -42,7 +42,40 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 	private int _iNumForwardTenor = -1;
 	private org.drip.state.identifier.ForwardLabel _lslForward = null;
 	private org.drip.state.identifier.FundingLabel _lslFunding = null;
-	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBC = null;
+	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCLIBOR = null;
+	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCDiscountFactor = null;
+	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCLIBORIncrement = null;
+	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCSpotRateIncrement = null;
+	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCDiscountFactorIncrement = null;
+	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCContinuousForwardIncrement = null;
+
+	/**
+	 * Create a LognormalLIBORCurveEvolver Instance
+	 * 
+	 * @param lslFunding The Funding Latent State Label
+	 * @param lslForward The Forward Latent State Label
+	 * @param iNumForwardTenor Number of Forward Tenors to Build the Span
+	 * @param scbc The Common Span Segment Custom Builder Control Instance
+	 * 
+	 * @return The LognormalLIBORCurveEvolver Instance
+	 */
+
+	public static final LognormalLIBORCurveEvolver Create (
+		final org.drip.state.identifier.FundingLabel lslFunding,
+		final org.drip.state.identifier.ForwardLabel lslForward,
+		final int iNumForwardTenor,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbc)
+		throws java.lang.Exception
+	{
+		try {
+			return new LognormalLIBORCurveEvolver (lslFunding, lslForward, iNumForwardTenor, scbc, scbc,
+				scbc, scbc, scbc, scbc);
+		} catch (java.lang.Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	private double forwardDerivative (
 		final org.drip.analytics.rates.ForwardCurve fc,
@@ -60,6 +93,80 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 		};
 
 		return freR1ToR1.derivative (dblTargetPointDate, 1);
+	}
+
+	private double continuousForwardRateIncrement (
+		final double dblViewDate,
+		final double dblViewTimeIncrement,
+		final double dblViewTimeIncrementSQRT,
+		final org.drip.analytics.rates.ForwardCurve fc,
+		final double[] adblMultivariateRandom,
+		final org.drip.dynamics.lmm.LognormalLIBORVolatility llv)
+		throws java.lang.Exception
+	{
+		final int iNumFactor = adblMultivariateRandom.length;
+
+		org.drip.function.deterministic.R1ToR1 continuousForwardRateR1ToR1 = new
+			org.drip.function.deterministic.R1ToR1 (null) {
+			@Override public double evaluate (
+				final double dblDate)
+				throws java.lang.Exception
+			{
+				double dblForwardPointVolatilityModulus = 0.;
+				double dblPointVolatilityMultifactorRandom = 0.;
+
+				double[] adblContinuousForwardVolatility = llv.continuousForwardVolatility (dblDate, fc);
+
+				if (null != adblContinuousForwardVolatility) {
+					for (int i = 0; i < iNumFactor; ++i) {
+						dblForwardPointVolatilityModulus += adblContinuousForwardVolatility[i] *
+							adblContinuousForwardVolatility[i];
+						dblPointVolatilityMultifactorRandom += adblContinuousForwardVolatility[i] *
+							adblMultivariateRandom[i];
+					}
+				}
+
+				return (fc.forward (dblDate) + 0.5 * dblForwardPointVolatilityModulus) *
+					dblViewTimeIncrement + dblPointVolatilityMultifactorRandom * dblViewTimeIncrementSQRT;
+			}
+		};
+
+		return continuousForwardRateR1ToR1.derivative (dblViewDate, 1);
+	}
+
+	private double spotRateIncrement (
+		final double dblViewDate,
+		final double dblViewTimeIncrement,
+		final double dblViewTimeIncrementSQRT,
+		final org.drip.analytics.rates.ForwardRateEstimator fre,
+		final double[] adblMultivariateRandom,
+		final org.drip.dynamics.lmm.LognormalLIBORVolatility llv)
+		throws java.lang.Exception
+	{
+		final int iNumFactor = adblMultivariateRandom.length;
+
+		org.drip.function.deterministic.R1ToR1 spotRateR1ToR1 = new org.drip.function.deterministic.R1ToR1
+			(null) {
+			@Override public double evaluate (
+				final double dblDate)
+				throws java.lang.Exception
+			{
+				double dblPointVolatilityMultifactorRandom = 0.;
+
+				double[] adblContinuousForwardVolatility = llv.continuousForwardVolatility (dblDate, fre);
+
+				if (null != adblContinuousForwardVolatility) {
+					for (int i = 0; i < iNumFactor; ++i)
+						dblPointVolatilityMultifactorRandom += adblContinuousForwardVolatility[i] *
+							adblMultivariateRandom[i];
+				}
+
+				return fre.forward (dblDate) * dblViewTimeIncrement + dblPointVolatilityMultifactorRandom *
+					dblViewTimeIncrementSQRT;
+			}
+		};
+
+		return spotRateR1ToR1.derivative (dblViewDate, 1);
 	}
 
 	private org.drip.dynamics.lmm.BGMForwardTenorSnap timeSnap (
@@ -118,10 +225,21 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 			double dblDiscountFactorIncrement = dblDiscountFactor * (dblSpotRate - dblContinuousForwardRate)
 				* dblViewTimeIncrement - dblForwardVolatilityMultiFactorRandom;
 
+			double dblContinuousForwardRateIncrement = continuousForwardRateIncrement (dblTargetPointDate,
+				dblViewTimeIncrement, dblViewTimeIncrementSQRT, fc, adblMultivariateRandom, llv);
+
+			System.out.println ("FRE[" + new org.drip.analytics.date.JulianDate (dblTargetPointDate) +
+				"] => " + dc.forwardRateEstimator (dblTargetPointDate, _lslForward));
+
+			double dblSpotRateIncrement = spotRateIncrement (dblTargetPointDate, dblViewTimeIncrement,
+				dblViewTimeIncrementSQRT, dc.forwardRateEstimator (dblTargetPointDate, _lslForward),
+					adblMultivariateRandom, llv);
+
 			return new org.drip.dynamics.lmm.BGMForwardTenorSnap (dblTargetPointDate, dblLIBOR +
 				dblLIBORIncrement, dblLIBORIncrement, dblDiscountFactor + dblDiscountFactorIncrement,
-					dblDiscountFactorIncrement, java.lang.Math.sqrt (dblLognormalPointVolatilityModulus),
-						java.lang.Math.sqrt (dblContinuousForwardVolatilityModulus));
+					dblDiscountFactorIncrement, dblContinuousForwardRateIncrement, dblSpotRateIncrement,
+						java.lang.Math.sqrt (dblLognormalPointVolatilityModulus), java.lang.Math.sqrt
+							(dblContinuousForwardVolatilityModulus));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -135,7 +253,14 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 	 * @param lslFunding The Funding Latent State Label
 	 * @param lslForward The Forward Latent State Label
 	 * @param iNumForwardTenor Number of Forward Tenors to Build the Span
-	 * @param scbc Segment Custom Builder Control Instance
+	 * @param scbcLIBOR LIBOR Span Segment Custom Builder Control Instance
+	 * @param scbcDiscountFactor Discount Factor Span Segment Custom Builder Control Instance
+	 * @param scbcLIBORIncrement LIBOR Increment Span Segment Custom Builder Control Instance
+	 * @param scbcDiscountFactorIncrement Discount Factor Increment Span Segment Custom Builder Control
+	 * 		Instance
+	 * @param scbcContinuousForwardIncrement Instantaneous Continuously Compounded Forward Rate Increment
+	 *  	Span Segment Custom Builder Control Instance
+	 * @param scbcSpotRateIncrement Spot Rate Increment Span Segment Custom Builder Control Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
@@ -144,17 +269,37 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 		final org.drip.state.identifier.FundingLabel lslFunding,
 		final org.drip.state.identifier.ForwardLabel lslForward,
 		final int iNumForwardTenor,
-		final org.drip.spline.params.SegmentCustomBuilderControl scbc)
+		final org.drip.spline.params.SegmentCustomBuilderControl scbcLIBOR,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbcDiscountFactor,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbcLIBORIncrement,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbcDiscountFactorIncrement,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbcContinuousForwardIncrement,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbcSpotRateIncrement)
 		throws java.lang.Exception
 	{
 		if (null == (_lslFunding = lslFunding) || null == (_lslForward = lslForward) || 1 >=
-			(_iNumForwardTenor = iNumForwardTenor) || null == scbc)
+			(_iNumForwardTenor = iNumForwardTenor) || null == scbcLIBOR || null == scbcLIBORIncrement || null
+				== scbcDiscountFactor || null == scbcDiscountFactorIncrement || null ==
+					scbcContinuousForwardIncrement || null == scbcSpotRateIncrement)
 			throw new java.lang.Exception ("LognormalLIBORCurveEvolver ctr: Invalid Inputs");
 
-		_aSCBC = new org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
+		_aSCBCLIBOR = new org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
+		_aSCBCDiscountFactor = new org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
+		_aSCBCLIBORIncrement = new org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
+		_aSCBCDiscountFactorIncrement = new
+			org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
+		_aSCBCContinuousForwardIncrement = new
+			org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
+		_aSCBCSpotRateIncrement = new org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
 
-		for (int i = 0; i < iNumForwardTenor; ++i)
-			_aSCBC[i] = scbc;
+		for (int i = 0; i < iNumForwardTenor; ++i) {
+			_aSCBCLIBOR[i] = scbcLIBOR;
+			_aSCBCDiscountFactor[i] = scbcDiscountFactor;
+			_aSCBCLIBORIncrement[i] = scbcLIBORIncrement;
+			_aSCBCDiscountFactorIncrement[i] = scbcDiscountFactorIncrement;
+			_aSCBCContinuousForwardIncrement[i] = scbcContinuousForwardIncrement;
+			_aSCBCSpotRateIncrement[i] = scbcSpotRateIncrement;
+		}
 	}
 
 	/**
@@ -191,14 +336,71 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 	}
 
 	/**
-	 * Retrieve the Segment Custom Builder Control Instance
+	 * Retrieve the LIBOR Curve Segment Custom Builder Control Instance
 	 * 
-	 * @return The Segment Custom Builder Control Instance
+	 * @return The LIBOR Curve Segment Custom Builder Control Instance
 	 */
 
-	public org.drip.spline.params.SegmentCustomBuilderControl scbc()
+	public org.drip.spline.params.SegmentCustomBuilderControl scbcLIBOR()
 	{
-		return _aSCBC[0];
+		return _aSCBCLIBOR[0];
+	}
+
+	/**
+	 * Retrieve the Discount Factor Segment Custom Builder Control Instance
+	 * 
+	 * @return The Discount Factor Segment Custom Builder Control Instance
+	 */
+
+	public org.drip.spline.params.SegmentCustomBuilderControl scbcDiscountFactor()
+	{
+		return _aSCBCDiscountFactor[0];
+	}
+
+	/**
+	 * Retrieve the LIBOR Increment Segment Custom Builder Control Instance
+	 * 
+	 * @return The LIBOR Increment Segment Custom Builder Control Instance
+	 */
+
+	public org.drip.spline.params.SegmentCustomBuilderControl scbcLIBORIncrement()
+	{
+		return _aSCBCLIBORIncrement[0];
+	}
+
+	/**
+	 * Retrieve the Discount Factor Increment Segment Custom Builder Control Instance
+	 * 
+	 * @return The Discount Factor Increment Segment Custom Builder Control Instance
+	 */
+
+	public org.drip.spline.params.SegmentCustomBuilderControl scbcDiscountFactorIncrement()
+	{
+		return _aSCBCDiscountFactorIncrement[0];
+	}
+
+	/**
+	 * Retrieve the Instantaneous Continuously Compounded Forward Rate Increment Segment Custom Builder
+	 *  Control Instance
+	 * 
+	 * @return The Instantaneous Continuously Compounded Forward Rate Increment Segment Custom Builder
+	 *  Control Instance
+	 */
+
+	public org.drip.spline.params.SegmentCustomBuilderControl scbcContinuousForwardIncrement()
+	{
+		return _aSCBCContinuousForwardIncrement[0];
+	}
+
+	/**
+	 * Retrieve the Spot Rate Increment Segment Custom Builder Control Instance
+	 * 
+	 * @return The Spot Rate Increment Segment Custom Builder Control Instance
+	 */
+
+	public org.drip.spline.params.SegmentCustomBuilderControl scbcSpotRateIncrement()
+	{
+		return _aSCBCSpotRateIncrement[0];
 	}
 
 	@Override public org.drip.dynamics.lmm.BGMCurveUpdate evolve (
@@ -236,26 +438,69 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 					dblViewTimeIncrementSQRT, strForwardTenor, fc, dc, llv)) || null == (dtTargetPoint =
 						dtTargetPoint.addTenor (strForwardTenor)))
 					return null;
-
-				dtTargetPoint = dtTargetPoint.addTenor (strForwardTenor);
 			}
 
 			org.drip.dynamics.lmm.BGMTenorNodeSequence btns = new org.drip.dynamics.lmm.BGMTenorNodeSequence
 				(aBGMTS);
 
-			System.out.println (btns);
+			org.drip.spline.stretch.BoundarySettings bs =
+				org.drip.spline.stretch.BoundarySettings.NaturalStandard();
 
-			org.drip.spline.stretch.MultiSegmentSequence mss =
+			java.lang.String strForwardLabelName = _lslForward.fullyQualifiedName();
+
+			java.lang.String strFundingLabelName = _lslFunding.fullyQualifiedName();
+
+			double[] adblTenorDate = btns.dates();
+
+			org.drip.state.curve.BasisSplineForwardRate fcLIBOR = new
+				org.drip.state.curve.BasisSplineForwardRate (_lslForward, new
+					org.drip.spline.grid.OverlappingStretchSpan
+						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+							(strForwardLabelName + "_QM_LIBOR", adblTenorDate, btns.liborRates(),
+								_aSCBCLIBOR, null, bs,
+									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE)));
+
+			org.drip.state.curve.DiscountFactorDiscountCurve dcDiscountFactor = new
+				org.drip.state.curve.DiscountFactorDiscountCurve (_lslForward.currency(), null, new
+					org.drip.spline.grid.OverlappingStretchSpan
+						(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+							(strFundingLabelName + "_QM_DISCOUNTFACTOR", adblTenorDate,
+								btns.discountFactors(), _aSCBCDiscountFactor, null, bs,
+									org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE)));
+
+			org.drip.spline.stretch.MultiSegmentSequence mssDiscountFactorIncrement =
 				org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
-					(_lslForward.fullyQualifiedName() + "_QM_LIBOR", btns.dates(), btns.liborRates(), _aSCBC,
-						null, org.drip.spline.stretch.BoundarySettings.NaturalStandard(),
+					(strFundingLabelName + "_INCREMENT", adblTenorDate, btns.discountFactorIncrements(),
+						_aSCBCDiscountFactorIncrement, null, bs,
 							org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
 
-			System.out.println (mss);
+			org.drip.spline.stretch.MultiSegmentSequence mssContinuousForwardRateIncrement =
+				org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+					(strForwardLabelName + "_CONT_FWD_INCREMENT", adblTenorDate,
+						btns.continuousForwardRateIncrements(), _aSCBCContinuousForwardIncrement, null, bs,
+							org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
+
+			org.drip.spline.stretch.MultiSegmentSequence mssSpotRateIncrement =
+				org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+					(strForwardLabelName + "_SPOT_RATE_INCREMENT", adblTenorDate, btns.spotRateIncrements(),
+						_aSCBCSpotRateIncrement, null, bs,
+							org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
+
+			return org.drip.dynamics.lmm.BGMCurveUpdate.Create (_lslFunding, _lslForward, dblViewDate,
+				dblViewDate + dblViewTimeIncrement, fcLIBOR, new org.drip.spline.grid.OverlappingStretchSpan
+					(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+						(strForwardLabelName + "_INCREMENT", adblTenorDate, btns.liborRateIncrements(),
+							_aSCBCLIBORIncrement, null, bs,
+								org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE)), dcDiscountFactor,
+									new org.drip.spline.grid.OverlappingStretchSpan
+										(mssDiscountFactorIncrement), new
+											org.drip.spline.grid.OverlappingStretchSpan
+												(mssContinuousForwardRateIncrement), new
+													org.drip.spline.grid.OverlappingStretchSpan
+														(mssSpotRateIncrement),
+															bgmPrev.lognormalLIBORVolatility());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
-
-			return null;
 		}
 
 		return null;

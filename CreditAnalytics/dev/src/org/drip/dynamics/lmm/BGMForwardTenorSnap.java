@@ -43,8 +43,10 @@ public class BGMForwardTenorSnap {
 	private double _dblLIBOR = java.lang.Double.NaN;
 	private double _dblDiscountFactor = java.lang.Double.NaN;
 	private double _dblLIBORIncrement = java.lang.Double.NaN;
+	private double _dblSpotRateIncrement = java.lang.Double.NaN;
 	private double _dblDiscountFactorIncrement = java.lang.Double.NaN;
 	private double _dblLognormalLIBORVolatility = java.lang.Double.NaN;
+	private double _dblContinuouslyCompoundedForwardIncrement = java.lang.Double.NaN;
 	private double _dblContinuouslyCompoundedForwardVolatility = java.lang.Double.NaN;
 
 	/**
@@ -55,6 +57,8 @@ public class BGMForwardTenorSnap {
 	 * @param dblLIBORIncrement The LIBOR Rate Increment
 	 * @param dblDiscountFactor The Discount Factor
 	 * @param dblDiscountFactorIncrement The Discount Factor Increment
+	 * @param dblContinuouslyCompoundedForwardIncrement Continuously Compounded Forward Rate Increment
+	 * @param dblSpotRateIncrement Spot Rate Increment
 	 * @param dblLognormalLIBORVolatility The Log-normal LIBOR Rate Volatility
 	 * @param dblContinuouslyCompoundedForwardVolatility The Continuously Compounded Forward Rate Volatility
 	 * 
@@ -67,6 +71,8 @@ public class BGMForwardTenorSnap {
 		final double dblLIBORIncrement,
 		final double dblDiscountFactor,
 		final double dblDiscountFactorIncrement,
+		final double dblContinuouslyCompoundedForwardIncrement,
+		final double dblSpotRateIncrement,
 		final double dblLognormalLIBORVolatility,
 		final double dblContinuouslyCompoundedForwardVolatility)
 		throws java.lang.Exception
@@ -77,10 +83,16 @@ public class BGMForwardTenorSnap {
 					!org.drip.quant.common.NumberUtil.IsValid (_dblDiscountFactor = dblDiscountFactor) ||
 						!org.drip.quant.common.NumberUtil.IsValid (_dblDiscountFactorIncrement =
 							dblDiscountFactorIncrement) || !org.drip.quant.common.NumberUtil.IsValid
-								(_dblLognormalLIBORVolatility = dblLognormalLIBORVolatility) ||
-									!org.drip.quant.common.NumberUtil.IsValid
-										(_dblContinuouslyCompoundedForwardVolatility =
-											dblContinuouslyCompoundedForwardVolatility))
+								(_dblContinuouslyCompoundedForwardIncrement =
+									dblContinuouslyCompoundedForwardIncrement) ||
+										!org.drip.quant.common.NumberUtil.IsValid
+											(_dblLognormalLIBORVolatility = dblLognormalLIBORVolatility) ||
+												!org.drip.quant.common.NumberUtil.IsValid
+													(_dblContinuouslyCompoundedForwardVolatility =
+														dblContinuouslyCompoundedForwardVolatility) ||
+															!org.drip.quant.common.NumberUtil.IsValid
+																(_dblSpotRateIncrement =
+																	dblSpotRateIncrement))
 			throw new java.lang.Exception ("BGMForwardTenorSnap ctr: Invalid Inputs");
 	}
 
@@ -140,6 +152,28 @@ public class BGMForwardTenorSnap {
 	}
 
 	/**
+	 * Retrieve the Continuously Compounded Forward Rate Increment
+	 * 
+	 * @return The Continuously Compounded Forward Rate Increment
+	 */
+
+	public double continuouslyCompoundedForwardIncrement()
+	{
+		return _dblContinuouslyCompoundedForwardIncrement;
+	}
+
+	/**
+	 * Retrieve the Spot Rate Increment
+	 * 
+	 * @return The Spot Rate Increment
+	 */
+
+	public double spotRateIncrement()
+	{
+		return _dblSpotRateIncrement;
+	}
+
+	/**
 	 * Retrieve the Log-normal LIBOR Volatility
 	 * 
 	 * @return The Log-normal LIBOR Volatility
@@ -167,6 +201,9 @@ public class BGMForwardTenorSnap {
 			org.drip.quant.common.FormatUtil.FormatDouble (_dblLIBORIncrement, 2, 2, 10000.) + " | " +
 				org.drip.quant.common.FormatUtil.FormatDouble (_dblDiscountFactor, 1, 4, 1.) + " | " +
 					org.drip.quant.common.FormatUtil.FormatDouble (_dblDiscountFactorIncrement, 2, 2, 10000.)
-						+ " ||";
+						+ " | " + org.drip.quant.common.FormatUtil.FormatDouble
+							(_dblContinuouslyCompoundedForwardIncrement, 2, 2, 10000.) + " | " +
+								org.drip.quant.common.FormatUtil.FormatDouble (_dblSpotRateIncrement, 2, 2,
+									10000.) + " ||";
 	}
 }
