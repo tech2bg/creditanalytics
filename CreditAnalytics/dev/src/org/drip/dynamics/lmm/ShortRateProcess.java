@@ -29,9 +29,15 @@ package org.drip.dynamics.lmm;
  */
 
 /**
- * ShortRateProcess implements the Short Rate Process defined in the LIBOR Market Model. The Reference is:
+ * ShortRateProcess implements the Short Rate Process defined in the LIBOR Market Model. The References are:
  * 
- * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
+ *  1) Goldys, B., M. Musiela, and D. Sondermann (1994): Log-normality of Rates and Term Structure Models,
+ *  	The University of New South Wales.
+ * 
+ *  2) Musiela, M. (1994): Nominal Annual Rates and Log-normal Volatility Structure, The University of New
+ *   	South Wales.
+ * 
+ * 	3) Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
  * 		Finance 7 (2), 127-155.
  *
  * @author Lakshmi Krishnamurthy

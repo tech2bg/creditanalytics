@@ -32,7 +32,13 @@ package org.drip.dynamics.lmm;
  * LognormalLIBORPointEvolver sets up and implements the Multi-Factor No-arbitrage Dynamics of the Point
  * 	Rates State Quantifiers traced from the Evolution of the LIBOR Forward Rate as formulated in:
  * 
- * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
+ *  1) Goldys, B., M. Musiela, and D. Sondermann (1994): Log-normality of Rates and Term Structure Models,
+ *  	The University of New South Wales.
+ * 
+ *  2) Musiela, M. (1994): Nominal Annual Rates and Log-normal Volatility Structure, The University of New
+ *   	South Wales.
+ * 
+ * 	3) Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
  * 		Finance 7 (2), 127-155.
  *
  * @author Lakshmi Krishnamurthy
@@ -287,8 +293,9 @@ public class LognormalLIBORPointEvolver implements org.drip.dynamics.evolution.P
 					adblMultivariateRandom[i] * dblViewTimeIncrementSQRT;
 			}
 
-			double dblLIBORDCF = org.drip.analytics.support.AnalyticsHelper.TenorToYearFraction (strTenor) *
-				dblLIBOR;
+			double dblDCF = org.drip.analytics.support.AnalyticsHelper.TenorToYearFraction (strTenor);
+
+			double dblLIBORDCF = dblDCF * dblLIBOR;
 
 			double dblLIBORIncrement = dblViewTimeIncrement * (forwardDerivative (dblForwardDate) + dblLIBOR
 				* dblCrossVolatilityDotProduct + (dblLognormalPointVolatilityModulus * dblLIBOR * dblLIBORDCF
@@ -300,18 +307,21 @@ public class LognormalLIBORPointEvolver implements org.drip.dynamics.evolution.P
 			double dblSpotRateIncrement = spotRateIncrement (dblSpotDate, dblViewDate, dblViewTimeIncrement,
 				adblMultivariateRandom);
 
+			double dblEvolvedContinuousForwardRate = dblContinuouslyCompoundedForwardRate +
+				dblContinuousForwardRateIncrement;
 			double dblDiscountFactorIncrement = dblDiscountFactor * (dblSpotRate -
 				dblContinuouslyCompoundedForwardRate) * dblViewTimeIncrement -
 					dblForwardVolatilityMultiFactorRandom;
 
 			return org.drip.dynamics.lmm.BGMPointUpdate.Create (_lslFunding, _lslForward, dblViewDate,
 				dblViewDate + dblViewTimeIncrement * 365.25, dblLIBOR + dblLIBORIncrement, dblLIBORIncrement,
-					dblContinuouslyCompoundedForwardRate + dblContinuousForwardRateIncrement,
-						dblContinuousForwardRateIncrement, dblSpotRate + dblSpotRateIncrement,
-							dblSpotRateIncrement, dblDiscountFactor + dblDiscountFactorIncrement,
-								dblDiscountFactorIncrement, java.lang.Math.sqrt
-									(dblLognormalPointVolatilityModulus), java.lang.Math.sqrt
-										(dblContinuousForwardVolatilityModulus));
+					dblEvolvedContinuousForwardRate, dblContinuousForwardRateIncrement, dblSpotRate +
+						dblSpotRateIncrement, dblSpotRateIncrement, dblDiscountFactor +
+							dblDiscountFactorIncrement, dblDiscountFactorIncrement, java.lang.Math.exp
+								(dblEvolvedContinuousForwardRate) - 1., (java.lang.Math.exp (dblDCF *
+									dblEvolvedContinuousForwardRate) - 1.) / dblDCF, java.lang.Math.sqrt
+										(dblLognormalPointVolatilityModulus), java.lang.Math.sqrt
+											(dblContinuousForwardVolatilityModulus));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}

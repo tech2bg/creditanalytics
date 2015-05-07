@@ -53,6 +53,8 @@ public class BGMCurveUpdate extends org.drip.dynamics.evolution.LSQMCurveUpdate 
 	 * @param spanDiscountFactorIncrement The Discount Factor Discount Curve Span Increment
 	 * @param spanContinuousForwardRateIncrement The Continuous Forward Rate Discount Curve Span Increment
 	 * @param spanSpotRateIncrement The Spot Rate Discount Curve Span Increment
+	 * @param spanInstantaneousEffectiveForward The Instantaneous Effective Forward Rate Span
+	 * @param spanInstantaneousNominalForward The Instantaneous Nominal Forward Rate Span
 	 * @param llv The Log-normal LIBOR Rate Volatility
 	 * 
 	 * @return Instance of BGMCurveUpdate
@@ -69,6 +71,8 @@ public class BGMCurveUpdate extends org.drip.dynamics.evolution.LSQMCurveUpdate 
 		final org.drip.spline.grid.Span spanDiscountFactorIncrement,
 		final org.drip.spline.grid.Span spanContinuousForwardRateIncrement,
 		final org.drip.spline.grid.Span spanSpotRateIncrement,
+		final org.drip.spline.grid.Span spanInstantaneousEffectiveForward,
+		final org.drip.spline.grid.Span spanInstantaneousNominalForward,
 		final org.drip.dynamics.lmm.LognormalLIBORVolatility llv)
 	{
 		org.drip.dynamics.evolution.LSQMCurveSnapshot snapshot = new
@@ -100,6 +104,16 @@ public class BGMCurveUpdate extends org.drip.dynamics.evolution.LSQMCurveUpdate 
 
 		if (null != spanSpotRateIncrement && !increment.setQMSpan (lslFunding,
 			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE, spanSpotRateIncrement))
+			return null;
+
+		if (null != spanInstantaneousEffectiveForward && !increment.setQMSpan (lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_INSTANTANEOUS_EFFECTIVE_FORWARD_RATE,
+				spanInstantaneousEffectiveForward))
+			return null;
+
+		if (null != spanInstantaneousNominalForward && !increment.setQMSpan (lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_INSTANTANEOUS_NOMINAL_FORWARD_RATE,
+				spanInstantaneousNominalForward))
 			return null;
 
 		try {
@@ -162,6 +176,30 @@ public class BGMCurveUpdate extends org.drip.dynamics.evolution.LSQMCurveUpdate 
 	{
 		return increment().span (_lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE);
+	}
+
+	/**
+	 * Retrieve the Instantaneous Effective Annual Forward Rate Span
+	 * 
+	 * @return The Instantaneous Effective Annual Forward Rate Span
+	 */
+
+	public org.drip.spline.grid.Span instantaneousEffectiveForwardRate()
+	{
+		return increment().span (_lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_INSTANTANEOUS_EFFECTIVE_FORWARD_RATE);
+	}
+
+	/**
+	 * Retrieve the Instantaneous Nominal Annual Forward Rate Span
+	 * 
+	 * @return The Instantaneous Nominal Annual Forward Rate Span
+	 */
+
+	public org.drip.spline.grid.Span instantaneousNominalForwardRate()
+	{
+		return increment().span (_lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_INSTANTANEOUS_NOMINAL_FORWARD_RATE);
 	}
 
 	/**

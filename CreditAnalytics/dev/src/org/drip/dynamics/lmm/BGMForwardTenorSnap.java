@@ -32,7 +32,13 @@ package org.drip.dynamics.lmm;
  * BGMForwardTenorSnap contains the Absolute and the Incremental Latent State Quantifier Snapshot traced from
  *  the Evolution of the LIBOR Forward Rate as formulated in:
  * 
- * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
+ *  1) Goldys, B., M. Musiela, and D. Sondermann (1994): Log-normality of Rates and Term Structure Models,
+ *  	The University of New South Wales.
+ * 
+ *  2) Musiela, M. (1994): Nominal Annual Rates and Log-normal Volatility Structure, The University of New
+ *   	South Wales.
+ * 
+ * 	3) Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
  * 		Finance 7 (2), 127-155.
  *
  * @author Lakshmi Krishnamurthy
@@ -46,6 +52,8 @@ public class BGMForwardTenorSnap {
 	private double _dblSpotRateIncrement = java.lang.Double.NaN;
 	private double _dblDiscountFactorIncrement = java.lang.Double.NaN;
 	private double _dblLognormalLIBORVolatility = java.lang.Double.NaN;
+	private double _dblInstantaneousNominalForwardRate = java.lang.Double.NaN;
+	private double _dblInstantaneousEffectiveForwardRate = java.lang.Double.NaN;
 	private double _dblContinuouslyCompoundedForwardIncrement = java.lang.Double.NaN;
 	private double _dblContinuouslyCompoundedForwardVolatility = java.lang.Double.NaN;
 
@@ -59,6 +67,8 @@ public class BGMForwardTenorSnap {
 	 * @param dblDiscountFactorIncrement The Discount Factor Increment
 	 * @param dblContinuouslyCompoundedForwardIncrement Continuously Compounded Forward Rate Increment
 	 * @param dblSpotRateIncrement Spot Rate Increment
+	 * @param dblInstantaneousEffectiveForwardRate Instantaneous Effective Annual Forward Rate
+	 * @param dblInstantaneousNominalForwardRate Instantaneous Nominal Annual Forward Rate
 	 * @param dblLognormalLIBORVolatility The Log-normal LIBOR Rate Volatility
 	 * @param dblContinuouslyCompoundedForwardVolatility The Continuously Compounded Forward Rate Volatility
 	 * 
@@ -73,6 +83,8 @@ public class BGMForwardTenorSnap {
 		final double dblDiscountFactorIncrement,
 		final double dblContinuouslyCompoundedForwardIncrement,
 		final double dblSpotRateIncrement,
+		final double dblInstantaneousEffectiveForwardRate,
+		final double dblInstantaneousNominalForwardRate,
 		final double dblLognormalLIBORVolatility,
 		final double dblContinuouslyCompoundedForwardVolatility)
 		throws java.lang.Exception
@@ -85,14 +97,18 @@ public class BGMForwardTenorSnap {
 							dblDiscountFactorIncrement) || !org.drip.quant.common.NumberUtil.IsValid
 								(_dblContinuouslyCompoundedForwardIncrement =
 									dblContinuouslyCompoundedForwardIncrement) ||
-										!org.drip.quant.common.NumberUtil.IsValid
-											(_dblLognormalLIBORVolatility = dblLognormalLIBORVolatility) ||
+										!org.drip.quant.common.NumberUtil.IsValid (_dblSpotRateIncrement =
+											dblSpotRateIncrement) ||
 												!org.drip.quant.common.NumberUtil.IsValid
-													(_dblContinuouslyCompoundedForwardVolatility =
-														dblContinuouslyCompoundedForwardVolatility) ||
+													(_dblInstantaneousEffectiveForwardRate =
+														dblInstantaneousEffectiveForwardRate) ||
 															!org.drip.quant.common.NumberUtil.IsValid
-																(_dblSpotRateIncrement =
-																	dblSpotRateIncrement))
+																(_dblInstantaneousNominalForwardRate =
+																	dblInstantaneousNominalForwardRate) ||
+																		!org.drip.quant.common.NumberUtil.IsValid
+			(_dblLognormalLIBORVolatility = dblLognormalLIBORVolatility) ||
+				!org.drip.quant.common.NumberUtil.IsValid (_dblContinuouslyCompoundedForwardVolatility =
+					dblContinuouslyCompoundedForwardVolatility))
 			throw new java.lang.Exception ("BGMForwardTenorSnap ctr: Invalid Inputs");
 	}
 
@@ -174,6 +190,28 @@ public class BGMForwardTenorSnap {
 	}
 
 	/**
+	 * Retrieve the Instantaneous Effective Annual Forward Rate
+	 * 
+	 * @return The Instantaneous Effective Annual Forward Rate
+	 */
+
+	public double instantaneousEffectiveForwardRate()
+	{
+		return _dblInstantaneousEffectiveForwardRate;
+	}
+
+	/**
+	 * Retrieve the Instantaneous Nominal Annual Forward Rate
+	 * 
+	 * @return The Instantaneous Nominal Annual Forward Rate
+	 */
+
+	public double instantaneousNominalForwardRate()
+	{
+		return _dblInstantaneousNominalForwardRate;
+	}
+
+	/**
 	 * Retrieve the Log-normal LIBOR Volatility
 	 * 
 	 * @return The Log-normal LIBOR Volatility
@@ -204,6 +242,9 @@ public class BGMForwardTenorSnap {
 						+ " | " + org.drip.quant.common.FormatUtil.FormatDouble
 							(_dblContinuouslyCompoundedForwardIncrement, 2, 2, 10000.) + " | " +
 								org.drip.quant.common.FormatUtil.FormatDouble (_dblSpotRateIncrement, 2, 2,
-									10000.) + " ||";
+									10000.) + " | " + org.drip.quant.common.FormatUtil.FormatDouble
+										(_dblInstantaneousEffectiveForwardRate, 2, 2, 10000.) + " | " +
+											org.drip.quant.common.FormatUtil.FormatDouble
+												(_dblInstantaneousNominalForwardRate, 2, 2, 10000.) + " ||";
 	}
 }

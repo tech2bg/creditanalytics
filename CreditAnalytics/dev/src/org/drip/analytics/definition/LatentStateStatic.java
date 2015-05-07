@@ -76,6 +76,20 @@ public class LatentStateStatic {
 		"FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE";
 
 	/**
+	 * Forward Latent State Quantification Metric - Instantaneous Effective Annual Forward Rate
+	 */
+
+	public static final java.lang.String FORWARD_QM_INSTANTANEOUS_EFFECTIVE_FORWARD_RATE =
+		"FORWARD_QM_EFFECTIVE_ANNUAL_FORWARD_RATE";
+
+	/**
+	 * Forward Latent State Quantification Metric - Instantaneous Nominal Annual Forward Rate
+	 */
+
+	public static final java.lang.String FORWARD_QM_INSTANTANEOUS_NOMINAL_FORWARD_RATE =
+		"FORWARD_QM_NOMINAL_ANNUAL_FORWARD_RATE";
+
+	/**
 	 * Funding Latent State
 	 */
 

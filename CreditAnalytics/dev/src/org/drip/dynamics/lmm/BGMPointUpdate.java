@@ -56,6 +56,8 @@ public class BGMPointUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate 
 	 * @param dblSpotRateIncrement The Spot Rate Increment
 	 * @param dblDiscountFactor The Discount Factor
 	 * @param dblDiscountFactorIncrement The Discount Factor Increment
+	 * @param dblInstantaneousEffectiveForwardRate Instantaneous Effective Annual Forward Rate
+	 * @param dblInstantaneousNominalForwardRate Instantaneous Nominal Annual Forward Rate
 	 * @param dblLognormalLIBORVolatility The Log-normal LIBOR Rate Volatility
 	 * @param dblContinuouslyCompoundedForwardVolatility The Continuously Compounded Forward Rate Volatility
 	 * 
@@ -75,10 +77,13 @@ public class BGMPointUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate 
 		final double dblSpotRateIncrement,
 		final double dblDiscountFactor,
 		final double dblDiscountFactorIncrement,
+		final double dblInstantaneousEffectiveForwardRate,
+		final double dblInstantaneousNominalForwardRate,
 		final double dblLognormalLIBORVolatility,
 		final double dblContinuouslyCompoundedForwardVolatility)
 	{
-		org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot = new org.drip.dynamics.evolution.LSQMPointRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrSnapshot = new
+			org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrSnapshot.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_LIBOR_RATE, dblLIBOR))
@@ -89,6 +94,16 @@ public class BGMPointUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate 
 				dblContinuousForwardRate))
 			return null;
 
+		if (!lrSnapshot.setQM (lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_INSTANTANEOUS_EFFECTIVE_FORWARD_RATE,
+				dblInstantaneousEffectiveForwardRate))
+			return null;
+
+		if (!lrSnapshot.setQM (lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_INSTANTANEOUS_NOMINAL_FORWARD_RATE,
+				dblInstantaneousNominalForwardRate))
+			return null;
+
 		if (!lrSnapshot.setQM (lslFunding,
 			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_ZERO_RATE, dblSpotRate))
 			return null;
@@ -97,7 +112,8 @@ public class BGMPointUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate 
 			org.drip.analytics.definition.LatentStateStatic.DISCOUNT_QM_DISCOUNT_FACTOR, dblDiscountFactor))
 			return null;
 
-		org.drip.dynamics.evolution.LSQMPointRecord lrIncrement = new org.drip.dynamics.evolution.LSQMPointRecord();
+		org.drip.dynamics.evolution.LSQMPointRecord lrIncrement = new
+			org.drip.dynamics.evolution.LSQMPointRecord();
 
 		if (!lrIncrement.setQM (lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_LIBOR_RATE, dblLIBORIncrement))
@@ -207,6 +223,36 @@ public class BGMPointUpdate extends org.drip.dynamics.evolution.LSQMPointUpdate 
 	{
 		return increment().qm (_lslForward,
 			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_CONTINUOUSLY_COMPOUNDED_FORWARD_RATE);
+	}
+
+	/**
+	 * Retrieve the Instantaneous Effective Annual Forward Rate
+	 * 
+	 * @return The Instantaneous Effective Annual Forward Rate
+	 * 
+	 * @throws java.lang.Exception Thrown if the Instantaneous Effective Annual Forward Rate is not available
+	 */
+
+	public double instantaneousEffectiveForwardRate()
+		throws java.lang.Exception
+	{
+		return snapshot().qm (_lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_INSTANTANEOUS_EFFECTIVE_FORWARD_RATE);
+	}
+
+	/**
+	 * Retrieve the Instantaneous Nominal Annual Forward Rate
+	 * 
+	 * @return The Instantaneous Nominal Annual Forward Rate
+	 * 
+	 * @throws java.lang.Exception Thrown if the Instantaneous Nominal Annual Forward Rate is not available
+	 */
+
+	public double instantaneousNominalForwardRate()
+		throws java.lang.Exception
+	{
+		return snapshot().qm (_lslForward,
+			org.drip.analytics.definition.LatentStateStatic.FORWARD_QM_INSTANTANEOUS_NOMINAL_FORWARD_RATE);
 	}
 
 	/**

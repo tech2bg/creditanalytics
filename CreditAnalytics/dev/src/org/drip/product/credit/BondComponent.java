@@ -8247,8 +8247,8 @@ public class BondComponent extends org.drip.product.definition.Bond implements
 		final double dblYield)
 		throws java.lang.Exception
 	{
-		if (null == valParams || null == csqs || !org.drip.quant.common.NumberUtil.IsValid
-			(dblWorkoutDate) || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor))
+		if (null == valParams || !org.drip.quant.common.NumberUtil.IsValid (dblWorkoutDate) ||
+			!org.drip.quant.common.NumberUtil.IsValid (dblWorkoutFactor))
 			throw new java.lang.Exception ("BondComponent::priceFromYield => Invalid inputs");
 
 		double dblValueDate = valParams.valueDate();

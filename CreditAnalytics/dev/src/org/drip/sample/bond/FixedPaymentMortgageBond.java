@@ -4,6 +4,8 @@ package org.drip.sample.bond;
 import org.drip.analytics.cashflow.CompositePeriod;
 import org.drip.analytics.date.*;
 import org.drip.analytics.daycount.Convention;
+import org.drip.param.market.CurveSurfaceQuoteSet;
+import org.drip.param.valuation.ValuationParams;
 import org.drip.product.creator.BondBuilder;
 import org.drip.product.definition.Bond;
 import org.drip.quant.common.FormatUtil;
@@ -44,7 +46,104 @@ import org.drip.service.api.CreditAnalytics;
  */
 
 public class FixedPaymentMortgageBond {
-	private static final Bond CreateAmortizingBond (
+
+	private static final void BondMetrics (
+		final Bond bond,
+		final double dblNotional,
+		final JulianDate dtSettle,
+		final CurveSurfaceQuoteSet mktParams,
+		final double dblCleanPrice)
+		throws Exception
+	{
+		double dblAccrued = bond.accrued (
+			dtSettle.julian(),
+			null
+		);
+
+		double dblYield = bond.yieldFromPrice (
+			new ValuationParams (
+				dtSettle,
+				dtSettle,
+				bond.currency()
+			),
+			mktParams,
+			null,
+			dblCleanPrice
+		);
+
+		double dblModifiedDuration = bond.modifiedDurationFromPrice (
+			new ValuationParams (
+				dtSettle,
+				dtSettle,
+				bond.currency()
+			),
+			mktParams,
+			null,
+			dblCleanPrice
+		);
+
+		double dblRisk = bond.yield01FromPrice (
+			new ValuationParams (
+				dtSettle,
+				dtSettle,
+				bond.currency()
+			),
+			mktParams,
+			null,
+			dblCleanPrice
+		);
+
+		double dblConvexity = bond.convexityFromPrice (
+			new ValuationParams (
+				dtSettle,
+				dtSettle,
+				bond.currency()
+			),
+			mktParams,
+			null,
+			dblCleanPrice
+		);
+
+		JulianDate dtPreviousCouponDate = bond.previousCouponDate (dtSettle);
+
+		System.out.println ("\t-------------------------------------");
+
+		System.out.println ("\tAnalytics Metrics for " + bond.name());
+
+		System.out.println ("\t-------------------------------------");
+
+		System.out.println ("\tPrice             : " + FormatUtil.FormatDouble (dblCleanPrice, 1, 4, 100.));
+
+		System.out.println ("\tYield             : " + FormatUtil.FormatDouble (dblYield, 1, 4, 100.) + "%");
+
+		System.out.println ("\tSettle            :  " + dtSettle);
+
+		System.out.println();
+
+		System.out.println ("\tModified Duration : " + FormatUtil.FormatDouble (dblModifiedDuration, 1, 4, 10000.));
+
+		System.out.println ("\tRisk              : " + FormatUtil.FormatDouble (dblRisk, 1, 4, 10000.));
+
+		System.out.println ("\tConvexity         : " + FormatUtil.FormatDouble (dblConvexity * dblNotional, 1, 4, 1.));
+
+		System.out.println ("\tDV01              : " + FormatUtil.FormatDouble (dblRisk * dblNotional, 1, 2, 1.));
+
+		System.out.println();
+
+		System.out.println ("\tPrevious Coupon Date :  " + dtPreviousCouponDate);
+
+		System.out.println ("\tFace                 : " + FormatUtil.FormatDouble (dblNotional, 1, 2, 1.));
+
+		System.out.println ("\tPrincipal            : " + FormatUtil.FormatDouble (dblCleanPrice * dblNotional, 1, 2, 1.));
+
+		System.out.println ("\tAccrued              : " + FormatUtil.FormatDouble (dblAccrued * dblNotional, 1, 2, 1.));
+
+		System.out.println ("\tTotal                : " + FormatUtil.FormatDouble ((dblCleanPrice + dblAccrued) * dblNotional, 1, 2, 1.));
+
+		System.out.println ("\tAccrual Days         : " + FormatUtil.FormatDouble (dtSettle.julian() - dtPreviousCouponDate.julian(), 1, 0, 1.));
+	}
+
+	private static final Bond FixedPaymentMortgageAmortizer (
 		final String strName,
 		final JulianDate dtEffective,
 		final int iNumPayment,
@@ -117,8 +216,8 @@ public class FixedPaymentMortgageBond {
 			19
 		);
 
-		Bond amort = CreateAmortizingBond (
-			"TEST",
+		Bond bond = FixedPaymentMortgageAmortizer (
+			"FPMA 12.99 2016",
 			dtEffective,
 			iNumPayment,
 			strDayCount,
@@ -158,12 +257,12 @@ public class FixedPaymentMortgageBond {
 
 		System.out.println ("\t|---------------------------------------------------------------------------------------------------------------------||");
 
-		for (CompositePeriod p : amort.couponPeriods()) {
+		for (CompositePeriod p : bond.couponPeriods()) {
 			double dblPeriodCouponRate = p.couponMetrics (dtEffective.julian(), null).rate();
 
 			double dblCouponDCF = p.couponDCF();
 
-			double dblEndNotional = amort.notional (p.endDate());
+			double dblEndNotional = bond.notional (p.endDate());
 
 			double dblNotionalAmount = (dblNotional - dblEndNotional) * dblBondNotional;
 
@@ -185,6 +284,20 @@ public class FixedPaymentMortgageBond {
 			dblNotional = dblEndNotional;
 		}
 
-		System.out.println ("\t|---------------------------------------------------------------------------------------------------------------------||");
+		System.out.println ("\t|---------------------------------------------------------------------------------------------------------------------||\n\n");
+
+		JulianDate dtSettle = DateUtil.Today();
+
+		double dblCleanPrice = 1.00; // PAR
+
+		CurveSurfaceQuoteSet mktParams = new CurveSurfaceQuoteSet();
+
+		BondMetrics (
+			bond,
+			dblBondNotional,
+			dtSettle,
+			mktParams,
+			dblCleanPrice
+		);
 	}
 }

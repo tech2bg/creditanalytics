@@ -4,10 +4,8 @@ package org.drip.sample.lmm;
 import java.util.List;
 
 import org.drip.analytics.date.JulianDate;
-import org.drip.analytics.definition.MarketSurface;
 import org.drip.analytics.rates.*;
 import org.drip.analytics.support.CompositePeriodBuilder;
-import org.drip.dynamics.lmm.*;
 import org.drip.function.deterministic1D.QuadraticRationalShapeControl;
 import org.drip.param.creator.*;
 import org.drip.param.market.CurveSurfaceQuoteSet;
@@ -16,14 +14,14 @@ import org.drip.param.valuation.*;
 import org.drip.product.creator.SingleStreamComponentBuilder;
 import org.drip.product.rates.*;
 import org.drip.quant.common.FormatUtil;
-import org.drip.sequence.random.*;
 import org.drip.service.api.CreditAnalytics;
 import org.drip.spline.basis.PolynomialFunctionSetParams;
-import org.drip.spline.grid.Span;
+import org.drip.spline.grid.OverlappingStretchSpan;
 import org.drip.spline.params.*;
 import org.drip.spline.stretch.*;
+import org.drip.state.curve.BasisSplineForwardRate;
 import org.drip.state.estimator.LatentStateStretchBuilder;
-import org.drip.state.identifier.*;
+import org.drip.state.identifier.ForwardLabel;
 import org.drip.state.inference.*;
 
 /*
@@ -54,9 +52,8 @@ import org.drip.state.inference.*;
  */
 
 /**
- * MultiFactorCurveDynamics demonstrates the Construction and Usage of the Curve LIBOR State Evolver, and the
- *  eventual Evolution of the related Discount/Forward Latent State Quantification Metrics. The References
- *  are:
+ * MultiFactorLIBORCurveEvolver demonstrates the Evolution Sequence of the full LIBOR Forward Curve. The
+ *  References are:
  * 
  *  1) Goldys, B., M. Musiela, and D. Sondermann (1994): Log-normality of Rates and Term Structure Models,
  *  	The University of New South Wales.
@@ -70,7 +67,7 @@ import org.drip.state.inference.*;
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultiFactorCurveDynamics {
+public class MultiFactorLIBORCurveEvolver {
 
 	/*
 	 * Construct the Array of Deposit Instruments from the given set of parameters
@@ -467,79 +464,42 @@ public class MultiFactorCurveDynamics {
 		return dc;
 	}
 
-	private static final MarketSurface FlatVolatilitySurface (
-		final JulianDate dtStart,
-		final String strCurrency,
-		final double dblFlatVol)
-		throws Exception
-	{
-		return ScenarioMarketSurfaceBuilder.CustomSplineWireSurface (
-			"VIEW_TARGET_VOLATILITY_SURFACE",
-			dtStart,
-			strCurrency,
-			null,
-			new double[] {
-				dtStart.julian(),
-				dtStart.addYears (2).julian(),
-				dtStart.addYears (4).julian(),
-				dtStart.addYears (6).julian(),
-				dtStart.addYears (8).julian(),
-				dtStart.addYears (10).julian()
-			},
-			new double[] {
-				dtStart.julian(),
-				dtStart.addYears (2).julian(),
-				dtStart.addYears (4).julian(),
-				dtStart.addYears (6).julian(),
-				dtStart.addYears (8).julian(),
-				dtStart.addYears (10).julian()
-			},
-			new double[][] {
-				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
-				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
-				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
-				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
-				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
-				{dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol, dblFlatVol},
-			},
-			new SegmentCustomBuilderControl (
-				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialFunctionSetParams (4),
-				SegmentInelasticDesignControl.Create (2, 2),
-				null,
-				null
-			),
-			new SegmentCustomBuilderControl (
-				MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
-				new PolynomialFunctionSetParams (4),
-				SegmentInelasticDesignControl.Create (2, 2),
-				null,
-				null
-			)
-		);
-	}
-
-	private static final LognormalLIBORVolatility LLVInstance (
-		final double dblSpotDate,
+	private static final ForwardCurve LIBORSpan (
+		final DiscountCurve dc,
 		final ForwardLabel forwardLabel,
-		final MarketSurface[] aMS,
-		final double[][] aadblCorrelation,
-		final int iNumFactor)
+		final SegmentCustomBuilderControl scbc,
+		final JulianDate dtView,
+		final int iNumForwardTenor)
 		throws Exception
 	{
-		UnivariateSequenceGenerator[] aUSG = new UnivariateSequenceGenerator[aMS.length];
+		double[] adblDate = new double[iNumForwardTenor + 1];
+		double[] adblLIBOR = new double[iNumForwardTenor + 1];
+		SegmentCustomBuilderControl[] aSCBC = new SegmentCustomBuilderControl[iNumForwardTenor];
 
-		for (int i = 0; i < aUSG.length; ++i)
-			aUSG[i] = new BoxMullerGaussian (0., 1.);
+		JulianDate dtForward = dtView.subtractTenor (forwardLabel.tenor());
 
-		return new LognormalLIBORVolatility (
-			dblSpotDate,
+		for (int i = 0; i <= iNumForwardTenor; ++i) {
+			if (iNumForwardTenor != i) aSCBC[i] = scbc;
+
+			adblDate[i] = dtForward.julian();
+
+			adblLIBOR[i] = dc.libor (dtForward, forwardLabel.tenor());
+
+			dtForward = dtForward.addTenor (forwardLabel.tenor());
+		}
+
+		return new BasisSplineForwardRate (
 			forwardLabel,
-			aMS,
-			new PrincipalFactorSequenceGenerator (
-				aUSG,
-				aadblCorrelation,
-				iNumFactor
+			new OverlappingStretchSpan (
+				MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator (
+					"SPOT_QM_LIBOR",
+					adblDate,
+					adblLIBOR,
+					aSCBC,
+					null,
+					BoundarySettings.NaturalStandard(),
+					MultiSegmentSequence.CALIBRATE
+				)
 			)
 		);
 	}
@@ -551,85 +511,9 @@ public class MultiFactorCurveDynamics {
 		CreditAnalytics.Init ("");
 
 		String strTenor = "3M";
+		String strViewTenor = "1Y";
 		String strCurrency = "USD";
-		double dblFlatVol1 = 0.35;
-		double dblFlatVol2 = 0.42;
-		double dblFlatVol3 = 0.27;
-		double dblFlatForwardRate = 0.02;
-		int iNumRun = 1;
-
-		int[] aiNumFactor = {1, 2, 3};
-
-		double[][] aadblCorrelation = new double[][] {
-			{1.0, 0.1, 0.2},
-			{0.1, 1.0, 0.2},
-			{0.2, 0.1, 1.0}
-		};
-
-		ForwardLabel forwardLabel = ForwardLabel.Create (
-			strCurrency,
-			strTenor
-		);
-
-		FundingLabel fundingLabel = FundingLabel.Standard (
-			strCurrency
-		);
-
-		JulianDate dtSpot = org.drip.analytics.date.DateUtil.Today();
-
-		MarketSurface[] aMS = new MarketSurface[] {
-			FlatVolatilitySurface (
-				dtSpot,
-				strCurrency,
-				dblFlatVol1
-			),
-			FlatVolatilitySurface (
-				dtSpot,
-				strCurrency,
-				dblFlatVol2
-			),
-			FlatVolatilitySurface (
-				dtSpot,
-				strCurrency,
-				dblFlatVol3
-			)
-		};
-
-		ForwardCurve fc = ScenarioForwardCurveBuilder.FlatForwardForwardCurve (
-			dtSpot,
-			forwardLabel,
-			dblFlatForwardRate,
-			null
-		);
-
-		DiscountCurve dc = OTCInstrumentCurve (
-			dtSpot,
-			strCurrency
-		);
-
-		double dblSpotDate = dtSpot.julian();
-
-		JulianDate dtView = dtSpot.addTenor ("1Y");
-
-		double dblViewDate = dtView.julian();
-
 		int iNumForwardTenor = 5;
-		double dblViewTimeIncrement = 1. / 365.;
-		String strBoundary = "\t|";
-		String strTenorDump = "\t|";
-		JulianDate[] adtIndex = new JulianDate[iNumForwardTenor + 1];
-		JulianDate[] adtForward = new JulianDate[iNumForwardTenor + 1];
-
-		for (int iTenorDate = 0; iTenorDate <= iNumForwardTenor; ++iTenorDate) {
-			adtIndex[iTenorDate] = 0 == iTenorDate ? dtView : adtIndex[iTenorDate - 1].addTenor (forwardLabel.tenor());
-
-			adtForward[iTenorDate] = 0 == iTenorDate ?
-				dtView.addTenor (forwardLabel.tenor()) :
-				adtForward[iTenorDate - 1].addTenor (forwardLabel.tenor());
-
-			strBoundary += "---------------";
-			strTenorDump += "  " + adtForward[iTenorDate] + "  |";
-		}
 
 		SegmentCustomBuilderControl scbc = new SegmentCustomBuilderControl (
 			MultiSegmentSequenceBuilder.BASIS_SPLINE_POLYNOMIAL,
@@ -645,118 +529,26 @@ public class MultiFactorCurveDynamics {
 			null
 		);
 
-		 for (int iNumFactor : aiNumFactor) {
-			LognormalLIBORCurveEvolver llce = LognormalLIBORCurveEvolver.Create (
-				fundingLabel,
-				forwardLabel,
-				iNumForwardTenor,
-				scbc
-			);
+		JulianDate dtSpot = org.drip.analytics.date.DateUtil.Today();
 
-			BGMCurveUpdate bgmcu = BGMCurveUpdate.Create (
-				fundingLabel,
-				forwardLabel,
-				dblSpotDate,
-				dblSpotDate,
-				fc,
-				null,
-				dc,
-				null,
-				null,
-				null,
-				null,
-				null,
-				LLVInstance (
-					dtSpot.julian(),
-					forwardLabel,
-					aMS,
-					aadblCorrelation,
-					iNumFactor
-				)
-			);
+		ForwardLabel forwardLabel = ForwardLabel.Create (
+			strCurrency,
+			strTenor
+		);
 
-			for (int iRun = 0; iRun < iNumRun; ++iRun) {
-				String strLIBORDump = "\t|";
-				String strDiscountFactorDump = "\t|";
-				String strLIBORIncrementDump = "\t|";
-				String strSpotRateIncrementDump = "\t|";
-				String strNominalAnnualForwardDump = "\t|";
-				String strEffectiveAnnualForwardDump = "\t|";
-				String strDiscountFactorIncrementDump = "\t|";
-				String strContinuousForwardIncrementDump = "\t|";
+		DiscountCurve dc = OTCInstrumentCurve (
+			dtSpot,
+			strCurrency
+		);
 
-				BGMCurveUpdate bgmUpdate = llce.evolve (
-					dblSpotDate,
-					dblViewDate,
-					dblViewTimeIncrement,
-					bgmcu
-				);
+		JulianDate dtView = dtSpot.addTenor (strViewTenor);
 
-				ForwardCurve fcLIBOR = bgmUpdate.forwardCurve();
-
-				DiscountCurve dcDiscountFactor = bgmUpdate.discountCurve();
-
-				Span spanLIBORIncrement = bgmUpdate.forwardCurveIncrement();
-
-				Span spanDFIncrement = bgmUpdate.discountCurveIncrement();
-
-				Span spanContinuousForwardIncrement = bgmUpdate.continuousForwardRateIncrement();
-
-				Span spanSpotRateIncrement = bgmUpdate.spotRateIncrement();
-
-				Span spanEffectiveAnnualForward = bgmUpdate.instantaneousEffectiveForwardRate();
-
-				Span spanNominalAnnualForward = bgmUpdate.instantaneousNominalForwardRate();
-
-				for (int iTenorDate = 0; iTenorDate <= iNumForwardTenor; ++iTenorDate) {
-					strLIBORDump += "    " +
-						FormatUtil.FormatDouble (fcLIBOR.forward (adtForward[iTenorDate]), 1, 2, 100.) +
-						"%    |";
-
-					strDiscountFactorDump += "   " +
-						FormatUtil.FormatDouble (dcDiscountFactor.df (adtIndex[iTenorDate]), 1, 4, 1.) +
-						"    |";
-
-					strLIBORIncrementDump += "     " +
-						FormatUtil.FormatDouble (spanLIBORIncrement.calcResponseValue (adtIndex[iTenorDate].julian()), 2, 0, 10000.) +
-						"      |";
-
-					strDiscountFactorIncrementDump += "     " +
-						FormatUtil.FormatDouble (spanDFIncrement.calcResponseValue (adtIndex[iTenorDate].julian()), 2, 0, 10000.) +
-						"      |";
-
-					strContinuousForwardIncrementDump += "     " +
-						FormatUtil.FormatDouble (spanContinuousForwardIncrement.calcResponseValue (adtIndex[iTenorDate].julian()), 2, 0, 10000.) +
-						"      |";
-
-					strSpotRateIncrementDump += "     " +
-						FormatUtil.FormatDouble (spanSpotRateIncrement.calcResponseValue (adtIndex[iTenorDate].julian()), 2, 0, 10000.) +
-						"      |";
-
-					strEffectiveAnnualForwardDump += "    " +
-						FormatUtil.FormatDouble (spanEffectiveAnnualForward.calcResponseValue (adtIndex[iTenorDate].julian()), 1, 2, 100.) +
-						"%    |";
-
-					strNominalAnnualForwardDump += "    " +
-						FormatUtil.FormatDouble (spanNominalAnnualForward.calcResponseValue (adtIndex[iTenorDate].julian()), 1, 2, 100.) +
-						"%    |";
-				}
-
-				System.out.println ("\n\n" +
-					strBoundary + "\n" +
-					strTenorDump + "\n" +
-					strBoundary + "\n" +
-					strLIBORDump + "\n" +
-					strDiscountFactorDump + "\n" +
-					strLIBORIncrementDump + "\n" +
-					strDiscountFactorIncrementDump + "\n" +
-					strContinuousForwardIncrementDump + "\n" +
-					strSpotRateIncrementDump + "\n" +
-					strEffectiveAnnualForwardDump + "\n" +
-					strNominalAnnualForwardDump + "\n" +
-					strBoundary
-				);
-			}
-		}
+		LIBORSpan (
+			dc,
+			forwardLabel,
+			scbc,
+			dtView,
+			iNumForwardTenor
+		);
 	}
 }

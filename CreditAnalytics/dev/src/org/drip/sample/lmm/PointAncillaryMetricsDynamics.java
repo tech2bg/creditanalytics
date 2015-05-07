@@ -3,8 +3,7 @@ package org.drip.sample.lmm;
 
 import org.drip.analytics.date.JulianDate;
 import org.drip.analytics.definition.MarketSurface;
-import org.drip.analytics.rates.DiscountCurve;
-import org.drip.analytics.rates.ForwardCurve;
+import org.drip.analytics.rates.*;
 import org.drip.dynamics.lmm.*;
 import org.drip.param.creator.*;
 import org.drip.quant.common.FormatUtil;
@@ -44,16 +43,23 @@ import org.drip.state.identifier.*;
  */
 
 /**
- * MultiFactorPointDynamics demonstrates the Construction and Usage of the Point LIBOR State Evolver, and the
- *  eventual Evolution of the related Discount/Forward Latent State Quantification Metrics. The Reference is:
+ * PointAncillaryMetricsDynamics demonstrates the Construction and Usage of the Point LIBOR State Evolver,
+ *  and the eventual Evolution of the related Ancillary bDiscount/Forward Latent State Quantification
+ *   Metrics. The References are:
  * 
- * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
+ *  1) Goldys, B., M. Musiela, and D. Sondermann (1994): Log-normality of Rates and Term Structure Models,
+ *  	The University of New South Wales.
+ * 
+ *  2) Musiela, M. (1994): Nominal Annual Rates and Log-normal Volatility Structure, The University of New
+ *   	South Wales.
+ * 
+ * 	3) Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
  * 		Finance 7 (2), 127-155.
  *
  * @author Lakshmi Krishnamurthy
  */
 
-public class MultiFactorPointDynamics {
+public class PointAncillaryMetricsDynamics {
 
 	private static final MarketSurface FlatVolatilitySurface (
 		final JulianDate dtStart,
@@ -141,14 +147,8 @@ public class MultiFactorPointDynamics {
 			" -> " + new JulianDate (bgmRunSnap.finalDate()) +
 			"]  => " + FormatUtil.FormatDouble (bgmRunSnap.libor(), 1, 2, 100.) +
 			"% | " + FormatUtil.FormatDouble (bgmRunSnap.liborIncrement(), 2, 0, 10000.) +
-			" | " + FormatUtil.FormatDouble (bgmRunSnap.continuousForwardRate(), 1, 2, 100.) +
-			"% | " + FormatUtil.FormatDouble (bgmRunSnap.continuousForwardRateIncrement(), 2, 0, 10000.) +
-			" | " + FormatUtil.FormatDouble (bgmRunSnap.spotRate(), 1, 2, 100.) +
-			"% | " + FormatUtil.FormatDouble (bgmRunSnap.spotRateIncrement(), 2, 0, 10000.) +
-			" | " + FormatUtil.FormatDouble (bgmRunSnap.discountFactor(), 1, 2, 100.) +
-			" | " + FormatUtil.FormatDouble (bgmRunSnap.discountFactorIncrement(), 2, 0, 10000.) +
-			" | " + FormatUtil.FormatDouble (bgmRunSnap.lognormalLIBORVolatility(), 2, 0, 100.) +
-			"% | " + FormatUtil.FormatDouble (bgmRunSnap.continuouslyCompoundedForwardVolatility(), 1, 2, 100.) +
+			" | " + FormatUtil.FormatDouble (bgmRunSnap.instantaneousEffectiveForwardRate(), 1, 2, 100.) +
+			"% | " + FormatUtil.FormatDouble (bgmRunSnap.instantaneousNominalForwardRate(), 1, 2, 100.) +
 			"% | "
 		);
 	}
@@ -238,25 +238,17 @@ public class MultiFactorPointDynamics {
 
 			System.out.println ("\t|       Num Factors: " + iNumFactor + "                                                                                     |");
 
+			System.out.println ("\t|       Start Date                                                                                         |");
+
+			System.out.println ("\t|       End Date                                                                                           |");
+
 			System.out.println ("\t|       Adjacent Step LIBOR (%)                                                                            |");
 
 			System.out.println ("\t|       Adjacent Step LIBOR Increment (bp)                                                                 |");
 
-			System.out.println ("\t|       Adjacent Step Continuously Compounded Forward Rate (%)                                             |");
+			System.out.println ("\t|       Adjacent Step Effective Annual Forward Rate (%)                                                    |");
 
-			System.out.println ("\t|       Adjacent Step Continuously Compounded Forward Rate Increment (bp)                                  |");
-
-			System.out.println ("\t|       Adjacent Step Spot Rate (%)                                                                        |");
-
-			System.out.println ("\t|       Adjacent Step Spot Rate Increment (bp)                                                             |");
-
-			System.out.println ("\t|       Adjacent Step Discount Function                                                                    |");
-
-			System.out.println ("\t|       Adjacent Step Discount Function Increment (c)                                                      |");
-
-			System.out.println ("\t|       Log-normal LIBOR Rate Volatility (%)                                                               |");
-
-			System.out.println ("\t|       Continuously Compounded Forward Rate Volatility (%)                                                |");
+			System.out.println ("\t|       Adjacent Step Nominal Annual Forward Rate (%)                                                      |");
 
 			System.out.println ("\t|                                                                                                          |");
 

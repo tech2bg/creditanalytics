@@ -30,9 +30,15 @@ package org.drip.dynamics.lmm;
 
 /**
  * BGMTenorNodeSequence contains the Point Nodes of the Latent State Quantifiers and their Increments present
- * 	in the specified BGMForwardTenorSnap Instance.
+ * 	in the specified BGMForwardTenorSnap Instance. The References are:
  * 
- * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
+ *  1) Goldys, B., M. Musiela, and D. Sondermann (1994): Log-normality of Rates and Term Structure Models,
+ *  	The University of New South Wales.
+ * 
+ *  2) Musiela, M. (1994): Nominal Annual Rates and Log-normal Volatility Structure, The University of New
+ *   	South Wales.
+ * 
+ * 	3) Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
  * 		Finance 7 (2), 127-155.
  *
  * @author Lakshmi Krishnamurthy
@@ -46,6 +52,8 @@ public class BGMTenorNodeSequence {
 	private double[] _adblSpotRateIncrement = null;
 	private double[] _adblDiscountFactorIncrement = null;
 	private double[] _adblContinuousForwardRateIncrement = null;
+	private double[] _adblInstantaneousNominalForwardRate = null;
+	private double[] _adblInstantaneousEffectiveForwardRate = null;
 
 	/**
 	 * BGMTenorNodeSequence Constructor
@@ -69,6 +77,8 @@ public class BGMTenorNodeSequence {
 		_adblSpotRateIncrement = new double[iNumSnap];
 		_adblDiscountFactorIncrement = new double[iNumSnap];
 		_adblContinuousForwardRateIncrement = new double[iNumSnap];
+		_adblInstantaneousNominalForwardRate = new double[iNumSnap];
+		_adblInstantaneousEffectiveForwardRate = new double[iNumSnap];
 
 		if (0 == iNumSnap) throw new java.lang.Exception ("BGMTenorNodeSequence ctr: Invalid Inputs!");
 
@@ -84,6 +94,10 @@ public class BGMTenorNodeSequence {
 			_adblSpotRateIncrement[i] = aBFTS[i].spotRateIncrement();
 
 			_adblDiscountFactorIncrement[i] = aBFTS[i].discountFactorIncrement();
+
+			_adblInstantaneousNominalForwardRate[i] = aBFTS[i].instantaneousNominalForwardRate();
+
+			_adblInstantaneousEffectiveForwardRate[i] = aBFTS[i].instantaneousEffectiveForwardRate();
 
 			_adblContinuousForwardRateIncrement[i] = aBFTS[i].continuouslyCompoundedForwardIncrement();
 		}
@@ -145,6 +159,28 @@ public class BGMTenorNodeSequence {
 	}
 
 	/**
+	 * Retrieve the Array of Tenor Instantaneous Effective Annual Forward Rate
+	 * 
+	 * @return The Array of Tenor Instantaneous Effective Annual Forward Rate
+	 */
+
+	public double[] instantaneousEffectiveForwardRates()
+	{
+		return _adblInstantaneousEffectiveForwardRate;
+	}
+
+	/**
+	 * Retrieve the Array of Tenor Instantaneous Nominal Annual Forward Rate
+	 * 
+	 * @return The Array of Tenor Instantaneous Nominal Annual Forward Rate
+	 */
+
+	public double[] instantaneousNominalForwardRates()
+	{
+		return _adblInstantaneousNominalForwardRate;
+	}
+
+	/**
 	 * Retrieve the Array of Tenor Instantaneous Continuously Compounded Forward Rate Increments
 	 * 
 	 * @return The Array of Tenor Instantaneous Continuously Compounded Forward Rate Increments
@@ -177,6 +213,8 @@ public class BGMTenorNodeSequence {
 		java.lang.String strSpotRateIncrementDump = "\t |";
 		java.lang.String strDiscountFactorIncrementDump = "\t |";
 		java.lang.String strContinuousForwardIncrementDump = "\t |";
+		java.lang.String strInstantaneousNominalForwardDump = "\t |";
+		java.lang.String strInstantaneousEffectiveForwardDump = "\t |";
 
 		for (int i = 0; i < iNumTenor; ++i) {
 			try {
@@ -201,6 +239,12 @@ public class BGMTenorNodeSequence {
 
 				strSpotRateIncrementDump += "    " + org.drip.quant.common.FormatUtil.FormatDouble
 					(_adblSpotRateIncrement[i], 2, 0, 10000.) + "     |";
+
+				strInstantaneousEffectiveForwardDump += "    " + org.drip.quant.common.FormatUtil.FormatDouble
+					(_adblInstantaneousEffectiveForwardRate[i], 2, 0, 10000.) + "     |";
+
+				strInstantaneousNominalForwardDump += "    " + org.drip.quant.common.FormatUtil.FormatDouble
+					(_adblInstantaneousNominalForwardRate[i], 2, 0, 10000.) + "     |";
 			} catch (java.lang.Exception e) {
 				e.printStackTrace();
 
@@ -211,6 +255,7 @@ public class BGMTenorNodeSequence {
 		return "\n" + strPartition + "|\n" + strDateDump + "|\n" + strPartition + "|\n" + strLIBORDump +
 			"|\n" + strLIBORIncrementDump + "|\n" + strDiscountFactorDump + "|\n" +
 				strDiscountFactorIncrementDump + "|\n" + strContinuousForwardIncrementDump + "|\n" +
-					strSpotRateIncrementDump + "|\n" + strPartition + "|\n";
+					strSpotRateIncrementDump + "|\n" + strInstantaneousEffectiveForwardDump + "|\n" +
+						strInstantaneousNominalForwardDump + "|\n" + strPartition + "|\n";
 	}
 }

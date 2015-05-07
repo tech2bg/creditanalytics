@@ -32,7 +32,13 @@ package org.drip.dynamics.lmm;
  * LognormalLIBORCurveEvolver sets up and implements the Multi-Factor No-arbitrage Dynamics of the full Curve
  * 	Rates State Quantifiers traced from the Evolution of the LIBOR Forward Rate as formulated in:
  * 
- * 	Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
+ *  1) Goldys, B., M. Musiela, and D. Sondermann (1994): Log-normality of Rates and Term Structure Models,
+ *  	The University of New South Wales.
+ * 
+ *  2) Musiela, M. (1994): Nominal Annual Rates and Log-normal Volatility Structure, The University of New
+ *   	South Wales.
+ * 
+ * 	3) Brace, A., D. Gatarek, and M. Musiela (1997): The Market Model of Interest Rate Dynamics, Mathematical
  * 		Finance 7 (2), 127-155.
  *
  * @author Lakshmi Krishnamurthy
@@ -48,6 +54,8 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCSpotRateIncrement = null;
 	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCDiscountFactorIncrement = null;
 	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCContinuousForwardIncrement = null;
+	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCInstantaneousNominalForward = null;
+	private org.drip.spline.params.SegmentCustomBuilderControl[] _aSCBCInstantaneousEffectiveForward = null;
 
 	/**
 	 * Create a LognormalLIBORCurveEvolver Instance
@@ -69,7 +77,7 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 	{
 		try {
 			return new LognormalLIBORCurveEvolver (lslFunding, lslForward, iNumForwardTenor, scbc, scbc,
-				scbc, scbc, scbc, scbc);
+				scbc, scbc, scbc, scbc, scbc, scbc);
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -215,8 +223,9 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 
 			double dblContinuousForwardRate = fc.forward (dblTargetPointDate);
 
-			double dblLIBORDCF = org.drip.analytics.support.AnalyticsHelper.TenorToYearFraction
-				(strForwardTenor) * dblLIBOR;
+			double dblDCF = org.drip.analytics.support.AnalyticsHelper.TenorToYearFraction (strForwardTenor);
+
+			double dblLIBORDCF = dblDCF * dblLIBOR;
 
 			double dblLIBORIncrement = dblViewTimeIncrement * (forwardDerivative (fc, dblTargetPointDate) +
 				dblLIBOR * dblCrossVolatilityDotProduct + (dblLognormalPointVolatilityModulus * dblLIBOR *
@@ -228,18 +237,20 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 			double dblContinuousForwardRateIncrement = continuousForwardRateIncrement (dblTargetPointDate,
 				dblViewTimeIncrement, dblViewTimeIncrementSQRT, fc, adblMultivariateRandom, llv);
 
-			System.out.println ("FRE[" + new org.drip.analytics.date.JulianDate (dblTargetPointDate) +
-				"] => " + dc.forwardRateEstimator (dblTargetPointDate, _lslForward));
-
 			double dblSpotRateIncrement = spotRateIncrement (dblTargetPointDate, dblViewTimeIncrement,
 				dblViewTimeIncrementSQRT, dc.forwardRateEstimator (dblTargetPointDate, _lslForward),
 					adblMultivariateRandom, llv);
 
+			double dblContinuousForwardRateEvolved = dblContinuousForwardRate +
+				dblContinuousForwardRateIncrement;
+
 			return new org.drip.dynamics.lmm.BGMForwardTenorSnap (dblTargetPointDate, dblLIBOR +
 				dblLIBORIncrement, dblLIBORIncrement, dblDiscountFactor + dblDiscountFactorIncrement,
 					dblDiscountFactorIncrement, dblContinuousForwardRateIncrement, dblSpotRateIncrement,
-						java.lang.Math.sqrt (dblLognormalPointVolatilityModulus), java.lang.Math.sqrt
-							(dblContinuousForwardVolatilityModulus));
+						java.lang.Math.exp (dblContinuousForwardRateEvolved) - 1., (java.lang.Math.exp
+							(dblDCF * dblContinuousForwardRateEvolved) - 1.) / dblDCF, java.lang.Math.sqrt
+								(dblLognormalPointVolatilityModulus), java.lang.Math.sqrt
+									(dblContinuousForwardVolatilityModulus));
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
@@ -261,6 +272,10 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 	 * @param scbcContinuousForwardIncrement Instantaneous Continuously Compounded Forward Rate Increment
 	 *  	Span Segment Custom Builder Control Instance
 	 * @param scbcSpotRateIncrement Spot Rate Increment Span Segment Custom Builder Control Instance
+	 * @param scbcInstantaneousEffectiveForward Instantaneous Effective Annual Forward Rate Span Segment
+	 * 		Custom Builder Control Instance
+	 * @param scbcInstantaneousNominalForward Instantaneous Nominal Annual Forward Rate Span Segment Custom
+	 * 		Builder Control Instance
 	 * 
 	 * @throws java.lang.Exception Thrown if Inputs are Invalid
 	 */
@@ -274,13 +289,16 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 		final org.drip.spline.params.SegmentCustomBuilderControl scbcLIBORIncrement,
 		final org.drip.spline.params.SegmentCustomBuilderControl scbcDiscountFactorIncrement,
 		final org.drip.spline.params.SegmentCustomBuilderControl scbcContinuousForwardIncrement,
-		final org.drip.spline.params.SegmentCustomBuilderControl scbcSpotRateIncrement)
+		final org.drip.spline.params.SegmentCustomBuilderControl scbcSpotRateIncrement,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbcInstantaneousEffectiveForward,
+		final org.drip.spline.params.SegmentCustomBuilderControl scbcInstantaneousNominalForward)
 		throws java.lang.Exception
 	{
 		if (null == (_lslFunding = lslFunding) || null == (_lslForward = lslForward) || 1 >=
 			(_iNumForwardTenor = iNumForwardTenor) || null == scbcLIBOR || null == scbcLIBORIncrement || null
 				== scbcDiscountFactor || null == scbcDiscountFactorIncrement || null ==
-					scbcContinuousForwardIncrement || null == scbcSpotRateIncrement)
+					scbcContinuousForwardIncrement || null == scbcSpotRateIncrement || null ==
+						scbcInstantaneousEffectiveForward)
 			throw new java.lang.Exception ("LognormalLIBORCurveEvolver ctr: Invalid Inputs");
 
 		_aSCBCLIBOR = new org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
@@ -291,6 +309,10 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 		_aSCBCContinuousForwardIncrement = new
 			org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
 		_aSCBCSpotRateIncrement = new org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
+		_aSCBCInstantaneousNominalForward = new
+			org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
+		_aSCBCInstantaneousEffectiveForward = new
+			org.drip.spline.params.SegmentCustomBuilderControl[iNumForwardTenor];
 
 		for (int i = 0; i < iNumForwardTenor; ++i) {
 			_aSCBCLIBOR[i] = scbcLIBOR;
@@ -299,6 +321,8 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 			_aSCBCDiscountFactorIncrement[i] = scbcDiscountFactorIncrement;
 			_aSCBCContinuousForwardIncrement[i] = scbcContinuousForwardIncrement;
 			_aSCBCSpotRateIncrement[i] = scbcSpotRateIncrement;
+			_aSCBCInstantaneousEffectiveForward[i] = scbcInstantaneousEffectiveForward;
+			_aSCBCInstantaneousNominalForward[i] = scbcInstantaneousNominalForward;
 		}
 	}
 
@@ -403,6 +427,32 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 		return _aSCBCSpotRateIncrement[0];
 	}
 
+	/**
+	 * Retrieve the Instantaneous Effective Annual Forward Rate Increment Segment Custom Builder Control
+	 *  Instance
+	 * 
+	 * @return The Instantaneous Effective Annual Forward Rate Increment Segment Custom Builder Control
+	 *  Instance
+	 */
+
+	public org.drip.spline.params.SegmentCustomBuilderControl scbcInstantaneousEffectiveForward()
+	{
+		return _aSCBCInstantaneousEffectiveForward[0];
+	}
+
+	/**
+	 * Retrieve the Instantaneous Nominal Annual Forward Rate Increment Segment Custom Builder Control
+	 *  Instance
+	 * 
+	 * @return The Instantaneous Nominal Annual Forward Rate Increment Segment Custom Builder Control
+	 *  Instance
+	 */
+
+	public org.drip.spline.params.SegmentCustomBuilderControl scbcInstantaneousNominalForward()
+	{
+		return _aSCBCInstantaneousNominalForward[0];
+	}
+
 	@Override public org.drip.dynamics.lmm.BGMCurveUpdate evolve (
 		final double dblSpotDate,
 		final double dblViewDate,
@@ -486,6 +536,18 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 						_aSCBCSpotRateIncrement, null, bs,
 							org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
 
+			org.drip.spline.stretch.MultiSegmentSequence mssInstantaneousEffectiveForwardRate =
+				org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+					(strForwardLabelName + "_EFFECTIVE_ANNUAL_FORWARD", adblTenorDate,
+						btns.instantaneousEffectiveForwardRates(), _aSCBCInstantaneousEffectiveForward, null,
+							bs, org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
+
+			org.drip.spline.stretch.MultiSegmentSequence mssInstantaneousNominalForwardRate =
+				org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
+					(strForwardLabelName + "_NOMINAL_ANNUAL_FORWARD", adblTenorDate,
+						btns.instantaneousNominalForwardRates(), _aSCBCInstantaneousNominalForward, null, bs,
+							org.drip.spline.stretch.MultiSegmentSequence.CALIBRATE);
+
 			return org.drip.dynamics.lmm.BGMCurveUpdate.Create (_lslFunding, _lslForward, dblViewDate,
 				dblViewDate + dblViewTimeIncrement, fcLIBOR, new org.drip.spline.grid.OverlappingStretchSpan
 					(org.drip.spline.stretch.MultiSegmentSequenceBuilder.CreateCalibratedStretchEstimator
@@ -497,8 +559,11 @@ public class LognormalLIBORCurveEvolver implements org.drip.dynamics.evolution.C
 											org.drip.spline.grid.OverlappingStretchSpan
 												(mssContinuousForwardRateIncrement), new
 													org.drip.spline.grid.OverlappingStretchSpan
-														(mssSpotRateIncrement),
-															bgmPrev.lognormalLIBORVolatility());
+														(mssSpotRateIncrement), new
+															org.drip.spline.grid.OverlappingStretchSpan
+																(mssInstantaneousEffectiveForwardRate), new
+																	org.drip.spline.grid.OverlappingStretchSpan
+				(mssInstantaneousNominalForwardRate), bgmPrev.lognormalLIBORVolatility());
 		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
